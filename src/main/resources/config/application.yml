@@ -10,3 +10,11 @@ spring:
       file-size-threshold: 2KB
       max-file-size: 200MB
       max-request-size: 215MB
+app:
+  jwt:
+    # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
+    base64-secret: Ka7xdBsrLXVkEeMRYXsfl0b3Z3iSjiUO8H9cIMRmdAiwNCF5R8/eN/11jVlI7sHLgMXG2gTTTKlMhtJq7U6pSg==
+    # Token is valid 24 hours
+    token-time: 86400
+    # Token valid for 7 days with remember me
+    token-time-for-remember: 604800
