@@ -18,3 +18,5 @@ app:
     token-time: 86400
     # Token valid for 7 days with remember me
     token-time-for-remember: 604800
+audit-events:
+  retention-period: 30
