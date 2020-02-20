@@ -4,12 +4,33 @@ spring:
     name: buaansach
   profiles:
     active: dev
+  messages:
+    basename: i18n/messages
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    username: mailservice.pms@gmail.com
+    password: Bingo102
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 5000
+          starttls:
+            enable: true
+          timeout: 5000
+          writetimeout: 5000
   servlet:
     multipart:
       enabled: true
       file-size-threshold: 2KB
       max-file-size: 200MB
       max-request-size: 215MB
+audit-events:
+  retention-period: 30
+websocket:
+  allowed-origin: 'http://localhost:3000'
 app:
   jwt:
     # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
@@ -18,5 +39,9 @@ app:
     token-time: 86400
     # Token valid for 7 days with remember me
     token-time-for-remember: 604800
-audit-events:
-  retention-period: 30
+  upload-dir: 'file:///home/ubuntu/storage/'
+  client-base-url: 'http://54.146.189.220:3000'
+  mail:
+    enable: true
+    from: mailservice.pms@gmail.com
+    send-creation-mail: false
