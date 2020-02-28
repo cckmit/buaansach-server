@@ -22,7 +22,7 @@ import java.util.Locale;
 public class MailService {
     private static final String USER = "user";
     private static final String BASE_URL = "baseUrl";
-    private final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
+    private final Logger log = LoggerFactory.getLogger(MailService.class);
     private final JavaMailSender javaMailSender;
     private final MessageSource messageSource;
     private final SpringTemplateEngine templateEngine;
@@ -42,7 +42,7 @@ public class MailService {
 
     @Async
     public void sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
-        LOGGER.debug("Send email[multipart '{}' and html '{}'] to '{}' with subject '{}' and content={}",
+        log.debug("Send email[multipart '{}' and html '{}'] to '{}' with subject '{}' and content={}",
                 isMultipart, isHtml, to, subject, content);
         if (!Boolean.parseBoolean(enableSendMail)) return;
         // Prepare message using a Spring helper
@@ -54,9 +54,9 @@ public class MailService {
             message.setSubject(subject);
             message.setText(content, isHtml);
             javaMailSender.send(mimeMessage);
-            LOGGER.debug("Sent email to User '{}'", to);
+            log.debug("Sent email to User '{}'", to);
         } catch (MailException | MessagingException e) {
-            LOGGER.warn("Email could not be sent to user '{}'", to, e);
+            log.warn("Email could not be sent to user '{}'", to, e);
         }
     }
 
@@ -64,7 +64,7 @@ public class MailService {
     public void sendEmailFromTemplate(User user, String templateName, String titleKey) {
         if (!Boolean.parseBoolean(enableSendMail)) return;
         if (user.getEmail() == null) {
-            LOGGER.debug("Email doesn't exist for user '{}'", user.getLogin());
+            log.debug("Email doesn't exist for user '{}'", user.getLogin());
             return;
         }
         Locale locale = Locale.forLanguageTag(user.getLangKey() == null ? "" : user.getLangKey());
@@ -79,21 +79,21 @@ public class MailService {
     @Async
     public void sendActivationEmail(User user) {
         if (!Boolean.parseBoolean(enableSendMail)) return;
-        LOGGER.debug("Sending activation email to '{}'", user.getEmail());
+        log.debug("Sending activation email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "mail/activationEmail", "email.activation.title");
     }
 
     @Async
     public void sendCreationEmail(User user) {
         if (!Boolean.parseBoolean(enableSendMail)) return;
-        LOGGER.debug("Sending creation email to '{}'", user.getEmail());
+        log.debug("Sending creation email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "mail/creationEmail", "email.activation.title");
     }
 
     @Async
     public void sendPasswordResetMail(User user) {
         if (!Boolean.parseBoolean(enableSendMail)) return;
-        LOGGER.debug("Sending password reset email to '{}'", user.getEmail());
+        log.debug("Sending password reset email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "mail/passwordResetEmail", "email.reset.title");
     }
 }
