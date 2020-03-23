@@ -43,7 +43,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
-        String jwt = request.getParameter("Authorization");
+        /* for websocket */
+        String jwt = request.getParameter("access_token");
         if (StringUtils.hasText(jwt)) {
             return jwt;
         }
