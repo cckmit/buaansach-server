@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import vn.com.buaansach.entity.User;
+import vn.com.buaansach.entity.UserEntity;
 import vn.com.buaansach.exception.UserNotActivatedException;
 
 import java.util.Collection;
@@ -28,20 +28,20 @@ public class UserPrincipal implements UserDetails {
         this.activated = activated;
     }
 
-    public static UserPrincipal create(String lowercaseLogin, User user) {
-        if (!user.isActivated()) {
+    public static UserPrincipal create(String lowercaseLogin, UserEntity userEntity) {
+        if (!userEntity.isActivated()) {
             throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated");
         }
 
-        List<GrantedAuthority> authorities = user.getAuthorities().stream().map(authority ->
+        List<GrantedAuthority> authorities = userEntity.getAuthorities().stream().map(authority ->
                 new SimpleGrantedAuthority(authority.getName())
         ).collect(Collectors.toList());
 
         return new UserPrincipal(
-                user.getId(),
-                user.getLogin(),
-                user.getPassword(),
-                user.isActivated(),
+                userEntity.getId(),
+                userEntity.getLogin(),
+                userEntity.getPassword(),
+                userEntity.isActivated(),
                 authorities
         );
     }

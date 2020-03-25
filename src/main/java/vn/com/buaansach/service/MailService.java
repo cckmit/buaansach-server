@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
-import vn.com.buaansach.entity.User;
+import vn.com.buaansach.entity.UserEntity;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -30,7 +30,7 @@ public class MailService {
     private String host;
     @Value("${app.mail.enable}")
     private String enableSendMail;
-    @Value("${app.client-base-url}")
+    @Value("${app.mail.client-base-url}")
     private String clientBaseUrl;
 
     public MailService(JavaMailSender javaMailSender,
@@ -61,39 +61,39 @@ public class MailService {
     }
 
     @Async
-    public void sendEmailFromTemplate(User user, String templateName, String titleKey) {
+    public void sendEmailFromTemplate(UserEntity userEntity, String templateName, String titleKey) {
         if (!Boolean.parseBoolean(enableSendMail)) return;
-        if (user.getEmail() == null) {
-            log.debug("Email doesn't exist for user '{}'", user.getLogin());
+        if (userEntity.getEmail() == null) {
+            log.debug("Email doesn't exist for user '{}'", userEntity.getLogin());
             return;
         }
-        Locale locale = Locale.forLanguageTag(user.getLangKey() == null ? "" : user.getLangKey());
+        Locale locale = Locale.forLanguageTag(userEntity.getLangKey() == null ? "" : userEntity.getLangKey());
         Context context = new Context(locale);
-        context.setVariable(USER, user);
+        context.setVariable(USER, userEntity);
         context.setVariable(BASE_URL, clientBaseUrl);
         String content = templateEngine.process(templateName, context);
         String subject = messageSource.getMessage(titleKey, null, locale);
-        sendEmail(user.getEmail(), subject, content, false, true);
+        sendEmail(userEntity.getEmail(), subject, content, false, true);
     }
 
     @Async
-    public void sendActivationEmail(User user) {
+    public void sendActivationEmail(UserEntity userEntity) {
         if (!Boolean.parseBoolean(enableSendMail)) return;
-        log.debug("Sending activation email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "mail/activationEmail", "email.activation.title");
+        log.debug("Sending activation email to '{}'", userEntity.getEmail());
+        sendEmailFromTemplate(userEntity, "mail/activationEmail", "email.activation.title");
     }
 
     @Async
-    public void sendCreationEmail(User user) {
+    public void sendCreationEmail(UserEntity userEntity) {
         if (!Boolean.parseBoolean(enableSendMail)) return;
-        log.debug("Sending creation email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "mail/creationEmail", "email.activation.title");
+        log.debug("Sending creation email to '{}'", userEntity.getEmail());
+        sendEmailFromTemplate(userEntity, "mail/creationEmail", "email.activation.title");
     }
 
     @Async
-    public void sendPasswordResetMail(User user) {
+    public void sendPasswordResetMail(UserEntity userEntity) {
         if (!Boolean.parseBoolean(enableSendMail)) return;
-        log.debug("Sending password reset email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "mail/passwordResetEmail", "email.reset.title");
+        log.debug("Sending password reset email to '{}'", userEntity.getEmail());
+        sendEmailFromTemplate(userEntity, "mail/passwordResetEmail", "email.reset.title");
     }
 }

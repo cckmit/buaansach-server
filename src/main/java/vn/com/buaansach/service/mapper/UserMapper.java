@@ -1,8 +1,8 @@
 package vn.com.buaansach.service.mapper;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.Authority;
-import vn.com.buaansach.entity.User;
+import vn.com.buaansach.entity.AuthorityEntity;
+import vn.com.buaansach.entity.UserEntity;
 import vn.com.buaansach.service.dto.UserDTO;
 
 import java.util.HashSet;
@@ -14,50 +14,50 @@ import java.util.stream.Collectors;
 @Service
 public class UserMapper {
 
-    public List<UserDTO> usersToUserDTOs(List<User> users) {
-        return users.stream()
+    public List<UserDTO> usersToUserDTOs(List<UserEntity> userEntities) {
+        return userEntities.stream()
                 .filter(Objects::nonNull)
                 .map(this::userToUserDTO)
                 .collect(Collectors.toList());
     }
 
-    public UserDTO userToUserDTO(User user) {
-        return new UserDTO(user);
+    public UserDTO userToUserDTO(UserEntity userEntity) {
+        return new UserDTO(userEntity);
     }
 
-    public List<User> userDTOsToUsers(List<UserDTO> userDTOs) {
+    public List<UserEntity> userDTOsToUsers(List<UserDTO> userDTOs) {
         return userDTOs.stream()
                 .filter(Objects::nonNull)
                 .map(this::userDTOToUser)
                 .collect(Collectors.toList());
     }
 
-    public User userDTOToUser(UserDTO userDTO) {
+    public UserEntity userDTOToUser(UserDTO userDTO) {
         if (userDTO == null) {
             return null;
         } else {
-            User user = new User();
-            user.setId(userDTO.getId());
-            user.setLogin(userDTO.getLogin());
-            user.setFirstName(userDTO.getFirstName());
-            user.setLastName(userDTO.getLastName());
-            user.setEmail(userDTO.getEmail());
-            user.setImageUrl(userDTO.getImageUrl());
-            user.setActivated(userDTO.isActivated());
-            user.setLangKey(userDTO.getLangKey());
-            Set<Authority> authorities = this.authoritiesFromStrings(userDTO.getAuthorities());
-            user.setAuthorities(authorities);
-            return user;
+            UserEntity userEntity = new UserEntity();
+            userEntity.setId(userDTO.getId());
+            userEntity.setLogin(userDTO.getLogin());
+            userEntity.setFirstName(userDTO.getFirstName());
+            userEntity.setLastName(userDTO.getLastName());
+            userEntity.setEmail(userDTO.getEmail());
+            userEntity.setImageUrl(userDTO.getImageUrl());
+            userEntity.setActivated(userDTO.isActivated());
+            userEntity.setLangKey(userDTO.getLangKey());
+            Set<AuthorityEntity> authorities = this.authoritiesFromStrings(userDTO.getAuthorities());
+            userEntity.setAuthorities(authorities);
+            return userEntity;
         }
     }
 
 
-    private Set<Authority> authoritiesFromStrings(Set<String> authoritiesAsString) {
-        Set<Authority> authorities = new HashSet<>();
+    private Set<AuthorityEntity> authoritiesFromStrings(Set<String> authoritiesAsString) {
+        Set<AuthorityEntity> authorities = new HashSet<>();
 
         if (authoritiesAsString != null) {
             authorities = authoritiesAsString.stream().map(string -> {
-                Authority auth = new Authority();
+                AuthorityEntity auth = new AuthorityEntity();
                 auth.setName(string);
                 return auth;
             }).collect(Collectors.toSet());
@@ -66,12 +66,12 @@ public class UserMapper {
         return authorities;
     }
 
-    public User userFromId(Long id) {
+    public UserEntity userFromId(Long id) {
         if (id == null) {
             return null;
         }
-        User user = new User();
-        user.setId(id);
-        return user;
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(id);
+        return userEntity;
     }
 }

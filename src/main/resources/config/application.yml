@@ -39,9 +39,10 @@ app:
     token-time: 86400
     # Token valid for 7 days with remember me
     token-time-for-remember: 604800
-  upload-dir: 'file:///home/ubuntu/storage/'
-  client-base-url: 'http://54.146.189.220:3000'
+  upload-dir: 'file:///D:/bas/storage/'
+  server-domain: 'http://localhost'
   mail:
     enable: true
     from: mailservice.pms@gmail.com
     send-creation-mail: false
+    client-base-url: 'http://localhost:3000'

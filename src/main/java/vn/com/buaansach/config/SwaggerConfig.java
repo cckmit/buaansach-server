@@ -41,7 +41,7 @@ public class SwaggerConfig {
                         )
                 )
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("vn.com.bas"))
+                .apis(RequestHandlerSelectors.basePackage("vn.com.buaansach"))
                 .paths(PathSelectors.any())
                 .build();
     }

@@ -7,7 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
-public interface ResponseUtil {
+public final class ResponseUtil {
 
     /**
      * Wrap the optional into a {@link org.springframework.http.ResponseEntity} with an {@link org.springframework.http.HttpStatus#OK} status, or if it's empty, it
@@ -17,7 +17,7 @@ public interface ResponseUtil {
      * @param maybeResponse response to return if present
      * @return response containing {@code maybeResponse} if present or {@link org.springframework.http.HttpStatus#NOT_FOUND}
      */
-    static <X> ResponseEntity<X> wrapOrNotFound(Optional<X> maybeResponse) {
+    public static <X> ResponseEntity<X> wrapOrNotFound(Optional<X> maybeResponse) {
         return wrapOrNotFound(maybeResponse, null);
     }
 
@@ -31,7 +31,7 @@ public interface ResponseUtil {
      * @return response containing {@code maybeResponse} if present
      * @throws ResponseStatusException {@code 404 (Not found)} if {@code maybeResponse} is empty
      */
-    static <X> ResponseEntity<X> wrapOrNotFound(Optional<X> maybeResponse, HttpHeaders header) {
+    public static <X> ResponseEntity<X> wrapOrNotFound(Optional<X> maybeResponse, HttpHeaders header) {
         return maybeResponse.map(response -> ResponseEntity.ok().headers(header).body(response))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }

@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import vn.com.buaansach.entity.User;
+import vn.com.buaansach.entity.UserEntity;
 import vn.com.buaansach.exception.AccountResourceException;
 import vn.com.buaansach.repository.UserRepository;
 import vn.com.buaansach.security.jwt.TokenProvider;
@@ -61,7 +61,7 @@ public class AccountResource {
 
     @GetMapping("/info")
     public ResponseEntity<UserDTO> getAccountInfo() {
-        Optional<User> optionalUser = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+        Optional<UserEntity> optionalUser = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
         if (optionalUser.isPresent()) {
             return ResponseEntity.ok(new UserDTO(optionalUser.get()));
         }
@@ -69,20 +69,22 @@ public class AccountResource {
     }
 
     @PutMapping("/update")
-    public void update(@Valid @RequestPart("dto") UpdateAccountDTO dto,
+    public ResponseEntity<Void> update(@Valid @RequestPart("dto") UpdateAccountDTO dto,
                        @RequestPart(value = "image", required = false) MultipartFile image) {
         userService.updateUser(dto, image);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/change-password")
-    public void changePassword(@Valid @RequestBody UserPasswordChangeDTO dto) {
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody UserPasswordChangeDTO dto) {
         userService.changePassword(dto.getCurrentPassword(), dto.getNewPassword());
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/reset-password/init")
-    public void requestPasswordReset(@RequestBody String email) {
+    public ResponseEntity<Void> requestPasswordReset(@RequestBody String email) {
         email = email.replace("\"", "");
-        Optional<User> user = userService.requestPasswordReset(email);
+        Optional<UserEntity> user = userService.requestPasswordReset(email);
         if (user.isPresent()) {
             mailService.sendPasswordResetMail(user.get());
         } else {
@@ -90,13 +92,15 @@ public class AccountResource {
             // but log that an invalid attempt has been made
             log.warn("Password reset requested for non existing mail '{}'", email);
         }
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/reset-password/finish")
-    public void finishPasswordReset(@Valid @RequestBody PasswordResetDTO dto) {
-        Optional<User> user = userService.completePasswordReset(dto.getNewPassword(), dto.getKey());
+    public ResponseEntity<Void> finishPasswordReset(@Valid @RequestBody PasswordResetDTO dto) {
+        Optional<UserEntity> user = userService.completePasswordReset(dto.getNewPassword(), dto.getKey());
         if (!user.isPresent()) {
             throw new AccountResourceException("No user was found for this reset key");
         }
+        return ResponseEntity.noContent().build();
     }
 }

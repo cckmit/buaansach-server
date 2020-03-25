@@ -77,7 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/webjars/**",
                 "/csrf",
                 // Resource
-                "/upload/**",
+                "/storage/**",
                 // other public endpoints of your API may be appended to this array
                 "/api/account/authenticate",
                 "/api/account/activate",

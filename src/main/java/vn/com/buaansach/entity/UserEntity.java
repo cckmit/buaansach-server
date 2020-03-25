@@ -22,7 +22,7 @@ import java.util.Set;
 @Where(clause = "deleted=false")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class User extends AbstractAuditingEntity implements Serializable {
+public class UserEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -91,8 +91,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
     @BatchSize(size = 20)
-    private Set<Authority> authorities = new HashSet<>();
+    private Set<AuthorityEntity> authorities = new HashSet<>();
 
     @Column(nullable = false)
+    @JsonIgnore
     private boolean deleted = false;
 }

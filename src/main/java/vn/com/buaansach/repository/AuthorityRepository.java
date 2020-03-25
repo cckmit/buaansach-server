@@ -1,10 +1,10 @@
 package vn.com.buaansach.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import vn.com.buaansach.entity.Authority;
+import vn.com.buaansach.entity.AuthorityEntity;
 
 import java.util.Optional;
 
-public interface AuthorityRepository extends JpaRepository<Authority, String> {
-    Optional<Authority> findByName(String name);
+public interface AuthorityRepository extends JpaRepository<AuthorityEntity, String> {
+    Optional<AuthorityEntity> findByName(String name);
 }

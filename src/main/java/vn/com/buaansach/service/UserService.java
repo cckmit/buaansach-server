@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import vn.com.buaansach.entity.Authority;
-import vn.com.buaansach.entity.User;
+import vn.com.buaansach.entity.AuthorityEntity;
+import vn.com.buaansach.entity.UserEntity;
 import vn.com.buaansach.exception.EmailAlreadyUsedException;
 import vn.com.buaansach.exception.InvalidPasswordException;
 import vn.com.buaansach.exception.LoginAlreadyUsedException;
@@ -47,46 +47,46 @@ public class UserService {
         this.mailService = mailService;
     }
 
-    public User createUser(CreateAccountDTO dto) {
+    public UserEntity createUser(CreateAccountDTO dto) {
         if (userRepository.findOneByLogin(dto.getLogin().toLowerCase()).isPresent()) {
             throw new LoginAlreadyUsedException();
         } else if (userRepository.findOneByEmailIgnoreCase(dto.getEmail()).isPresent()) {
             throw new EmailAlreadyUsedException();
         } else {
-            User newUser = new User();
-            newUser.setFirstName(dto.getFirstName());
-            newUser.setLastName(dto.getLastName());
-            newUser.setLogin(dto.getLogin().toLowerCase());
+            UserEntity newUserEntity = new UserEntity();
+            newUserEntity.setFirstName(dto.getFirstName());
+            newUserEntity.setLastName(dto.getLastName());
+            newUserEntity.setLogin(dto.getLogin().toLowerCase());
             if (dto.getEmail() != null) {
-                newUser.setEmail(dto.getEmail().toLowerCase());
+                newUserEntity.setEmail(dto.getEmail().toLowerCase());
             }
-            newUser.setPhone(dto.getPhone());
-            newUser.setActivated(dto.getActivated());
+            newUserEntity.setPhone(dto.getPhone());
+            newUserEntity.setActivated(dto.getActivated());
             if (dto.getLangKey() == null || dto.getLangKey().isEmpty()) {
-                newUser.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
+                newUserEntity.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
             } else {
-                newUser.setLangKey(dto.getLangKey());
+                newUserEntity.setLangKey(dto.getLangKey());
             }
             if (dto.getAuthorities() != null) {
-                Set<Authority> authorities = dto.getAuthorities().stream()
+                Set<AuthorityEntity> authorities = dto.getAuthorities().stream()
                         .map(authorityRepository::findByName)
                         .filter(Optional::isPresent)
                         .map(Optional::get)
                         .collect(Collectors.toSet());
-                newUser.setAuthorities(authorities);
+                newUserEntity.setAuthorities(authorities);
             }
             /* if enable send creation mail => generate random password */
             if (Boolean.parseBoolean(sendCreationMail)) {
-                newUser.setPassword(passwordEncoder.encode(RandomUtil.generatePassword()));
-                newUser.setResetKey(RandomUtil.generateResetKey());
-                newUser.setResetDate(Instant.now());
-                mailService.sendCreationEmail(newUser);
+                newUserEntity.setPassword(passwordEncoder.encode(RandomUtil.generatePassword()));
+                newUserEntity.setResetKey(RandomUtil.generateResetKey());
+                newUserEntity.setResetDate(Instant.now());
+                mailService.sendCreationEmail(newUserEntity);
             } else {
-                newUser.setPassword(passwordEncoder.encode(dto.getPassword()));
+                newUserEntity.setPassword(passwordEncoder.encode(dto.getPassword()));
             }
-            userRepository.save(newUser);
-            log.debug("Created Information for user: {}", newUser);
-            return newUser;
+            userRepository.save(newUserEntity);
+            log.debug("Created Information for user: {}", newUserEntity);
+            return newUserEntity;
         }
     }
 
@@ -128,28 +128,28 @@ public class UserService {
         });
     }
 
-    public Optional<User> requestPasswordReset(String mail) {
-        Optional<User> optionalUser = userRepository.findOneByEmailIgnoreCase(mail).filter(User::isActivated);
+    public Optional<UserEntity> requestPasswordReset(String mail) {
+        Optional<UserEntity> optionalUser = userRepository.findOneByEmailIgnoreCase(mail).filter(UserEntity::isActivated);
         if (optionalUser.isPresent()) {
             log.debug("{} request a password reset", mail);
-            User user = optionalUser.get();
-            user.setResetKey(RandomUtil.generateResetKey());
-            user.setResetDate(Instant.now());
-            userRepository.save(user);
+            UserEntity userEntity = optionalUser.get();
+            userEntity.setResetKey(RandomUtil.generateResetKey());
+            userEntity.setResetDate(Instant.now());
+            userRepository.save(userEntity);
             return optionalUser;
         } else return Optional.empty();
     }
 
-    public Optional<User> completePasswordReset(String newPassword, String key) {
-        Optional<User> optionalUser = userRepository.findOneByResetKey(key)
+    public Optional<UserEntity> completePasswordReset(String newPassword, String key) {
+        Optional<UserEntity> optionalUser = userRepository.findOneByResetKey(key)
                 .filter(user -> user.getResetDate().isAfter(Instant.now().minusSeconds(86400)));
         if (optionalUser.isPresent()) {
             log.debug("Reset user password for reset key: {}", key);
-            User user = optionalUser.get();
-            user.setPassword(passwordEncoder.encode(newPassword));
-            user.setResetKey(null);
-            user.setResetDate(null);
-            userRepository.save(user);
+            UserEntity userEntity = optionalUser.get();
+            userEntity.setPassword(passwordEncoder.encode(newPassword));
+            userEntity.setResetKey(null);
+            userEntity.setResetDate(null);
+            userRepository.save(userEntity);
             return optionalUser;
         } else return Optional.empty();
     }

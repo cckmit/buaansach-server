@@ -4,34 +4,34 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import vn.com.buaansach.entity.User;
+import vn.com.buaansach.entity.UserEntity;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findOneByActivationKey(String activationKey);
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
+    Optional<UserEntity> findOneByActivationKey(String activationKey);
 
-    List<User> findAllByActivatedIsFalseAndActivationKeyIsNotNullAndCreatedDateBefore(Instant dateTime);
+    List<UserEntity> findAllByActivatedIsFalseAndActivationKeyIsNotNullAndCreatedDateBefore(Instant dateTime);
 
-    Optional<User> findOneByResetKey(String resetKey);
+    Optional<UserEntity> findOneByResetKey(String resetKey);
 
-    Optional<User> findOneByEmailIgnoreCase(String email);
+    Optional<UserEntity> findOneByEmailIgnoreCase(String email);
 
-    Optional<User> findOneByLogin(String login);
+    Optional<UserEntity> findOneByLogin(String login);
 
-    Optional<User> findOneByPhone(String phone);
-
-    @EntityGraph(attributePaths = "authorities")
-    Optional<User> findOneWithAuthoritiesById(Long id);
+    Optional<UserEntity> findOneByPhone(String phone);
 
     @EntityGraph(attributePaths = "authorities")
-    Optional<User> findOneWithAuthoritiesByLogin(String login);
+    Optional<UserEntity> findOneWithAuthoritiesById(Long id);
 
     @EntityGraph(attributePaths = "authorities")
-    Optional<User> findOneWithAuthoritiesByEmailIgnoreCase(String email);
+    Optional<UserEntity> findOneWithAuthoritiesByLogin(String login);
 
-    Page<User> findAllByLoginNot(Pageable pageable, String login);
+    @EntityGraph(attributePaths = "authorities")
+    Optional<UserEntity> findOneWithAuthoritiesByEmailIgnoreCase(String email);
+
+    Page<UserEntity> findAllByLoginNot(Pageable pageable, String login);
 
 }
