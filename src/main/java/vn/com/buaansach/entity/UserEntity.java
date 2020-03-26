@@ -19,7 +19,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "bas_user")
-@Where(clause = "deleted=false")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UserEntity extends AbstractAuditingEntity implements Serializable {
@@ -92,8 +91,4 @@ public class UserEntity extends AbstractAuditingEntity implements Serializable {
             inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
     @BatchSize(size = 20)
     private Set<AuthorityEntity> authorities = new HashSet<>();
-
-    @Column(nullable = false)
-    @JsonIgnore
-    private boolean deleted = false;
 }

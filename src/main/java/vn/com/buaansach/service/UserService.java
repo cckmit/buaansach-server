@@ -159,18 +159,17 @@ public class UserService {
                 user -> {
                     user.setActivated(!user.isActivated());
                     userRepository.save(user);
+                    log.debug("Toggle activation for user: {}", login);
                 }
         );
-        log.debug("Toggle activation for user: {}", login);
     }
 
     public void deleteUser(String login) {
         userRepository.findOneByLogin(login).ifPresent(
                 user -> {
-                    user.setDeleted(true);
-                    userRepository.save(user);
+                    userRepository.delete(user);
+                    log.debug("Delete user: {}", login);
                 }
         );
-        log.debug("Delete user: {}", login);
     }
 }
