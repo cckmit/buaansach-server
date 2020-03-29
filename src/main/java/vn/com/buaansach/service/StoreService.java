@@ -68,7 +68,7 @@ public class StoreService {
         /* just update attributes */
         currentEntity.setName(updateEntity.getName());
         currentEntity.setAddress(updateEntity.getAddress());
-        currentEntity.setActivated(updateEntity.isActivated());
+        currentEntity.setStatus(updateEntity.getStatus());
         currentEntity.setOwnerName(updateEntity.getOwnerName());
         currentEntity.setOwnerPhone(updateEntity.getOwnerPhone());
         currentEntity.setOwnerEmail(updateEntity.getOwnerEmail());
@@ -84,16 +84,6 @@ public class StoreService {
 
     public Optional<StoreEntity> getOne(String storeCode) {
         return storeRepository.findOneByCode(storeCode);
-    }
-
-    public void toggleStatus(String storeCode) {
-        storeRepository.findOneByCode(storeCode).ifPresent(storeEntity -> {
-            storeEntity.setActivated(!storeEntity.isActivated());
-            /*
-            * there will be some codes to clear or disable entity related to this store.
-            * */
-            storeRepository.save(storeEntity);
-        });
     }
 
     public void delete(String storeCode) {

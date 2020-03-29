@@ -58,13 +58,6 @@ public class StoreResource {
         return ResponseUtil.wrapOrNotFound(store);
     }
 
-    @PutMapping("/toggle-status/{storeCode}")
-    public ResponseEntity<Void> toggleStatus(@PathVariable String storeCode) {
-        log.debug("REST request to toggle {} status: {}", ENTITY_NAME, storeCode);
-        storeService.toggleStatus(storeCode);
-        return ResponseEntity.noContent().build();
-    }
-
     @DeleteMapping("/delete/{storeCode}")
     public ResponseEntity<Void> delete(@PathVariable String storeCode) {
         log.debug("REST request to delete {} : {}", ENTITY_NAME, storeCode);

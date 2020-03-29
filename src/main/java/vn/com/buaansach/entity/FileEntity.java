@@ -27,10 +27,13 @@ public class FileEntity extends AbstractAuditingEntity implements Serializable {
     @Column(unique = true)
     private UUID code;
 
+    @Column(name = "original_name")
     private String originalName;
 
+    @Column(name = "content_type", length = 50)
     private String contentType;
 
+    @Column(length = 10)
     private String extension;
 
     @Column(unique = true)

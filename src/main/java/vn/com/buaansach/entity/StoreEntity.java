@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import vn.com.buaansach.entity.enumeration.StoreStatus;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -42,7 +43,8 @@ public class StoreEntity extends AbstractAuditingEntity implements Serializable 
     private String imageUrl;
 
     @Column(nullable = false)
-    private boolean activated = true;
+    @Enumerated(EnumType.STRING)
+    private StoreStatus status;
 
     @NotBlank
     @Size(max = 100)
@@ -64,7 +66,7 @@ public class StoreEntity extends AbstractAuditingEntity implements Serializable 
     @Column(name = "tax_code", length = 100)
     private String taxCode;
 
-    @Size(max = 255)
+    @Size(max = 500)
     @Column(name = "update_reason")
     private String updateReason;
 
