@@ -41,14 +41,14 @@ public class StoreResource {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<Page<StoreEntity>> getList(@RequestParam(value = "keyword", defaultValue = "") String keyword,
+    public ResponseEntity<Page<StoreEntity>> getList(@RequestParam(value = "search", defaultValue = "") String search,
                                                      @RequestParam(value = "page", defaultValue = "1") int page,
                                                      @RequestParam(value = "size", defaultValue = "20") int size,
                                                      @RequestParam(value = "sortField", defaultValue = "createdDate") String sortField,
                                                      @RequestParam(value = "sortDirection", defaultValue = "ASC") Sort.Direction sortDirection) {
         log.debug("REST request to get list {}", ENTITY_NAME);
         PageRequest request = PageRequest.of(page - 1, size, sortDirection, sortField);
-        return ResponseEntity.ok(storeService.getList(keyword, request));
+        return ResponseEntity.ok(storeService.getList(search, request));
     }
 
     @GetMapping("/get/{storeCode}")
@@ -56,6 +56,13 @@ public class StoreResource {
         log.debug("REST request to get {} : {}", ENTITY_NAME, storeCode);
         Optional<StoreEntity> store = storeService.getOne(storeCode);
         return ResponseUtil.wrapOrNotFound(store);
+    }
+
+    @PutMapping("/toggle-status/{storeCode}")
+    public ResponseEntity<Void> toggleStatus(@PathVariable String storeCode) {
+        log.debug("REST request to toggle {} status: {}", ENTITY_NAME, storeCode);
+        storeService.toggleStatus(storeCode);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/delete/{storeCode}")

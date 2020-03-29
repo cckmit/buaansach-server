@@ -5,6 +5,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.entity.FileEntity;
+import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.repository.FileRepository;
 
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -53,22 +55,27 @@ public class FileService {
     }
 
     public InputStreamResource downloadFile(HttpServletResponse response, String code) throws IOException {
-        FileEntity entity = fileRepository.findOneByCode(UUID.fromString(code));
-        InputStream input;
-        input = new URL(entity.getUrl()).openStream();
-        response.setCharacterEncoding("UTF-8");
-        String fileName = URLEncoder.encode(entity.getOriginalName(), String.valueOf(StandardCharsets.UTF_8));
-        fileName = fileName.replaceAll("\\+", "%20");
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-        return new InputStreamResource(input);
+        Optional<FileEntity> optional = fileRepository.findOneByCode(UUID.fromString(code));
+        if (optional.isPresent()) {
+            FileEntity entity = optional.get();
+            InputStream input;
+            input = new URL(entity.getUrl()).openStream();
+            response.setCharacterEncoding("UTF-8");
+            String fileName = URLEncoder.encode(entity.getOriginalName(), String.valueOf(StandardCharsets.UTF_8));
+            fileName = fileName.replaceAll("\\+", "%20");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+            return new InputStreamResource(input);
+        }
+        throw new BadRequestException("error.fileNotFound");
     }
 
     public void deleteByUrl(String fileUrl) {
-        FileEntity entity = fileRepository.findOneByUrl(fileUrl);
-//        File file = new File(entity.getLocalUrl());
-//        if (file.exists()) file.delete();
-        entity.setDeleted(true);
-        fileRepository.save(entity);
+        fileRepository.findOneByUrl(fileUrl).ifPresent(fileEntity -> {
+            /*File file = new File(entity.getLocalUrl());
+            if (file.exists()) file.delete();*/
+            fileEntity.setDeleted(true);
+            fileRepository.save(fileEntity);
+        });
     }
 
     private String getExtensionFile(String fileName) {

@@ -1,6 +1,7 @@
 package vn.com.buaansach.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -20,22 +21,22 @@ public abstract class AbstractAuditingEntity implements Serializable {
 
     @CreatedBy
     @Column(name = "created_by", nullable = false, length = 50, updatable = false)
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String createdBy;
 
     @CreatedDate
     @Column(name = "created_date", updatable = false)
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Instant createdDate = Instant.now();
 
     @LastModifiedBy
     @Column(name = "last_modified_by", length = 50)
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String lastModifiedBy;
 
     @LastModifiedDate
     @Column(name = "last_modified_date")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Instant lastModifiedDate = Instant.now();
 
     public String getCreatedBy() {
