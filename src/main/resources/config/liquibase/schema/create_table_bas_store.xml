@@ -44,6 +44,11 @@
             <column name="last_modified_by" type="varchar(50)"/>
             <column name="last_modified_date" type="timestamp"/>
         </createTable>
+        <addForeignKeyConstraint constraintName="fk_user_store"
+                                 baseColumnNames="store_owner_login"
+                                 baseTableName="bas_store"
+                                 referencedColumnNames="login"
+                                 referencedTableName="bas_user"/>
     </changeSet>
 
 </databaseChangeLog>

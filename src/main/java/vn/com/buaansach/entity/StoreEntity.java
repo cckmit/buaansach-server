@@ -1,6 +1,7 @@
 package vn.com.buaansach.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.enumeration.StoreStatus;
@@ -45,7 +46,6 @@ public class StoreEntity extends AbstractAuditingEntity implements Serializable 
     @Column(name = "store_image_url")
     private String storeImageUrl;
 
-    @NotBlank
     @Enumerated(EnumType.STRING)
     @Column(name = "store_status")
     private StoreStatus storeStatus;
@@ -74,8 +74,8 @@ public class StoreEntity extends AbstractAuditingEntity implements Serializable 
     @Column(name = "last_update_reason")
     private String lastUpdateReason;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "store_owner_login", referencedColumnName = "login")
+    @ManyToOne
     @JsonIgnore
+    @JoinColumn(name = "store_owner_login", referencedColumnName = "login")
     private UserEntity storeOwnerUser;
 }

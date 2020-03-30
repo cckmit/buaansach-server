@@ -28,8 +28,7 @@ public class AreaEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "area_name")
     private String areaName;
 
-    @ManyToOne
-    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "store_id")
     private StoreEntity store;

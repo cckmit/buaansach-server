@@ -30,7 +30,6 @@ public class SeatEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "seat_name")
     private String seatName;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "seat_status")
     private SeatStatus seatStatus = SeatStatus.EMPTY;
@@ -44,8 +43,7 @@ public class SeatEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "last_order_id")
     private Long lastOrderId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "area_id")
     private AreaEntity area;

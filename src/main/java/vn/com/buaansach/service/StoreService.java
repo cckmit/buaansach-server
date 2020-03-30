@@ -35,11 +35,11 @@ public class StoreService {
         if (storeRepository.findOneByStoreCode(entity.getStoreCode()).isPresent()) {
             throw new BadRequestException("error.create.codeExists");
         }
-
+        entity.setGuid(UUID.randomUUID());
         /* set the creator is store owner first, change it later with api: api/store/switch-owner */
-        UserEntity userEntity = new UserEntity();
-        userEntity.setLogin(SecurityUtils.getCurrentUserLogin());
-        entity.setStoreOwnerUser(userEntity);
+        Optional<UserEntity> optional = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+        if (!optional.isPresent()) throw new BadRequestException("error.create.userNotFound");
+        optional.ifPresent(entity::setStoreOwnerUser);
 
         if (image != null) {
             FileEntity fileEntity = fileService.uploadImage(image, "store_image");
