@@ -1,5 +1,6 @@
 package vn.com.buaansach.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.enumeration.StoreStatus;
@@ -9,6 +10,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.UUID;
 
 @Entity
 @Table(name = "bas_store")
@@ -18,57 +20,62 @@ public class StoreEntity extends AbstractAuditingEntity implements Serializable 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
+
+    @Column(unique = true)
+    private UUID guid;
 
     @NotBlank
     @Size(max = 20)
-    @Column(unique = true, length = 20)
-    private String code;
+    @Column(name = "store_code", unique = true)
+    private String storeCode;
 
     @NotBlank
     @Size(max = 100)
-    @Column(length = 100)
-    private String name;
+    @Column(name = "store_name")
+    private String storeName;
 
     @NotBlank
     @Size(max = 255)
-    private String address;
+    @Column(name = "store_address")
+    private String storeAddress;
 
     @Size(max = 255)
-    @Column(name = "image_url")
-    private String imageUrl;
+    @Column(name = "store_image_url")
+    private String storeImageUrl;
 
-    @Column(nullable = false)
+    @NotBlank
     @Enumerated(EnumType.STRING)
-    private StoreStatus status;
+    @Column(name = "store_status")
+    private StoreStatus storeStatus;
 
     @NotBlank
     @Size(max = 100)
-    @Column(name = "owner_name", length = 100)
-    private String ownerName;
+    @Column(name = "store_owner_name", length = 100)
+    private String storeOwnerName;
 
     /* in case define multiple phone numbers */
     @NotBlank
     @Size(max = 50)
-    @Column(name = "owner_phone")
-    private String ownerPhone;
+    @Column(name = "store_owner_phone")
+    private String storeOwnerPhone;
 
     @Email
-    @Size(max = 255)
-    @Column(name = "owner_email")
-    private String ownerEmail;
+    @Size(max = 100)
+    @Column(name = "store_owner_email")
+    private String storeOwnerEmail;
 
     @Size(max = 100)
-    @Column(name = "tax_code", length = 100)
-    private String taxCode;
+    @Column(name = "store_tax_code", length = 100)
+    private String storeTaxCode;
 
     @Size(max = 500)
-    @Column(name = "update_reason")
-    private String updateReason;
+    @Column(name = "last_update_reason")
+    private String lastUpdateReason;
 
-    @Column(name = "number_of_floors")
-    private int numberOfFloors = 0;
-
-    @Column(name = "number_of_seats")
-    private int numberOfSeats = 0;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "store_owner_login", referencedColumnName = "login")
+    @JsonIgnore
+    private UserEntity storeOwnerUser;
 }

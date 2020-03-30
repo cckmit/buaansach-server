@@ -8,13 +8,14 @@ import org.springframework.data.repository.query.Param;
 import vn.com.buaansach.entity.StoreEntity;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface StoreRepository extends JpaRepository<StoreEntity, Long> {
-    @Query("SELECT s FROM StoreEntity s WHERE s.name LIKE %:search% OR s.code LIKE %:search%")
-    Page<StoreEntity> getPageStoreWithKeyword(Pageable pageable, @Param("search") String search);
+    @Query("SELECT s FROM StoreEntity s WHERE s.storeName LIKE %:search% OR s.storeCode LIKE %:search%")
+    Page<StoreEntity> findPageStoreWithKeyword(Pageable pageable, @Param("search") String search);
 
-    Optional<StoreEntity> findOneById(Long id);
+    Optional<StoreEntity> findOneByGuid(UUID storeGuid);
 
-    Optional<StoreEntity> findOneByCode(String storeCode);
+    Optional<StoreEntity> findOneByStoreCode(String storeCode);
 
 }

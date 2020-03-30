@@ -10,6 +10,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.entity.StoreEntity;
+import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.service.StoreService;
 import vn.com.buaansach.web.util.ResponseUtil;
@@ -32,7 +33,8 @@ public class StoreResource {
     @PostMapping("/create")
     public ResponseEntity<StoreEntity> create(@Valid @RequestPart("entity") StoreEntity entity,
                                               @RequestPart(value = "image", required = false) MultipartFile image) {
-        log.debug("REST request to save {} : {}", ENTITY_NAME, entity);
+        if (entity.getId() != null || entity.getGuid() != null) throw new BadRequestException("error.create.idExists");
+        log.debug("REST request to create {} : {}", ENTITY_NAME, entity);
         return ResponseEntity.ok(storeService.create(entity, image));
     }
 
@@ -40,6 +42,7 @@ public class StoreResource {
     @PutMapping("/update")
     public ResponseEntity<StoreEntity> update(@Valid @RequestPart StoreEntity entity,
                                               @RequestPart(value = "image", required = false) MultipartFile image) {
+        if (entity.getGuid() == null) throw new BadRequestException("error.update.idNull");
         log.debug("REST request to update {} : {}", ENTITY_NAME, entity);
         return ResponseEntity.ok(storeService.update(entity, image));
     }
@@ -51,24 +54,24 @@ public class StoreResource {
                                                      @RequestParam(value = "size", defaultValue = "20") int size,
                                                      @RequestParam(value = "sortField", defaultValue = "createdDate") String sortField,
                                                      @RequestParam(value = "sortDirection", defaultValue = "ASC") Sort.Direction sortDirection) {
-        log.debug("REST request to get list {}", ENTITY_NAME);
         PageRequest request = PageRequest.of(page - 1, size, sortDirection, sortField);
+        log.debug("REST request to get list {} with page request: {}", ENTITY_NAME, request);
         return ResponseEntity.ok(storeService.getList(search, request));
     }
 
     @Secured(AuthoritiesConstants.ADMIN)
-    @GetMapping("/get/{storeCode}")
-    public ResponseEntity<StoreEntity> getOne(@PathVariable String storeCode) {
-        log.debug("REST request to get {} : {}", ENTITY_NAME, storeCode);
-        Optional<StoreEntity> store = storeService.getOne(storeCode);
+    @GetMapping("/get/{storeGuid}")
+    public ResponseEntity<StoreEntity> getOne(@PathVariable String storeGuid) {
+        log.debug("REST request to get {} with guid : {}", ENTITY_NAME, storeGuid);
+        Optional<StoreEntity> store = storeService.getOneByGuid(storeGuid);
         return ResponseUtil.wrapOrNotFound(store);
     }
 
     @Secured(AuthoritiesConstants.ADMIN)
-    @DeleteMapping("/delete/{storeCode}")
-    public ResponseEntity<Void> delete(@PathVariable String storeCode) {
-        log.debug("REST request to delete {} : {}", ENTITY_NAME, storeCode);
-        storeService.delete(storeCode);
+    @DeleteMapping("/delete/{storeGuid}")
+    public ResponseEntity<Void> delete(@PathVariable String storeGuid) {
+        log.debug("REST request to delete {} with guid : {}", ENTITY_NAME, storeGuid);
+        storeService.delete(storeGuid);
         return ResponseEntity.noContent().build();
     }
 }

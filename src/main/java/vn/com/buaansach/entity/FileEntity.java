@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -18,24 +19,29 @@ public class FileEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @Column(unique = true)
-    private UUID code;
+    private UUID guid;
 
+    @Size(max = 255)
     @Column(name = "original_name")
     private String originalName;
 
-    @Column(name = "content_type", length = 50)
+    @Size(max = 50)
+    @Column(name = "content_type")
     private String contentType;
 
     @Column(length = 10)
     private String extension;
 
-    @Column(unique = true)
+    @Size(max = 255)
     @JsonIgnore
+    @Column(unique = true)
     private String localUrl;
 
+    @Size(max = 255)
     @Column(unique = true)
     private String url;
 

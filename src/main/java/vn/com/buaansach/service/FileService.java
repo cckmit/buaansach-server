@@ -54,8 +54,8 @@ public class FileService {
         return uploadFile(attachment, customPath, UUID.randomUUID());
     }
 
-    public InputStreamResource downloadFile(HttpServletResponse response, String code) throws IOException {
-        Optional<FileEntity> optional = fileRepository.findOneByCode(UUID.fromString(code));
+    public InputStreamResource downloadFile(HttpServletResponse response, String guid) throws IOException {
+        Optional<FileEntity> optional = fileRepository.findOneByGuid(UUID.fromString(guid));
         if (optional.isPresent()) {
             FileEntity entity = optional.get();
             InputStream input;
@@ -84,11 +84,11 @@ public class FileService {
 
     /**
      * @param customPath: relative path to save file on server, concat with uploadDir in application.yml file;
-     * @param code:       code will be filename on hard disk
+     * @param uuid:       guid will be filename on hard disk
      */
-    private FileEntity uploadFile(MultipartFile file, String customPath, UUID code) {
+    private FileEntity uploadFile(MultipartFile file, String customPath, UUID uuid) {
         FileEntity fileEntity = new FileEntity();
-        fileEntity.setCode(code);
+        fileEntity.setGuid(uuid);
         fileEntity.setOriginalName(file.getOriginalFilename());
         fileEntity.setContentType(file.getContentType());
         fileEntity.setSize(file.getSize());
@@ -98,7 +98,7 @@ public class FileService {
         fileEntity.setExtension(extension);
 
         // file name to be save on hard disk
-        String fileName = code + extension;
+        String fileName = uuid + extension;
 
         try {
             String localDir = uploadDir.substring(8) + customPath;

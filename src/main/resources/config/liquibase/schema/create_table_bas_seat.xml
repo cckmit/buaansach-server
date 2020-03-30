@@ -9,8 +9,8 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="uuid" type="binary(16)">
-                <constraints unique="true" nullable="false" uniqueConstraintName="ux_seat_uuid"/>
+            <column name="guid" type="binary(16)">
+                <constraints unique="true" nullable="false" uniqueConstraintName="ux_seat_guid"/>
             </column>
             <column name="seat_name" type="varchar(50)">
                 <constraints nullable="false" />
@@ -29,9 +29,9 @@
             <column name="last_modified_date" type="timestamp"/>
 
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="area_id"
+        <addForeignKeyConstraint constraintName="fk_area_seat"
+                                 baseColumnNames="area_id"
                                  baseTableName="bas_seat"
-                                 constraintName="fk_area_seat"
                                  referencedColumnNames="id"
                                  referencedTableName="bas_area"/>
     </changeSet>

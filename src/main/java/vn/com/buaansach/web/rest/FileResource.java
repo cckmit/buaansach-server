@@ -19,8 +19,8 @@ public class FileResource {
         this.fileService = fileService;
     }
 
-    @GetMapping("/download/{fileCode}")
-    public InputStreamResource downloadFile(@PathVariable String fileCode, HttpServletResponse response) throws IOException {
-        return fileService.downloadFile(response, fileCode);
+    @GetMapping("/download/{fileGuid}")
+    public InputStreamResource downloadFile(@PathVariable String fileGuid, HttpServletResponse response) throws IOException {
+        return fileService.downloadFile(response, fileGuid);
     }
 }
