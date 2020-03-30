@@ -8,10 +8,13 @@ import vn.com.buaansach.entity.FileEntity;
 import vn.com.buaansach.entity.StoreEntity;
 import vn.com.buaansach.entity.UserEntity;
 import vn.com.buaansach.exception.BadRequestException;
+import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.exception.StoreResourceException;
 import vn.com.buaansach.repository.StoreRepository;
 import vn.com.buaansach.repository.UserRepository;
 import vn.com.buaansach.security.util.SecurityUtils;
+import vn.com.buaansach.service.dto.StoreDTO;
+import vn.com.buaansach.service.dto.StoreOwnerChangeDTO;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
@@ -31,7 +34,7 @@ public class StoreService {
     }
 
     @Transactional
-    public StoreEntity create(StoreEntity entity, MultipartFile image) {
+    public StoreDTO create(StoreEntity entity, MultipartFile image) {
         if (storeRepository.findOneByStoreCode(entity.getStoreCode()).isPresent()) {
             throw new BadRequestException("error.create.codeExists");
         }
@@ -46,11 +49,11 @@ public class StoreService {
             entity.setStoreImageUrl(fileEntity.getUrl());
         }
 
-        return storeRepository.save(entity);
+        return new StoreDTO(storeRepository.save(entity));
     }
 
     @Transactional
-    public StoreEntity update(StoreEntity updateEntity, MultipartFile image) {
+    public StoreDTO update(StoreEntity updateEntity, MultipartFile image) {
         Optional<StoreEntity> optional = storeRepository.findOneByGuid(updateEntity.getGuid());
         if (!optional.isPresent()) throw new StoreResourceException("error.resource.notFound");
 
@@ -90,25 +93,36 @@ public class StoreService {
         currentEntity.setStoreTaxCode(updateEntity.getStoreTaxCode());
         currentEntity.setLastUpdateReason(updateEntity.getLastUpdateReason());
 
-        return storeRepository.save(currentEntity);
+        return new StoreDTO(storeRepository.save(currentEntity));
     }
 
-    public Page<StoreEntity> getList(String search, PageRequest request) {
-        return storeRepository.findPageStoreWithKeyword(request, search.toLowerCase());
+    public Page<StoreDTO> getList(String search, PageRequest request) {
+        return storeRepository.findPageStoreWithKeyword(request, search.toLowerCase()).map(StoreDTO::new);
     }
 
-    public Optional<StoreEntity> getOneByGuid(String storeGuid) {
-        return storeRepository.findOneByGuid(UUID.fromString(storeGuid));
+    public StoreDTO getOneByGuid(String storeGuid) {
+        Optional<StoreEntity> optional = storeRepository.findOneByGuid(UUID.fromString(storeGuid));
+        if (!optional.isPresent()) throw new StoreResourceException("error.resource.notFound");
+        return new StoreDTO(optional.get());
     }
 
-    public void delete(String storeCode) {
-        storeRepository.findOneByStoreCode(storeCode).ifPresent(storeEntity -> {
-            fileService.deleteByUrl(storeEntity.getStoreImageUrl());
-            /*
-             * there will be some codes to clear or disable entity related to this store.
-             * */
-            storeRepository.delete(storeEntity);
-        });
+    public void delete(String storeGuid) {
+        Optional<StoreEntity> optional = storeRepository.findOneByGuid(UUID.fromString(storeGuid));
+        if (!optional.isPresent()) throw new ResourceNotFoundException("Store", "guid", storeGuid);
+        fileService.deleteByUrl(optional.get().getStoreImageUrl());
+        storeRepository.delete(optional.get());
     }
 
+    public StoreDTO changeStoreOwner(StoreOwnerChangeDTO dto) {
+        Optional<UserEntity> userOptional = userRepository.findOneByLoginOrEmail(dto.getUsernameOrEmail().toLowerCase(),
+                dto.getUsernameOrEmail().toLowerCase());
+        if (!userOptional.isPresent())
+            throw new ResourceNotFoundException("User", "usernameOrEmail", dto.getUsernameOrEmail());
+        Optional<StoreEntity> storeOptional = storeRepository.findOneByGuid(UUID.fromString(dto.getStoreGuid()));
+        if (!storeOptional.isPresent())
+            throw new ResourceNotFoundException("store", "guid", dto.getStoreGuid());
+        StoreEntity entity = storeOptional.get();
+        entity.setStoreOwnerUser(userOptional.get());
+        return new StoreDTO(storeRepository.save(entity));
+    }
 }
