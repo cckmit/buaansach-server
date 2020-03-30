@@ -52,6 +52,7 @@ public class StoreService {
                 /* another entity has taken the new code */
                 throw new BadRequestException("Code already in use!");
             });
+            currentEntity.setCode(updateEntity.getCode());
         }
 
         if (image != null) {

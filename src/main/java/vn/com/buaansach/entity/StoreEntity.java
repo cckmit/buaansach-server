@@ -1,9 +1,7 @@
 package vn.com.buaansach.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import vn.com.buaansach.entity.enumeration.StoreStatus;
 
 import javax.persistence.*;
@@ -15,8 +13,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "bas_store")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class StoreEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;

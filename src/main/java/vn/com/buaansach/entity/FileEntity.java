@@ -1,10 +1,8 @@
 package vn.com.buaansach.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -14,8 +12,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "bas_file")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Where(clause = "deleted=false")
 public class FileEntity extends AbstractAuditingEntity implements Serializable {
