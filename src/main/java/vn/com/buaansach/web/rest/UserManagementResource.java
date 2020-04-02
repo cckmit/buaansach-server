@@ -25,6 +25,7 @@ public class UserManagementResource {
     /**
      * Admin create new user
      */
+    @Secured(AuthoritiesConstants.ADMIN)
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<UserDTO> createAccount(@Valid @RequestBody CreateAccountDTO dto) {
@@ -35,6 +36,7 @@ public class UserManagementResource {
     /**
      * Admin change password for users
      */
+    @Secured(AuthoritiesConstants.ADMIN)
     @PutMapping("/change-password")
     public void changePassword(@Valid @RequestBody AdminPasswordChangeDTO dto) {
         userService.adminChangePassword(dto);
@@ -43,6 +45,7 @@ public class UserManagementResource {
     /**
      * Admin activate/deactivate user
      */
+    @Secured(AuthoritiesConstants.ADMIN)
     @PutMapping("/toggle-activation")
     public void toggleActivation(@RequestBody String login) {
         userService.toggleActivation(login);
@@ -51,7 +54,8 @@ public class UserManagementResource {
     /**
      * Admin delete user
      */
-    @PutMapping("/delete")
+    @Secured(AuthoritiesConstants.ADMIN)
+    @DeleteMapping("/delete")
     public void deleteUser(@RequestBody String login) {
         userService.deleteUser(login);
     }

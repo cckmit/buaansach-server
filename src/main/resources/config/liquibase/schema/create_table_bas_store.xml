@@ -34,9 +34,6 @@
             <column name="store_owner_email" type="varchar(100)"/>
             <column name="store_tax_code" type="varchar(100)"/>
             <column name="last_update_reason" type="varchar(500)"/>
-            <column name="store_owner_login" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
@@ -44,11 +41,6 @@
             <column name="last_modified_by" type="varchar(50)"/>
             <column name="last_modified_date" type="timestamp"/>
         </createTable>
-        <addForeignKeyConstraint constraintName="fk_user_store"
-                                 baseColumnNames="store_owner_login"
-                                 baseTableName="bas_store"
-                                 referencedColumnNames="login"
-                                 referencedTableName="bas_user"/>
     </changeSet>
 
 </databaseChangeLog>

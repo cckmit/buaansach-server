@@ -12,8 +12,6 @@ import java.util.Objects;
 @Table(name = "bas_authority")
 public class AuthorityEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-
-
     @Id
     @Column(length = 50)
     @Size(max = 50)

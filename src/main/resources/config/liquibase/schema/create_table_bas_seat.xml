@@ -13,11 +13,11 @@
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_seat_guid"/>
             </column>
             <column name="seat_name" type="varchar(50)">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
-            <column name="seat_status" type="varchar(50)" />
-            <column name="seat_qr_code" type="varchar(255)" />
-            <column name="last_order_id" type="bigint" />
+            <column name="seat_status" type="varchar(50)"/>
+            <column name="seat_qr_code" type="varchar(255)"/>
+            <column name="last_order_id" type="bigint"/>
             <column name="area_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
@@ -27,13 +27,7 @@
             <column name="created_date" type="timestamp"/>
             <column name="last_modified_by" type="varchar(50)"/>
             <column name="last_modified_date" type="timestamp"/>
-
         </createTable>
-        <addForeignKeyConstraint constraintName="fk_area_seat"
-                                 baseColumnNames="area_id"
-                                 baseTableName="bas_seat"
-                                 referencedColumnNames="id"
-                                 referencedTableName="bas_area"/>
     </changeSet>
 
 </databaseChangeLog>

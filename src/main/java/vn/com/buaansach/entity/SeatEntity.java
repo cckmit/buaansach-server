@@ -1,6 +1,7 @@
 package vn.com.buaansach.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jdk.internal.jline.internal.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class SeatEntity extends AbstractAuditingEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
@@ -43,8 +45,7 @@ public class SeatEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "last_order_id")
     private Long lastOrderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
-    @JoinColumn(name = "area_id")
-    private AreaEntity area;
+    @NotNull
+    @Column(name = "area_id")
+    private Long areaId;
 }

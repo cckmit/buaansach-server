@@ -12,7 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.entity.UserEntity;
-import vn.com.buaansach.exception.AccountResourceException;
+import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.repository.UserRepository;
 import vn.com.buaansach.security.jwt.TokenProvider;
 import vn.com.buaansach.security.util.SecurityUtils;
@@ -65,12 +65,12 @@ public class AccountResource {
         if (optionalUser.isPresent()) {
             return ResponseEntity.ok(new UserDTO(optionalUser.get()));
         }
-        throw new AccountResourceException("Account info not found");
+        throw new ResourceNotFoundException("User with login '" + SecurityUtils.getCurrentUserLogin() + "' could not be found!");
     }
 
     @PutMapping("/update")
     public ResponseEntity<Void> update(@Valid @RequestPart("dto") UpdateAccountDTO dto,
-                       @RequestPart(value = "image", required = false) MultipartFile image) {
+                                       @RequestPart(value = "image", required = false) MultipartFile image) {
         userService.updateUser(dto, image);
         return ResponseEntity.noContent().build();
     }
@@ -99,7 +99,7 @@ public class AccountResource {
     public ResponseEntity<Void> finishPasswordReset(@Valid @RequestBody PasswordResetDTO dto) {
         Optional<UserEntity> user = userService.completePasswordReset(dto.getNewPassword(), dto.getKey());
         if (!user.isPresent()) {
-            throw new AccountResourceException("No user was found for this reset key");
+            throw new ResourceNotFoundException("No user was found for this reset key: " + dto.getKey());
         }
         return ResponseEntity.noContent().build();
     }

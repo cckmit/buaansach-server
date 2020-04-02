@@ -36,6 +36,9 @@ public class UserEntity extends AbstractAuditingEntity implements Serializable {
     @JsonIgnore
     private String password;
 
+    @Column(nullable = false)
+    private boolean activated = false;
+
     @Size(max = 50)
     @Column(name = "first_name", length = 50)
     private String firstName;
@@ -51,10 +54,8 @@ public class UserEntity extends AbstractAuditingEntity implements Serializable {
 
     @Pattern(regexp = Constants.PHONE_REGEX)
     @Size(min = 10, max = 12)
+    @Column(unique = true)
     private String phone;
-
-    @Column(nullable = false)
-    private boolean activated = false;
 
     @Size(min = 2, max = 10)
     @Column(name = "lang_key", length = 10)

@@ -59,9 +59,6 @@ public class StoreDTO {
     @Size(max = 500)
     private String lastUpdateReason;
 
-    /* computed attributes */
-    private String storeOwnerLogin;
-
     /* audit attributes */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String createdBy;
@@ -74,9 +71,6 @@ public class StoreDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Instant lastModifiedDate;
-
-
-
 
     public StoreDTO(StoreEntity entity) {
         this.guid = entity.getGuid();
@@ -94,9 +88,5 @@ public class StoreDTO {
         this.createdDate = entity.getCreatedDate();
         this.lastModifiedBy = entity.getLastModifiedBy();
         this.lastModifiedDate = entity.getLastModifiedDate();
-
-        /* computed attributes */
-        this.storeOwnerLogin = entity.getStoreOwnerUser().getLogin();
     }
-
 }

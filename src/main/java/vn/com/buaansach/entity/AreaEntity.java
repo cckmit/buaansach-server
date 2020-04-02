@@ -15,6 +15,7 @@ import java.util.UUID;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class AreaEntity extends AbstractAuditingEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
@@ -28,8 +29,7 @@ public class AreaEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "area_name")
     private String areaName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
-    @JoinColumn(name = "store_id")
-    private StoreEntity store;
+    @NotNull
+    @Column(name = "store_id")
+    private Long storeId;
 }

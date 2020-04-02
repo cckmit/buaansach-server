@@ -1,5 +1,11 @@
 package vn.com.buaansach.service;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
@@ -9,19 +15,22 @@ import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.repository.FileRepository;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class FileService {
+    private static final int QR_CODE_WIDTH = 300;
+    private static final int QR_CODE_HEIGHT = 300;
     private final FileRepository fileRepository;
     @Value("${server.port}")
     private Long serverPort;
@@ -29,6 +38,8 @@ public class FileService {
     private String serverDomain;
     @Value("${app.upload-dir}")
     private String uploadDir;
+    @Value("${app.seat-location-url}")
+    private String seatLocationUrl;
 
     public FileService(FileRepository fileRepository) {
         this.fileRepository = fileRepository;
@@ -71,10 +82,9 @@ public class FileService {
 
     public void deleteByUrl(String fileUrl) {
         fileRepository.findOneByUrl(fileUrl).ifPresent(fileEntity -> {
-            /*File file = new File(entity.getLocalUrl());
-            if (file.exists()) file.delete();*/
-            fileEntity.setDeleted(true);
-            fileRepository.save(fileEntity);
+            File file = new File(fileEntity.getLocalUrl());
+            if (file.exists()) file.delete();
+            fileRepository.delete(fileEntity);
         });
     }
 
@@ -82,23 +92,69 @@ public class FileService {
         return fileName.substring(fileName.lastIndexOf('.'));
     }
 
+    private Map<EncodeHintType, Object> getQRCodeConfig() {
+        Map<EncodeHintType, Object> hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
+        hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+        hints.put(EncodeHintType.MARGIN, 1); /* default = 4 */
+        return hints;
+    }
+
+    public FileEntity generateQRCodeForSeat(UUID guid) {
+        String extension = ".png";
+        String customPath = "seats";
+
+        FileEntity fileEntity = new FileEntity();
+        fileEntity.setGuid(guid);
+        fileEntity.setOriginalName(guid + extension);
+        fileEntity.setContentType("image/png");
+        fileEntity.setExtension(extension);
+        fileEntity.setSize(1);
+
+        String fileName = guid + extension;
+
+        /* URL that when user scan QR code */
+        String content = seatLocationUrl + guid;
+        try {
+            QRCodeWriter qrCodeWriter = new QRCodeWriter();
+            BitMatrix bitMatrix = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, QR_CODE_WIDTH, QR_CODE_HEIGHT, getQRCodeConfig());
+            String localFilePath = uploadDir.substring(8) + customPath + "/" + fileName;
+            Path path = FileSystems.getDefault().getPath(localFilePath);
+            MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
+
+            String clientSidePath;
+            if (serverPort != 80) {
+                clientSidePath = serverDomain + ":" + serverPort + "/storage/" + customPath;
+            } else {
+                clientSidePath = serverDomain + "/storage/" + customPath;
+            }
+
+            fileEntity.setLocalUrl(localFilePath);
+            fileEntity.setUrl(clientSidePath + "/" + fileName);
+        } catch (WriterException | IOException e) {
+            e.printStackTrace();
+            return new FileEntity();
+        }
+        return fileRepository.save(fileEntity);
+    }
+
     /**
      * @param customPath: relative path to save file on server, concat with uploadDir in application.yml file;
-     * @param uuid:       guid will be filename on hard disk
+     * @param guid:       guid will be filename on hard disk
      */
-    private FileEntity uploadFile(MultipartFile file, String customPath, UUID uuid) {
+
+
+    private FileEntity uploadFile(MultipartFile file, String customPath, UUID guid) {
         FileEntity fileEntity = new FileEntity();
-        fileEntity.setGuid(uuid);
+        fileEntity.setGuid(guid);
         fileEntity.setOriginalName(file.getOriginalFilename());
         fileEntity.setContentType(file.getContentType());
         fileEntity.setSize(file.getSize());
-        fileEntity.setDeleted(false);
 
         String extension = getExtensionFile(Objects.requireNonNull(file.getOriginalFilename()));
         fileEntity.setExtension(extension);
 
         // file name to be save on hard disk
-        String fileName = uuid + extension;
+        String fileName = guid + extension;
 
         try {
             String localDir = uploadDir.substring(8) + customPath;
@@ -115,6 +171,7 @@ public class FileService {
             fileEntity.setUrl(clientSidePath + "/" + fileName);
         } catch (IOException e) {
             e.printStackTrace();
+            return new FileEntity();
         }
         return fileRepository.save(fileEntity);
     }

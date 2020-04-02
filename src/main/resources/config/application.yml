@@ -41,6 +41,8 @@ app:
     token-time-for-remember: 604800
   upload-dir: 'file:///D:/bas/storage/'
   server-domain: 'http://localhost'
+  client-domain: "http://buaansach.com.vn/"
+  seat-location-url: "http://localhost/table/"
   mail:
     enable: true
     from: mailservice.pms@gmail.com

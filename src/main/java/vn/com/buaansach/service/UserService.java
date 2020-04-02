@@ -7,10 +7,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.entity.AuthorityEntity;
+import vn.com.buaansach.entity.FileEntity;
 import vn.com.buaansach.entity.UserEntity;
 import vn.com.buaansach.exception.EmailAlreadyUsedException;
 import vn.com.buaansach.exception.InvalidPasswordException;
 import vn.com.buaansach.exception.LoginAlreadyUsedException;
+import vn.com.buaansach.exception.PhoneAlreadyUsedException;
 import vn.com.buaansach.repository.AuthorityRepository;
 import vn.com.buaansach.repository.UserRepository;
 import vn.com.buaansach.security.util.SecurityUtils;
@@ -37,14 +39,17 @@ public class UserService {
 
     private final MailService mailService;
 
+    private final FileService fileService;
+
     @Value("${app.mail.send-creation-mail}")
     private String sendCreationMail;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, MailService mailService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, MailService mailService, FileService fileService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.mailService = mailService;
+        this.fileService = fileService;
     }
 
     public UserEntity createUser(CreateAccountDTO dto) {
@@ -52,6 +57,8 @@ public class UserService {
             throw new LoginAlreadyUsedException();
         } else if (userRepository.findOneByEmailIgnoreCase(dto.getEmail()).isPresent()) {
             throw new EmailAlreadyUsedException();
+        } else if (userRepository.findOneByPhone(dto.getPhone()).isPresent()) {
+            throw new PhoneAlreadyUsedException();
         } else {
             UserEntity newUserEntity = new UserEntity();
             newUserEntity.setFirstName(dto.getFirstName());
@@ -94,7 +101,19 @@ public class UserService {
         userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(user -> {
             if (image != null) {
                 /*handle upload image here*/
+                user.setImageUrl(fileService.uploadImage(image).getUrl());
             }
+
+            Optional<UserEntity> optionalEmail = userRepository.findOneByEmailIgnoreCase(dto.getEmail());
+            Optional<UserEntity> optionalPhone = userRepository.findOneByPhone(dto.getPhone());
+            if (optionalEmail.isPresent()){
+                if (!optionalEmail.get().getLogin().equals(user.getLogin())) throw new EmailAlreadyUsedException();
+            }
+
+            if (optionalPhone.isPresent()){
+                if (!optionalPhone.get().getLogin().equals(user.getLogin())) throw new PhoneAlreadyUsedException();
+            }
+
             user.setFirstName(dto.getFirstName());
             user.setLastName(dto.getLastName());
             user.setEmail(dto.getEmail());

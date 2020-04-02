@@ -72,9 +72,4 @@ public class StoreEntity extends AbstractAuditingEntity implements Serializable 
     @Size(max = 500)
     @Column(name = "last_update_reason")
     private String lastUpdateReason;
-
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "store_owner_login", referencedColumnName = "login")
-    private UserEntity storeOwnerUser;
 }

@@ -14,7 +14,6 @@ import java.util.UUID;
 @Table(name = "bas_file")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Where(clause = "deleted=false")
 public class FileEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -46,7 +45,4 @@ public class FileEntity extends AbstractAuditingEntity implements Serializable {
     private String url;
 
     private long size;
-
-    @JsonIgnore
-    private boolean deleted;
 }

@@ -53,6 +53,11 @@ dependencies {
 	// Swagger
 	compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
 	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+
+	// QR code
+	compile group: 'com.google.zxing', name: 'core', version: '3.3.1'
+	compile group: 'com.google.zxing', name: 'javase', version: '3.4.0'
+
 }
 
 test {
