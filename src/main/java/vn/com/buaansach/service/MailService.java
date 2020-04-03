@@ -15,6 +15,7 @@ import vn.com.buaansach.entity.UserEntity;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
@@ -41,7 +42,7 @@ public class MailService {
     }
 
     @Async
-    public void sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
+    public void sendEmail(String senderName, String to, String subject, String content, boolean isMultipart, boolean isHtml) {
         log.debug("Send email[multipart '{}' and html '{}'] to '{}' with subject '{}' and content={}",
                 isMultipart, isHtml, to, subject, content);
         if (!Boolean.parseBoolean(enableSendMail)) return;
@@ -50,12 +51,12 @@ public class MailService {
         try {
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage, isMultipart, StandardCharsets.UTF_8.name());
             message.setTo(to);
-            message.setFrom(host);
+            message.setFrom(host, senderName);
             message.setSubject(subject);
             message.setText(content, isHtml);
             javaMailSender.send(mimeMessage);
             log.debug("Sent email to User '{}'", to);
-        } catch (MailException | MessagingException e) {
+        } catch (MailException | MessagingException | UnsupportedEncodingException e) {
             log.warn("Email could not be sent to user '{}'", to, e);
         }
     }
@@ -73,7 +74,8 @@ public class MailService {
         context.setVariable(BASE_URL, clientBaseUrl);
         String content = templateEngine.process(templateName, context);
         String subject = messageSource.getMessage(titleKey, null, locale);
-        sendEmail(userEntity.getEmail(), subject, content, false, true);
+        String senderName = messageSource.getMessage("email.sender.name", null, locale);
+        sendEmail(senderName, userEntity.getEmail(), subject, content, false, true);
     }
 
     @Async

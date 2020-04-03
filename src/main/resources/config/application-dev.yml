@@ -1,6 +1,6 @@
 logging:
   level:
-    vn.com.bas: DEBUG
+    vn.com.buaansach: DEBUG
     org:
       hibernate:
         SQL: DEBUG
