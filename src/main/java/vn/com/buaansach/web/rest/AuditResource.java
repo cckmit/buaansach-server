@@ -21,7 +21,7 @@ import java.util.List;
  * REST controller for getting the {@link AuditEvent}s.
  */
 @RestController
-@RequestMapping("/api/management/audits")
+@RequestMapping("/api/v1/management/audit")
 public class AuditResource {
 
     private final AuditEventService auditEventService;

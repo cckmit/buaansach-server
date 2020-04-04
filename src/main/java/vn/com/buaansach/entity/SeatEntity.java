@@ -36,16 +36,11 @@ public class SeatEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "seat_status")
     private SeatStatus seatStatus = SeatStatus.EMPTY;
 
-    @NotNull
-    @Size(max = 255)
-    @Column(name = "seat_qr_code")
-    private String seatQrCode;
-
     @Nullable
     @Column(name = "last_order_id")
     private Long lastOrderId;
 
-    @NotNull
+    @JsonIgnore
     @Column(name = "area_id")
     private Long areaId;
 }

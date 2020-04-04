@@ -6,5 +6,6 @@ import lombok.Data;
 public class CreateAreaRequest {
     private String storeGuid;
     private String areaName;
+    private String seatPrefix;
     private int numberOfSeats;
 }

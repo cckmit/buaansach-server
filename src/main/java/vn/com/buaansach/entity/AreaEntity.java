@@ -29,7 +29,7 @@ public class AreaEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "area_name")
     private String areaName;
 
-    @NotNull
+    @JsonIgnore
     @Column(name = "store_id")
     private Long storeId;
 }

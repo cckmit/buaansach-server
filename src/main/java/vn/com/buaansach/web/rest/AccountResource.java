@@ -25,7 +25,7 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/account")
+@RequestMapping("/api/v1/account")
 public class AccountResource {
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);
 

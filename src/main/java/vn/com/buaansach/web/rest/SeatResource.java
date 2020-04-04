@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/seat")
+@RequestMapping("/api/v1/seat")
 public class SeatResource {
     private static final String ENTITY_NAME = "seat";
     private final Logger log = LoggerFactory.getLogger(SeatResource.class);
@@ -37,10 +37,16 @@ public class SeatResource {
         return ResponseEntity.ok(seatService.updateSeat(entity));
     }
 
-    @GetMapping("/list/{areaGuid}")
-    public ResponseEntity<List<SeatEntity>> getListSeatByArea(@PathVariable String areaGuid) {
+    @GetMapping("/list-by-area/{areaGuid}")
+    public ResponseEntity<List<SeatEntity>> getListSeatByAreaGuid(@PathVariable String areaGuid) {
         log.debug("REST request to list {} with area guid : {}", ENTITY_NAME, areaGuid);
-        return ResponseEntity.ok(seatService.getListSeatByArea(areaGuid));
+        return ResponseEntity.ok(seatService.getListSeatByAreaGuid(areaGuid));
+    }
+
+    @GetMapping("/list-by-store/{storeGuid}")
+    public ResponseEntity<List<SeatEntity>> getListSeatByStoreGuid(@PathVariable String storeGuid) {
+        log.debug("REST request to list {} with store guid : {}", ENTITY_NAME, storeGuid);
+        return ResponseEntity.ok(seatService.getListSeatByStoreGuid(storeGuid));
     }
 
     @DeleteMapping("/delete/{seatGuid}")

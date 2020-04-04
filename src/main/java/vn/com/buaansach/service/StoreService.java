@@ -31,16 +31,16 @@ public class StoreService {
     }
 
     @Transactional
-    public StoreEntity createStore(StoreEntity entity, MultipartFile image) {
-        if (storeRepository.findOneByStoreCode(entity.getStoreCode()).isPresent()) {
+    public StoreEntity createStore(StoreEntity storeEntity, MultipartFile image) {
+        if (storeRepository.findOneByStoreCode(storeEntity.getStoreCode()).isPresent()) {
             throw new BadRequestException("error.create.codeExists");
         }
-        entity.setGuid(UUID.randomUUID());
+        storeEntity.setGuid(UUID.randomUUID());
         if (image != null) {
             FileEntity fileEntity = fileService.uploadImage(image, "store_image");
-            entity.setStoreImageUrl(fileEntity.getUrl());
+            storeEntity.setStoreImageUrl(fileEntity.getUrl());
         }
-        return storeRepository.save(entity);
+        return storeRepository.save(storeEntity);
     }
 
     @Transactional
@@ -71,6 +71,13 @@ public class StoreService {
             currentEntity.setStoreImageUrl(newImage.getUrl());
         } else {
             /* re-set entity's image url in case image url is cleared */
+            String currentImg = currentEntity.getStoreImageUrl();
+            String updateImg = updateEntity.getStoreImageUrl();
+            if (currentImg != null && !currentImg.isEmpty()){
+                if (updateImg == null || updateImg.isEmpty()){
+                    fileService.deleteByUrl(currentImg);
+                }
+            }
             currentEntity.setStoreImageUrl(updateEntity.getStoreImageUrl());
         }
 
@@ -92,9 +99,8 @@ public class StoreService {
     }
 
     public StoreEntity getOneByGuid(String storeGuid) {
-        Optional<StoreEntity> optional = storeRepository.findOneByGuid(UUID.fromString(storeGuid));
-        if (!optional.isPresent()) throw new ResourceNotFoundException("Store not found with guid: " + storeGuid);
-        return optional.get();
+        return storeRepository.findOneByGuid(UUID.fromString(storeGuid))
+                .orElseThrow(()-> new ResourceNotFoundException("Store not found with guid: " + storeGuid));
     }
 
     @Transactional

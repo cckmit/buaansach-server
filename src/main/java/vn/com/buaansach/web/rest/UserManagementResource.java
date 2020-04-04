@@ -14,7 +14,7 @@ import javax.validation.Valid;
 
 @Secured(AuthoritiesConstants.ADMIN)
 @RestController
-@RequestMapping("/api/management/user")
+@RequestMapping("/api/v1/management/user")
 public class UserManagementResource {
     private final UserService userService;
 

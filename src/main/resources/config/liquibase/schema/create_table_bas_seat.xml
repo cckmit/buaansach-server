@@ -16,7 +16,6 @@
                 <constraints nullable="false"/>
             </column>
             <column name="seat_status" type="varchar(50)"/>
-            <column name="seat_qr_code" type="varchar(255)"/>
             <column name="last_order_id" type="bigint"/>
             <column name="area_id" type="bigint">
                 <constraints nullable="false"/>

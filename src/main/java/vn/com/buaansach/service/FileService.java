@@ -38,8 +38,8 @@ public class FileService {
     private String serverDomain;
     @Value("${app.upload-dir}")
     private String uploadDir;
-    @Value("${app.seat-location-url}")
-    private String seatLocationUrl;
+
+    private static final String SEAT_URL = "http://localhost/table/";
 
     public FileService(FileRepository fileRepository) {
         this.fileRepository = fileRepository;
@@ -113,7 +113,7 @@ public class FileService {
         String fileName = guid + extension;
 
         /* URL that when user scan QR code */
-        String content = seatLocationUrl + guid;
+        String content = SEAT_URL + guid;
         try {
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
             BitMatrix bitMatrix = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, QR_CODE_WIDTH, QR_CODE_HEIGHT, getQRCodeConfig());

@@ -79,9 +79,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Resource
                 "/storage/**",
                 // other public endpoints of your API may be appended to this array
-                "/api/account/authenticate",
-                "/api/account/activate",
-                "/api/account/reset-password/**",
+                "/api/v1/account/authenticate",
+                "/api/v1/account/activate",
+                "/api/v1/account/reset-password/**",
         };
         http
                 .cors()

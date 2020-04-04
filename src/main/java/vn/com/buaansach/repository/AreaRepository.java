@@ -13,6 +13,4 @@ public interface AreaRepository extends JpaRepository<AreaEntity, Long> {
     List<AreaEntity> findByStoreId(Long storeId);
 
     List<AreaEntity> findByStoreIdAndAreaName(Long storeId, String areaName);
-
-    void deleteByGuid(UUID guid);
 }

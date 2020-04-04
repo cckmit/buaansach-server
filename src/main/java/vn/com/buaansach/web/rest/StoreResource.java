@@ -17,7 +17,7 @@ import vn.com.buaansach.service.StoreService;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/store")
+@RequestMapping("/api/v1/store")
 public class StoreResource {
     private static final String ENTITY_NAME = "store";
     private final Logger log = LoggerFactory.getLogger(StoreResource.class);
@@ -51,7 +51,7 @@ public class StoreResource {
                                                      @RequestParam(value = "page", defaultValue = "1") int page,
                                                      @RequestParam(value = "size", defaultValue = "20") int size,
                                                      @RequestParam(value = "sortField", defaultValue = "createdDate") String sortField,
-                                                     @RequestParam(value = "sortDirection", defaultValue = "ASC") Sort.Direction sortDirection) {
+                                                     @RequestParam(value = "sortDirection", defaultValue = "DESC") Sort.Direction sortDirection) {
         PageRequest request = PageRequest.of(page - 1, size, sortDirection, sortField);
         log.debug("REST request to get list {} with page request: {}", ENTITY_NAME, request);
         return ResponseEntity.ok(storeService.getPageStore(search, request));
