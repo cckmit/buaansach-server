@@ -21,8 +21,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserDTO {
 
-    private Long id;
-
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @NotBlank
     @Size(min = 1, max = 50)
@@ -67,13 +65,12 @@ public class UserDTO {
     private Set<String> authorities;
 
     public UserDTO(UserEntity userEntity) {
-        this.id = userEntity.getId();
         this.login = userEntity.getLogin();
+        this.activated = userEntity.isActivated();
         this.firstName = userEntity.getFirstName();
         this.lastName = userEntity.getLastName();
         this.email = userEntity.getEmail();
         this.phone = userEntity.getPhone();
-        this.activated = userEntity.isActivated();
         this.langKey = userEntity.getLangKey();
         this.imageUrl = userEntity.getImageUrl();
         this.createdBy = userEntity.getCreatedBy();

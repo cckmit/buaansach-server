@@ -24,6 +24,7 @@ public class UserEntity extends AbstractAuditingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @Pattern(regexp = Constants.LOGIN_REGEX)

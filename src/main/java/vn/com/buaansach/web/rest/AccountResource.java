@@ -27,6 +27,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/account")
 public class AccountResource {
+    private final String ENTITY_NAME = "account";
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);
 
     private final MailService mailService;
@@ -52,31 +53,33 @@ public class AccountResource {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(dto.getLogin(), dto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = tokenProvider.generateToken(authentication, dto.getRememberMe());
+        String jwt = tokenProvider.generateToken(authentication, dto.isRememberMe());
         HttpHeaders httpHeaders = new HttpHeaders();
         String tokenType = "Bearer";
         httpHeaders.add("Authorization", tokenType + " " + jwt);
+        log.debug("REST request to authenticate user: {}", SecurityUtils.getCurrentUserLogin());
         return new ResponseEntity<>(new JwtTokenDTO(jwt, tokenType), httpHeaders, HttpStatus.OK);
     }
 
     @GetMapping("/info")
     public ResponseEntity<UserDTO> getAccountInfo() {
-        Optional<UserEntity> optionalUser = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-        if (optionalUser.isPresent()) {
-            return ResponseEntity.ok(new UserDTO(optionalUser.get()));
-        }
-        throw new ResourceNotFoundException("User with login '" + SecurityUtils.getCurrentUserLogin() + "' could not be found!");
+        log.debug("REST request from user {} to get account info", SecurityUtils.getCurrentUserLogin());
+        return userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin())
+                .map(userEntity -> ResponseEntity.ok(new UserDTO(userEntity)))
+                .orElseThrow(() -> new ResourceNotFoundException("User with login '" + SecurityUtils.getCurrentUserLogin() + "' could not be found!"));
     }
 
     @PutMapping("/update")
     public ResponseEntity<Void> update(@Valid @RequestPart("dto") UpdateAccountDTO dto,
                                        @RequestPart(value = "image", required = false) MultipartFile image) {
+        log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, dto);
         userService.updateUser(dto, image);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/change-password")
     public ResponseEntity<Void> changePassword(@Valid @RequestBody UserPasswordChangeDTO dto) {
+        log.debug("REST request from user {} to change password for {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, dto);
         userService.changePassword(dto.getCurrentPassword(), dto.getNewPassword());
         return ResponseEntity.noContent().build();
     }
@@ -86,17 +89,19 @@ public class AccountResource {
         email = email.replace("\"", "");
         Optional<UserEntity> user = userService.requestPasswordReset(email);
         if (user.isPresent()) {
+            log.debug("REST request to reset password for email : {}", email);
             mailService.sendPasswordResetMail(user.get());
         } else {
             // Pretend the request has been successful to prevent checking which emails really exist
             // but log that an invalid attempt has been made
-            log.warn("Password reset requested for non existing mail '{}'", email);
+            log.warn("Password reset requested for non existing mail : {}", email);
         }
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/reset-password/finish")
     public ResponseEntity<Void> finishPasswordReset(@Valid @RequestBody PasswordResetDTO dto) {
+        log.debug("REST request to complete password reset : {}", dto);
         Optional<UserEntity> user = userService.completePasswordReset(dto.getNewPassword(), dto.getKey());
         if (!user.isPresent()) {
             throw new ResourceNotFoundException("No user was found for this reset key: " + dto.getKey());
