@@ -29,8 +29,6 @@ import java.util.*;
 
 @Service
 public class FileService {
-    private static final int QR_CODE_WIDTH = 300;
-    private static final int QR_CODE_HEIGHT = 300;
     private final FileRepository fileRepository;
     @Value("${server.port}")
     private Long serverPort;
@@ -38,8 +36,6 @@ public class FileService {
     private String serverDomain;
     @Value("${app.upload-dir}")
     private String uploadDir;
-
-    private static final String SEAT_URL = "http://localhost/table/";
 
     public FileService(FileRepository fileRepository) {
         this.fileRepository = fileRepository;
@@ -81,6 +77,7 @@ public class FileService {
     }
 
     public void deleteByUrl(String fileUrl) {
+        if (fileUrl == null || fileUrl.isEmpty()) return;
         fileRepository.findOneByUrl(fileUrl).ifPresent(fileEntity -> {
             File file = new File(fileEntity.getLocalUrl());
             if (file.exists()) file.delete();
@@ -92,57 +89,10 @@ public class FileService {
         return fileName.substring(fileName.lastIndexOf('.'));
     }
 
-    private Map<EncodeHintType, Object> getQRCodeConfig() {
-        Map<EncodeHintType, Object> hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
-        hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
-        hints.put(EncodeHintType.MARGIN, 1); /* default = 4 */
-        return hints;
-    }
-
-    public FileEntity generateQRCodeForSeat(UUID guid) {
-        String extension = ".png";
-        String customPath = "seats";
-
-        FileEntity fileEntity = new FileEntity();
-        fileEntity.setGuid(guid);
-        fileEntity.setOriginalName(guid + extension);
-        fileEntity.setContentType("image/png");
-        fileEntity.setExtension(extension);
-        fileEntity.setSize(1);
-
-        String fileName = guid + extension;
-
-        /* URL that when user scan QR code */
-        String content = SEAT_URL + guid;
-        try {
-            QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            BitMatrix bitMatrix = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, QR_CODE_WIDTH, QR_CODE_HEIGHT, getQRCodeConfig());
-            String localFilePath = uploadDir.substring(8) + customPath + "/" + fileName;
-            Path path = FileSystems.getDefault().getPath(localFilePath);
-            MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
-
-            String clientSidePath;
-            if (serverPort != 80) {
-                clientSidePath = serverDomain + ":" + serverPort + "/storage/" + customPath;
-            } else {
-                clientSidePath = serverDomain + "/storage/" + customPath;
-            }
-
-            fileEntity.setLocalUrl(localFilePath);
-            fileEntity.setUrl(clientSidePath + "/" + fileName);
-        } catch (WriterException | IOException e) {
-            e.printStackTrace();
-            return new FileEntity();
-        }
-        return fileRepository.save(fileEntity);
-    }
-
     /**
      * @param customPath: relative path to save file on server, concat with uploadDir in application.yml file;
      * @param guid:       guid will be filename on hard disk
      */
-
-
     private FileEntity uploadFile(MultipartFile file, String customPath, UUID guid) {
         FileEntity fileEntity = new FileEntity();
         fileEntity.setGuid(guid);

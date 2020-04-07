@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.rest;
+package vn.com.buaansach.web.rest.admin;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

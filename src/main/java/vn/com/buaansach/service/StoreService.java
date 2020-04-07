@@ -10,6 +10,7 @@ import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.repository.StoreRepository;
 import vn.com.buaansach.repository.UserRepository;
+import vn.com.buaansach.service.util.Constants;
 
 import javax.transaction.Transactional;
 import java.util.UUID;
@@ -38,7 +39,7 @@ public class StoreService {
         }
         storeEntity.setGuid(UUID.randomUUID());
         if (image != null) {
-            FileEntity fileEntity = fileService.uploadImage(image, "store_image");
+            FileEntity fileEntity = fileService.uploadImage(image, Constants.STORE_IMAGE_PATH);
             storeEntity.setStoreImageUrl(fileEntity.getUrl());
         }
         return storeRepository.save(storeEntity);
@@ -68,7 +69,7 @@ public class StoreService {
             /* delete current entity's image first */
             fileService.deleteByUrl(currentEntity.getStoreImageUrl());
             /* then set the new image url */
-            FileEntity newImage = fileService.uploadImage(image, "store_image");
+            FileEntity newImage = fileService.uploadImage(image, Constants.STORE_IMAGE_PATH);
             currentEntity.setStoreImageUrl(newImage.getUrl());
         } else {
             /* re-set entity's image url in case image url is cleared */

@@ -101,7 +101,7 @@ public class UserService {
         userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(user -> {
             if (image != null) {
                 /*handle upload image here*/
-                user.setImageUrl(fileService.uploadImage(image).getUrl());
+                user.setImageUrl(fileService.uploadImage(image, Constants.USER_IMAGE_PATH).getUrl());
             }
 
             Optional<UserEntity> optionalEmail = userRepository.findOneByEmailIgnoreCase(dto.getEmail());
