@@ -4,11 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import vn.com.buaansach.entity.AreaEntity;
+import vn.com.buaansach.model.entity.AreaEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.service.AreaService;
-import vn.com.buaansach.service.dto.AreaDTO;
-import vn.com.buaansach.service.request.CreateAreaRequest;
+import vn.com.buaansach.model.dto.AreaDTO;
+import vn.com.buaansach.model.dto.request.CreateAreaRequest;
 
 import javax.validation.Valid;
 import java.util.List;

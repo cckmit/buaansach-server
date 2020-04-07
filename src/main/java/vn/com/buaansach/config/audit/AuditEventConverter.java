@@ -3,7 +3,7 @@ package vn.com.buaansach.config.audit;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
-import vn.com.buaansach.entity.PersistentAuditEvent;
+import vn.com.buaansach.model.entity.PersistentAuditEvent;
 
 import java.util.*;
 

@@ -4,13 +4,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import vn.com.buaansach.entity.FileEntity;
-import vn.com.buaansach.entity.StoreEntity;
+import vn.com.buaansach.model.entity.FileEntity;
+import vn.com.buaansach.model.entity.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.repository.StoreRepository;
 import vn.com.buaansach.repository.UserRepository;
-import vn.com.buaansach.service.util.Constants;
+import vn.com.buaansach.util.Constants;
 
 import javax.transaction.Transactional;
 import java.util.UUID;
@@ -91,7 +91,6 @@ public class StoreService {
         currentEntity.setStoreOwnerPhone(updateEntity.getStoreOwnerPhone());
         currentEntity.setStoreOwnerEmail(updateEntity.getStoreOwnerEmail());
         currentEntity.setStoreTaxCode(updateEntity.getStoreTaxCode());
-        currentEntity.setLastUpdateReason(updateEntity.getLastUpdateReason());
 
         return storeRepository.save(currentEntity);
     }

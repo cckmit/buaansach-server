@@ -5,9 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.service.StoreUserService;
-import vn.com.buaansach.service.dto.StoreUserDTO;
-import vn.com.buaansach.service.request.AddStoreUserRequest;
-import vn.com.buaansach.service.request.CreateOrUpdateStoreUserRequest;
+import vn.com.buaansach.model.dto.StoreUserDTO;
+import vn.com.buaansach.model.dto.request.AddStoreUserRequest;
+import vn.com.buaansach.model.dto.request.CreateOrUpdateStoreUserRequest;
 
 import javax.validation.Valid;
 import java.util.List;

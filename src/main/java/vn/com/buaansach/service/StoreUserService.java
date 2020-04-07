@@ -2,10 +2,10 @@ package vn.com.buaansach.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.AuthorityEntity;
-import vn.com.buaansach.entity.StoreUserEntity;
-import vn.com.buaansach.entity.UserEntity;
-import vn.com.buaansach.entity.enumeration.Language;
+import vn.com.buaansach.model.entity.AuthorityEntity;
+import vn.com.buaansach.model.entity.StoreUserEntity;
+import vn.com.buaansach.model.entity.UserEntity;
+import vn.com.buaansach.model.entity.enumeration.Language;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.LoginAlreadyUsedException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
@@ -14,9 +14,9 @@ import vn.com.buaansach.repository.StoreUserRepository;
 import vn.com.buaansach.repository.UserRepository;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
-import vn.com.buaansach.service.dto.StoreUserDTO;
-import vn.com.buaansach.service.request.AddStoreUserRequest;
-import vn.com.buaansach.service.request.CreateOrUpdateStoreUserRequest;
+import vn.com.buaansach.model.dto.StoreUserDTO;
+import vn.com.buaansach.model.dto.request.AddStoreUserRequest;
+import vn.com.buaansach.model.dto.request.CreateOrUpdateStoreUserRequest;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
@@ -135,7 +135,7 @@ public class StoreUserService {
         userEntity.setFirstName(request.getFirstName());
         userEntity.setLastName(request.getLastName());
         userEntity.setActivated(true);
-        userEntity.setLangKey(Language.vi.name());
+        userEntity.setLangKey(Language.VIETNAMESE.getValue());
         Set<AuthorityEntity> authorities = new HashSet<>();
         authorities.add(new AuthorityEntity(AuthoritiesConstants.USER));
         userEntity.setAuthorities(authorities);

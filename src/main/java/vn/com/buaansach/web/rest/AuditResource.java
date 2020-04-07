@@ -9,8 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import vn.com.buaansach.service.AuditEventService;
-import vn.com.buaansach.web.util.PaginationUtil;
-import vn.com.buaansach.web.util.ResponseUtil;
+import vn.com.buaansach.util.PaginationUtil;
+import vn.com.buaansach.util.ResponseUtil;
 
 import java.time.Instant;
 import java.time.LocalDate;

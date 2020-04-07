@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import vn.com.buaansach.entity.StoreEntity;
+import vn.com.buaansach.model.entity.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.service.StoreService;

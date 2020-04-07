@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
-import vn.com.buaansach.service.util.Constants;
+import vn.com.buaansach.util.Constants;
 
 import javax.annotation.PostConstruct;
 import java.net.InetAddress;

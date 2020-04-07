@@ -1,14 +1,14 @@
 package vn.com.buaansach.service;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.AreaEntity;
-import vn.com.buaansach.entity.SeatEntity;
-import vn.com.buaansach.entity.StoreEntity;
+import vn.com.buaansach.model.entity.AreaEntity;
+import vn.com.buaansach.model.entity.SeatEntity;
+import vn.com.buaansach.model.entity.StoreEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.repository.AreaRepository;
 import vn.com.buaansach.repository.StoreRepository;
-import vn.com.buaansach.service.dto.AreaDTO;
-import vn.com.buaansach.service.request.CreateAreaRequest;
+import vn.com.buaansach.model.dto.AreaDTO;
+import vn.com.buaansach.model.dto.request.CreateAreaRequest;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
