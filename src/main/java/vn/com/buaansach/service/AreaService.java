@@ -21,16 +21,20 @@ public class AreaService {
     private final AreaRepository areaRepository;
     private final StoreRepository storeRepository;
     private final SeatService seatService;
+    private final StoreUserSecurityService storeUserSecurityService;
 
-    public AreaService(AreaRepository areaRepository, StoreRepository storeRepository, SeatService seatService) {
+    public AreaService(AreaRepository areaRepository, StoreRepository storeRepository, SeatService seatService, StoreUserSecurityService storeUserSecurityService) {
         this.areaRepository = areaRepository;
         this.storeRepository = storeRepository;
         this.seatService = seatService;
+        this.storeUserSecurityService = storeUserSecurityService;
     }
 
     @Transactional
     public AreaDTO createArea(CreateAreaRequest request) {
-        StoreEntity storeEntity = storeRepository.findOneByGuid(UUID.fromString(request.getStoreGuid()))
+        storeUserSecurityService.blockAccessIfNotOwnerOrManager(request.getStoreGuid());
+
+        StoreEntity storeEntity = storeRepository.findOneByGuid(request.getStoreGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + request.getStoreGuid()));
 
         AreaEntity areaEntity = new AreaEntity();
@@ -50,6 +54,11 @@ public class AreaService {
     public AreaDTO updateArea(AreaEntity updateEntity) {
         AreaEntity currentEntity = areaRepository.findOneByGuid(updateEntity.getGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Area not found with guid: " + updateEntity.getGuid()));
+
+        StoreEntity storeEntity = storeRepository.findById(currentEntity.getStoreId())
+                .orElseThrow(()-> new ResourceNotFoundException("store", "id", currentEntity.getStoreId()));
+        storeUserSecurityService.blockAccessIfNotOwnerOrManager(storeEntity.getGuid());
+
         currentEntity.setAreaName(updateEntity.getAreaName());
         return new AreaDTO(areaRepository.save(currentEntity), seatService.getListSeatByAreaGuid(currentEntity.getGuid().toString()));
     }
@@ -76,6 +85,11 @@ public class AreaService {
     public void deleteArea(String areaGuid) {
         AreaEntity areaEntity = areaRepository.findOneByGuid(UUID.fromString(areaGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("Area not found with guid: " + areaGuid));
+
+        StoreEntity storeEntity = storeRepository.findById(areaEntity.getStoreId())
+                .orElseThrow(()-> new ResourceNotFoundException("store", "id", areaEntity.getStoreId()));
+        storeUserSecurityService.blockAccessIfNotOwnerOrManager(storeEntity.getGuid());
+
         seatService.deleteByAreaId(areaEntity.getId());
         areaRepository.delete(areaEntity);
     }

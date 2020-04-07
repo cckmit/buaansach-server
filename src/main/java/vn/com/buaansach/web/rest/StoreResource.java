@@ -27,6 +27,7 @@ public class StoreResource {
         this.storeService = storeService;
     }
 
+    /* For ADMIN */
     @Secured(AuthoritiesConstants.ADMIN)
     @PostMapping("/create")
     public ResponseEntity<StoreEntity> createStore(@Valid @RequestPart("entity") StoreEntity entity,
@@ -34,15 +35,6 @@ public class StoreResource {
         if (entity.getId() != null || entity.getGuid() != null) throw new BadRequestException("app.error.create.idExists");
         log.debug("REST request to create {} : {}", ENTITY_NAME, entity);
         return ResponseEntity.ok(storeService.createStore(entity, image));
-    }
-
-    @Secured(AuthoritiesConstants.ADMIN)
-    @PutMapping("/update")
-    public ResponseEntity<StoreEntity> updateStore(@Valid @RequestPart StoreEntity entity,
-                                              @RequestPart(value = "image", required = false) MultipartFile image) {
-        if (entity.getGuid() == null) throw new BadRequestException("app.error.update.idNull");
-        log.debug("REST request to update {} : {}", ENTITY_NAME, entity);
-        return ResponseEntity.ok(storeService.updateStore(entity, image));
     }
 
     @Secured(AuthoritiesConstants.ADMIN)
@@ -58,17 +50,28 @@ public class StoreResource {
     }
 
     @Secured(AuthoritiesConstants.ADMIN)
-    @GetMapping("/get/{storeGuid}")
-    public ResponseEntity<StoreEntity> getOneByGuid(@PathVariable String storeGuid) {
-        log.debug("REST request to get {} with guid : {}", ENTITY_NAME, storeGuid);
-        return ResponseEntity.ok(storeService.getOneByGuid(storeGuid));
-    }
-
-    @Secured(AuthoritiesConstants.ADMIN)
     @DeleteMapping("/delete/{storeGuid}")
     public ResponseEntity<Void> delete(@PathVariable String storeGuid) {
         log.debug("REST request to delete {} with guid : {}", ENTITY_NAME, storeGuid);
         storeService.deleteStore(storeGuid);
         return ResponseEntity.noContent().build();
+    }
+
+    /* For OWNER, MANAGER */
+
+    @PutMapping("/update")
+    public ResponseEntity<StoreEntity> updateStore(@Valid @RequestPart StoreEntity entity,
+                                                   @RequestPart(value = "image", required = false) MultipartFile image) {
+        if (entity.getGuid() == null) throw new BadRequestException("app.error.update.idNull");
+        log.debug("REST request to update {} : {}", ENTITY_NAME, entity);
+        return ResponseEntity.ok(storeService.updateStore(entity, image));
+    }
+
+    /* For CASHIER, WAITER */
+
+    @GetMapping("/get/{storeGuid}")
+    public ResponseEntity<StoreEntity> getOneByGuid(@PathVariable String storeGuid) {
+        log.debug("REST request to get {} with guid : {}", ENTITY_NAME, storeGuid);
+        return ResponseEntity.ok(storeService.getOneByGuid(storeGuid));
     }
 }

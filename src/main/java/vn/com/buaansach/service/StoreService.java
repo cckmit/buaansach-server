@@ -12,7 +12,6 @@ import vn.com.buaansach.repository.StoreRepository;
 import vn.com.buaansach.repository.UserRepository;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,12 +21,14 @@ public class StoreService {
     private final FileService fileService;
     private final UserRepository userRepository;
     private final AreaService areaService;
+    private final StoreUserSecurityService storeUserSecurityService;
 
-    public StoreService(StoreRepository storeRepository, FileService fileService, UserRepository userRepository, AreaService areaService) {
+    public StoreService(StoreRepository storeRepository, FileService fileService, UserRepository userRepository, AreaService areaService, StoreUserSecurityService storeUserSecurityService) {
         this.storeRepository = storeRepository;
         this.fileService = fileService;
         this.userRepository = userRepository;
         this.areaService = areaService;
+        this.storeUserSecurityService = storeUserSecurityService;
     }
 
     @Transactional
@@ -45,10 +46,10 @@ public class StoreService {
 
     @Transactional
     public StoreEntity updateStore(StoreEntity updateEntity, MultipartFile image) {
-        Optional<StoreEntity> optional = storeRepository.findOneByGuid(updateEntity.getGuid());
-        if (!optional.isPresent()) throw new ResourceNotFoundException("Store not found with guid: " + updateEntity.getGuid());
+        storeUserSecurityService.blockAccessIfNotOwnerOrManager(updateEntity.getGuid());
 
-        StoreEntity currentEntity = optional.get();
+        StoreEntity currentEntity = storeRepository.findOneByGuid(updateEntity.getGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("store", "guid", updateEntity.getGuid()));
 
         /* check if store code has changed or not */
         if (!updateEntity.getStoreCode().equals(currentEntity.getStoreCode())) {
@@ -73,8 +74,8 @@ public class StoreService {
             /* re-set entity's image url in case image url is cleared */
             String currentImg = currentEntity.getStoreImageUrl();
             String updateImg = updateEntity.getStoreImageUrl();
-            if (currentImg != null && !currentImg.isEmpty()){
-                if (updateImg == null || updateImg.isEmpty()){
+            if (currentImg != null && !currentImg.isEmpty()) {
+                if (updateImg == null || updateImg.isEmpty()) {
                     fileService.deleteByUrl(currentImg);
                 }
             }
@@ -99,14 +100,16 @@ public class StoreService {
     }
 
     public StoreEntity getOneByGuid(String storeGuid) {
+        storeUserSecurityService.blockAccessIfNotOwnerOrManager(UUID.fromString(storeGuid));
+
         return storeRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(()-> new ResourceNotFoundException("Store not found with guid: " + storeGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("store", "guid", storeGuid));
     }
 
     @Transactional
     public void deleteStore(String storeGuid) {
         StoreEntity storeEntity = storeRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + storeGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("store", "guid", storeGuid));
         fileService.deleteByUrl(storeEntity.getStoreImageUrl());
         areaService.deleteAreaByStoreId(storeEntity.getId());
         storeRepository.delete(storeEntity);

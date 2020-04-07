@@ -45,7 +45,7 @@ public class SeatService {
     }
 
     public SeatEntity createSeat(CreateSeatRequest request) {
-        AreaEntity areaEntity = areaRepository.findOneByGuid(UUID.fromString(request.getAreaGuid()))
+        AreaEntity areaEntity = areaRepository.findOneByGuid(request.getAreaGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Area not found with guid: " + request.getAreaGuid()));
 
         SeatEntity seatEntity = new SeatEntity();

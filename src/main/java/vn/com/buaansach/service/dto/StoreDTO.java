@@ -1,6 +1,5 @@
 package vn.com.buaansach.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -60,16 +59,9 @@ public class StoreDTO {
     private String lastUpdateReason;
 
     /* audit attributes */
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String createdBy;
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Instant createdDate;
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String lastModifiedBy;
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Instant lastModifiedDate;
 
     public StoreDTO(StoreEntity entity) {

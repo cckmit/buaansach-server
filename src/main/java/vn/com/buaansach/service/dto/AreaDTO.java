@@ -17,16 +17,9 @@ public class AreaDTO {
     private List<SeatEntity> listSeat = new ArrayList<>();
 
     /* audit attributes */
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String createdBy;
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Instant createdDate;
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String lastModifiedBy;
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Instant lastModifiedDate;
 
     public AreaDTO(AreaEntity entity){

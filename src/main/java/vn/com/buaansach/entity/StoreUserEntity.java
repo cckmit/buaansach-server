@@ -17,7 +17,11 @@ import java.util.UUID;
 public class StoreUserEntity extends AbstractAuditingEntity implements Serializable {
     @Id
     @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true)
+    private UUID guid;
 
     @Column(name = "store_guid")
     private UUID storeGuid;
