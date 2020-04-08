@@ -16,7 +16,6 @@ import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.service.admin.AdminProductService;
 
 import javax.validation.Valid;
-import java.net.URISyntaxException;
 
 @Secured(AuthoritiesConstants.ADMIN)
 @RestController
@@ -33,7 +32,7 @@ public class AdminProductResource {
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ProductEntity> createProduct(@Valid @RequestPart("payload") ProductEntity payload,
-                                                       @RequestPart(value = "image", required = false) MultipartFile image) throws URISyntaxException {
+                                                       @RequestPart(value = "image", required = false) MultipartFile image) {
         log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminProductService.createProduct(payload, image));
     }

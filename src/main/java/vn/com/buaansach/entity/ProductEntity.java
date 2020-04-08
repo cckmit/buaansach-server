@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.UUID;
@@ -25,12 +24,10 @@ public class ProductEntity extends AbstractAuditingEntity implements Serializabl
     @Column(unique = true)
     private UUID guid;
 
-    @NotNull
     @Size(min = 1, max = 20)
     @Column(name = "product_code", length = 20)
     private String productCode;
 
-    @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "product_name", length = 100)
     private String productName;
@@ -47,7 +44,6 @@ public class ProductEntity extends AbstractAuditingEntity implements Serializabl
     @Column(name = "product_thumbnail_url")
     private String productThumbnailUrl;
 
-    @Size(max = 20)
     @Enumerated(EnumType.STRING)
     @Column(name = "product_status")
     private ProductStatus productStatus;
