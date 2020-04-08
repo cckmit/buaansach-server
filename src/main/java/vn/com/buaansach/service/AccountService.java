@@ -17,20 +17,20 @@ import java.time.Instant;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class AccountService {
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
 
     private final FileService fileService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FileService fileService) {
+    public AccountService(UserRepository userRepository, PasswordEncoder passwordEncoder, FileService fileService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.fileService = fileService;
     }
 
-    public void updateUser(UpdateAccountDTO dto, MultipartFile image) {
+    public void updateAccount(UpdateAccountDTO dto, MultipartFile image) {
         userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(user -> {
             if (image != null) {
                 /*handle upload image here*/

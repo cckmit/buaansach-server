@@ -64,10 +64,10 @@ public class StoreEntity extends AbstractAuditingEntity implements Serializable 
     private String storeTaxCode;
 
     @Size(max = 20)
-    @Column(name = "store_tax_code", length = 20)
+    @Column(name = "store_open_hour", length = 20)
     private String storeOpenHour;
 
     @Size(max = 20)
-    @Column(name = "store_tax_code", length = 20)
+    @Column(name = "store_close_hour", length = 20)
     private String storeCloseHour;
 }

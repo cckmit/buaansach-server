@@ -38,6 +38,14 @@ public class AdminProductResource {
         return ResponseEntity.ok(adminProductService.createProduct(payload, image));
     }
 
+
+    @PutMapping("/update")
+    public ResponseEntity<ProductEntity> updateProduct(@Valid @RequestPart("payload") ProductEntity payload,
+                                                       @RequestPart(value = "image", required = false) MultipartFile image) {
+        log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        return ResponseEntity.ok(adminProductService.updateProduct(payload, image));
+    }
+
     @GetMapping("/list")
     public ResponseEntity<Page<ProductEntity>> getPageProduct(@RequestParam(value = "search", defaultValue = "") String search,
                                                               @RequestParam(value = "page", defaultValue = "1") int page,
@@ -50,16 +58,9 @@ public class AdminProductResource {
     }
 
     @GetMapping("/get/{productGuid}")
-    public ResponseEntity<ProductEntity> getOneStore(@PathVariable String productGuid) {
+    public ResponseEntity<ProductEntity> getProduct(@PathVariable String productGuid) {
         log.debug("REST request from user {} to get {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, productGuid);
-        return ResponseEntity.ok(adminProductService.getOneProduct(productGuid));
-    }
-
-    @PutMapping("/update")
-    public ResponseEntity<ProductEntity> updateProduct(@Valid @RequestPart("payload") ProductEntity payload,
-                                                       @RequestPart(value = "image", required = false) MultipartFile image) {
-        log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
-        return ResponseEntity.ok(adminProductService.updateProduct(payload, image));
+        return ResponseEntity.ok(adminProductService.getProduct(productGuid));
     }
 
     @DeleteMapping("/delete/{productGuid}")

@@ -38,7 +38,7 @@ public class AdminProductService {
         return productRepository.save(productEntity);
     }
 
-    public ProductEntity getOneProduct(String productGuid) {
+    public ProductEntity getProduct(String productGuid) {
         return productRepository.findOneByGuid(UUID.fromString(productGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm: " + productGuid));
     }

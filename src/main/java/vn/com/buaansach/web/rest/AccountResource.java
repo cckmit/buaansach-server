@@ -19,7 +19,7 @@ import vn.com.buaansach.repository.UserRepository;
 import vn.com.buaansach.security.jwt.TokenProvider;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.service.MailService;
-import vn.com.buaansach.service.UserService;
+import vn.com.buaansach.service.AccountService;
 
 import javax.validation.Valid;
 import java.util.Optional;
@@ -32,7 +32,7 @@ public class AccountResource {
 
     private final MailService mailService;
 
-    private final UserService userService;
+    private final AccountService accountService;
 
     private final AuthenticationManager authenticationManager;
 
@@ -40,9 +40,9 @@ public class AccountResource {
 
     private final UserRepository userRepository;
 
-    public AccountResource(MailService mailService, UserService userService, AuthenticationManager authenticationManager, TokenProvider tokenProvider, UserRepository userRepository) {
+    public AccountResource(MailService mailService, AccountService accountService, AuthenticationManager authenticationManager, TokenProvider tokenProvider, UserRepository userRepository) {
         this.mailService = mailService;
-        this.userService = userService;
+        this.accountService = accountService;
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
         this.userRepository = userRepository;
@@ -70,24 +70,24 @@ public class AccountResource {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Void> update(@Valid @RequestPart("dto") UpdateAccountDTO dto,
-                                       @RequestPart(value = "image", required = false) MultipartFile image) {
+    public ResponseEntity<Void> updateAccount(@Valid @RequestPart("dto") UpdateAccountDTO dto,
+                                              @RequestPart(value = "image", required = false) MultipartFile image) {
         log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, dto);
-        userService.updateUser(dto, image);
+        accountService.updateAccount(dto, image);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/change-password")
     public ResponseEntity<Void> changePassword(@Valid @RequestBody UserPasswordChangeDTO dto) {
         log.debug("REST request from user {} to change password for {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, dto);
-        userService.changePassword(dto.getCurrentPassword(), dto.getNewPassword());
+        accountService.changePassword(dto.getCurrentPassword(), dto.getNewPassword());
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/reset-password/init")
     public ResponseEntity<Void> requestPasswordReset(@RequestBody String email) {
         email = email.replace("\"", "");
-        Optional<UserEntity> user = userService.requestPasswordReset(email);
+        Optional<UserEntity> user = accountService.requestPasswordReset(email);
         if (user.isPresent()) {
             log.debug("REST request to reset password for email : {}", email);
             mailService.sendPasswordResetMail(user.get());
@@ -102,7 +102,7 @@ public class AccountResource {
     @PostMapping("/reset-password/finish")
     public ResponseEntity<Void> finishPasswordReset(@Valid @RequestBody PasswordResetDTO dto) {
         log.debug("REST request to complete password reset : {}", dto);
-        Optional<UserEntity> user = userService.completePasswordReset(dto.getNewPassword(), dto.getKey());
+        Optional<UserEntity> user = accountService.completePasswordReset(dto.getNewPassword(), dto.getKey());
         if (!user.isPresent()) {
             throw new ResourceNotFoundException("No user was found for this reset key: " + dto.getKey());
         }

@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.rest.admin;
+package vn.com.buaansach.web.rest;
 
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.data.domain.Page;
@@ -10,7 +10,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
-import vn.com.buaansach.service.admin.AdminAuditService;
+import vn.com.buaansach.service.AuditEventService;
 import vn.com.buaansach.util.PaginationUtil;
 import vn.com.buaansach.util.ResponseUtil;
 
@@ -24,13 +24,13 @@ import java.util.List;
  */
 @Secured(AuthoritiesConstants.ADMIN)
 @RestController
-@RequestMapping("/api/v1/admin/audit")
-public class AdminAuditResource {
+@RequestMapping("/api/v1/audit")
+public class AuditResource {
 
-    private final AdminAuditService adminAuditService;
+    private final AuditEventService auditEventService;
 
-    public AdminAuditResource(AdminAuditService adminAuditService) {
-        this.adminAuditService = adminAuditService;
+    public AuditResource(AuditEventService auditEventService) {
+        this.auditEventService = auditEventService;
     }
 
     /**
@@ -41,7 +41,7 @@ public class AdminAuditResource {
      */
     @GetMapping
     public ResponseEntity<List<AuditEvent>> getAll(Pageable pageable) {
-        Page<AuditEvent> page = adminAuditService.findAll(pageable);
+        Page<AuditEvent> page = auditEventService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -63,7 +63,7 @@ public class AdminAuditResource {
         Instant from = fromDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
         Instant to = toDate.atStartOfDay(ZoneId.systemDefault()).plusDays(1).toInstant();
 
-        Page<AuditEvent> page = adminAuditService.findByDates(from, to, pageable);
+        Page<AuditEvent> page = auditEventService.findByDates(from, to, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -76,6 +76,6 @@ public class AdminAuditResource {
      */
     @GetMapping("/{id:.+}")
     public ResponseEntity<AuditEvent> get(@PathVariable Long id) {
-        return ResponseUtil.wrapOrNotFound(adminAuditService.find(id));
+        return ResponseUtil.wrapOrNotFound(auditEventService.find(id));
     }
 }
