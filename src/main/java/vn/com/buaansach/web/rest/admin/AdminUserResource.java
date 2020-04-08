@@ -9,12 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-import vn.com.buaansach.security.util.AuthoritiesConstants;
-import vn.com.buaansach.security.util.SecurityUtils;
-import vn.com.buaansach.service.admin.AdminUserService;
 import vn.com.buaansach.model.dto.UserDTO;
 import vn.com.buaansach.model.dto.auth.AdminPasswordChangeDTO;
 import vn.com.buaansach.model.dto.auth.CreateAccountDTO;
+import vn.com.buaansach.security.util.AuthoritiesConstants;
+import vn.com.buaansach.security.util.SecurityUtils;
+import vn.com.buaansach.service.admin.AdminUserService;
 
 import javax.validation.Valid;
 
@@ -35,9 +35,9 @@ public class AdminUserResource {
      */
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody CreateAccountDTO dto) {
-        log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, dto);
-        UserDTO responseDto = new UserDTO(adminUserService.createUser(dto));
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody CreateAccountDTO payload) {
+        log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        UserDTO responseDto = new UserDTO(adminUserService.createUser(payload));
         return ResponseEntity.ok(responseDto);
     }
 
@@ -51,7 +51,7 @@ public class AdminUserResource {
                                                      @RequestParam(value = "sortField", defaultValue = "createdDate") String sortField,
                                                      @RequestParam(value = "sortDirection", defaultValue = "DESC") Sort.Direction sortDirection) {
         PageRequest request = PageRequest.of(page - 1, size, sortDirection, sortField);
-        log.debug("REST request from user {} to get page {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
+        log.debug("REST request from user {} to list {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
         return ResponseEntity.ok(adminUserService.getPageUser(request, search).map(UserDTO::new));
     }
 
@@ -59,9 +59,9 @@ public class AdminUserResource {
      * Admin change password for user
      */
     @PutMapping("/change-password")
-    public void changePassword(@Valid @RequestBody AdminPasswordChangeDTO dto) {
-        log.debug("REST request from user {} to change password for {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, dto);
-        adminUserService.adminChangePassword(dto);
+    public void changePassword(@Valid @RequestBody AdminPasswordChangeDTO payload) {
+        log.debug("REST request from user {} to change password for {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        adminUserService.adminChangePassword(payload);
     }
 
     /**
@@ -69,7 +69,7 @@ public class AdminUserResource {
      */
     @PutMapping("/toggle-activation")
     public void toggleActivation(@RequestBody String login) {
-        log.debug("REST request from user {} to toggle-activation for {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, login);
+        log.debug("REST request from user {} to toggle activation for {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, login);
         adminUserService.toggleActivation(login);
     }
 }

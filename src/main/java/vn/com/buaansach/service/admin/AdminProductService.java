@@ -4,10 +4,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import vn.com.buaansach.model.entity.FileEntity;
-import vn.com.buaansach.model.entity.ProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.model.entity.FileEntity;
+import vn.com.buaansach.model.entity.ProductEntity;
 import vn.com.buaansach.repository.ProductRepository;
 import vn.com.buaansach.service.FileService;
 import vn.com.buaansach.util.Constants;
@@ -36,6 +36,11 @@ public class AdminProductService {
             productEntity.setProductImageUrl(fileEntity.getUrl());
         }
         return productRepository.save(productEntity);
+    }
+
+    public ProductEntity getOneProduct(String productGuid) {
+        return productRepository.findOneByGuid(UUID.fromString(productGuid))
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm: " + productGuid));
     }
 
     @Transactional

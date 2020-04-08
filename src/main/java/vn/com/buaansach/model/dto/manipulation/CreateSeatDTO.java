@@ -1,11 +1,11 @@
-package vn.com.buaansach.model.dto.request;
+package vn.com.buaansach.model.dto.manipulation;
 
 import lombok.Data;
 
 import java.util.UUID;
 
 @Data
-public class CreateSeatRequest {
+public class CreateSeatDTO {
     private UUID areaGuid;
     private String seatName;
 }

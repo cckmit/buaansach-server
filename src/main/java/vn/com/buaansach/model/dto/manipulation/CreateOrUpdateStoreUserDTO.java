@@ -1,4 +1,4 @@
-package vn.com.buaansach.model.dto.request;
+package vn.com.buaansach.model.dto.manipulation;
 
 import lombok.Data;
 import vn.com.buaansach.model.entity.enumeration.StoreUserRole;
@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 import java.util.UUID;
 
 @Data
-public class CreateOrUpdateStoreUserRequest {
+public class CreateOrUpdateStoreUserDTO {
     /**
      * for create new user and add to store immediately
      */

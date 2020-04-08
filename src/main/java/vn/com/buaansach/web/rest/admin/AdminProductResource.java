@@ -32,17 +32,10 @@ public class AdminProductResource {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ProductEntity> createProduct(@Valid @RequestPart("entity") ProductEntity entity,
+    public ResponseEntity<ProductEntity> createProduct(@Valid @RequestPart("payload") ProductEntity payload,
                                                        @RequestPart(value = "image", required = false) MultipartFile image) throws URISyntaxException {
-        log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, entity);
-        return ResponseEntity.ok(adminProductService.createProduct(entity, image));
-    }
-
-    @PutMapping("/update")
-    public ResponseEntity<ProductEntity> updateProduct(@Valid @RequestPart("entity") ProductEntity entity,
-                                                       @RequestPart(value = "image", required = false) MultipartFile image) {
-        log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, entity);
-        return ResponseEntity.ok(adminProductService.updateProduct(entity, image));
+        log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        return ResponseEntity.ok(adminProductService.createProduct(payload, image));
     }
 
     @GetMapping("/list")
@@ -52,8 +45,21 @@ public class AdminProductResource {
                                                               @RequestParam(value = "sortField", defaultValue = "createdDate") String sortField,
                                                               @RequestParam(value = "sortDirection", defaultValue = "DESC") Sort.Direction sortDirection) {
         PageRequest request = PageRequest.of(page - 1, size, sortDirection, sortField);
-        log.debug("REST request from user {} to get page {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
+        log.debug("REST request from user {} to list {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
         return ResponseEntity.ok(adminProductService.getPageProduct(request, search));
+    }
+
+    @GetMapping("/get/{productGuid}")
+    public ResponseEntity<ProductEntity> getOneStore(@PathVariable String productGuid) {
+        log.debug("REST request from user {} to get {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, productGuid);
+        return ResponseEntity.ok(adminProductService.getOneProduct(productGuid));
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<ProductEntity> updateProduct(@Valid @RequestPart("payload") ProductEntity payload,
+                                                       @RequestPart(value = "image", required = false) MultipartFile image) {
+        log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        return ResponseEntity.ok(adminProductService.updateProduct(payload, image));
     }
 
     @DeleteMapping("/delete/{productGuid}")

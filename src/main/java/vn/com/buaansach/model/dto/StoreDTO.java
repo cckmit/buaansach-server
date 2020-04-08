@@ -3,6 +3,7 @@ package vn.com.buaansach.model.dto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import vn.com.buaansach.model.dto.core.AuditDTO;
 import vn.com.buaansach.model.entity.StoreEntity;
 import vn.com.buaansach.model.entity.enumeration.StoreStatus;
 

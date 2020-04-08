@@ -1,9 +1,9 @@
 package vn.com.buaansach.service;
 
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.exception.AccessDeniedException;
 import vn.com.buaansach.model.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.model.entity.enumeration.StoreUserStatus;
-import vn.com.buaansach.exception.AccessDeniedException;
 import vn.com.buaansach.repository.StoreUserRepository;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
@@ -20,20 +20,20 @@ public class StoreUserSecurityService {
         this.storeUserRepository = storeUserRepository;
     }
 
-    private Set<StoreUserRole> getOwnerRole(){
+    private Set<StoreUserRole> getOwnerRole() {
         Set<StoreUserRole> checkRoles = new HashSet<>();
         checkRoles.add(StoreUserRole.OWNER);
         return checkRoles;
     }
 
-    private Set<StoreUserRole> getOwnerOrManagerRole(){
+    private Set<StoreUserRole> getOwnerOrManagerRole() {
         Set<StoreUserRole> checkRoles = new HashSet<>();
         checkRoles.add(StoreUserRole.OWNER);
         checkRoles.add(StoreUserRole.MANAGER);
         return checkRoles;
     }
 
-    private Set<StoreUserRole> getAllRole(){
+    private Set<StoreUserRole> getAllRole() {
         Set<StoreUserRole> checkRoles = new HashSet<>();
         checkRoles.add(StoreUserRole.OWNER);
         checkRoles.add(StoreUserRole.MANAGER);
@@ -57,25 +57,25 @@ public class StoreUserSecurityService {
         return checkAccess(getOwnerOrManagerRole(), storeGuid);
     }
 
-    public boolean hasOwnerPermission(UUID storeGuid){
+    public boolean hasOwnerPermission(UUID storeGuid) {
         return checkAccess(getOwnerRole(), storeGuid);
     }
 
-    public boolean hasPermission(UUID storeGuid){
+    public boolean hasPermission(UUID storeGuid) {
         return checkAccess(getAllRole(), storeGuid);
     }
 
-    public void blockAccessIfNotOwnerOrManager(UUID storeGuid){
+    public void blockAccessIfNotOwnerOrManager(UUID storeGuid) {
         if (!hasOwnerOrManagerPermission(storeGuid))
             throw new AccessDeniedException();
     }
 
-    public void blockAccessIfNotOwner(UUID storeGuid){
+    public void blockAccessIfNotOwner(UUID storeGuid) {
         if (!hasOwnerPermission(storeGuid))
             throw new AccessDeniedException();
     }
 
-    public void blockAccessIfNotInStore(UUID storeGuid){
+    public void blockAccessIfNotInStore(UUID storeGuid) {
         if (!hasPermission(storeGuid))
             throw new AccessDeniedException();
     }

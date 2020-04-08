@@ -1,4 +1,4 @@
-package vn.com.buaansach.model.dto;
+package vn.com.buaansach.model.dto.core;
 
 import lombok.Data;
 

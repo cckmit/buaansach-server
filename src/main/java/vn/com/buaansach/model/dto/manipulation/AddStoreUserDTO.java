@@ -1,4 +1,4 @@
-package vn.com.buaansach.model.dto.request;
+package vn.com.buaansach.model.dto.manipulation;
 
 import lombok.Data;
 import vn.com.buaansach.model.entity.enumeration.StoreUserRole;
@@ -7,7 +7,7 @@ import vn.com.buaansach.model.entity.enumeration.StoreUserStatus;
 import java.util.UUID;
 
 @Data
-public class AddStoreUserRequest {
+public class AddStoreUserDTO {
     private UUID storeGuid;
     private String userLoginOrEmail;
     private StoreUserRole storeUserRole;

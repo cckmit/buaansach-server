@@ -1,26 +1,26 @@
-package vn.com.buaansach.service;
+package vn.com.buaansach.service.admin;
 
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.model.dto.manipulation.CreateSeatDTO;
 import vn.com.buaansach.model.entity.AreaEntity;
 import vn.com.buaansach.model.entity.SeatEntity;
 import vn.com.buaansach.model.entity.StoreEntity;
-import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.repository.AreaRepository;
 import vn.com.buaansach.repository.SeatRepository;
 import vn.com.buaansach.repository.StoreRepository;
-import vn.com.buaansach.model.dto.request.CreateSeatRequest;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Service
-public class SeatService {
+public class AdminSeatService {
     private final SeatRepository seatRepository;
     private final AreaRepository areaRepository;
     private final StoreRepository storeRepository;
 
-    public SeatService(SeatRepository seatRepository, AreaRepository areaRepository, StoreRepository storeRepository) {
+    public AdminSeatService(SeatRepository seatRepository, AreaRepository areaRepository, StoreRepository storeRepository) {
         this.seatRepository = seatRepository;
         this.areaRepository = areaRepository;
         this.storeRepository = storeRepository;
@@ -33,8 +33,8 @@ public class SeatService {
             SeatEntity seatEntity = new SeatEntity();
             UUID guid = UUID.randomUUID();
             seatEntity.setGuid(guid);
-            if (seatPrefix != null && !seatPrefix.isEmpty()){
-            seatEntity.setSeatName(seatPrefix.trim() + " " + i);
+            if (seatPrefix != null && !seatPrefix.isEmpty()) {
+                seatEntity.setSeatName(seatPrefix.trim() + " " + i);
             } else {
                 seatEntity.setSeatName(String.valueOf(i));
             }
@@ -44,7 +44,7 @@ public class SeatService {
         return seatRepository.saveAll(listSeat);
     }
 
-    public SeatEntity createSeat(CreateSeatRequest request) {
+    public SeatEntity createSeat(CreateSeatDTO request) {
         AreaEntity areaEntity = areaRepository.findOneByGuid(request.getAreaGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Area not found with guid: " + request.getAreaGuid()));
 
@@ -75,7 +75,7 @@ public class SeatService {
         seatRepository.delete(seatEntity);
     }
 
-    public void deleteByAreaId(Long areaId) {
+    public void deleteAllSeatByAreaId(Long areaId) {
         List<SeatEntity> listSeat = seatRepository.findByAreaId(areaId);
         seatRepository.deleteAll(listSeat);
     }

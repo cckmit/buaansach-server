@@ -1,13 +1,14 @@
 package vn.com.buaansach.service.admin;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import vn.com.buaansach.model.entity.FileEntity;
-import vn.com.buaansach.model.entity.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.model.entity.FileEntity;
+import vn.com.buaansach.model.entity.StoreEntity;
 import vn.com.buaansach.repository.StoreRepository;
-import vn.com.buaansach.service.AreaService;
 import vn.com.buaansach.service.FileService;
 import vn.com.buaansach.util.Constants;
 
@@ -18,12 +19,12 @@ import java.util.UUID;
 public class AdminStoreService {
     private final StoreRepository storeRepository;
     private final FileService fileService;
-    private final AreaService areaService;
+    private final AdminAreaService adminAreaService;
 
-    public AdminStoreService(StoreRepository storeRepository, FileService fileService, AreaService areaService) {
+    public AdminStoreService(StoreRepository storeRepository, FileService fileService, AdminAreaService adminAreaService) {
         this.storeRepository = storeRepository;
         this.fileService = fileService;
-        this.areaService = areaService;
+        this.adminAreaService = adminAreaService;
     }
 
     @Transactional
@@ -37,6 +38,15 @@ public class AdminStoreService {
             payload.setStoreImageUrl(fileEntity.getUrl());
         }
         return storeRepository.save(payload);
+    }
+
+    public Page<StoreEntity> getPageStore(String search, PageRequest request) {
+        return storeRepository.findPageStoreWithKeyword(request, search.toLowerCase());
+    }
+
+    public StoreEntity getOneStore(String storeGuid) {
+        return storeRepository.findOneByGuid(UUID.fromString(storeGuid))
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy cửa hàng: " + storeGuid));
     }
 
     @Transactional
@@ -70,8 +80,9 @@ public class AdminStoreService {
     public void deleteStore(String storeGuid) {
         StoreEntity storeEntity = storeRepository.findOneByGuid(UUID.fromString(storeGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("store", "guid", storeGuid));
+        adminAreaService.deleteAllAreaByStoreId(storeEntity.getId());
         fileService.deleteByUrl(storeEntity.getStoreImageUrl());
-        areaService.deleteAreaByStoreId(storeEntity.getId());
         storeRepository.delete(storeEntity);
     }
+
 }

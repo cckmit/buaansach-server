@@ -65,7 +65,7 @@ public class MailService {
     public void sendEmailFromTemplate(UserEntity userEntity, String templateName, String titleKey) {
         if (!Boolean.parseBoolean(enableSendMail)) return;
         if (userEntity.getEmail() == null) {
-            log.debug("Email doesn't exist for user '{}'", userEntity.getLogin());
+            log.debug("User {} doesn't have and email", userEntity.getLogin());
             return;
         }
         Locale locale = Locale.forLanguageTag(userEntity.getLangKey() == null ? "" : userEntity.getLangKey());

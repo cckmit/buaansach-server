@@ -1,4 +1,4 @@
-package vn.com.buaansach.service;
+package vn.com.buaansach.service.admin;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +23,9 @@ import java.util.Optional;
  */
 @Service
 @Transactional
-public class AuditEventService {
+public class AdminAuditService {
 
-    private final Logger log = LoggerFactory.getLogger(AuditEventService.class);
+    private final Logger log = LoggerFactory.getLogger(AdminAuditService.class);
 
     private final PersistenceAuditEventRepository persistenceAuditEventRepository;
 
@@ -34,7 +34,7 @@ public class AuditEventService {
     @Value("${audit-events.retention-period}")
     private int retentionPeriod;
 
-    public AuditEventService(
+    public AdminAuditService(
             PersistenceAuditEventRepository persistenceAuditEventRepository,
             AuditEventConverter auditEventConverter) {
 

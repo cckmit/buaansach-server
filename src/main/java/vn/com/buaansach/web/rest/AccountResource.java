@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.rest.user;
+package vn.com.buaansach.web.rest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,24 +11,24 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import vn.com.buaansach.model.entity.UserEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.model.dto.UserDTO;
+import vn.com.buaansach.model.dto.auth.*;
+import vn.com.buaansach.model.entity.UserEntity;
 import vn.com.buaansach.repository.UserRepository;
 import vn.com.buaansach.security.jwt.TokenProvider;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.service.MailService;
 import vn.com.buaansach.service.UserService;
-import vn.com.buaansach.model.dto.UserDTO;
-import vn.com.buaansach.model.dto.auth.*;
 
 import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/user")
-public class UserResource {
+@RequestMapping("/api/v1/account")
+public class AccountResource {
     private final String ENTITY_NAME = "user";
-    private final Logger log = LoggerFactory.getLogger(UserResource.class);
+    private final Logger log = LoggerFactory.getLogger(AccountResource.class);
 
     private final MailService mailService;
 
@@ -40,7 +40,7 @@ public class UserResource {
 
     private final UserRepository userRepository;
 
-    public UserResource(MailService mailService, UserService userService, AuthenticationManager authenticationManager, TokenProvider tokenProvider, UserRepository userRepository) {
+    public AccountResource(MailService mailService, UserService userService, AuthenticationManager authenticationManager, TokenProvider tokenProvider, UserRepository userRepository) {
         this.mailService = mailService;
         this.userService = userService;
         this.authenticationManager = authenticationManager;

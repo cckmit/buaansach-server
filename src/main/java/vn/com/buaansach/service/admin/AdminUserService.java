@@ -5,17 +5,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.model.entity.AuthorityEntity;
-import vn.com.buaansach.model.entity.UserEntity;
 import vn.com.buaansach.exception.EmailAlreadyUsedException;
 import vn.com.buaansach.exception.LoginAlreadyUsedException;
 import vn.com.buaansach.exception.PhoneAlreadyUsedException;
+import vn.com.buaansach.model.dto.auth.AdminPasswordChangeDTO;
+import vn.com.buaansach.model.dto.auth.CreateAccountDTO;
+import vn.com.buaansach.model.entity.AuthorityEntity;
+import vn.com.buaansach.model.entity.UserEntity;
 import vn.com.buaansach.repository.AuthorityRepository;
 import vn.com.buaansach.repository.UserRepository;
 import vn.com.buaansach.service.FileService;
 import vn.com.buaansach.service.MailService;
-import vn.com.buaansach.model.dto.auth.AdminPasswordChangeDTO;
-import vn.com.buaansach.model.dto.auth.CreateAccountDTO;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.util.RandomUtil;
 
@@ -103,10 +103,10 @@ public class AdminUserService {
         });
     }
 
-
     public void toggleActivation(String login) {
         userRepository.findOneByLogin(login).ifPresent(
                 user -> {
+                    user.setDisabledByAdmin(user.isActivated());
                     user.setActivated(!user.isActivated());
                     userRepository.save(user);
                 }
