@@ -2,11 +2,11 @@ package vn.com.buaansach.service.admin;
 
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.exception.ResourceNotFoundException;
-import vn.com.buaansach.model.dto.AreaDTO;
-import vn.com.buaansach.model.dto.manipulation.CreateAreaDTO;
-import vn.com.buaansach.model.entity.AreaEntity;
-import vn.com.buaansach.model.entity.SeatEntity;
-import vn.com.buaansach.model.entity.StoreEntity;
+import vn.com.buaansach.service.dto.AreaDTO;
+import vn.com.buaansach.service.dto.manipulation.CreateAreaDTO;
+import vn.com.buaansach.entity.AreaEntity;
+import vn.com.buaansach.entity.SeatEntity;
+import vn.com.buaansach.entity.StoreEntity;
 import vn.com.buaansach.repository.AreaRepository;
 import vn.com.buaansach.repository.StoreRepository;
 

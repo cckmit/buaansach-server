@@ -3,8 +3,8 @@ package vn.com.buaansach.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import vn.com.buaansach.model.entity.StoreUserEntity;
-import vn.com.buaansach.model.dto.StoreUserDTO;
+import vn.com.buaansach.entity.StoreUserEntity;
+import vn.com.buaansach.service.dto.StoreUserDTO;
 
 import java.util.List;
 import java.util.Optional;

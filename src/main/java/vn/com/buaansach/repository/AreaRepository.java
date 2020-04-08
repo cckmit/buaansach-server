@@ -1,7 +1,7 @@
 package vn.com.buaansach.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import vn.com.buaansach.model.entity.AreaEntity;
+import vn.com.buaansach.entity.AreaEntity;
 
 import java.util.List;
 import java.util.Optional;

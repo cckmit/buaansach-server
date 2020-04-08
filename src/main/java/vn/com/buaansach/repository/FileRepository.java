@@ -1,7 +1,7 @@
 package vn.com.buaansach.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import vn.com.buaansach.model.entity.FileEntity;
+import vn.com.buaansach.entity.FileEntity;
 
 import java.util.Optional;
 import java.util.UUID;

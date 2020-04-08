@@ -2,8 +2,8 @@ package vn.com.buaansach.service;
 
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.exception.AccessDeniedException;
-import vn.com.buaansach.model.entity.enumeration.StoreUserRole;
-import vn.com.buaansach.model.entity.enumeration.StoreUserStatus;
+import vn.com.buaansach.entity.enumeration.StoreUserRole;
+import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 import vn.com.buaansach.repository.StoreUserRepository;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;

@@ -18,10 +18,10 @@
             <column name="password_hash" type="varchar(60)">
                 <constraints nullable="false"/>
             </column>
-            <column name="activated" type="boolean" valueBoolean="false">
+            <column name="activated" type="boolean" defaultValue="false">
                 <constraints nullable="false"/>
             </column>
-            <column name="disabled_by_admin" type="boolean" valueBoolean="false">
+            <column name="disabled_by_admin" type="boolean" defaultValue="false">
                 <constraints nullable="false"/>
             </column>
             <column name="first_name" type="varchar(50)"/>

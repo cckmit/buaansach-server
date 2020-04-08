@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import vn.com.buaansach.model.entity.UserEntity;
+import vn.com.buaansach.entity.UserEntity;
 
 import java.time.Instant;
 import java.util.List;

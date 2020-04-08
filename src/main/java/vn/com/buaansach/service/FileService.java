@@ -5,7 +5,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.exception.BadRequestException;
-import vn.com.buaansach.model.entity.FileEntity;
+import vn.com.buaansach.entity.FileEntity;
 import vn.com.buaansach.repository.FileRepository;
 
 import javax.servlet.http.HttpServletResponse;
