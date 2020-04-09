@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import vn.com.buaansach.entity.StoreUserEntity;
+import vn.com.buaansach.service.dto.EmployeeStoreUserDTO;
 import vn.com.buaansach.service.dto.StoreUserDTO;
 
 import java.util.List;
@@ -21,4 +22,13 @@ public interface StoreUserRepository extends JpaRepository<StoreUserEntity, Long
             "ON storeUser.userLogin = user.login " +
             "WHERE storeUser.storeGuid = :storeGuid")
     List<StoreUserDTO> findByStoreGuid(@Param("storeGuid") UUID storeGuid);
+
+    @Query("SELECT new vn.com.buaansach.service.dto.EmployeeStoreUserDTO(storeUser, store, user) " +
+            "FROM vn.com.buaansach.entity.StoreUserEntity storeUser " +
+            "LEFT JOIN vn.com.buaansach.entity.StoreEntity store " +
+            "ON storeUser.storeGuid = store.guid " +
+            "LEFT JOIN vn.com.buaansach.entity.UserEntity user " +
+            "ON storeUser.userLogin = user.login " +
+            "WHERE storeUser.userLogin = :userLogin")
+    List<EmployeeStoreUserDTO> findListStoreUserByUser(@Param("userLogin") String userLogin);
 }

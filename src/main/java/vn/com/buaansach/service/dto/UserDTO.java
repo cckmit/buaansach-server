@@ -2,6 +2,7 @@ package vn.com.buaansach.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import vn.com.buaansach.service.dto.core.AuditDTO;
 import vn.com.buaansach.entity.AuthorityEntity;
@@ -14,6 +15,7 @@ import javax.validation.constraints.Size;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
