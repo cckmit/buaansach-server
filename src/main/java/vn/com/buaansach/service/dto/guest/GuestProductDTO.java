@@ -1,4 +1,4 @@
-package vn.com.buaansach.service.dto;
+package vn.com.buaansach.service.dto.guest;
 
 import lombok.Data;
 import vn.com.buaansach.entity.ProductEntity;
@@ -7,7 +7,7 @@ import vn.com.buaansach.entity.enumeration.ProductStatus;
 import java.util.UUID;
 
 @Data
-public class ProductForUserDTO {
+public class GuestProductDTO {
     private UUID guid;
 
     private String productCode;
@@ -24,10 +24,10 @@ public class ProductForUserDTO {
 
     private int productPrice;
 
-    public ProductForUserDTO() {
+    public GuestProductDTO() {
     }
 
-    public ProductForUserDTO(ProductEntity productEntity) {
+    public GuestProductDTO(ProductEntity productEntity) {
         this.guid = productEntity.getGuid();
         this.productCode = productEntity.getProductCode();
         this.productName = productEntity.getProductName();

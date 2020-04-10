@@ -1,7 +1,6 @@
 package vn.com.buaansach.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jdk.internal.jline.internal.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
@@ -35,7 +34,6 @@ public class SeatEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "seat_status")
     private SeatStatus seatStatus = SeatStatus.EMPTY;
 
-    @Nullable
     @Column(name = "last_order_id")
     private Long lastOrderId;
 
