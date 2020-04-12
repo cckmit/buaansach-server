@@ -39,7 +39,7 @@ app:
     token-time: 86400
     # Token valid for 7 days with remember me
     token-time-for-remember: 604800
-  upload-dir: 'file:///D:/bas/storage/'
+  upload-dir: 'D:/bas/storage/'
   server-domain: 'http://localhost'
   client-domain: "http://buaansach.com.vn/"
   mail:

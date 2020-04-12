@@ -1,5 +1,7 @@
 package vn.com.buaansach.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
@@ -7,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.entity.FileEntity;
 import vn.com.buaansach.repository.FileRepository;
+import vn.com.buaansach.web.rest.AccountResource;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -23,6 +26,7 @@ import java.util.UUID;
 
 @Service
 public class FileService {
+    private final Logger log = LoggerFactory.getLogger(FileService.class);
     private final FileRepository fileRepository;
     @Value("${server.port}")
     private Long serverPort;
@@ -101,7 +105,7 @@ public class FileService {
         String fileName = guid + extension;
 
         try {
-            String localDir = uploadDir.substring(8) + customPath;
+            String localDir = uploadDir + customPath;
             Files.createDirectories(Paths.get(localDir));
             Files.copy(file.getInputStream(), Paths.get(localDir, fileName));
             // path for client side
@@ -114,7 +118,7 @@ public class FileService {
             fileEntity.setLocalUrl(localDir + "/" + fileName);
             fileEntity.setUrl(clientSidePath + "/" + fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return new FileEntity();
         }
         return fileRepository.save(fileEntity);
