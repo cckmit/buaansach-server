@@ -26,6 +26,7 @@
             </column>
             <column name="product_real_price" type="int"/>
             <column name="product_price" type="int"/>
+            <column name="category_id" type="bigint"/>
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>

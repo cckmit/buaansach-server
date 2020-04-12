@@ -14,6 +14,7 @@ import vn.com.buaansach.entity.ProductEntity;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminProductService;
+import vn.com.buaansach.web.admin.service.dto.AdminProductDTO;
 
 import javax.validation.Valid;
 
@@ -31,7 +32,7 @@ public class AdminProductResource {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ProductEntity> createProduct(@Valid @RequestPart("payload") ProductEntity payload,
+    public ResponseEntity<ProductEntity> createProduct(@Valid @RequestPart("payload") AdminProductDTO payload,
                                                        @RequestPart(value = "image", required = false) MultipartFile image) {
         log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminProductService.createProduct(payload, image));
@@ -39,7 +40,7 @@ public class AdminProductResource {
 
 
     @PutMapping("/update")
-    public ResponseEntity<ProductEntity> updateProduct(@Valid @RequestPart("payload") ProductEntity payload,
+    public ResponseEntity<ProductEntity> updateProduct(@Valid @RequestPart("payload") AdminProductDTO payload,
                                                        @RequestPart(value = "image", required = false) MultipartFile image) {
         log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminProductService.updateProduct(payload, image));

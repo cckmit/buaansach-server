@@ -9,7 +9,7 @@ import vn.com.buaansach.entity.enumeration.SeatStatus;
 import java.util.UUID;
 
 @Data
-public class GuestSeatDTO {
+public class CustomerSeatDTO {
     private UUID seatGuid;
     private UUID areaGuid;
     private UUID storeGuid;
@@ -18,10 +18,10 @@ public class GuestSeatDTO {
     private String storeName;
     private SeatStatus seatStatus;
 
-    public GuestSeatDTO() {
+    public CustomerSeatDTO() {
     }
 
-    public GuestSeatDTO(StoreEntity storeEntity, AreaEntity areaEntity, SeatEntity seatEntity) {
+    public CustomerSeatDTO(StoreEntity storeEntity, AreaEntity areaEntity, SeatEntity seatEntity) {
         this.seatGuid = seatEntity.getGuid();
         this.seatName = seatEntity.getSeatName();
         this.seatStatus = seatEntity.getSeatStatus();

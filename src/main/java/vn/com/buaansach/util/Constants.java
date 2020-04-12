@@ -13,6 +13,7 @@ public final class Constants {
     public static final String STORE_IMAGE_PATH = "store_images";
     public static final String PRODUCT_IMAGE_PATH = "product_images";
     public static final String PRODUCT_THUMBNAIL_PATH = "product_thumbnails";
+    public static final String CATEGORY_IMAGE_PATH = "category_images";
     public static final String USER_IMAGE_PATH = "user_images";
 
     private Constants() {

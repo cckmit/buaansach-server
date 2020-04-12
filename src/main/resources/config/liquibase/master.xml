@@ -14,6 +14,7 @@
     <include file="config/liquibase/schema/create_table_bas_area.xml"/>
     <include file="config/liquibase/schema/create_table_bas_seat.xml"/>
     <include file="config/liquibase/schema/create_table_bas_product.xml"/>
+    <include file="config/liquibase/schema/create_table_bas_category.xml"/>
 
 
     <!--Data-->

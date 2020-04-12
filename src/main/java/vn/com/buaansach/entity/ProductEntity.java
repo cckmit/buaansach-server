@@ -53,4 +53,7 @@ public class ProductEntity extends AbstractAuditingEntity implements Serializabl
 
     @Column(name = "product_price")
     private int productPrice;
+
+    @Column(name = "category_id")
+    private Long categoryId;
 }

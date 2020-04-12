@@ -1,6 +1,9 @@
 package vn.com.buaansach.web.customer.service.dto;
 
-public class GuestOrderProductDTO {
+import lombok.Data;
+
+@Data
+public class CustomerOrderProductDTO {
     private Long productId;
 
     private Long orderId;

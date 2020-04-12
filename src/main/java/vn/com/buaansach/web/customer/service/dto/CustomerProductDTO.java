@@ -7,7 +7,7 @@ import vn.com.buaansach.entity.enumeration.ProductStatus;
 import java.util.UUID;
 
 @Data
-public class GuestProductDTO {
+public class CustomerProductDTO {
     private UUID guid;
 
     private String productCode;
@@ -24,10 +24,10 @@ public class GuestProductDTO {
 
     private int productPrice;
 
-    public GuestProductDTO() {
+    public CustomerProductDTO() {
     }
 
-    public GuestProductDTO(ProductEntity productEntity) {
+    public CustomerProductDTO(ProductEntity productEntity) {
         this.guid = productEntity.getGuid();
         this.productCode = productEntity.getProductCode();
         this.productName = productEntity.getProductName();

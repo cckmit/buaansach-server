@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vn.com.buaansach.web.customer.service.dto.GuestProductDTO;
+import vn.com.buaansach.web.customer.service.dto.CustomerProductDTO;
 import vn.com.buaansach.web.customer.service.CustomerProductService;
 
 import java.util.List;
@@ -20,9 +20,9 @@ public class CustomerProductResource {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<GuestProductDTO>> getListProduct() {
+    public ResponseEntity<List<CustomerProductDTO>> getListProduct() {
         return ResponseEntity.ok(customerProductService.getList().stream()
-                .map(GuestProductDTO::new)
+                .map(CustomerProductDTO::new)
                 .collect(Collectors.toList()));
     }
 }
