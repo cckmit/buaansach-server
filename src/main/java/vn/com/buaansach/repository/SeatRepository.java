@@ -4,8 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import vn.com.buaansach.entity.SeatEntity;
-import vn.com.buaansach.service.dto.EmployeeStoreUserDTO;
-import vn.com.buaansach.service.dto.guest.GuestSeatDTO;
+import vn.com.buaansach.web.customer.service.dto.GuestSeatDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +23,7 @@ public interface SeatRepository extends JpaRepository<SeatEntity, Long> {
 
     void deleteByGuid(UUID guid);
 
-    @Query("SELECT new vn.com.buaansach.service.dto.guest.GuestSeatDTO(store, area, seat) " +
+    @Query("SELECT new vn.com.buaansach.web.customer.service.dto.GuestSeatDTO(store, area, seat) " +
             "FROM vn.com.buaansach.entity.SeatEntity seat " +
             "LEFT JOIN vn.com.buaansach.entity.AreaEntity area " +
             "ON seat.areaId = area.id " +

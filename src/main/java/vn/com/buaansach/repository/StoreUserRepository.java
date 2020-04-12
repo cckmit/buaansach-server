@@ -4,8 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import vn.com.buaansach.entity.StoreUserEntity;
-import vn.com.buaansach.service.dto.EmployeeStoreUserDTO;
-import vn.com.buaansach.service.dto.StoreUserDTO;
+import vn.com.buaansach.web.employee.service.dto.EmployeeStoreUserDTO;
+import vn.com.buaansach.web.common.service.dto.StoreUserDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,14 +16,14 @@ public interface StoreUserRepository extends JpaRepository<StoreUserEntity, Long
 
     Optional<StoreUserEntity> findOneByGuid(UUID guid);
 
-    @Query("SELECT new vn.com.buaansach.service.dto.StoreUserDTO(storeUser, user) " +
+    @Query("SELECT new vn.com.buaansach.web.common.service.dto.StoreUserDTO(storeUser, user) " +
             "FROM vn.com.buaansach.entity.StoreUserEntity storeUser " +
             "LEFT JOIN vn.com.buaansach.entity.UserEntity user " +
             "ON storeUser.userLogin = user.login " +
             "WHERE storeUser.storeGuid = :storeGuid")
     List<StoreUserDTO> findByStoreGuid(@Param("storeGuid") UUID storeGuid);
 
-    @Query("SELECT new vn.com.buaansach.service.dto.EmployeeStoreUserDTO(storeUser, store, user) " +
+    @Query("SELECT new vn.com.buaansach.web.employee.service.dto.EmployeeStoreUserDTO(storeUser, store, user) " +
             "FROM vn.com.buaansach.entity.StoreUserEntity storeUser " +
             "LEFT JOIN vn.com.buaansach.entity.StoreEntity store " +
             "ON storeUser.storeGuid = store.guid " +
