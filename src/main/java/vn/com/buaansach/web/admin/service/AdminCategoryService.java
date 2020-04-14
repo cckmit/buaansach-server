@@ -9,6 +9,7 @@ import vn.com.buaansach.entity.FileEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.repository.CategoryRepository;
+import vn.com.buaansach.repository.ProductRepository;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.common.service.FileService;
 
@@ -20,16 +21,18 @@ import java.util.UUID;
 public class AdminCategoryService {
     private final CategoryRepository categoryRepository;
     private final FileService fileService;
+    private final ProductRepository productRepository;
 
-    public AdminCategoryService(CategoryRepository categoryRepository, FileService fileService) {
+    public AdminCategoryService(CategoryRepository categoryRepository, FileService fileService, ProductRepository productRepository) {
         this.categoryRepository = categoryRepository;
         this.fileService = fileService;
+        this.productRepository = productRepository;
     }
 
     @Transactional
     public CategoryEntity createCategory(CategoryEntity categoryEntity, MultipartFile image) {
         if (categoryRepository.findOneByCategoryName(categoryEntity.getCategoryName()).isPresent()) {
-            throw new BadRequestException("Tên danh mục đã được sử dụng");
+            throw new BadRequestException("Category Name already in use");
         }
         categoryEntity.setGuid(UUID.randomUUID());
         if (image != null) {
@@ -41,18 +44,18 @@ public class AdminCategoryService {
 
     public CategoryEntity getCategory(String categoryGuid) {
         return categoryRepository.findOneByGuid(UUID.fromString(categoryGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy danh mục với id: " + categoryGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryGuid));
     }
 
     @Transactional
     public CategoryEntity updateCategory(CategoryEntity updateEntity, MultipartFile image) {
         CategoryEntity currentEntity = categoryRepository.findOneByGuid(updateEntity.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy danh mục với id: " + updateEntity.getGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + updateEntity.getGuid()));
 
         /* if change category name, check if name has been used or not */
         if (!updateEntity.getCategoryName().equals(currentEntity.getCategoryName())) {
             if (categoryRepository.findOneByCategoryName(updateEntity.getCategoryName()).isPresent()) {
-                throw new BadRequestException("Tên danh mục đã được sử dụng");
+                throw new BadRequestException("Category Name already in use");
             }
         }
 
@@ -85,10 +88,12 @@ public class AdminCategoryService {
         return categoryRepository.findPageCategoryWithKeyword(request, search.toLowerCase());
     }
 
+    @Transactional
     public void deleteCategory(String categoryGuid) {
         CategoryEntity categoryEntity = categoryRepository.findOneByGuid(UUID.fromString(categoryGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy danh mục với id: " + categoryGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryGuid));
         fileService.deleteByUrl(categoryEntity.getCategoryImageUrl());
+        productRepository.deleteProductCategory(categoryEntity.getId());
         categoryRepository.delete(categoryEntity);
     }
 }

@@ -1,4 +1,4 @@
-package vn.com.buaansach.repository;
+package vn.com.buaansach.repository.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import vn.com.buaansach.config.audit.AuditEventConverter;
 import vn.com.buaansach.entity.PersistentAuditEvent;
+import vn.com.buaansach.repository.PersistenceAuditEventRepository;
 import vn.com.buaansach.util.Constants;
 
 import java.time.Instant;

@@ -17,6 +17,6 @@ public class CustomerSeatService {
 
     public CustomerSeatDTO getSeat(String seatGuid) {
         return seatRepository.findGuestSeatDTO(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chỗ ngồi với id: " + seatGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("Seat not found with id: " + seatGuid));
     }
 }

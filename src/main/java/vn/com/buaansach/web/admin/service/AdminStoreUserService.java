@@ -2,22 +2,22 @@ package vn.com.buaansach.web.admin.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.exception.AccessDeniedException;
-import vn.com.buaansach.exception.BadRequestException;
-import vn.com.buaansach.exception.LoginAlreadyUsedException;
-import vn.com.buaansach.exception.ResourceNotFoundException;
-import vn.com.buaansach.web.common.service.dto.StoreUserDTO;
-import vn.com.buaansach.web.admin.service.dto.AdminAddStoreUserDTO;
-import vn.com.buaansach.web.common.service.dto.manipulation.CreateOrUpdateStoreUserDTO;
 import vn.com.buaansach.entity.AuthorityEntity;
 import vn.com.buaansach.entity.StoreUserEntity;
 import vn.com.buaansach.entity.UserEntity;
 import vn.com.buaansach.entity.enumeration.Language;
+import vn.com.buaansach.exception.AccessDeniedException;
+import vn.com.buaansach.exception.BadRequestException;
+import vn.com.buaansach.exception.LoginAlreadyUsedException;
+import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.repository.StoreRepository;
 import vn.com.buaansach.repository.StoreUserRepository;
 import vn.com.buaansach.repository.UserRepository;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
+import vn.com.buaansach.web.admin.service.dto.AdminAddStoreUserDTO;
+import vn.com.buaansach.web.common.service.dto.StoreUserDTO;
+import vn.com.buaansach.web.common.service.dto.manipulation.CreateOrUpdateStoreUserDTO;
 import vn.com.buaansach.web.manager.StoreUserSecurityService;
 
 import javax.transaction.Transactional;
@@ -104,16 +104,16 @@ public class AdminStoreUserService {
                 .orElseThrow(() -> new ResourceNotFoundException("storeUser", "guid", storeUserGuid));
 
         if (SecurityUtils.getCurrentUserLogin().equals(storeUserEntity.getUserLogin()))
-            throw new BadRequestException("Bạn không thể vô hiệu hóa tài khoản của bạn");
+            throw new BadRequestException("You cannot deactivate your account");
 
         UserEntity userEntity = userRepository.findOneByLogin(storeUserEntity.getUserLogin())
                 .orElseThrow(() -> new ResourceNotFoundException("user", "login", storeUserEntity.getUserLogin()));
         if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)
                 && userEntity.getAuthorities().contains(new AuthorityEntity(AuthoritiesConstants.ADMIN))) {
-            throw new AccessDeniedException("Bạn không có quyền vô hiệu hóa tài khoản của quản trị viên");
+            throw new AccessDeniedException("Cannot deactivate administrator account");
         }
         if (userEntity.isDisabledByAdmin() && !SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
-            throw new AccessDeniedException("Tài khoản đã bị vô hiệu hóa bởi quản trị viên.");
+            throw new AccessDeniedException("Account has been deactivate by administrator.");
         }
         userEntity.setActivated(!userEntity.isActivated());
         userRepository.save(userEntity);
@@ -159,5 +159,9 @@ public class AdminStoreUserService {
         StoreUserEntity storeUserEntity = storeUserRepository.findOneByGuid(UUID.fromString(storeUserGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("storeUser", "guid", storeUserGuid));
         storeUserRepository.delete(storeUserEntity);
+    }
+
+    public void deleteByStoreGuid(UUID guid) {
+        storeUserRepository.deleteByStoreGuid(guid);
     }
 }

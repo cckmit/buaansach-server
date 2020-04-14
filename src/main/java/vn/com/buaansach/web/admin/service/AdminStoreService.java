@@ -20,17 +20,19 @@ public class AdminStoreService {
     private final StoreRepository storeRepository;
     private final FileService fileService;
     private final AdminAreaService adminAreaService;
+    private final AdminStoreUserService adminStoreUserService;
 
-    public AdminStoreService(StoreRepository storeRepository, FileService fileService, AdminAreaService adminAreaService) {
+    public AdminStoreService(StoreRepository storeRepository, FileService fileService, AdminAreaService adminAreaService, AdminStoreUserService adminStoreUserService) {
         this.storeRepository = storeRepository;
         this.fileService = fileService;
         this.adminAreaService = adminAreaService;
+        this.adminStoreUserService = adminStoreUserService;
     }
 
     @Transactional
     public StoreEntity createStore(StoreEntity payload, MultipartFile image) {
         if (storeRepository.findOneByStoreCode(payload.getStoreCode()).isPresent()) {
-            throw new BadRequestException("Mã cửa hàng đã được sử dụng");
+            throw new BadRequestException("Store Code already in use");
         }
         payload.setGuid(UUID.randomUUID());
         if (image != null) {
@@ -46,7 +48,7 @@ public class AdminStoreService {
 
     public StoreEntity getOneStore(String storeGuid) {
         return storeRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy cửa hàng: " + storeGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("Store not found with id: " + storeGuid));
     }
 
     @Transactional
@@ -55,9 +57,9 @@ public class AdminStoreService {
                 .orElseThrow(() -> new ResourceNotFoundException("store", "guid", updateEntity.getGuid()));
 
         /* if change store code, check if code has been used or not */
-        if (!updateEntity.getStoreCode().equals(currentEntity.getStoreCode())) {
+        if (!updateEntity.getStoreCode().toLowerCase().equals(currentEntity.getStoreCode().toLowerCase())) {
             storeRepository.findOneByStoreCode(updateEntity.getStoreCode()).ifPresent(anotherEntity -> {
-                throw new BadRequestException("Mã cửa hàng đã được sử dụng");
+                throw new BadRequestException("Store Code alreay in use");
             });
         }
 
@@ -82,6 +84,7 @@ public class AdminStoreService {
                 .orElseThrow(() -> new ResourceNotFoundException("store", "guid", storeGuid));
         adminAreaService.deleteAllAreaByStoreId(storeEntity.getId());
         fileService.deleteByUrl(storeEntity.getStoreImageUrl());
+        adminStoreUserService.deleteByStoreGuid(storeEntity.getGuid());
         storeRepository.delete(storeEntity);
     }
 

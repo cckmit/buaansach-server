@@ -31,4 +31,6 @@ public interface StoreUserRepository extends JpaRepository<StoreUserEntity, Long
             "ON storeUser.userLogin = user.login " +
             "WHERE storeUser.userLogin = :userLogin")
     List<EmployeeStoreUserDTO> findListStoreUserByUser(@Param("userLogin") String userLogin);
+
+    void deleteByStoreGuid(UUID guid);
 }

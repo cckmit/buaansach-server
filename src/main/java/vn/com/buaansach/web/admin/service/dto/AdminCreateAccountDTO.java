@@ -30,7 +30,7 @@ public class AdminCreateAccountDTO {
 
     private String password;
 
-    private boolean activated;
+    private boolean activated = true;
 
     private String langKey;
 
