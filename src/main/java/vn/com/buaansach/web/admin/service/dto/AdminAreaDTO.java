@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.common.service.dto;
+package vn.com.buaansach.web.admin.service.dto;
 
 import lombok.Data;
 import vn.com.buaansach.entity.AreaEntity;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-public class AreaDTO {
+public class AdminAreaDTO {
     private UUID guid;
     private String areaName;
     private List<SeatEntity> listSeat = new ArrayList<>();
@@ -21,7 +21,7 @@ public class AreaDTO {
     private String lastModifiedBy;
     private Instant lastModifiedDate;
 
-    public AreaDTO(AreaEntity entity){
+    public AdminAreaDTO(AreaEntity entity){
         this.guid = entity.getGuid();
         this.areaName = entity.getAreaName();
         this.createdBy = entity.getCreatedBy();
@@ -30,7 +30,7 @@ public class AreaDTO {
         this.lastModifiedDate = entity.getLastModifiedDate();
     }
 
-    public AreaDTO(AreaEntity entity, List<SeatEntity> listSeat){
+    public AdminAreaDTO(AreaEntity entity, List<SeatEntity> listSeat){
         this.guid = entity.getGuid();
         this.areaName = entity.getAreaName();
         this.listSeat = listSeat;

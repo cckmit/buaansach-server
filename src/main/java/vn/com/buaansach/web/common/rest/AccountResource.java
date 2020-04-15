@@ -27,7 +27,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/account")
 public class AccountResource {
-    private final String ENTITY_NAME = "user";
+    private final String ENTITY_NAME = "account";
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);
 
     private final MailService mailService;

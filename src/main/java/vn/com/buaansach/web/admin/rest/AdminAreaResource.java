@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-import vn.com.buaansach.web.common.service.dto.AreaDTO;
+import vn.com.buaansach.web.admin.service.dto.AdminAreaDTO;
 import vn.com.buaansach.web.common.service.dto.manipulation.CreateAreaDTO;
 import vn.com.buaansach.entity.AreaEntity;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
@@ -29,19 +29,19 @@ public class AdminAreaResource {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<AreaDTO> createArea(@Valid @RequestBody CreateAreaDTO payload) {
+    public ResponseEntity<AdminAreaDTO> createArea(@Valid @RequestBody CreateAreaDTO payload) {
         log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminAreaService.createArea(payload));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<AreaDTO> updateArea(@Valid @RequestBody AreaEntity payload) {
+    public ResponseEntity<AdminAreaDTO> updateArea(@Valid @RequestBody AreaEntity payload) {
         log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminAreaService.updateArea(payload));
     }
 
     @GetMapping("/list-by-store/{storeGuid}")
-    public ResponseEntity<List<AreaDTO>> getListAreaByStore(@PathVariable String storeGuid) {
+    public ResponseEntity<List<AdminAreaDTO>> getListAreaByStore(@PathVariable String storeGuid) {
         log.debug("REST request from user {} to list {} by store : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
         return ResponseEntity.ok(adminAreaService.getListAreaByStore(storeGuid));
     }

@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.common.service.dto;
+package vn.com.buaansach.web.admin.service.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -6,10 +6,11 @@ import vn.com.buaansach.entity.StoreUserEntity;
 import vn.com.buaansach.entity.UserEntity;
 import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
+import vn.com.buaansach.web.common.service.dto.AuditDTO;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class StoreUserDTO extends AuditDTO {
+public class AdminStoreUserDTO extends AuditDTO {
     private String storeGuid;
     private String userLogin;
     private String firstName;
@@ -18,10 +19,10 @@ public class StoreUserDTO extends AuditDTO {
     private StoreUserRole storeUserRole;
     private StoreUserStatus storeUserStatus;
 
-    public StoreUserDTO() {
+    public AdminStoreUserDTO() {
     }
 
-    public StoreUserDTO(StoreUserEntity storeUserEntity, UserEntity userEntity) {
+    public AdminStoreUserDTO(StoreUserEntity storeUserEntity, UserEntity userEntity) {
         this.guid = storeUserEntity.getGuid();
         this.storeGuid = storeUserEntity.getStoreGuid().toString();
         this.userLogin = userEntity.getLogin();

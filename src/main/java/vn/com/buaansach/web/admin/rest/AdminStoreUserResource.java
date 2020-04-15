@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminStoreUserService;
-import vn.com.buaansach.web.common.service.dto.StoreUserDTO;
+import vn.com.buaansach.web.admin.service.dto.AdminStoreUserDTO;
 import vn.com.buaansach.web.admin.service.dto.AdminAddStoreUserDTO;
 import vn.com.buaansach.web.common.service.dto.manipulation.CreateOrUpdateStoreUserDTO;
 
@@ -28,7 +28,7 @@ public class AdminStoreUserResource {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<StoreUserDTO> createStoreUser(@Valid @RequestBody CreateOrUpdateStoreUserDTO payload) {
+    public ResponseEntity<AdminStoreUserDTO> createStoreUser(@Valid @RequestBody CreateOrUpdateStoreUserDTO payload) {
         log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminStoreUserService.createStoreUser(payload));
     }
@@ -37,19 +37,19 @@ public class AdminStoreUserResource {
      * Thêm tài khoản đã có trên hệ thống vào một cửa hàng
      */
     @PostMapping("/add")
-    public ResponseEntity<StoreUserDTO> addStoreUser(@Valid @RequestBody AdminAddStoreUserDTO payload) {
+    public ResponseEntity<AdminStoreUserDTO> addStoreUser(@Valid @RequestBody AdminAddStoreUserDTO payload) {
         log.debug("REST request from user {} to add {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminStoreUserService.addStoreUser(payload));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<StoreUserDTO> updateStoreUser(@Valid @RequestBody CreateOrUpdateStoreUserDTO payload) {
+    public ResponseEntity<AdminStoreUserDTO> updateStoreUser(@Valid @RequestBody CreateOrUpdateStoreUserDTO payload) {
         log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminStoreUserService.updateStoreUser(payload));
     }
 
     @GetMapping("/list-by-store/{storeGuid}")
-    public ResponseEntity<List<StoreUserDTO>> getListStoreUserByStoreGuid(@PathVariable String storeGuid) {
+    public ResponseEntity<List<AdminStoreUserDTO>> getListStoreUserByStoreGuid(@PathVariable String storeGuid) {
         log.debug("REST request from user {} to list {} by store : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
         return ResponseEntity.ok(adminStoreUserService.getListStoreUserByStoreGuid(storeGuid));
     }

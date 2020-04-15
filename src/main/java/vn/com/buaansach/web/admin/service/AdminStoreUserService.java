@@ -16,7 +16,7 @@ import vn.com.buaansach.repository.UserRepository;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.dto.AdminAddStoreUserDTO;
-import vn.com.buaansach.web.common.service.dto.StoreUserDTO;
+import vn.com.buaansach.web.admin.service.dto.AdminStoreUserDTO;
 import vn.com.buaansach.web.common.service.dto.manipulation.CreateOrUpdateStoreUserDTO;
 import vn.com.buaansach.web.manager.StoreUserSecurityService;
 
@@ -42,7 +42,7 @@ public class AdminStoreUserService {
         this.storeUserSecurityService = storeUserSecurityService;
     }
 
-    public StoreUserDTO addStoreUser(AdminAddStoreUserDTO request) {
+    public AdminStoreUserDTO addStoreUser(AdminAddStoreUserDTO request) {
         /* check user existence */
         String loginOrEmail = request.getUserLoginOrEmail().toLowerCase();
         UserEntity userEntity = userRepository.findOneByLoginOrEmail(loginOrEmail, loginOrEmail)
@@ -58,11 +58,11 @@ public class AdminStoreUserService {
         storeUserEntity.setUserLogin(userEntity.getLogin());
         storeUserEntity.setStoreUserRole(request.getStoreUserRole());
         storeUserEntity.setStoreUserStatus(request.getStoreUserStatus());
-        return new StoreUserDTO(storeUserRepository.save(storeUserEntity), userEntity);
+        return new AdminStoreUserDTO(storeUserRepository.save(storeUserEntity), userEntity);
     }
 
     @Transactional
-    public StoreUserDTO createStoreUser(CreateOrUpdateStoreUserDTO request) {
+    public AdminStoreUserDTO createStoreUser(CreateOrUpdateStoreUserDTO request) {
         /* check store existence */
         storeRepository.findOneByGuid(request.getStoreGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("store", "guid", request.getStoreGuid()));
@@ -76,11 +76,11 @@ public class AdminStoreUserService {
         storeUserEntity.setStoreUserRole(request.getStoreUserRole());
         storeUserEntity.setStoreUserStatus(request.getStoreUserStatus());
 
-        return new StoreUserDTO(storeUserRepository.save(storeUserEntity), userEntity);
+        return new AdminStoreUserDTO(storeUserRepository.save(storeUserEntity), userEntity);
     }
 
     @Transactional
-    public StoreUserDTO updateStoreUser(CreateOrUpdateStoreUserDTO request) {
+    public AdminStoreUserDTO updateStoreUser(CreateOrUpdateStoreUserDTO request) {
         StoreUserEntity storeUserEntity = storeUserRepository.findOneByGuid(request.getGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("store", "guid", request.getGuid()));
 
@@ -92,10 +92,10 @@ public class AdminStoreUserService {
         => do not use userLogin from request, cause it might be modified */
         UserEntity updatedUserEntity = updateUser(storeUserEntity.getUserLogin(), request);
 
-        return new StoreUserDTO(updatedStoreUserEntity, updatedUserEntity);
+        return new AdminStoreUserDTO(updatedStoreUserEntity, updatedUserEntity);
     }
 
-    public List<StoreUserDTO> getListStoreUserByStoreGuid(String storeGuid) {
+    public List<AdminStoreUserDTO> getListStoreUserByStoreGuid(String storeGuid) {
         return storeUserRepository.findByStoreGuid(UUID.fromString(storeGuid));
     }
 
