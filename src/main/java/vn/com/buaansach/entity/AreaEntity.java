@@ -26,7 +26,7 @@ public class AreaEntity extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Size(max = 50)
-    @Column(name = "area_name")
+    @Column(name = "area_name", length = 50)
     private String areaName;
 
     @JsonIgnore

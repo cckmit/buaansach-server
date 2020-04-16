@@ -2,6 +2,7 @@ package vn.com.buaansach.web.admin.rest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,7 @@ import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminStoreUserService;
 import vn.com.buaansach.web.admin.service.dto.AdminStoreUserDTO;
 import vn.com.buaansach.web.admin.service.dto.AdminAddStoreUserDTO;
-import vn.com.buaansach.web.common.service.dto.manipulation.CreateOrUpdateStoreUserDTO;
+import vn.com.buaansach.web.admin.service.manipulation.AdminCreateOrUpdateStoreUserDTO;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/admin/store-user")
 public class AdminStoreUserResource {
-    private static final String ENTITY_NAME = "store";
+    private static final String ENTITY_NAME = "admin-store-user";
     private final Logger log = LoggerFactory.getLogger(AdminStoreUserResource.class);
     private final AdminStoreUserService adminStoreUserService;
 
@@ -28,7 +29,8 @@ public class AdminStoreUserResource {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<AdminStoreUserDTO> createStoreUser(@Valid @RequestBody CreateOrUpdateStoreUserDTO payload) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<AdminStoreUserDTO> createStoreUser(@Valid @RequestBody AdminCreateOrUpdateStoreUserDTO payload) {
         log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminStoreUserService.createStoreUser(payload));
     }
@@ -43,7 +45,7 @@ public class AdminStoreUserResource {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<AdminStoreUserDTO> updateStoreUser(@Valid @RequestBody CreateOrUpdateStoreUserDTO payload) {
+    public ResponseEntity<AdminStoreUserDTO> updateStoreUser(@Valid @RequestBody AdminCreateOrUpdateStoreUserDTO payload) {
         log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminStoreUserService.updateStoreUser(payload));
     }
@@ -54,10 +56,10 @@ public class AdminStoreUserResource {
         return ResponseEntity.ok(adminStoreUserService.getListStoreUserByStoreGuid(storeGuid));
     }
 
-    @PutMapping("/toggle-account/{storeUserGuid}")
-    public ResponseEntity<Void> toggleAccount(@PathVariable String storeUserGuid) {
-        log.debug("REST request from user {} to toggle account for {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeUserGuid);
-        adminStoreUserService.toggleAccount(storeUserGuid);
+    @PutMapping("/toggle-account-activation/{storeUserGuid}")
+    public ResponseEntity<Void> toggleAccountActivation(@PathVariable String storeUserGuid) {
+        log.debug("REST request from user {} to toggle account activation for {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeUserGuid);
+        adminStoreUserService.toggleAccountActivation(storeUserGuid);
         return ResponseEntity.noContent().build();
     }
 

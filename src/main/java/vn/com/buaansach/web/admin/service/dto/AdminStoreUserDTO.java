@@ -6,7 +6,7 @@ import vn.com.buaansach.entity.StoreUserEntity;
 import vn.com.buaansach.entity.UserEntity;
 import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
-import vn.com.buaansach.web.common.service.dto.AuditDTO;
+import vn.com.buaansach.web.user.service.dto.AuditDTO;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

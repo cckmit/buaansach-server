@@ -34,8 +34,8 @@ public class SeatEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "seat_status")
     private SeatStatus seatStatus = SeatStatus.EMPTY;
 
-    @Column(name = "last_order_id")
-    private Long lastOrderId;
+    @Column(name = "last_order_guid")
+    private UUID lastOrderGuid;
 
     @JsonIgnore
     @Column(name = "area_id")

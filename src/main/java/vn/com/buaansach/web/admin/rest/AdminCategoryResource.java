@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/admin/category")
 public class AdminCategoryResource {
-    private static final String ENTITY_NAME = "category";
+    private static final String ENTITY_NAME = "admin-category";
     private final Logger log = LoggerFactory.getLogger(AdminCategoryResource.class);
     private final AdminCategoryService adminCategoryService;
 

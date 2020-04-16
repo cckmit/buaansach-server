@@ -7,6 +7,7 @@ import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -26,7 +27,8 @@ public class StoreUserEntity extends AbstractAuditingEntity implements Serializa
     @Column(name = "store_guid")
     private UUID storeGuid;
 
-    @Column(name = "user_login")
+    @Size(max = 50)
+    @Column(name = "user_login", length = 50)
     private String userLogin;
 
     @Enumerated(EnumType.STRING)

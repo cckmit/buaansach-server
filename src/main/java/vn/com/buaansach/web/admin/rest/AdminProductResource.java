@@ -22,7 +22,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/v1/admin/product")
 public class AdminProductResource {
-    private static final String ENTITY_NAME = "product";
+    private static final String ENTITY_NAME = "admin-product";
     private final Logger log = LoggerFactory.getLogger(AdminProductResource.class);
     private final AdminProductService adminProductService;
 

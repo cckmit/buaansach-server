@@ -40,7 +40,7 @@ public class UserEntity extends AbstractAuditingEntity implements Serializable {
     @Column(nullable = false)
     private boolean activated = false;
 
-    @Column(name = "disabled_by_admin",nullable = false)
+    @Column(name = "disabled_by_admin", nullable = false)
     private boolean disabledByAdmin = false;
 
     @Size(max = 50)
@@ -69,15 +69,14 @@ public class UserEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @JsonIgnore
     @Size(max = 20)
     @Column(name = "activation_key", length = 20)
-    @JsonIgnore
     private String activationKey;
 
+    @JsonIgnore
     @Size(max = 20)
     @Column(name = "reset_key", length = 20)
-
-    @JsonIgnore
     private String resetKey;
 
     @JsonIgnore

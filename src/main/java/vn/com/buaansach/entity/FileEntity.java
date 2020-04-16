@@ -28,9 +28,10 @@ public class FileEntity extends AbstractAuditingEntity implements Serializable {
     private String originalName;
 
     @Size(max = 50)
-    @Column(name = "content_type")
+    @Column(name = "content_type", length = 50)
     private String contentType;
 
+    @Size(max = 10)
     @Column(length = 10)
     private String extension;
 

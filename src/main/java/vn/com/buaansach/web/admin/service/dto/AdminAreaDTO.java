@@ -3,23 +3,15 @@ package vn.com.buaansach.web.admin.service.dto;
 import lombok.Data;
 import vn.com.buaansach.entity.AreaEntity;
 import vn.com.buaansach.entity.SeatEntity;
+import vn.com.buaansach.web.user.service.dto.AuditDTO;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Data
-public class AdminAreaDTO {
-    private UUID guid;
+public class AdminAreaDTO extends AuditDTO {
     private String areaName;
     private List<SeatEntity> listSeat = new ArrayList<>();
-
-    /* audit attributes */
-    private String createdBy;
-    private Instant createdDate;
-    private String lastModifiedBy;
-    private Instant lastModifiedDate;
 
     public AdminAreaDTO(AreaEntity entity){
         this.guid = entity.getGuid();

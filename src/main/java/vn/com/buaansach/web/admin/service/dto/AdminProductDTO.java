@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.CategoryEntity;
 import vn.com.buaansach.entity.ProductEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
-import vn.com.buaansach.web.common.service.dto.AuditDTO;
+import vn.com.buaansach.web.user.service.dto.AuditDTO;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;

@@ -3,7 +3,7 @@ package vn.com.buaansach.web.customer.service.dto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
-import vn.com.buaansach.web.common.service.dto.AuditDTO;
+import vn.com.buaansach.web.user.service.dto.AuditDTO;
 
 import java.util.List;
 

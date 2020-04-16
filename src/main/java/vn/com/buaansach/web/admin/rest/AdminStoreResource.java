@@ -14,7 +14,7 @@ import vn.com.buaansach.entity.StoreEntity;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminStoreService;
-import vn.com.buaansach.web.common.service.dto.StoreDTO;
+import vn.com.buaansach.web.user.service.dto.StoreDTO;
 
 import javax.validation.Valid;
 
@@ -22,7 +22,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/v1/admin/store")
 public class AdminStoreResource {
-    private final String ENTITY_NAME = "store";
+    private final String ENTITY_NAME = "admin-store";
     private final Logger log = LoggerFactory.getLogger(AdminStoreResource.class);
 
     private final AdminStoreService adminStoreService;
@@ -54,7 +54,7 @@ public class AdminStoreResource {
                                                           @RequestParam(value = "sortDirection", defaultValue = "DESC") Sort.Direction sortDirection) {
         PageRequest request = PageRequest.of(page - 1, size, sortDirection, sortField);
         log.debug("REST request from user {} to list {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
-        return ResponseEntity.ok(adminStoreService.getPageStore(search, request));
+        return ResponseEntity.ok(adminStoreService.getPageStore(request, search));
     }
 
     @GetMapping("/get/{storeGuid}")

@@ -2,6 +2,7 @@ package vn.com.buaansach.web.admin.rest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +10,7 @@ import vn.com.buaansach.entity.SeatEntity;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminSeatService;
-import vn.com.buaansach.web.common.service.dto.manipulation.CreateSeatDTO;
+import vn.com.buaansach.web.admin.service.manipulation.AdminCreateSeatDTO;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/admin/seat")
 public class AdminSeatResource {
-    private static final String ENTITY_NAME = "seat";
+    private static final String ENTITY_NAME = "admin-seat";
     private final Logger log = LoggerFactory.getLogger(AdminSeatResource.class);
 
     private final AdminSeatService adminSeatService;
@@ -28,7 +29,8 @@ public class AdminSeatResource {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<SeatEntity> createSeat(@Valid @RequestBody CreateSeatDTO payload) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<SeatEntity> createSeat(@Valid @RequestBody AdminCreateSeatDTO payload) {
         log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminSeatService.createSeat(payload));
     }

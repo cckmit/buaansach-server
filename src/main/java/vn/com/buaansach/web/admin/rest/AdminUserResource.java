@@ -14,7 +14,7 @@ import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminUserService;
 import vn.com.buaansach.web.admin.service.dto.AdminCreateAccountDTO;
 import vn.com.buaansach.web.admin.service.dto.AdminPasswordChangeDTO;
-import vn.com.buaansach.web.common.service.dto.UserDTO;
+import vn.com.buaansach.web.user.service.dto.UserDTO;
 
 import javax.validation.Valid;
 
@@ -22,7 +22,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/v1/admin/user")
 public class AdminUserResource {
-    private final String ENTITY_NAME = "user";
+    private final String ENTITY_NAME = "admin-user";
     private final Logger log = LoggerFactory.getLogger(AdminUserResource.class);
     private final AdminUserService adminUserService;
 
@@ -37,8 +37,7 @@ public class AdminUserResource {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody AdminCreateAccountDTO payload) {
         log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
-        UserDTO responseDto = new UserDTO(adminUserService.createUser(payload));
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.ok(new UserDTO(adminUserService.createUser(payload)));
     }
 
     /**

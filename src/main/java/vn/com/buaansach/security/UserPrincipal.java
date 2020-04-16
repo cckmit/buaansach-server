@@ -30,7 +30,7 @@ public class UserPrincipal implements UserDetails {
 
     public static UserPrincipal create(String lowercaseLogin, UserEntity userEntity) {
         if (!userEntity.isActivated()) {
-            throw new UserNotActivatedException("Tài khoản " + lowercaseLogin + " đã bị khóa");
+            throw new UserNotActivatedException("User " + lowercaseLogin + " is deactivated");
         }
 
         List<GrantedAuthority> authorities = userEntity.getAuthorities().stream().map(authority ->

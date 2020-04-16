@@ -9,26 +9,26 @@ import vn.com.buaansach.entity.FileEntity;
 import vn.com.buaansach.entity.ProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
-import vn.com.buaansach.repository.CategoryRepository;
-import vn.com.buaansach.repository.ProductRepository;
 import vn.com.buaansach.util.Constants;
+import vn.com.buaansach.web.admin.repository.AdminCategoryRepository;
+import vn.com.buaansach.web.admin.repository.AdminProductRepository;
 import vn.com.buaansach.web.admin.service.dto.AdminProductDTO;
 import vn.com.buaansach.web.admin.service.mapper.AdminProductMapper;
-import vn.com.buaansach.web.common.service.FileService;
+import vn.com.buaansach.web.user.service.FileService;
 
 import javax.transaction.Transactional;
 import java.util.UUID;
 
 @Service
 public class AdminProductService {
-    private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
+    private final AdminProductRepository adminProductRepository;
+    private final AdminCategoryRepository adminCategoryRepository;
     private final FileService fileService;
     private final AdminProductMapper adminProductMapper;
 
-    public AdminProductService(ProductRepository productRepository, CategoryRepository categoryRepository, FileService fileService, AdminProductMapper adminProductMapper) {
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
+    public AdminProductService(AdminProductRepository adminProductRepository, AdminCategoryRepository adminCategoryRepository, FileService fileService, AdminProductMapper adminProductMapper) {
+        this.adminProductRepository = adminProductRepository;
+        this.adminCategoryRepository = adminCategoryRepository;
         this.fileService = fileService;
         this.adminProductMapper = adminProductMapper;
     }
@@ -36,11 +36,11 @@ public class AdminProductService {
     @Transactional
     public AdminProductDTO createProduct(AdminProductDTO adminProductDTO, MultipartFile image) {
         ProductEntity productEntity = adminProductMapper.dtoToEntity(adminProductDTO);
-        if (productRepository.findOneByProductCode(productEntity.getProductCode()).isPresent()) {
+        if (adminProductRepository.findOneByProductCode(productEntity.getProductCode()).isPresent()) {
             throw new BadRequestException("Product Code already in use");
         }
-        CategoryEntity categoryEntity = categoryRepository.findOneByGuid(adminProductDTO.getCategoryGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + adminProductDTO.getCategoryGuid()));
+        CategoryEntity categoryEntity = adminCategoryRepository.findOneByGuid(adminProductDTO.getCategoryGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with guid: " + adminProductDTO.getCategoryGuid()));
 
         productEntity.setCategoryId(categoryEntity.getId());
         productEntity.setGuid(UUID.randomUUID());
@@ -49,24 +49,26 @@ public class AdminProductService {
             productEntity.setProductImageUrl(fileEntity.getUrl());
         }
 
-        return new AdminProductDTO(productRepository.save(productEntity), categoryEntity);
+        return new AdminProductDTO(adminProductRepository.save(productEntity), categoryEntity);
     }
 
     public AdminProductDTO getProduct(String productGuid) {
-        return productRepository.findOneDtoByGuid(UUID.fromString(productGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + productGuid));
+        return adminProductRepository.findOneDtoByGuid(UUID.fromString(productGuid))
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with guid: " + productGuid));
     }
 
     @Transactional
     public AdminProductDTO updateProduct(AdminProductDTO adminProductDTO, MultipartFile image) {
         ProductEntity updateEntity = adminProductMapper.dtoToEntity(adminProductDTO);
 
-        ProductEntity currentEntity = productRepository.findOneByGuid(updateEntity.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + updateEntity.getGuid()));
+        ProductEntity currentEntity = adminProductRepository.findOneByGuid(updateEntity.getGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with guid: " + updateEntity.getGuid()));
 
-        /* if change product code, check if code has been used or not */
-        if (!updateEntity.getProductCode().equals(currentEntity.getProductCode())) {
-            if (productRepository.findOneByProductCode(updateEntity.getProductCode()).isPresent()) {
+        String updateProductCode = updateEntity.getProductCode().toLowerCase();
+        String currentProductCode = currentEntity.getProductCode().toLowerCase();
+        /* Change product code, check if code has been used or not */
+        if (!updateProductCode.equals(currentProductCode)) {
+            if (adminProductRepository.findOneByProductCode(updateEntity.getProductCode()).isPresent()) {
                 throw new BadRequestException("Product Code already in use");
             }
         }
@@ -86,23 +88,23 @@ public class AdminProductService {
             }
         }
 
-        CategoryEntity categoryEntity = categoryRepository.findOneByGuid(adminProductDTO.getCategoryGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + adminProductDTO.getCategoryGuid()));
+        CategoryEntity categoryEntity = adminCategoryRepository.findOneByGuid(adminProductDTO.getCategoryGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with guid: " + adminProductDTO.getCategoryGuid()));
         updateEntity.setCategoryId(categoryEntity.getId());
 
-        /* bind id to perform update */
+        /* set id to perform update */
         updateEntity.setId(currentEntity.getId());
-        return new AdminProductDTO(productRepository.save(updateEntity), categoryEntity);
+        return new AdminProductDTO(adminProductRepository.save(updateEntity), categoryEntity);
     }
 
     public Page<AdminProductDTO> getPageProduct(PageRequest request, String search) {
-        return productRepository.findPageDtoWithKeyword(request, search.toLowerCase());
+        return adminProductRepository.findPageDtoWithKeyword(request, search.toLowerCase());
     }
 
     public void deleteProduct(String productGuid) {
-        ProductEntity productEntity = productRepository.findOneByGuid(UUID.fromString(productGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + productGuid));
+        ProductEntity productEntity = adminProductRepository.findOneByGuid(UUID.fromString(productGuid))
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with guid: " + productGuid));
         fileService.deleteByUrl(productEntity.getProductImageUrl());
-        productRepository.delete(productEntity);
+        adminProductRepository.delete(productEntity);
     }
 }

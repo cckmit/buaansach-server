@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.repository.UserRepository;
+import vn.com.buaansach.web.admin.repository.AdminUserRepository;
 
 import javax.transaction.Transactional;
 import java.util.Locale;
@@ -17,10 +17,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final Logger log = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
-    UserRepository userRepository;
+    AdminUserRepository adminUserRepository;
 
-    public CustomUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomUserDetailsService(AdminUserRepository adminUserRepository) {
+        this.adminUserRepository = adminUserRepository;
     }
 
     @Override
@@ -31,13 +31,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         log.debug("Authenticating {}", login);
 
         if (new EmailValidator().isValid(login, null)) {
-            return userRepository.findOneWithAuthoritiesByEmailIgnoreCase(login)
+            return adminUserRepository.findOneWithAuthoritiesByEmailIgnoreCase(login)
                     .map(user -> UserPrincipal.create(login, user))
                     .orElseThrow(() -> new UsernameNotFoundException("User with email " + login + " was not found in the database"));
         }
 
         String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
-        return userRepository.findOneWithAuthoritiesByLogin(lowercaseLogin)
+        return adminUserRepository.findOneWithAuthoritiesByLogin(lowercaseLogin)
                 .map(user -> UserPrincipal.create(lowercaseLogin, user))
                 .orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the database"));
 

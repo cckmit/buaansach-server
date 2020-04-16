@@ -5,19 +5,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.exception.EmailAlreadyUsedException;
-import vn.com.buaansach.exception.LoginAlreadyUsedException;
-import vn.com.buaansach.exception.PhoneAlreadyUsedException;
-import vn.com.buaansach.web.admin.service.dto.AdminPasswordChangeDTO;
-import vn.com.buaansach.web.admin.service.dto.AdminCreateAccountDTO;
 import vn.com.buaansach.entity.AuthorityEntity;
 import vn.com.buaansach.entity.UserEntity;
-import vn.com.buaansach.repository.AuthorityRepository;
-import vn.com.buaansach.repository.UserRepository;
-import vn.com.buaansach.web.common.service.FileService;
-import vn.com.buaansach.web.common.service.MailService;
+import vn.com.buaansach.exception.*;
+import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.util.RandomUtil;
+import vn.com.buaansach.web.admin.repository.AdminAuthorityRepository;
+import vn.com.buaansach.web.admin.repository.AdminUserRepository;
+import vn.com.buaansach.web.admin.service.dto.AdminCreateAccountDTO;
+import vn.com.buaansach.web.admin.service.dto.AdminPasswordChangeDTO;
+import vn.com.buaansach.web.user.service.MailService;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -26,33 +24,30 @@ import java.util.stream.Collectors;
 
 @Service
 public class AdminUserService {
-    private final UserRepository userRepository;
+    private final AdminUserRepository adminUserRepository;
 
     private final PasswordEncoder passwordEncoder;
 
-    private final AuthorityRepository authorityRepository;
+    private final AdminAuthorityRepository adminAuthorityRepository;
 
     private final MailService mailService;
-
-    private final FileService fileService;
 
     @Value("${app.mail.send-creation-mail}")
     private String sendCreationMail;
 
-    public AdminUserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, MailService mailService, FileService fileService) {
-        this.userRepository = userRepository;
+    public AdminUserService(AdminUserRepository adminUserRepository, PasswordEncoder passwordEncoder, AdminAuthorityRepository adminAuthorityRepository, MailService mailService) {
+        this.adminUserRepository = adminUserRepository;
         this.passwordEncoder = passwordEncoder;
-        this.authorityRepository = authorityRepository;
+        this.adminAuthorityRepository = adminAuthorityRepository;
         this.mailService = mailService;
-        this.fileService = fileService;
     }
 
     public UserEntity createUser(AdminCreateAccountDTO dto) {
-        if (userRepository.findOneByLogin(dto.getLogin().toLowerCase()).isPresent()) {
+        if (adminUserRepository.findOneByLogin(dto.getLogin().toLowerCase()).isPresent()) {
             throw new LoginAlreadyUsedException();
-        } else if (userRepository.findOneByEmailIgnoreCase(dto.getEmail()).isPresent()) {
+        } else if (adminUserRepository.findOneByEmailIgnoreCase(dto.getEmail()).isPresent()) {
             throw new EmailAlreadyUsedException();
-        } else if (userRepository.findOneByPhone(dto.getPhone()).isPresent()) {
+        } else if (adminUserRepository.findOneByPhone(dto.getPhone()).isPresent()) {
             throw new PhoneAlreadyUsedException();
         } else {
             UserEntity newUserEntity = new UserEntity();
@@ -71,7 +66,7 @@ public class AdminUserService {
             }
             if (dto.getAuthorities() != null) {
                 Set<AuthorityEntity> authorities = dto.getAuthorities().stream()
-                        .map(authorityRepository::findByName)
+                        .map(adminAuthorityRepository::findByName)
                         .filter(Optional::isPresent)
                         .map(Optional::get)
                         .collect(Collectors.toSet());
@@ -86,31 +81,33 @@ public class AdminUserService {
             } else {
                 newUserEntity.setPassword(passwordEncoder.encode(dto.getPassword()));
             }
-            userRepository.save(newUserEntity);
+            adminUserRepository.save(newUserEntity);
             return newUserEntity;
         }
     }
 
     public Page<UserEntity> getPageUser(PageRequest request, String search) {
-        return userRepository.findPageStoreWithKeyword(request, search.toLowerCase());
+        return adminUserRepository.findPageStoreWithKeyword(request, search.toLowerCase());
     }
 
     public void adminChangePassword(AdminPasswordChangeDTO dto) {
-        userRepository.findOneByLogin(dto.getLogin()).ifPresent(user -> {
-            String encryptedPassword = passwordEncoder.encode(dto.getNewPassword());
-            user.setPassword(encryptedPassword);
-            userRepository.save(user);
-        });
+        UserEntity userEntity = adminUserRepository.findOneByLogin(dto.getLogin())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with login: " + dto.getLogin()));
+        String encryptedPassword = passwordEncoder.encode(dto.getNewPassword());
+        userEntity.setPassword(encryptedPassword);
+        adminUserRepository.save(userEntity);
     }
 
     public void toggleActivation(String login) {
-        userRepository.findOneByLogin(login).ifPresent(
-                user -> {
-                    user.setDisabledByAdmin(user.isActivated());
-                    user.setActivated(!user.isActivated());
-                    userRepository.save(user);
-                }
-        );
+        if (SecurityUtils.getCurrentUserLogin().equals(login))
+            throw new AccessDeniedException("You cannot deactivate your account");
+
+        UserEntity userEntity = adminUserRepository.findOneByLogin(login)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with login: " + login));
+
+        userEntity.setDisabledByAdmin(userEntity.isActivated());
+        userEntity.setActivated(!userEntity.isActivated());
+        adminUserRepository.save(userEntity);
     }
 
 }

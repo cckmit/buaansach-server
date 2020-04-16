@@ -27,11 +27,11 @@ public class StoreEntity extends AbstractAuditingEntity implements Serializable 
     private UUID guid;
 
     @Size(min = 1, max = 20)
-    @Column(name = "store_code", unique = true)
+    @Column(name = "store_code", unique = true, length = 20)
     private String storeCode;
 
     @Size(min = 1, max = 100)
-    @Column(name = "store_name")
+    @Column(name = "store_name", length = 100)
     private String storeName;
 
     @Size(min = 1, max = 255)

@@ -8,10 +8,10 @@ import vn.com.buaansach.entity.CategoryEntity;
 import vn.com.buaansach.entity.FileEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
-import vn.com.buaansach.repository.CategoryRepository;
-import vn.com.buaansach.repository.ProductRepository;
 import vn.com.buaansach.util.Constants;
-import vn.com.buaansach.web.common.service.FileService;
+import vn.com.buaansach.web.admin.repository.AdminCategoryRepository;
+import vn.com.buaansach.web.admin.repository.AdminProductRepository;
+import vn.com.buaansach.web.user.service.FileService;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -19,19 +19,19 @@ import java.util.UUID;
 
 @Service
 public class AdminCategoryService {
-    private final CategoryRepository categoryRepository;
+    private final AdminCategoryRepository adminCategoryRepository;
     private final FileService fileService;
-    private final ProductRepository productRepository;
+    private final AdminProductRepository adminProductRepository;
 
-    public AdminCategoryService(CategoryRepository categoryRepository, FileService fileService, ProductRepository productRepository) {
-        this.categoryRepository = categoryRepository;
+    public AdminCategoryService(AdminCategoryRepository adminCategoryRepository, FileService fileService, AdminProductRepository adminProductRepository) {
+        this.adminCategoryRepository = adminCategoryRepository;
         this.fileService = fileService;
-        this.productRepository = productRepository;
+        this.adminProductRepository = adminProductRepository;
     }
 
     @Transactional
     public CategoryEntity createCategory(CategoryEntity categoryEntity, MultipartFile image) {
-        if (categoryRepository.findOneByCategoryName(categoryEntity.getCategoryName()).isPresent()) {
+        if (adminCategoryRepository.findOneByCategoryName(categoryEntity.getCategoryName()).isPresent()) {
             throw new BadRequestException("Category Name already in use");
         }
         categoryEntity.setGuid(UUID.randomUUID());
@@ -39,22 +39,22 @@ public class AdminCategoryService {
             FileEntity fileEntity = fileService.uploadImage(image, Constants.CATEGORY_IMAGE_PATH);
             categoryEntity.setCategoryImageUrl(fileEntity.getUrl());
         }
-        return categoryRepository.save(categoryEntity);
+        return adminCategoryRepository.save(categoryEntity);
     }
 
     public CategoryEntity getCategory(String categoryGuid) {
-        return categoryRepository.findOneByGuid(UUID.fromString(categoryGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryGuid));
+        return adminCategoryRepository.findOneByGuid(UUID.fromString(categoryGuid))
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with guid: " + categoryGuid));
     }
 
     @Transactional
     public CategoryEntity updateCategory(CategoryEntity updateEntity, MultipartFile image) {
-        CategoryEntity currentEntity = categoryRepository.findOneByGuid(updateEntity.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + updateEntity.getGuid()));
+        CategoryEntity currentEntity = adminCategoryRepository.findOneByGuid(updateEntity.getGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with guid: " + updateEntity.getGuid()));
 
         /* if change category name, check if name has been used or not */
         if (!updateEntity.getCategoryName().equals(currentEntity.getCategoryName())) {
-            if (categoryRepository.findOneByCategoryName(updateEntity.getCategoryName()).isPresent()) {
+            if (adminCategoryRepository.findOneByCategoryName(updateEntity.getCategoryName()).isPresent()) {
                 throw new BadRequestException("Category Name already in use");
             }
         }
@@ -76,24 +76,24 @@ public class AdminCategoryService {
 
         /* bind id to perform update */
         updateEntity.setId(currentEntity.getId());
-        CategoryEntity result = categoryRepository.save(updateEntity);
-        return result;
+        return adminCategoryRepository.save(updateEntity);
     }
 
     public List<CategoryEntity> getAllCategory() {
-        return categoryRepository.findAll();
+        return adminCategoryRepository.findAll();
     }
 
     public Page<CategoryEntity> getPageCategory(PageRequest request, String search) {
-        return categoryRepository.findPageCategoryWithKeyword(request, search.toLowerCase());
+        return adminCategoryRepository.findPageCategoryWithKeyword(request, search.toLowerCase());
     }
 
     @Transactional
     public void deleteCategory(String categoryGuid) {
-        CategoryEntity categoryEntity = categoryRepository.findOneByGuid(UUID.fromString(categoryGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryGuid));
+        CategoryEntity categoryEntity = adminCategoryRepository.findOneByGuid(UUID.fromString(categoryGuid))
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with guid: " + categoryGuid));
         fileService.deleteByUrl(categoryEntity.getCategoryImageUrl());
-        productRepository.deleteProductCategory(categoryEntity.getId());
-        categoryRepository.delete(categoryEntity);
+        /* this will set category of product to null */
+        adminProductRepository.clearProductCategory(categoryEntity.getId());
+        adminCategoryRepository.delete(categoryEntity);
     }
 }

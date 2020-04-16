@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.com.buaansach.config.audit.AuditEventConverter;
-import vn.com.buaansach.repository.PersistenceAuditEventRepository;
+import vn.com.buaansach.web.admin.repository.AdminPersistenceAuditEventRepository;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -27,7 +27,7 @@ public class AdminAuditEventService {
 
     private final Logger log = LoggerFactory.getLogger(AdminAuditEventService.class);
 
-    private final PersistenceAuditEventRepository persistenceAuditEventRepository;
+    private final AdminPersistenceAuditEventRepository adminPersistenceAuditEventRepository;
 
     private final AuditEventConverter auditEventConverter;
 
@@ -35,10 +35,10 @@ public class AdminAuditEventService {
     private int retentionPeriod;
 
     public AdminAuditEventService(
-            PersistenceAuditEventRepository persistenceAuditEventRepository,
+            AdminPersistenceAuditEventRepository adminPersistenceAuditEventRepository,
             AuditEventConverter auditEventConverter) {
 
-        this.persistenceAuditEventRepository = persistenceAuditEventRepository;
+        this.adminPersistenceAuditEventRepository = adminPersistenceAuditEventRepository;
         this.auditEventConverter = auditEventConverter;
     }
 
@@ -49,26 +49,26 @@ public class AdminAuditEventService {
      */
     @Scheduled(cron = "0 0 12 * * ?")
     public void removeOldAuditEvents() {
-        persistenceAuditEventRepository
+        adminPersistenceAuditEventRepository
                 .findByAuditEventDateBefore(Instant.now().minus(retentionPeriod, ChronoUnit.DAYS))
                 .forEach(auditEvent -> {
                     log.debug("Deleting audit data {}", auditEvent);
-                    persistenceAuditEventRepository.delete(auditEvent);
+                    adminPersistenceAuditEventRepository.delete(auditEvent);
                 });
     }
 
     public Page<AuditEvent> findAll(Pageable pageable) {
-        return persistenceAuditEventRepository.findAll(pageable)
+        return adminPersistenceAuditEventRepository.findAll(pageable)
                 .map(auditEventConverter::convertToAuditEvent);
     }
 
     public Page<AuditEvent> findByDates(Instant fromDate, Instant toDate, Pageable pageable) {
-        return persistenceAuditEventRepository.findAllByAuditEventDateBetween(fromDate, toDate, pageable)
+        return adminPersistenceAuditEventRepository.findAllByAuditEventDateBetween(fromDate, toDate, pageable)
                 .map(auditEventConverter::convertToAuditEvent);
     }
 
     public Optional<AuditEvent> find(Long id) {
-        return persistenceAuditEventRepository.findById(id)
+        return adminPersistenceAuditEventRepository.findById(id)
                 .map(auditEventConverter::convertToAuditEvent);
     }
 }
