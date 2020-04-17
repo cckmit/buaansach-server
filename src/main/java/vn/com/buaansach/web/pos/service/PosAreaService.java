@@ -17,24 +17,17 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class PosService {
+public class PosAreaService {
     private final PosStoreRepository posStoreRepository;
     private final PosAreaRepository posAreaRepository;
     private final PosSeatRepository posSeatRepository;
     private final StoreUserSecurityService storeUserSecurityService;
 
-    public PosService(PosStoreRepository posStoreRepository, PosAreaRepository posAreaRepository, PosSeatRepository posSeatRepository, StoreUserSecurityService storeUserSecurityService) {
+    public PosAreaService(PosStoreRepository posStoreRepository, PosAreaRepository posAreaRepository, PosSeatRepository posSeatRepository, StoreUserSecurityService storeUserSecurityService) {
         this.posStoreRepository = posStoreRepository;
         this.posAreaRepository = posAreaRepository;
         this.posSeatRepository = posSeatRepository;
         this.storeUserSecurityService = storeUserSecurityService;
-    }
-
-    public List<PosSeatDTO> getListSeatByStoreGuid(String storeGuid) {
-        storeUserSecurityService.blockAccessIfNotInStore(UUID.fromString(storeGuid));
-        posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + storeGuid));
-        return posSeatRepository.findListEmployeeSeatDTOByStoreGuid(UUID.fromString(storeGuid));
     }
 
     public List<PosAreaDTO> getListAreaWithSeatByStoreGuid(String storeGuid) {

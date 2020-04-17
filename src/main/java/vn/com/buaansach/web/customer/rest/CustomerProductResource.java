@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/guest/product")
+@RequestMapping("/api/v1/customer/product")
 public class CustomerProductResource {
     private final CustomerProductService customerProductService;
 

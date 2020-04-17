@@ -6,7 +6,7 @@ import vn.com.buaansach.web.customer.service.dto.CustomerSeatDTO;
 import vn.com.buaansach.web.customer.service.CustomerSeatService;
 
 @RestController
-@RequestMapping("/api/v1/guest/seat")
+@RequestMapping("/api/v1/customer/seat")
 public class CustomerSeatResource {
     private final CustomerSeatService customerSeatService;
 
