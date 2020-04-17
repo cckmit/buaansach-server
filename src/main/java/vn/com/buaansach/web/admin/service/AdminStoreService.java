@@ -5,28 +5,35 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.entity.FileEntity;
+import vn.com.buaansach.entity.SeatEntity;
 import vn.com.buaansach.entity.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.util.Constants;
+import vn.com.buaansach.web.admin.repository.AdminAreaRepository;
+import vn.com.buaansach.web.admin.repository.AdminSeatRepository;
 import vn.com.buaansach.web.admin.repository.AdminStoreRepository;
+import vn.com.buaansach.web.admin.repository.AdminStoreUserRepository;
 import vn.com.buaansach.web.user.service.FileService;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class AdminStoreService {
-    private final AdminStoreRepository adminStoreRepository;
     private final FileService fileService;
-    private final AdminAreaService adminAreaService;
-    private final AdminStoreUserService adminStoreUserService;
+    private final AdminStoreRepository adminStoreRepository;
+    private final AdminAreaRepository adminAreaRepository;
+    private final AdminStoreUserRepository adminStoreUserRepository;
+    private final AdminSeatRepository adminSeatRepository;
 
-    public AdminStoreService(AdminStoreRepository adminStoreRepository, FileService fileService, AdminAreaService adminAreaService, AdminStoreUserService adminStoreUserService) {
+    public AdminStoreService(AdminStoreRepository adminStoreRepository, FileService fileService, AdminAreaRepository adminAreaRepository, AdminStoreUserRepository adminStoreUserRepository, AdminSeatRepository adminSeatRepository) {
         this.adminStoreRepository = adminStoreRepository;
         this.fileService = fileService;
-        this.adminAreaService = adminAreaService;
-        this.adminStoreUserService = adminStoreUserService;
+        this.adminStoreUserRepository = adminStoreUserRepository;
+        this.adminAreaRepository = adminAreaRepository;
+        this.adminSeatRepository = adminSeatRepository;
     }
 
     @Transactional
@@ -85,8 +92,10 @@ public class AdminStoreService {
         /* be careful when delete store - must test more cases to catch all possible errors */
         StoreEntity storeEntity = adminStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid:" + storeGuid));
-        adminAreaService.deleteAllAreaByStoreId(storeEntity.getId());
-        adminStoreUserService.deleteByStoreGuid(storeEntity.getGuid());
+        List<SeatEntity> listSeat = adminSeatRepository.findListSeatByStoreGuid(storeEntity.getGuid());
+        adminSeatRepository.deleteInBatch(listSeat);
+        adminAreaRepository.deleteByStoreGuid(storeEntity.getGuid());
+        adminStoreUserRepository.deleteByStoreGuid(storeEntity.getGuid());
         fileService.deleteByUrl(storeEntity.getStoreImageUrl());
         adminStoreRepository.delete(storeEntity);
     }

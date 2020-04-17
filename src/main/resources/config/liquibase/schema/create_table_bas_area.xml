@@ -6,23 +6,19 @@
 
     <changeSet id="create_table_bas_area" author="ductv">
         <createTable tableName="bas_area">
-            <!--INTERNAL-->
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <!--EXTERNAL-->
             <column name="guid" type="binary(16)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_area_guid"/>
             </column>
-            <!--ATTR-->
             <column name="area_name" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <!--FK-->
-            <column name="store_id" type="bigint">
+            <column name="store_guid" type="binary(16)">
                 <constraints nullable="false"/>
             </column>
-            <!--AUDIT-->
+
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>

@@ -1,7 +1,5 @@
 package vn.com.buaansach.web.admin.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.entity.CategoryEntity;
@@ -83,17 +81,13 @@ public class AdminCategoryService {
         return adminCategoryRepository.findAll();
     }
 
-    public Page<CategoryEntity> getPageCategory(PageRequest request, String search) {
-        return adminCategoryRepository.findPageCategoryWithKeyword(request, search.toLowerCase());
-    }
-
     @Transactional
     public void deleteCategory(String categoryGuid) {
         CategoryEntity categoryEntity = adminCategoryRepository.findOneByGuid(UUID.fromString(categoryGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with guid: " + categoryGuid));
         fileService.deleteByUrl(categoryEntity.getCategoryImageUrl());
         /* this will set category of product to null */
-        adminProductRepository.clearProductCategory(categoryEntity.getId());
+        adminProductRepository.clearProductCategory(categoryEntity.getGuid());
         adminCategoryRepository.delete(categoryEntity);
     }
 }

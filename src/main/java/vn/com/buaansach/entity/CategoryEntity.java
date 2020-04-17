@@ -9,12 +9,13 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "bas_category")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class CategoryEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
@@ -23,12 +24,12 @@ public class CategoryEntity extends AbstractAuditingEntity implements Serializab
     @Column(unique = true)
     private UUID guid;
 
-    @Size(min = 1, max = 100)
-    @Column(name = "category_name", unique = true, length = 100)
+    @Size(min = 1, max = 50)
+    @Column(name = "category_name", unique = true, length = 50)
     private String categoryName;
 
-    @Size(max = 1000)
-    @Column(name = "category_description", length = 1000)
+    @Size(max = 255)
+    @Column(name = "category_description")
     private String categoryDescription;
 
     @Size(max = 255)

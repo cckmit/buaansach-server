@@ -1,10 +1,9 @@
-package vn.com.buaansach.web.admin.service.dto;
+package vn.com.buaansach.web.admin.service.dto.write;
 
 import lombok.Data;
 import vn.com.buaansach.util.Constants;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Set;
@@ -13,21 +12,18 @@ import java.util.Set;
  * for admin only
  */
 @Data
-public class AdminCreateAccountDTO {
-    @NotBlank
-    @Size(max = 50)
+public class AdminCreateUserDTO {
+    @Size(min = 1, max = 50)
     private String firstName;
 
-    @NotBlank
-    @Size(max = 50)
+    @Size(min = 1, max = 50)
     private String lastName;
 
-    @NotBlank
-    @Size(max = 50)
+    @Size(min = 1, max = 50)
     private String login;
 
     @Email
-    @Size(max = 255)
+    @Size(min = 5, max = 255)
     private String email;
 
     @Size(max = 12)

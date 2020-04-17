@@ -26,7 +26,7 @@ public class PosSeatService {
         storeUserSecurityService.blockAccessIfNotInStore(UUID.fromString(storeGuid));
         posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + storeGuid));
-        return posSeatRepository.findListEmployeeSeatDTOByStoreGuid(UUID.fromString(storeGuid));
+        return posSeatRepository.findListPosSeatDTOByStoreGuid(UUID.fromString(storeGuid));
     }
 
 }

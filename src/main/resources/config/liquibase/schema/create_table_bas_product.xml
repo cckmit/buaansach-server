@@ -12,21 +12,23 @@
             <column name="guid" type="binary(16)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_product_guid"/>
             </column>
-            <column name="product_code" type="varchar(20)">
+            <column name="product_code" type="varchar(16)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_product_code"/>
             </column>
             <column name="product_name" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
-            <column name="product_description" type="varchar(1000)"/>
+            <column name="product_description" type="varchar(2000)"/>
             <column name="product_image_url" type="varchar(255)"/>
             <column name="product_thumbnail_url" type="varchar(255)"/>
-            <column name="product_status" type="varchar(20)">
+            <column name="product_status" type="varchar(30)">
                 <constraints nullable="false"/>
             </column>
-            <column name="product_real_price" type="int"/>
-            <column name="product_price" type="int"/>
-            <column name="category_id" type="bigint"/>
+            <column name="product_root_price" type="int"/>
+            <column name="product_normal_price" type="int"/>
+            <column name="product_sale_price" type="int"/>
+            <column name="category_guid" type="binary(16)"/>
+
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>

@@ -22,23 +22,23 @@ public class StoreUserSecurityService {
 
     private Set<StoreUserRole> getOwnerRole() {
         Set<StoreUserRole> checkRoles = new HashSet<>();
-        checkRoles.add(StoreUserRole.OWNER);
+        checkRoles.add(StoreUserRole.STORE_OWNER);
         return checkRoles;
     }
 
     private Set<StoreUserRole> getOwnerOrManagerRole() {
         Set<StoreUserRole> checkRoles = new HashSet<>();
-        checkRoles.add(StoreUserRole.OWNER);
-        checkRoles.add(StoreUserRole.MANAGER);
+        checkRoles.add(StoreUserRole.STORE_OWNER);
+        checkRoles.add(StoreUserRole.STORE_MANAGER);
         return checkRoles;
     }
 
     private Set<StoreUserRole> getAllRole() {
         Set<StoreUserRole> checkRoles = new HashSet<>();
-        checkRoles.add(StoreUserRole.OWNER);
-        checkRoles.add(StoreUserRole.MANAGER);
-        checkRoles.add(StoreUserRole.CASHIER);
-        checkRoles.add(StoreUserRole.WAITER);
+        checkRoles.add(StoreUserRole.STORE_OWNER);
+        checkRoles.add(StoreUserRole.STORE_MANAGER);
+        checkRoles.add(StoreUserRole.STORE_CASHIER);
+        checkRoles.add(StoreUserRole.STORE_WAITER);
         return checkRoles;
     }
 

@@ -22,7 +22,9 @@ public class CustomerProductDTO {
 
     private ProductStatus productStatus;
 
-    private int productPrice;
+    private int productNormalPrice;
+
+    private int productSalePrice;
 
     public CustomerProductDTO() {
     }
@@ -35,6 +37,7 @@ public class CustomerProductDTO {
         this.productImageUrl = productEntity.getProductImageUrl();
         this.productThumbnailUrl = productEntity.getProductThumbnailUrl();
         this.productStatus = productEntity.getProductStatus();
-        this.productPrice = productEntity.getProductPrice();
+        this.productNormalPrice = productEntity.getProductNormalPrice();
+        this.productSalePrice = productEntity.getProductSalePrice();
     }
 }

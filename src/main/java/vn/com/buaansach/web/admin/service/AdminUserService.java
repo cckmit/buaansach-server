@@ -8,16 +8,18 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.AuthorityEntity;
 import vn.com.buaansach.entity.UserEntity;
 import vn.com.buaansach.exception.*;
+import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.util.RandomUtil;
 import vn.com.buaansach.web.admin.repository.AdminAuthorityRepository;
 import vn.com.buaansach.web.admin.repository.AdminUserRepository;
-import vn.com.buaansach.web.admin.service.dto.AdminCreateAccountDTO;
-import vn.com.buaansach.web.admin.service.dto.AdminPasswordChangeDTO;
+import vn.com.buaansach.web.admin.service.dto.write.AdminCreateUserDTO;
+import vn.com.buaansach.web.admin.service.dto.write.AdminPasswordChangeDTO;
 import vn.com.buaansach.web.user.service.MailService;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,12 +44,12 @@ public class AdminUserService {
         this.mailService = mailService;
     }
 
-    public UserEntity createUser(AdminCreateAccountDTO dto) {
+    public UserEntity createUser(AdminCreateUserDTO dto) {
         if (adminUserRepository.findOneByLogin(dto.getLogin().toLowerCase()).isPresent()) {
             throw new LoginAlreadyUsedException();
         } else if (adminUserRepository.findOneByEmailIgnoreCase(dto.getEmail()).isPresent()) {
             throw new EmailAlreadyUsedException();
-        } else if (adminUserRepository.findOneByPhone(dto.getPhone()).isPresent()) {
+        } else if (dto.getPhone() != null && adminUserRepository.findOneByPhone(dto.getPhone()).isPresent()) {
             throw new PhoneAlreadyUsedException();
         } else {
             UserEntity newUserEntity = new UserEntity();
@@ -64,12 +66,17 @@ public class AdminUserService {
             } else {
                 newUserEntity.setLangKey(dto.getLangKey());
             }
+
             if (dto.getAuthorities() != null) {
                 Set<AuthorityEntity> authorities = dto.getAuthorities().stream()
                         .map(adminAuthorityRepository::findByName)
                         .filter(Optional::isPresent)
                         .map(Optional::get)
                         .collect(Collectors.toSet());
+                newUserEntity.setAuthorities(authorities);
+            } else {
+                Set<AuthorityEntity> authorities = new HashSet<>();
+                authorities.add(new AuthorityEntity(AuthoritiesConstants.USER));
                 newUserEntity.setAuthorities(authorities);
             }
             /* if enable send creation mail => generate random password */
@@ -87,7 +94,7 @@ public class AdminUserService {
     }
 
     public Page<UserEntity> getPageUser(PageRequest request, String search) {
-        return adminUserRepository.findPageStoreWithKeyword(request, search.toLowerCase());
+        return adminUserRepository.findPageUserWithKeyword(request, search.toLowerCase());
     }
 
     public void adminChangePassword(AdminPasswordChangeDTO dto) {

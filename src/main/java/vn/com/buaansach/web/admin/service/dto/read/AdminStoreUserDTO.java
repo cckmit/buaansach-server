@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.admin.service.dto;
+package vn.com.buaansach.web.admin.service.dto.read;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,9 +8,12 @@ import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 import vn.com.buaansach.web.user.service.dto.AuditDTO;
 
+import java.util.UUID;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class AdminStoreUserDTO extends AuditDTO {
+    private UUID guid;
     private String storeGuid;
     private String userLogin;
     private String firstName;

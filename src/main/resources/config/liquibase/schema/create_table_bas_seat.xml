@@ -15,9 +15,9 @@
             <column name="seat_name" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="seat_status" type="varchar(50)"/>
+            <column name="seat_status" type="varchar(30)"/>
             <column name="last_order_guid" type="binary(16)"/>
-            <column name="area_id" type="bigint">
+            <column name="area_guid" type="binary(16)">
                 <constraints nullable="false"/>
             </column>
             <column name="created_by" type="varchar(50)">

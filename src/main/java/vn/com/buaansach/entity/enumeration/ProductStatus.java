@@ -1,6 +1,7 @@
 package vn.com.buaansach.entity.enumeration;
 
 public enum ProductStatus {
-    ON,
-    OFF
+    AVAILABLE,
+    UNAVAILABLE,
+    STOP_TRADING
 }

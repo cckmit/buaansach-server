@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import vn.com.buaansach.entity.UserEntity;
 
 import java.util.Optional;
 
+@Repository
 public interface AdminUserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findOneByActivationKey(String activationKey);
 
@@ -35,5 +37,5 @@ public interface AdminUserRepository extends JpaRepository<UserEntity, Long> {
     Page<UserEntity> findAllByLoginNot(Pageable pageable, String login);
 
     @Query("SELECT u FROM UserEntity u WHERE u.login LIKE %:search% OR u.firstName LIKE %:search% OR u.lastName LIKE %:search%")
-    Page<UserEntity> findPageStoreWithKeyword(Pageable pageable, @Param("search") String search);
+    Page<UserEntity> findPageUserWithKeyword(Pageable pageable, @Param("search") String search);
 }

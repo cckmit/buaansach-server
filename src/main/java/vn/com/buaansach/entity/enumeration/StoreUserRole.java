@@ -1,8 +1,8 @@
 package vn.com.buaansach.entity.enumeration;
 
 public enum StoreUserRole {
-    OWNER,
-    MANAGER,
-    CASHIER,
-    WAITER
+    STORE_OWNER,
+    STORE_MANAGER,
+    STORE_CASHIER,
+    STORE_WAITER
 }

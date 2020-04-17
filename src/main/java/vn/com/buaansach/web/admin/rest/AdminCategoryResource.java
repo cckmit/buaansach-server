@@ -29,16 +29,15 @@ public class AdminCategoryResource {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<CategoryEntity> createProduct(@Valid @RequestPart("payload") CategoryEntity payload,
-                                                        @RequestPart(value = "image", required = false) MultipartFile image) {
+    public ResponseEntity<CategoryEntity> createCategory(@Valid @RequestPart("payload") CategoryEntity payload,
+                                                         @RequestPart(value = "image", required = false) MultipartFile image) {
         log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminCategoryService.createCategory(payload, image));
     }
 
-
     @PutMapping("/update")
-    public ResponseEntity<CategoryEntity> updateProduct(@Valid @RequestPart("payload") CategoryEntity payload,
-                                                        @RequestPart(value = "image", required = false) MultipartFile image) {
+    public ResponseEntity<CategoryEntity> updateCategory(@Valid @RequestPart("payload") CategoryEntity payload,
+                                                         @RequestPart(value = "image", required = false) MultipartFile image) {
         log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminCategoryService.updateCategory(payload, image));
     }

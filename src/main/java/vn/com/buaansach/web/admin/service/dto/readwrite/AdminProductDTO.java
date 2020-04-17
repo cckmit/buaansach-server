@@ -1,8 +1,7 @@
-package vn.com.buaansach.web.admin.service.dto;
+package vn.com.buaansach.web.admin.service.dto.readwrite;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import vn.com.buaansach.entity.CategoryEntity;
 import vn.com.buaansach.entity.ProductEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.web.user.service.dto.AuditDTO;
@@ -15,13 +14,15 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class AdminProductDTO extends AuditDTO {
-    @Size(min = 1, max = 20)
+    private UUID guid;
+
+    @Size(min = 1, max = 16)
     private String productCode;
 
     @Size(min = 1, max = 100)
     private String productName;
 
-    @Size(max = 1000)
+    @Size(max = 2000)
     private String productDescription;
 
     @Size(max = 255)
@@ -33,18 +34,18 @@ public class AdminProductDTO extends AuditDTO {
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;
 
-    private int productRealPrice;
+    private int productRootPrice;
 
-    private int productPrice;
+    private int productNormalPrice;
+
+    private int productSalePrice;
 
     private UUID categoryGuid;
-
-    private String categoryName;
 
     public AdminProductDTO() {
     }
 
-    public AdminProductDTO(ProductEntity productEntity, CategoryEntity categoryEntity) {
+    public AdminProductDTO(ProductEntity productEntity) {
         this.guid = productEntity.getGuid();
         this.productCode = productEntity.getProductCode();
         this.productName = productEntity.getProductName();
@@ -52,16 +53,15 @@ public class AdminProductDTO extends AuditDTO {
         this.productImageUrl = productEntity.getProductImageUrl();
         this.productThumbnailUrl = productEntity.getProductThumbnailUrl();
         this.productStatus = productEntity.getProductStatus();
-        this.productRealPrice = productEntity.getProductRealPrice();
-        this.productPrice = productEntity.getProductPrice();
+        this.productRootPrice = productEntity.getProductRootPrice();
+        this.productNormalPrice = productEntity.getProductNormalPrice();
+        this.productSalePrice = productEntity.getProductSalePrice();
+        this.categoryGuid = productEntity.getCategoryGuid();
+
         this.createdBy = productEntity.getCreatedBy();
         this.createdDate = productEntity.getCreatedDate();
         this.lastModifiedBy = productEntity.getLastModifiedBy();
         this.lastModifiedDate = productEntity.getLastModifiedDate();
-        if(categoryEntity != null){
-            this.categoryGuid = categoryEntity.getGuid();
-            this.categoryName = categoryEntity.getCategoryName();
-        }
     }
 
 }

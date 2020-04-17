@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminUserService;
-import vn.com.buaansach.web.admin.service.dto.AdminCreateAccountDTO;
-import vn.com.buaansach.web.admin.service.dto.AdminPasswordChangeDTO;
-import vn.com.buaansach.web.user.service.dto.UserDTO;
+import vn.com.buaansach.web.admin.service.dto.write.AdminCreateUserDTO;
+import vn.com.buaansach.web.admin.service.dto.write.AdminPasswordChangeDTO;
+import vn.com.buaansach.web.admin.service.dto.read.AdminUserDTO;
 
 import javax.validation.Valid;
 
@@ -35,23 +35,23 @@ public class AdminUserResource {
      */
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody AdminCreateAccountDTO payload) {
+    public ResponseEntity<AdminUserDTO> createUser(@Valid @RequestBody AdminCreateUserDTO payload) {
         log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
-        return ResponseEntity.ok(new UserDTO(adminUserService.createUser(payload)));
+        return ResponseEntity.ok(new AdminUserDTO(adminUserService.createUser(payload)));
     }
 
     /**
      * Admin get page user
      */
     @GetMapping("/list")
-    public ResponseEntity<Page<UserDTO>> getPageUser(@RequestParam(value = "search", defaultValue = "") String search,
-                                                     @RequestParam(value = "page", defaultValue = "1") int page,
-                                                     @RequestParam(value = "size", defaultValue = "20") int size,
-                                                     @RequestParam(value = "sortField", defaultValue = "createdDate") String sortField,
-                                                     @RequestParam(value = "sortDirection", defaultValue = "DESC") Sort.Direction sortDirection) {
+    public ResponseEntity<Page<AdminUserDTO>> getPageUser(@RequestParam(value = "search", defaultValue = "") String search,
+                                                          @RequestParam(value = "page", defaultValue = "1") int page,
+                                                          @RequestParam(value = "size", defaultValue = "20") int size,
+                                                          @RequestParam(value = "sortField", defaultValue = "createdDate") String sortField,
+                                                          @RequestParam(value = "sortDirection", defaultValue = "DESC") Sort.Direction sortDirection) {
         PageRequest request = PageRequest.of(page - 1, size, sortDirection, sortField);
         log.debug("REST request from user {} to list {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
-        return ResponseEntity.ok(adminUserService.getPageUser(request, search).map(UserDTO::new));
+        return ResponseEntity.ok(adminUserService.getPageUser(request, search).map(AdminUserDTO::new));
     }
 
     /**

@@ -14,7 +14,6 @@ import vn.com.buaansach.entity.StoreEntity;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminStoreService;
-import vn.com.buaansach.web.user.service.dto.StoreDTO;
 
 import javax.validation.Valid;
 
@@ -33,10 +32,10 @@ public class AdminStoreResource {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<StoreDTO> createStore(@Valid @RequestPart("payload") StoreEntity payload,
-                                                @RequestPart(value = "image", required = false) MultipartFile image) {
+    public ResponseEntity<StoreEntity> createStore(@Valid @RequestPart("payload") StoreEntity payload,
+                                                   @RequestPart(value = "image", required = false) MultipartFile image) {
         log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
-        return ResponseEntity.ok(new StoreDTO(adminStoreService.createStore(payload, image)));
+        return ResponseEntity.ok(adminStoreService.createStore(payload, image));
     }
 
     @PutMapping("/update")

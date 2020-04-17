@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.user.service.dto;
+package vn.com.buaansach.web.admin.service.dto.read;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import vn.com.buaansach.entity.AuthorityEntity;
 import vn.com.buaansach.entity.UserEntity;
 import vn.com.buaansach.util.Constants;
+import vn.com.buaansach.web.user.service.dto.AuditDTO;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO extends AuditDTO {
+public class AdminUserDTO extends AuditDTO {
 
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
@@ -39,8 +40,6 @@ public class UserDTO extends AuditDTO {
 
     private boolean activated;
 
-    private boolean disabledByAdmin;
-
     @Size(min = 2, max = 10)
     private String langKey;
 
@@ -49,14 +48,13 @@ public class UserDTO extends AuditDTO {
 
     private Set<String> authorities;
 
-    public UserDTO(UserEntity userEntity) {
+    public AdminUserDTO(UserEntity userEntity) {
         this.login = userEntity.getLogin();
         this.firstName = userEntity.getFirstName();
         this.lastName = userEntity.getLastName();
         this.email = userEntity.getEmail();
         this.phone = userEntity.getPhone();
         this.activated = userEntity.isActivated();
-        this.disabledByAdmin = userEntity.isDisabledByAdmin();
         this.langKey = userEntity.getLangKey();
         this.imageUrl = userEntity.getImageUrl();
         this.authorities = userEntity.getAuthorities().stream()

@@ -12,11 +12,12 @@
             <column name="guid" type="binary(16)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_category_guid"/>
             </column>
-            <column name="category_name" type="varchar(100)">
+            <column name="category_name" type="varchar(50)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_category_name"/>
             </column>
-            <column name="category_description" type="varchar(1000)"/>
+            <column name="category_description" type="varchar(255)"/>
             <column name="category_image_url" type="varchar(255)"/>
+
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>

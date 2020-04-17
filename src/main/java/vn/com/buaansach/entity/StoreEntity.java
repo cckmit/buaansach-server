@@ -26,8 +26,8 @@ public class StoreEntity extends AbstractAuditingEntity implements Serializable 
     @Column(unique = true)
     private UUID guid;
 
-    @Size(min = 1, max = 20)
-    @Column(name = "store_code", unique = true, length = 20)
+    @Size(min = 1, max = 16)
+    @Column(name = "store_code", unique = true, length = 16)
     private String storeCode;
 
     @Size(min = 1, max = 100)
@@ -59,15 +59,15 @@ public class StoreEntity extends AbstractAuditingEntity implements Serializable 
     @Column(name = "store_owner_email", length = 100)
     private String storeOwnerEmail;
 
-    @Size(max = 100)
-    @Column(name = "store_tax_code", length = 100)
+    @Size(max = 50)
+    @Column(name = "store_tax_code", length = 50)
     private String storeTaxCode;
 
-    @Size(max = 20)
-    @Column(name = "store_open_hour", length = 20)
+    @Size(max = 10)
+    @Column(name = "store_open_hour", length = 10)
     private String storeOpenHour;
 
-    @Size(max = 20)
-    @Column(name = "store_close_hour", length = 20)
+    @Size(max = 10)
+    @Column(name = "store_close_hour", length = 10)
     private String storeCloseHour;
 }

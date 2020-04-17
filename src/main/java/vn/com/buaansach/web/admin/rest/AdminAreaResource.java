@@ -6,12 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-import vn.com.buaansach.entity.AreaEntity;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminAreaService;
-import vn.com.buaansach.web.admin.service.dto.AdminAreaDTO;
-import vn.com.buaansach.web.admin.service.manipulation.AdminCreateAreaDTO;
+import vn.com.buaansach.web.admin.service.dto.readwrite.AdminAreaDTO;
+import vn.com.buaansach.web.admin.service.dto.write.AdminCreateAreaDTO;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -37,7 +36,7 @@ public class AdminAreaResource {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<AdminAreaDTO> updateArea(@Valid @RequestBody AreaEntity payload) {
+    public ResponseEntity<AdminAreaDTO> updateArea(@Valid @RequestBody AdminAreaDTO payload) {
         log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminAreaService.updateArea(payload));
     }

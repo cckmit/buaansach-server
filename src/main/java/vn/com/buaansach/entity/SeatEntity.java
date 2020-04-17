@@ -17,6 +17,7 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 public class SeatEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
@@ -37,7 +38,6 @@ public class SeatEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "last_order_guid")
     private UUID lastOrderGuid;
 
-    @JsonIgnore
-    @Column(name = "area_id")
-    private Long areaId;
+    @Column(name = "area_guid")
+    private UUID areaGuid;
 }

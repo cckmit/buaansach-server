@@ -3,11 +3,13 @@ package vn.com.buaansach.web.user.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import vn.com.buaansach.entity.StoreUserEntity;
 import vn.com.buaansach.web.user.service.dto.StoreUserDTO;
 
 import java.util.List;
 
+@Repository
 public interface StoreUserRepository extends JpaRepository<StoreUserEntity, Long> {
 
     /* Use for all user */

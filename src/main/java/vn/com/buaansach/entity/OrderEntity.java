@@ -10,12 +10,13 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "bas_order")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class OrderEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
@@ -24,12 +25,12 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
     @Column(unique = true)
     private UUID guid;
 
-    @Size(max = 20)
-    @Column(name = "order_code", length = 20)
+    @Size(max = 16)
+    @Column(name = "order_code", length = 16)
     private String orderCode;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "order_status", length = 50)
+    @Column(name = "order_status")
     private OrderStatus orderStatus = OrderStatus.DRAFT;
 
     @Size(max = 255)
@@ -44,8 +45,6 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
     @Column(name = "customer_phone", length = 12)
     private String customerPhone;
 
-    @JsonIgnore
-    @Column(name = "seat_id")
-    private Long seatId;
-
+    @Column(name = "seat_guid")
+    private Long seatGuid;
 }

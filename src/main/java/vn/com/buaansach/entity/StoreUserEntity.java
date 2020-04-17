@@ -11,11 +11,13 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "bas_store_user")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class StoreUserEntity extends AbstractAuditingEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,13 +26,6 @@ public class StoreUserEntity extends AbstractAuditingEntity implements Serializa
     @Column(unique = true)
     private UUID guid;
 
-    @Column(name = "store_guid")
-    private UUID storeGuid;
-
-    @Size(max = 50)
-    @Column(name = "user_login", length = 50)
-    private String userLogin;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "store_user_role")
     private StoreUserRole storeUserRole;
@@ -38,4 +33,11 @@ public class StoreUserEntity extends AbstractAuditingEntity implements Serializa
     @Enumerated(EnumType.STRING)
     @Column(name = "store_user_status")
     private StoreUserStatus storeUserStatus = StoreUserStatus.WORKING;
+
+    @Column(name = "store_guid")
+    private UUID storeGuid;
+
+    @Size(max = 50)
+    @Column(name = "user_login", length = 50)
+    private String userLogin;
 }

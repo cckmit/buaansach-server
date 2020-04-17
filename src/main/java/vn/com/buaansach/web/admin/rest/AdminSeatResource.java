@@ -10,7 +10,7 @@ import vn.com.buaansach.entity.SeatEntity;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminSeatService;
-import vn.com.buaansach.web.admin.service.manipulation.AdminCreateSeatDTO;
+import vn.com.buaansach.web.admin.service.dto.write.AdminCreateSeatDTO;
 
 import javax.validation.Valid;
 import java.util.List;

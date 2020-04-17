@@ -43,11 +43,11 @@ public class UserEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "disabled_by_admin", nullable = false)
     private boolean disabledByAdmin = false;
 
-    @Size(max = 50)
+    @Size(min = 1, max = 50)
     @Column(name = "first_name", length = 50)
     private String firstName;
 
-    @Size(max = 50)
+    @Size(min = 1, max = 50)
     @Column(name = "last_name", length = 50)
     private String lastName;
 

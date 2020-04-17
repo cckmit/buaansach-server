@@ -3,13 +3,12 @@ package vn.com.buaansach.web.admin.service;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.AreaEntity;
 import vn.com.buaansach.entity.SeatEntity;
-import vn.com.buaansach.entity.StoreEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.web.admin.repository.AdminAreaRepository;
 import vn.com.buaansach.web.admin.repository.AdminSeatRepository;
 import vn.com.buaansach.web.admin.repository.AdminStoreRepository;
-import vn.com.buaansach.web.admin.service.dto.AdminAreaDTO;
-import vn.com.buaansach.web.admin.service.manipulation.AdminCreateAreaDTO;
+import vn.com.buaansach.web.admin.service.dto.readwrite.AdminAreaDTO;
+import vn.com.buaansach.web.admin.service.dto.write.AdminCreateAreaDTO;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ public class AdminAreaService {
         this.adminSeatRepository = adminSeatRepository;
     }
 
-
     /* used when create area with init seats */
     private List<SeatEntity> createListSeat(AreaEntity areaEntity, int numberOfSeats, String seatPrefix) {
         List<SeatEntity> listSeat = new ArrayList<>();
@@ -44,7 +42,7 @@ public class AdminAreaService {
             } else {
                 seatEntity.setSeatName(String.valueOf(i));
             }
-            seatEntity.setAreaId(areaEntity.getId());
+            seatEntity.setAreaGuid(areaEntity.getGuid());
             listSeat.add(seatEntity);
         }
         return adminSeatRepository.saveAll(listSeat);
@@ -52,13 +50,13 @@ public class AdminAreaService {
 
     @Transactional
     public AdminAreaDTO createArea(AdminCreateAreaDTO request) {
-        StoreEntity storeEntity = adminStoreRepository.findOneByGuid(request.getStoreGuid())
+        adminStoreRepository.findOneByGuid(request.getStoreGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + request.getStoreGuid()));
 
         AreaEntity areaEntity = new AreaEntity();
         areaEntity.setGuid(UUID.randomUUID());
         areaEntity.setAreaName(request.getAreaName());
-        areaEntity.setStoreId(storeEntity.getId());
+        areaEntity.setStoreGuid(request.getStoreGuid());
         areaEntity = adminAreaRepository.save(areaEntity);
 
         List<SeatEntity> listSeat = new ArrayList<>();
@@ -70,44 +68,37 @@ public class AdminAreaService {
     }
 
     public List<AdminAreaDTO> getListAreaByStore(String storeGuid) {
-        StoreEntity storeEntity = adminStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
+        adminStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + storeGuid));
-        List<AreaEntity> listArea = adminAreaRepository.findByStoreId(storeEntity.getId());
-        List<SeatEntity> listSeat = adminSeatRepository.findListSeatByStoreId(storeEntity.getId());
+
+        List<AreaEntity> listArea = adminAreaRepository.findByStoreGuid(UUID.fromString(storeGuid));
+        List<SeatEntity> listSeat = adminSeatRepository.findListSeatByStoreGuid(UUID.fromString(storeGuid));
         List<AdminAreaDTO> result = new ArrayList<>();
         listArea.forEach(area -> {
-            AdminAreaDTO dto = new AdminAreaDTO(
-                    area,
-                    listSeat.stream()
-                            .filter(seat -> seat.getAreaId().equals(area.getId()))
-                            .collect(Collectors.toList())
+            AdminAreaDTO dto = new AdminAreaDTO(area, listSeat.stream()
+                    .filter(seat -> seat.getAreaGuid().equals(area.getGuid()))
+                    .collect(Collectors.toList())
             );
             result.add(dto);
         });
         return result;
     }
 
-    public AdminAreaDTO updateArea(AreaEntity updateEntity) {
+    public AdminAreaDTO updateArea(AdminAreaDTO updateEntity) {
         AreaEntity currentEntity = adminAreaRepository.findOneByGuid(updateEntity.getGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Area not found with guid: " + updateEntity.getGuid()));
 
         currentEntity.setAreaName(updateEntity.getAreaName());
-        return new AdminAreaDTO(adminAreaRepository.save(currentEntity), adminSeatService.getListSeatByAreaGuid(currentEntity.getGuid().toString()));
+        return new AdminAreaDTO(adminAreaRepository.save(currentEntity), updateEntity.getListSeat());
     }
 
+    @Transactional
     public void deleteArea(String areaGuid) {
         AreaEntity areaEntity = adminAreaRepository.findOneByGuid(UUID.fromString(areaGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("Area not found with guid: " + areaGuid));
 
-        adminSeatService.deleteAllSeatByAreaId(areaEntity.getId());
+        adminSeatRepository.deleteByAreaGuid(areaEntity.getGuid());
         adminAreaRepository.delete(areaEntity);
     }
 
-    public void deleteAllAreaByStoreId(Long storeId) {
-        List<AreaEntity> listArea = adminAreaRepository.findByStoreId(storeId);
-        listArea.forEach(areaEntity -> {
-            adminSeatService.deleteAllSeatByAreaId(areaEntity.getId());
-        });
-        adminAreaRepository.deleteAll(listArea);
-    }
 }

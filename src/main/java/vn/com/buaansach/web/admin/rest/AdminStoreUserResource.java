@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminStoreUserService;
-import vn.com.buaansach.web.admin.service.dto.AdminStoreUserDTO;
-import vn.com.buaansach.web.admin.service.dto.AdminAddStoreUserDTO;
-import vn.com.buaansach.web.admin.service.manipulation.AdminCreateOrUpdateStoreUserDTO;
+import vn.com.buaansach.web.admin.service.dto.write.AdminAddStoreUserDTO;
+import vn.com.buaansach.web.admin.service.dto.write.AdminCreateOrUpdateStoreUserDTO;
+import vn.com.buaansach.web.admin.service.dto.read.AdminStoreUserDTO;
 
 import javax.validation.Valid;
 import java.util.List;

@@ -3,11 +3,9 @@ package vn.com.buaansach.web.user.service.dto;
 import lombok.Data;
 
 import java.time.Instant;
-import java.util.UUID;
 
 @Data
 public class AuditDTO {
-    protected UUID guid;
     protected String createdBy;
     protected Instant createdDate;
     protected String lastModifiedBy;

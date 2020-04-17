@@ -32,18 +32,17 @@ public class PosAreaService {
 
     public List<PosAreaDTO> getListAreaWithSeatByStoreGuid(String storeGuid) {
         storeUserSecurityService.blockAccessIfNotInStore(UUID.fromString(storeGuid));
+
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + storeGuid));
-        List<AreaEntity> listArea = posAreaRepository.findByStoreId(storeEntity.getId());
-        List<PosSeatDTO> listSeat = posSeatRepository.findListEmployeeSeatDTOByStoreGuid(storeEntity.getGuid());
+
+        List<AreaEntity> listArea = posAreaRepository.findByStoreGuid(storeEntity.getGuid());
+        List<PosSeatDTO> listSeat = posSeatRepository.findListPosSeatDTOByStoreGuid(storeEntity.getGuid());
         List<PosAreaDTO> result = new ArrayList<>();
         listArea.forEach(area -> {
-            PosAreaDTO dto = new PosAreaDTO(
-                    area,
-                    listSeat
-                            .stream()
-                            .filter(seat -> seat.getAreaGuid().equals(area.getGuid()))
-                            .collect(Collectors.toList())
+            PosAreaDTO dto = new PosAreaDTO(area, listSeat.stream()
+                    .filter(seat -> seat.getAreaGuid().equals(area.getGuid()))
+                    .collect(Collectors.toList())
             );
             result.add(dto);
         });

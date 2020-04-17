@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.admin.service.dto;
+package vn.com.buaansach.web.admin.service.dto.write;
 
 import lombok.Data;
 import vn.com.buaansach.entity.enumeration.StoreUserRole;

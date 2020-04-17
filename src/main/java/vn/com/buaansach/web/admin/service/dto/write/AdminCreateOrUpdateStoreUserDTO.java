@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.admin.service.manipulation;
+package vn.com.buaansach.web.admin.service.dto.write;
 
 import lombok.Data;
 import vn.com.buaansach.entity.enumeration.StoreUserRole;
@@ -18,8 +18,14 @@ public class AdminCreateOrUpdateStoreUserDTO {
 
     @Size(max = 100)
     private String password;
+
+    @Size(min = 1, max = 50)
     private String firstName;
+
+    @Size(min = 1, max = 50)
     private String lastName;
-    private StoreUserRole storeUserRole;
-    private StoreUserStatus storeUserStatus;
+
+    private StoreUserRole storeUserRole = StoreUserRole.STORE_WAITER;
+
+    private StoreUserStatus storeUserStatus = StoreUserStatus.WORKING;
 }

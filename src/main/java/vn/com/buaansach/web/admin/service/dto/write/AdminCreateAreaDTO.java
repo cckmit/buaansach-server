@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.admin.service.manipulation;
+package vn.com.buaansach.web.admin.service.dto.write;
 
 import lombok.Data;
 

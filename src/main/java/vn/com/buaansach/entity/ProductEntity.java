@@ -16,6 +16,7 @@ import java.util.UUID;
 @Data
 public class ProductEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
@@ -24,16 +25,16 @@ public class ProductEntity extends AbstractAuditingEntity implements Serializabl
     @Column(unique = true)
     private UUID guid;
 
-    @Size(min = 1, max = 20)
-    @Column(name = "product_code", length = 20)
+    @Size(min = 1, max = 16)
+    @Column(name = "product_code", length = 16)
     private String productCode;
 
     @Size(min = 1, max = 100)
     @Column(name = "product_name", length = 100)
     private String productName;
 
-    @Size(max = 1000)
-    @Column(name = "product_description", length = 1000)
+    @Size(max = 2000)
+    @Column(name = "product_description", length = 2000)
     private String productDescription;
 
     @Size(max = 255)
@@ -48,13 +49,15 @@ public class ProductEntity extends AbstractAuditingEntity implements Serializabl
     @Column(name = "product_status")
     private ProductStatus productStatus;
 
-    @Column(name = "product_real_price")
-    private int productRealPrice;
+    @Column(name = "product_root_price")
+    private int productRootPrice;
 
-    @Column(name = "product_price")
-    private int productPrice;
+    @Column(name = "product_normal_price")
+    private int productNormalPrice;
 
-    @JsonIgnore
-    @Column(name = "category_id")
-    private Long categoryId;
+    @Column(name = "product_sale_price")
+    private int productSalePrice;
+
+    @Column(name = "category_guid")
+    private UUID categoryGuid;
 }

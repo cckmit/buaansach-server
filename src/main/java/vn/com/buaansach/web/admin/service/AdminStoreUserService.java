@@ -14,9 +14,9 @@ import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.admin.repository.AdminStoreRepository;
 import vn.com.buaansach.web.admin.repository.AdminStoreUserRepository;
 import vn.com.buaansach.web.admin.repository.AdminUserRepository;
-import vn.com.buaansach.web.admin.service.dto.AdminAddStoreUserDTO;
-import vn.com.buaansach.web.admin.service.dto.AdminStoreUserDTO;
-import vn.com.buaansach.web.admin.service.manipulation.AdminCreateOrUpdateStoreUserDTO;
+import vn.com.buaansach.web.admin.service.dto.write.AdminAddStoreUserDTO;
+import vn.com.buaansach.web.admin.service.dto.write.AdminCreateOrUpdateStoreUserDTO;
+import vn.com.buaansach.web.admin.service.dto.read.AdminStoreUserDTO;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
@@ -84,8 +84,8 @@ public class AdminStoreUserService {
         storeUserEntity.setStoreUserStatus(request.getStoreUserStatus());
         StoreUserEntity updatedStoreUserEntity = adminStoreUserRepository.save(storeUserEntity);
 
-        /* We dont allow to modify user login
-        => do not use userLogin from request, cause it might be modified */
+        /* disallow to modify user login
+        => do not use userLogin from request, because it might be modified */
         UserEntity updatedUserEntity = updateUser(storeUserEntity.getUserLogin(), request);
 
         return new AdminStoreUserDTO(updatedStoreUserEntity, updatedUserEntity);
@@ -104,11 +104,15 @@ public class AdminStoreUserService {
 
         UserEntity userEntity = adminUserRepository.findOneByLogin(storeUserEntity.getUserLogin())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with login: " + storeUserEntity.getUserLogin()));
+
+        /* when user doesn't have role admin try to change activate status of admin account */
         if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)
                 && userEntity.getAuthorities().contains(new AuthorityEntity(AuthoritiesConstants.ADMIN))) {
-            throw new AccessDeniedException("Cannot deactivate administrator account");
+            throw new AccessDeniedException("Cannot deactivate administrator's account");
         }
-        if (userEntity.isDisabledByAdmin() && !SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
+
+        /* when user doesn't have role admin try to change activate status of account that was disabled by admin account */
+        if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN) && userEntity.isDisabledByAdmin()) {
             throw new AccessDeniedException("Account has been deactivate by administrator.");
         }
         userEntity.setActivated(!userEntity.isActivated());
@@ -158,8 +162,4 @@ public class AdminStoreUserService {
         adminStoreUserRepository.delete(storeUserEntity);
     }
 
-    /* delete all store user in a store */
-    public void deleteByStoreGuid(UUID guid) {
-        adminStoreUserRepository.deleteByStoreGuid(guid);
-    }
 }
