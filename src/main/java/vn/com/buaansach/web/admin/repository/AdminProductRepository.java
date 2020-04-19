@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import vn.com.buaansach.entity.ProductEntity;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,4 +25,12 @@ public interface AdminProductRepository extends JpaRepository<ProductEntity, Lon
     @Modifying
     @Query("UPDATE ProductEntity p SET p.categoryGuid = NULL WHERE p.categoryGuid = :categoryGuid")
     void clearProductCategory(@Param("categoryGuid") UUID categoryGuid);
+
+    @Query("SELECT product FROM ProductEntity product " +
+            "WHERE product.productStatus <> 'STOP_TRADING' " +
+            "AND product.guid NOT IN (" +
+            "SELECT DISTINCT storeProduct.productGuid " +
+            "FROM vn.com.buaansach.entity.StoreProductEntity storeProduct " +
+            "WHERE storeProduct.storeGuid = :storeGuid)")
+    List<ProductEntity> findAllProductNotInStore(UUID storeGuid);
 }

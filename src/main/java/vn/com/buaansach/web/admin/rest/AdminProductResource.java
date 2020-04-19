@@ -16,6 +16,7 @@ import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminProductService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Secured(AuthoritiesConstants.ADMIN)
 @RestController
@@ -54,6 +55,12 @@ public class AdminProductResource {
         PageRequest request = PageRequest.of(page - 1, size, sortDirection, sortField);
         log.debug("REST request from user {} to list {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
         return ResponseEntity.ok(adminProductService.getPageProduct(request, search));
+    }
+
+    @GetMapping("/list-not-in-store/{storeGuid}")
+    public ResponseEntity<List<ProductEntity>> getListProductNotInStore(@PathVariable String storeGuid){
+        log.debug("REST request from user {} to list {} not in store : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
+        return ResponseEntity.ok(adminProductService.getListProductNotInStore(storeGuid));
     }
 
     @GetMapping("/get/{productGuid}")

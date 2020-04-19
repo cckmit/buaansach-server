@@ -6,25 +6,30 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.entity.FileEntity;
 import vn.com.buaansach.entity.ProductEntity;
+import vn.com.buaansach.entity.StoreProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.admin.repository.AdminCategoryRepository;
 import vn.com.buaansach.web.admin.repository.AdminProductRepository;
+import vn.com.buaansach.web.admin.repository.AdminStoreProductRepository;
 import vn.com.buaansach.web.user.service.FileService;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class AdminProductService {
     private final AdminProductRepository adminProductRepository;
     private final AdminCategoryRepository adminCategoryRepository;
+    private final AdminStoreProductRepository adminStoreProductRepository;
     private final FileService fileService;
 
-    public AdminProductService(AdminProductRepository adminProductRepository, AdminCategoryRepository adminCategoryRepository, FileService fileService) {
+    public AdminProductService(AdminProductRepository adminProductRepository, AdminCategoryRepository adminCategoryRepository, AdminStoreProductRepository adminStoreProductRepository, FileService fileService) {
         this.adminProductRepository = adminProductRepository;
         this.adminCategoryRepository = adminCategoryRepository;
+        this.adminStoreProductRepository = adminStoreProductRepository;
         this.fileService = fileService;
     }
 
@@ -90,11 +95,22 @@ public class AdminProductService {
         return adminProductRepository.findPageProductWithKeyword(request, search.toLowerCase());
     }
 
+    public List<ProductEntity> getListProductNotInStore(String storeGuid) {
+        return adminProductRepository.findAllProductNotInStore(UUID.fromString(storeGuid));
+    }
+
+    @Transactional
     public void deleteProduct(String productGuid) {
         ProductEntity productEntity = adminProductRepository.findOneByGuid(UUID.fromString(productGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with guid: " + productGuid));
         fileService.deleteByUrl(productEntity.getProductImageUrl());
         fileService.deleteByUrl(productEntity.getProductThumbnailUrl());
+
+        /* delete all store product before delete product */
+        List<StoreProductEntity> listStoreProduct = adminStoreProductRepository.findByProductGuid(UUID.fromString(productGuid));
+        adminStoreProductRepository.deleteInBatch(listStoreProduct);
+
         adminProductRepository.delete(productEntity);
     }
+
 }

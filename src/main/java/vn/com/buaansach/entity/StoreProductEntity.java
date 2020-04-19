@@ -21,6 +21,9 @@ public class StoreProductEntity extends AbstractAuditingEntity implements Serial
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
+    private UUID guid;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "store_product_status")
     private StoreProductStatus storeProductStatus = StoreProductStatus.AVAILABLE;
@@ -29,5 +32,5 @@ public class StoreProductEntity extends AbstractAuditingEntity implements Serial
     private UUID storeGuid;
 
     @Column(name = "product_guid")
-    private String productGuid;
+    private UUID productGuid;
 }
