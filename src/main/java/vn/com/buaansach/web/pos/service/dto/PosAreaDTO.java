@@ -16,6 +16,11 @@ public class PosAreaDTO {
     public PosAreaDTO() {
     }
 
+    public PosAreaDTO(AreaEntity areaEntity) {
+        this.guid = areaEntity.getGuid();
+        this.areaName = areaEntity.getAreaName();
+    }
+
     public PosAreaDTO(AreaEntity areaEntity, List<PosSeatDTO> listSeat) {
         this.guid = areaEntity.getGuid();
         this.areaName = areaEntity.getAreaName();

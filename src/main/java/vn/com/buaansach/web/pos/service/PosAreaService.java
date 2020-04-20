@@ -48,4 +48,15 @@ public class PosAreaService {
         });
         return result;
     }
+
+    public List<PosAreaDTO> getListAreaWithoutSeatByStoreGuid(String storeGuid) {
+        storeUserSecurityService.blockAccessIfNotInStore(UUID.fromString(storeGuid));
+
+        StoreEntity storeEntity = posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
+                .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + storeGuid));
+        return posAreaRepository.findByStoreGuid(storeEntity.getGuid())
+                .stream()
+                .map(PosAreaDTO::new)
+                .collect(Collectors.toList());
+    }
 }

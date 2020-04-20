@@ -24,6 +24,12 @@ public class PosAreaResource {
         this.posAreaService = posAreaService;
     }
 
+    @GetMapping("/list-without-seat-by-store/{storeGuid}")
+    public ResponseEntity<List<PosAreaDTO>> getListAreaWithoutSeatByStoreGuid(@PathVariable String storeGuid) {
+        log.debug("REST request from user {} to list {} without seat by store: {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
+        return ResponseEntity.ok(posAreaService.getListAreaWithoutSeatByStoreGuid(storeGuid));
+    }
+
     @GetMapping("/list-with-seat-by-store/{storeGuid}")
     public ResponseEntity<List<PosAreaDTO>> getListAreaWithSeatByStoreGuid(@PathVariable String storeGuid) {
         log.debug("REST request from user {} to list {} with seat by store: {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
