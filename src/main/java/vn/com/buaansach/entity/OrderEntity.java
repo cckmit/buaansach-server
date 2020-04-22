@@ -8,6 +8,7 @@ import vn.com.buaansach.entity.enumeration.OrderStatus;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -26,12 +27,21 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
     private UUID guid;
 
     @Size(max = 16)
-    @Column(name = "order_code", length = 16)
+    @Column(name = "order_code", unique = true, length = 16)
     private String orderCode;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status")
-    private OrderStatus orderStatus = OrderStatus.DRAFT;
+    private OrderStatus orderStatus = OrderStatus.CREATED;
+
+    @Column(name = "order_status_timeline")
+    private String orderStatusTimeline;
+
+    @Column(name = "checkin_time")
+    private Instant checkinTime;
+
+    @Column(name = "checkout_time")
+    private Instant checkoutTime;
 
     @Size(max = 255)
     @Column(name = "order_note")
@@ -46,5 +56,15 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
     private String customerPhone;
 
     @Column(name = "seat_guid")
-    private Long seatGuid;
+    private UUID seatGuid;
+
+    @Column(name = "payment_guid")
+    private UUID paymentGuid;
+
+    @Column(name = "cancel_reason")
+    private String cancelReason;
+
+    @Column(name = "recreate_from_order_guid")
+    private UUID recreateFromOrderGuid;
+
 }

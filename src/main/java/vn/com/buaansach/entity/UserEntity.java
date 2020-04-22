@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "bas_user")
@@ -26,6 +27,9 @@ public class UserEntity extends AbstractAuditingEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private Long id;
+
+    @Column(unique = true)
+    private UUID guid;
 
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)

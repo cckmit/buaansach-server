@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/api/v1/pos/store-product")
 public class PosStoreProductResource {
     private final String ENTITY_NAME = "pos-store-product";
-    private final Logger log = LoggerFactory.getLogger(PosAreaResource.class);
+    private final Logger log = LoggerFactory.getLogger(PosStoreProductResource.class);
     private final PosStoreProductService posStoreProductService;
 
     public PosStoreProductResource(PosStoreProductService posStoreProductService) {

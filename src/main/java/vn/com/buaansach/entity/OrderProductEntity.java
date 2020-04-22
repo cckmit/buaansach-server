@@ -3,6 +3,7 @@ package vn.com.buaansach.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import vn.com.buaansach.entity.enumeration.OrderProductStatus;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -21,18 +22,35 @@ public class OrderProductEntity extends AbstractAuditingEntity implements Serial
     @JsonIgnore
     private Long id;
 
-    @Size(max = 16)
-    @Column(name = "order_time", length = 16)
-    private String orderTime;
-
-    private int quantity;
-
-    @Column(name = "price_each")
-    private int priceEach;
-
     @Column(name = "order_guid")
     private UUID orderGuid;
 
     @Column(name = "product_guid")
     private UUID productGuid;
+
+    @Size(max = 16)
+    @Column(name = "order_product_group", length = 16)
+    private String orderProductGroup;
+
+    @Column(name = "order_product_quantity")
+    private int orderProductQuantity;
+
+    @Column(name = "price_each")
+    private int orderProductPrice;
+
+    @Size(max = 255)
+    @Column(name = "order_product_note")
+    private String orderProductNote;
+
+
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_product_status")
+    private OrderProductStatus orderProductStatus;
+
+    @Column(name = "cancel_reason")
+    private String cancelReason;
+
+    @Column(name = "order_product_status_timeline")
+    private String orderProductStatusTimeline;
 }
