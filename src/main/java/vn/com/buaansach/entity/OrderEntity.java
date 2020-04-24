@@ -32,20 +32,20 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status")
-    private OrderStatus orderStatus = OrderStatus.CREATED;
+    private OrderStatus orderStatus = OrderStatus.CREATED_BY_CUSTOMER;
 
     @Column(name = "order_status_timeline")
     private String orderStatusTimeline;
 
-    @Column(name = "checkin_time")
-    private Instant checkinTime;
+    @Column(name = "order_checkin_time")
+    private Instant orderCheckinTime;
 
-    @Column(name = "checkout_time")
-    private Instant checkoutTime;
+    @Column(name = "order_checkout_time")
+    private Instant orderCheckoutTime;
 
     @Size(max = 255)
-    @Column(name = "order_note")
-    private String orderNote;
+    @Column(name = "order_cancel_reason")
+    private String orderCancelReason;
 
     @Size(max = 100)
     @Column(name = "customer_name", length = 100)
@@ -60,9 +60,6 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
 
     @Column(name = "payment_guid")
     private UUID paymentGuid;
-
-    @Column(name = "cancel_reason")
-    private String cancelReason;
 
     @Column(name = "recreate_from_order_guid")
     private UUID recreateFromOrderGuid;

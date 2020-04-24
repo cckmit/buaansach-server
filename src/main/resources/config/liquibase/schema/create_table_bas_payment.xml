@@ -4,23 +4,22 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet id="create_table_bas_store_product" author="ductv">
-        <createTable tableName="bas_store_product">
+    <changeSet id="create_table_bas_payment" author="ductv">
+        <createTable tableName="bas_payment">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="store_guid" type="binary(16)">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="product_guid" type="binary(16)">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-
             <column name="guid" type="binary(16)">
-                <constraints unique="true" nullable="false" uniqueConstraintName="ux_store_product_guid"/>
+                <constraints unique="true" nullable="false" uniqueConstraintName="ux_payment_guid"/>
             </column>
 
-            <column name="store_product_status" type="varchar(30)">
+            <column name="payment_method" type="varchar(30)"/>
+            <column name="payment_status" type="varchar(30)"/>
+            <column name="bank_name" type="varchar(100)"/>
+            <column name="credit_number" type="varchar(50)"/>
+            <column name="total_charge" type="bigint"/>
+
+            <column name="order_guid" type="binary(16)">
                 <constraints nullable="false"/>
             </column>
 

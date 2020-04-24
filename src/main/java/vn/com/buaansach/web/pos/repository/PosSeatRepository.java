@@ -8,6 +8,7 @@ import vn.com.buaansach.entity.SeatEntity;
 import vn.com.buaansach.web.pos.service.dto.PosSeatDTO;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -22,4 +23,5 @@ public interface PosSeatRepository extends JpaRepository<SeatEntity, Long> {
             "WHERE store.guid = :storeGuid")
     List<PosSeatDTO> findListPosSeatDTOByStoreGuid(@Param("storeGuid") UUID storeGuid);
 
+    Optional<SeatEntity> findOneByGuid(UUID seatGuid);
 }

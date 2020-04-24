@@ -35,22 +35,24 @@ public class OrderProductEntity extends AbstractAuditingEntity implements Serial
     @Column(name = "order_product_quantity")
     private int orderProductQuantity;
 
-    @Column(name = "price_each")
+    @Column(name = "order_product_price")
     private int orderProductPrice;
+
+    @Column(name = "order_product_discount")
+    private int orderProductDiscount;
 
     @Size(max = 255)
     @Column(name = "order_product_note")
     private String orderProductNote;
 
-
-
     @Enumerated(EnumType.STRING)
     @Column(name = "order_product_status")
     private OrderProductStatus orderProductStatus;
 
-    @Column(name = "cancel_reason")
-    private String cancelReason;
-
     @Column(name = "order_product_status_timeline")
     private String orderProductStatusTimeline;
+
+    @Size(max = 255)
+    @Column(name = "order_product_cancel_reason")
+    private String orderProductCancelReason;
 }

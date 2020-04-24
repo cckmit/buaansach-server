@@ -32,7 +32,7 @@ public class PosStoreProductDTO {
         this.guid = storeProductEntity.getGuid();
         this.storeProductStatus = storeProductEntity.getStoreProductStatus();
         this.storeGuid = storeProductEntity.getStoreGuid();
-        this.productGuid = storeProductEntity.getStoreGuid();
+        this.productGuid = storeProductEntity.getProductGuid();
 
         this.productCode = productEntity.getProductCode();
         this.productName = productEntity.getProductName();
