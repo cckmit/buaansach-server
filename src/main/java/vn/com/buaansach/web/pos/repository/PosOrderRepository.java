@@ -15,7 +15,7 @@ public interface PosOrderRepository extends JpaRepository<OrderEntity, Long> {
 
     @Query("SELECT orderEntity FROM OrderEntity orderEntity " +
             "LEFT JOIN vn.com.buaansach.entity.SeatEntity seat " +
-            "ON orderEntity.guid = seat.lastOrderGuid " +
+            "ON orderEntity.guid = seat.currentOrderGuid " +
             "WHERE seat.guid = :seatGuid")
     Optional<OrderEntity> findOneBySeatGuid(@Param("seatGuid") UUID seatGuid);
 }

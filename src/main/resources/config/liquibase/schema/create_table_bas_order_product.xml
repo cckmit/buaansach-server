@@ -9,6 +9,11 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+
+            <column name="guid" type="binary(16)">
+                <constraints unique="true" nullable="false" uniqueConstraintName="ux_order_product_guid"/>
+            </column>
+
             <column name="order_guid" type="binary(16)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>

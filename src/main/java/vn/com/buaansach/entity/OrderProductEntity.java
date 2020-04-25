@@ -22,6 +22,9 @@ public class OrderProductEntity extends AbstractAuditingEntity implements Serial
     @JsonIgnore
     private Long id;
 
+    @Column(unique = true)
+    private UUID guid;
+
     @Column(name = "order_guid")
     private UUID orderGuid;
 

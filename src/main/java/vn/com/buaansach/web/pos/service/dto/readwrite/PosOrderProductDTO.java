@@ -16,6 +16,7 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class PosOrderProductDTO extends AuditDTO {
+    private UUID guid;
     private UUID orderGuid;
     private UUID productGuid;
 
@@ -53,6 +54,7 @@ public class PosOrderProductDTO extends AuditDTO {
     }
 
     private void assignProperty(OrderProductEntity orderProductEntity) {
+        this.guid = orderProductEntity.getGuid();
         this.orderGuid = orderProductEntity.getOrderGuid();
         this.productGuid = orderProductEntity.getOrderGuid();
         this.orderProductGroup = orderProductEntity.getOrderProductGroup();

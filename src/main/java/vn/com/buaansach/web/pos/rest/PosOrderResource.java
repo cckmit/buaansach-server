@@ -28,11 +28,11 @@ public class PosOrderResource {
         return ResponseEntity.ok(posOrderService.createOrder(payload, currentUser));
     }
 
-    @PutMapping("/save")
-    public ResponseEntity<PosOrderDTO> saveOrder(@RequestBody PosOrderUpdateDTO payload) {
+    @PutMapping("/update")
+    public ResponseEntity<PosOrderDTO> updateOrder(@RequestBody PosOrderUpdateDTO payload) {
         String currentUser = SecurityUtils.getCurrentUserLogin();
-        log.debug("REST request from user {} to save {} : {}", currentUser, ENTITY_NAME, payload);
-        return ResponseEntity.ok(posOrderService.saveOrder(payload, currentUser));
+        log.debug("REST request from user {} to update {} : {}", currentUser, ENTITY_NAME, payload);
+        return ResponseEntity.ok(posOrderService.updateOrder(payload, currentUser));
     }
 
     @GetMapping("/get/{orderGuid}")

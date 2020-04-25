@@ -22,6 +22,7 @@ public class PosOrderProductMapper {
     public OrderProductEntity dtoToEntity(PosOrderProductDTO dto) {
         if (dto == null) return null;
         OrderProductEntity entity = new OrderProductEntity();
+        entity.setGuid(dto.getGuid());
         entity.setOrderGuid(dto.getOrderGuid());
         entity.setProductGuid(dto.getProductGuid());
         entity.setOrderProductGroup(dto.getOrderProductGroup());

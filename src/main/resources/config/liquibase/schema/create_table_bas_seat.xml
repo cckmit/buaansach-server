@@ -16,7 +16,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="seat_status" type="varchar(30)"/>
-            <column name="last_order_guid" type="binary(16)"/>
+            <column name="current_order_guid" type="binary(16)"/>
             <column name="area_guid" type="binary(16)">
                 <constraints nullable="false"/>
             </column>

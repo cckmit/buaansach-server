@@ -57,7 +57,7 @@ public class PosOrderService {
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(payload.getSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found with guid: " + payload.getSeatGuid()));
 
-        if (seatEntity.getSeatStatus().equals(SeatStatus.NON_EMPTY) && posOrderRepository.findOneByGuid(seatEntity.getLastOrderGuid()).isPresent())
+        if (seatEntity.getSeatStatus().equals(SeatStatus.NON_EMPTY))
             throw new BadRequestException("Please complete last order on this seat first");
 
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(payload.getSeatGuid())
@@ -74,8 +74,37 @@ public class PosOrderService {
         orderEntity.setOrderCheckinTime(Instant.now());
 
         seatEntity.setSeatStatus(SeatStatus.NON_EMPTY);
-        seatEntity.setLastOrderGuid(orderGuid);
+        seatEntity.setCurrentOrderGuid(orderGuid);
         return new PosOrderDTO(posOrderRepository.save(orderEntity));
+    }
+
+
+    @Transactional
+    public PosOrderDTO updateOrder(PosOrderUpdateDTO payload, String currentUser) {
+        OrderEntity orderEntity = posOrderRepository.findOneByGuid((payload.getOrderGuid()))
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + payload.getOrderGuid()));
+
+        StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + orderEntity.getSeatGuid()));
+
+        storeUserSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
+
+        String orderProductGroup = (new Date()).getTime() + "";
+        List<PosOrderProductDTO> listUpdateOrderProduct = payload.getListOrderProduct()
+                .stream()
+                .peek(posOrderProductDTO -> {
+                    posOrderProductDTO.setGuid(UUID.randomUUID());
+                    posOrderProductDTO.setOrderProductGroup(orderProductGroup);
+                    posOrderProductDTO.setOrderProductStatus(OrderProductStatus.PREPARING);
+                    posOrderProductDTO.setOrderProductStatusTimeline(TimelineUtil.initOrderProductStatus(OrderProductStatus.PREPARING, currentUser));
+                    posOrderProductDTO.setOrderGuid(payload.getOrderGuid());
+                })
+                .collect(Collectors.toList());
+        posOrderProductService.saveList(listUpdateOrderProduct);
+
+        PosOrderDTO result = new PosOrderDTO(orderEntity);
+        result.setListOrderProduct(posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(payload.getOrderGuid()));
+        return result;
     }
 
     public PosOrderDTO getOrderBySeatGuid(String seatGuid) {
@@ -139,7 +168,7 @@ public class PosOrderService {
 
                 /* free current seat */
                 seatEntity.setSeatStatus(SeatStatus.EMPTY);
-                seatEntity.setLastOrderGuid(null);
+                seatEntity.setCurrentOrderGuid(null);
                 posSeatRepository.save(seatEntity);
 
                 posOrderRepository.save(orderEntity);
@@ -175,30 +204,10 @@ public class PosOrderService {
 
         posSeatRepository.findOneByGuid(orderEntity.getSeatGuid()).ifPresent(seatEntity -> {
             seatEntity.setSeatStatus(SeatStatus.EMPTY);
-            seatEntity.setLastOrderGuid(null);
+            seatEntity.setCurrentOrderGuid(null);
             posSeatRepository.save(seatEntity);
         });
         posOrderRepository.save(orderEntity);
     }
 
-    @Transactional
-    public PosOrderDTO saveOrder(PosOrderUpdateDTO payload, String currentUser) {
-        OrderEntity orderEntity = posOrderRepository.findOneByGuid((payload.getOrderGuid()))
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + payload.getOrderGuid()));
-        String orderProductGroup = (new Date()).getTime() + "";
-        List<PosOrderProductDTO> listUpdateOrderProduct = payload.getListOrderProduct()
-                .stream()
-                .peek(posOrderProductDTO -> {
-                    posOrderProductDTO.setOrderProductGroup(orderProductGroup);
-                    posOrderProductDTO.setOrderProductStatus(OrderProductStatus.PREPARING);
-                    posOrderProductDTO.setOrderProductStatusTimeline(TimelineUtil.initOrderProductStatus(OrderProductStatus.PREPARING, currentUser));
-                    posOrderProductDTO.setOrderGuid(payload.getOrderGuid());
-                })
-                .collect(Collectors.toList());
-        posOrderProductService.saveList(listUpdateOrderProduct);
-
-        PosOrderDTO result = new PosOrderDTO(orderEntity);
-        result.setListOrderProduct(posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(payload.getOrderGuid()));
-        return result;
-    }
 }
