@@ -65,5 +65,10 @@ public class PosOrderProductDTO extends AuditDTO {
         this.orderProductStatus = orderProductEntity.getOrderProductStatus();
         this.orderProductStatusTimeline = orderProductEntity.getOrderProductStatusTimeline();
         this.orderProductCancelReason = orderProductEntity.getOrderProductCancelReason();
+
+        this.createdBy = orderProductEntity.getCreatedBy();
+        this.createdDate = orderProductEntity.getCreatedDate();
+        this.lastModifiedBy = orderProductEntity.getLastModifiedBy();
+        this.lastModifiedDate = orderProductEntity.getLastModifiedDate();
     }
 }

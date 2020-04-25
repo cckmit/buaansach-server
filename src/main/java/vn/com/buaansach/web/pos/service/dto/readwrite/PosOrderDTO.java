@@ -24,7 +24,7 @@ public class PosOrderDTO extends AuditDTO {
     private String orderCode;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus = OrderStatus.CREATED_BY_CUSTOMER;
+    private OrderStatus orderStatus;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String orderStatusTimeline;

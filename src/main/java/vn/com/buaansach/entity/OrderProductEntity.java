@@ -52,6 +52,7 @@ public class OrderProductEntity extends AbstractAuditingEntity implements Serial
     @Column(name = "order_product_status")
     private OrderProductStatus orderProductStatus;
 
+    @Size(max = 1000)
     @Column(name = "order_product_status_timeline")
     private String orderProductStatusTimeline;
 

@@ -7,7 +7,7 @@ plugins {
 
 group = 'vn.com'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+sourceCompatibility = '11'
 
 configurations {
     compileOnly {
@@ -42,9 +42,6 @@ dependencies {
     /* Add more dependencies here */
     //	For Working with Json Web Tokens (JWT)
     compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-
-    // For Java 8 Date/Time Support
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.10.2'
 
     // For random string
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
