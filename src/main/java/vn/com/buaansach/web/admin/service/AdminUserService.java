@@ -22,6 +22,7 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,6 +54,7 @@ public class AdminUserService {
             throw new PhoneAlreadyUsedException();
         } else {
             UserEntity newUserEntity = new UserEntity();
+            newUserEntity.setGuid(UUID.randomUUID());
             newUserEntity.setFirstName(dto.getFirstName());
             newUserEntity.setLastName(dto.getLastName());
             newUserEntity.setLogin(dto.getLogin().toLowerCase());

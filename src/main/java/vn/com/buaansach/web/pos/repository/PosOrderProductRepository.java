@@ -12,12 +12,15 @@ import java.util.UUID;
 
 @Repository
 public interface PosOrderProductRepository extends JpaRepository<OrderProductEntity, Long> {
+    List<OrderProductEntity> findByOrderGuid(UUID orderGuid);
+
     @Query("SELECT new vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO(orderProduct, product) " +
             "FROM OrderProductEntity orderProduct " +
             "LEFT JOIN vn.com.buaansach.entity.OrderEntity od " +
             "ON orderProduct.orderGuid = od.guid " +
             "LEFT JOIN vn.com.buaansach.entity.ProductEntity product " +
             "ON orderProduct.productGuid = product.guid " +
-            "WHERE orderProduct.orderGuid = :orderGuid")
+            "WHERE orderProduct.orderGuid = :orderGuid " +
+            "ORDER BY orderProduct.id ASC")
     List<PosOrderProductDTO> findListPosOrderProductDTOByOrderGuid(@Param("orderGuid") UUID orderGuid);
 }

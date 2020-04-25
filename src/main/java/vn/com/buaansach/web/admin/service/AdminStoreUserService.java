@@ -125,7 +125,7 @@ public class AdminStoreUserService {
         if (adminUserRepository.findOneByLogin(request.getUserLogin()).isPresent()) {
             throw new LoginAlreadyUsedException();
         }
-
+        userEntity.setGuid(UUID.randomUUID());
         userEntity.setLogin(request.getUserLogin());
         userEntity.setPassword(passwordEncoder.encode(request.getPassword()));
         userEntity.setFirstName(request.getFirstName());

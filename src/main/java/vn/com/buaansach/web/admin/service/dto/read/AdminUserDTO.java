@@ -13,6 +13,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminUserDTO extends AuditDTO {
+    private UUID guid;
 
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
@@ -49,6 +51,7 @@ public class AdminUserDTO extends AuditDTO {
     private Set<String> authorities;
 
     public AdminUserDTO(UserEntity userEntity) {
+        this.guid = userEntity.getGuid();
         this.login = userEntity.getLogin();
         this.firstName = userEntity.getFirstName();
         this.lastName = userEntity.getLastName();

@@ -1,10 +1,7 @@
 package vn.com.buaansach.web.pos.service;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.OrderEntity;
-import vn.com.buaansach.entity.PaymentEntity;
-import vn.com.buaansach.entity.SeatEntity;
-import vn.com.buaansach.entity.StoreEntity;
+import vn.com.buaansach.entity.*;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
@@ -155,9 +152,12 @@ public class PosOrderService {
 
         storeUserSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
 
+        List<OrderProductEntity> orderProductEntityList = posOrderProductRepository.findByOrderGuid(orderEntity.getGuid());
+        long totalCharge = orderProductEntityList.stream().mapToLong(OrderProductEntity::getOrderProductPrice).sum();
+
         switch (payload.getPaymentMethod()) {
             case CASH:
-                PaymentEntity paymentEntity = posPaymentService.makeCashPayment(payload.getOrderGuid(), payload.getTotalCharge());
+                PaymentEntity paymentEntity = posPaymentService.makeCashPayment(payload.getOrderGuid(), totalCharge);
                 orderEntity.setPaymentGuid(paymentEntity.getGuid());
                 orderEntity.setOrderStatus(OrderStatus.PURCHASED);
                 orderEntity.setOrderCheckoutTime(Instant.now());
