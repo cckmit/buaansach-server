@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.service.PosOrderService;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
+import vn.com.buaansach.web.pos.service.dto.write.PosOrderSeatChangeDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderStatusChangeDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderUpdateDTO;
 
@@ -47,11 +48,11 @@ public class PosOrderResource {
         return ResponseEntity.ok(posOrderService.getOrderBySeatGuid(seatGuid));
     }
 
-    @PutMapping("/move")
-    public ResponseEntity<Void> moveOrder(@RequestBody PosOrderStatusChangeDTO payload) {
+    @PutMapping("/change-seat")
+    public ResponseEntity<Void> changeSeat(@RequestBody PosOrderSeatChangeDTO payload) {
         String currentUser = SecurityUtils.getCurrentUserLogin();
-        log.debug("REST request from user {} to move {} : {}", currentUser, ENTITY_NAME, payload);
-        posOrderService.purchaseOrder(payload, currentUser);
+        log.debug("REST request from user {} to change seat for {} : {}", currentUser, ENTITY_NAME, payload);
+        posOrderService.changeSeat(payload, currentUser);
         return ResponseEntity.ok().build();
     }
 

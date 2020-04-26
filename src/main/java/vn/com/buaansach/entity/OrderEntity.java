@@ -32,7 +32,7 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status")
-    private OrderStatus orderStatus = OrderStatus.CREATED_BY_CUSTOMER;
+    private OrderStatus orderStatus;
 
     @Column(name = "order_status_timeline")
     private String orderStatusTimeline;

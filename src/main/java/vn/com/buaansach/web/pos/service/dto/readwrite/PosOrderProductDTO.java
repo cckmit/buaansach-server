@@ -28,7 +28,7 @@ public class PosOrderProductDTO extends AuditDTO {
     @Size(max = 255)
     private String orderProductNote;
     @Enumerated(EnumType.STRING)
-    private OrderProductStatus orderProductStatus = OrderProductStatus.WAITING;
+    private OrderProductStatus orderProductStatus;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String orderProductStatusTimeline;
     @Size(max = 255)

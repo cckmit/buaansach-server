@@ -15,6 +15,7 @@ import vn.com.buaansach.web.pos.repository.PosSeatRepository;
 import vn.com.buaansach.web.pos.repository.PosStoreRepository;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
+import vn.com.buaansach.web.pos.service.dto.write.PosOrderSeatChangeDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderStatusChangeDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderUpdateDTO;
 import vn.com.buaansach.web.pos.service.mapper.PosOrderMapper;
@@ -66,8 +67,8 @@ public class PosOrderService {
         UUID orderGuid = UUID.randomUUID();
         orderEntity.setGuid(orderGuid);
         orderEntity.setOrderCode(OrderCodeGenerator.generate());
-        orderEntity.setOrderStatus(OrderStatus.CREATED_BY_EMPLOYEE);
-        orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderStatus.CREATED_BY_EMPLOYEE, currentUser));
+        orderEntity.setOrderStatus(OrderStatus.RECEIVED);
+        orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderStatus.RECEIVED, currentUser));
         orderEntity.setOrderCheckinTime(Instant.now());
 
         seatEntity.setSeatStatus(SeatStatus.NON_EMPTY);
@@ -131,11 +132,11 @@ public class PosOrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + orderEntity.getSeatGuid()));
 
         storeUserSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
-
-        orderEntity.setOrderStatus(OrderStatus.RECEIVED);
-        String newTimeline = TimelineUtil.appendOrderStatus(orderEntity.getOrderStatusTimeline(), OrderStatus.RECEIVED, currentUser);
-        orderEntity.setOrderStatusTimeline(newTimeline);
-
+        if (orderEntity.getOrderStatus().equals(OrderStatus.CREATED)) {
+            orderEntity.setOrderStatus(OrderStatus.RECEIVED);
+            String newTimeline = TimelineUtil.appendOrderStatus(orderEntity.getOrderStatusTimeline(), OrderStatus.RECEIVED, currentUser);
+            orderEntity.setOrderStatusTimeline(newTimeline);
+        }
         posOrderRepository.save(orderEntity);
     }
 
@@ -210,4 +211,37 @@ public class PosOrderService {
         posOrderRepository.save(orderEntity);
     }
 
+    @Transactional
+    public void changeSeat(PosOrderSeatChangeDTO payload, String currentUser) {
+        storeUserSecurityService.blockAccessIfNotInStore(payload.getStoreGuid());
+
+        OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + payload.getOrderGuid()));
+
+        SeatEntity currentSeat = posSeatRepository.findOneByGuid(payload.getCurrentSeatGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("Seat not found with guid: " + payload.getCurrentSeatGuid()));
+
+        SeatEntity newSeat = posSeatRepository.findOneByGuid(payload.getNewSeatGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("Seat not found with guid: " + payload.getNewSeatGuid()));
+
+        if (currentSeat.getCurrentOrderGuid() == null || !currentSeat.getCurrentOrderGuid().equals(orderEntity.getGuid()))
+            throw new BadRequestException("Order guid not match current seat guid: " + payload.getCurrentSeatGuid());
+
+        if (newSeat.getSeatStatus().equals(SeatStatus.NON_EMPTY))
+            throw new BadRequestException("New seat is not empty: " + payload.getNewSeatGuid());
+
+        String newTimeline = TimelineUtil.appendOrderStatus(orderEntity.getOrderStatusTimeline(),
+                OrderStatus.CHANGE_SEAT, currentUser);
+        orderEntity.setOrderStatusTimeline(newTimeline);
+
+        currentSeat.setSeatStatus(SeatStatus.EMPTY);
+        currentSeat.setCurrentOrderGuid(null);
+
+        newSeat.setSeatStatus(SeatStatus.NON_EMPTY);
+        newSeat.setCurrentOrderGuid(orderEntity.getGuid());
+
+        posSeatRepository.save(currentSeat);
+        posSeatRepository.save(newSeat);
+        posOrderRepository.save(orderEntity);
+    }
 }

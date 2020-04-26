@@ -8,6 +8,7 @@ import vn.com.buaansach.entity.OrderProductEntity;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -23,4 +24,6 @@ public interface PosOrderProductRepository extends JpaRepository<OrderProductEnt
             "WHERE orderProduct.orderGuid = :orderGuid " +
             "ORDER BY orderProduct.id ASC")
     List<PosOrderProductDTO> findListPosOrderProductDTOByOrderGuid(@Param("orderGuid") UUID orderGuid);
+
+    Optional<OrderProductEntity> findOneByGuid(UUID orderProductGuid);
 }
