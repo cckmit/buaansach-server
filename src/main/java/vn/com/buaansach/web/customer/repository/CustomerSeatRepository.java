@@ -20,4 +20,6 @@ public interface CustomerSeatRepository extends JpaRepository<SeatEntity, Long> 
             "ON area.storeGuid = store.guid " +
             "WHERE seat.guid = :seatGuid")
     Optional<CustomerSeatDTO> findCustomerSeatDTO(@Param("seatGuid") UUID seatGuid);
+
+    Optional<SeatEntity> findOneByGuid(UUID seatGuid);
 }

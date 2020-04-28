@@ -2,35 +2,37 @@ package vn.com.buaansach.web.customer.service.dto;
 
 import lombok.Data;
 import vn.com.buaansach.entity.ProductEntity;
+import vn.com.buaansach.entity.StoreProductEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
+import vn.com.buaansach.entity.enumeration.StoreProductStatus;
 
 import java.util.UUID;
 
 @Data
-public class CustomerProductDTO {
+public class CustomerStoreProductDTO {
     private UUID guid;
+    private UUID storeGuid;
+    private UUID productGuid;
+    private StoreProductStatus storeProductStatus;
 
     private String productCode;
-
     private String productName;
-
     private String productDescription;
-
     private String productImageUrl;
-
     private String productThumbnailUrl;
-
     private ProductStatus productStatus;
-
     private int productNormalPrice;
+    private UUID categoryGuid;
 
-    private int productSalePrice;
-
-    public CustomerProductDTO() {
+    public CustomerStoreProductDTO() {
     }
 
-    public CustomerProductDTO(ProductEntity productEntity) {
-        this.guid = productEntity.getGuid();
+    public CustomerStoreProductDTO(StoreProductEntity storeProductEntity, ProductEntity productEntity) {
+        this.guid = storeProductEntity.getGuid();
+        this.storeProductStatus = storeProductEntity.getStoreProductStatus();
+        this.storeGuid = storeProductEntity.getStoreGuid();
+        this.productGuid = storeProductEntity.getProductGuid();
+
         this.productCode = productEntity.getProductCode();
         this.productName = productEntity.getProductName();
         this.productDescription = productEntity.getProductDescription();
@@ -38,6 +40,6 @@ public class CustomerProductDTO {
         this.productThumbnailUrl = productEntity.getProductThumbnailUrl();
         this.productStatus = productEntity.getProductStatus();
         this.productNormalPrice = productEntity.getProductNormalPrice();
-        this.productSalePrice = productEntity.getProductSalePrice();
+        this.categoryGuid = productEntity.getCategoryGuid();
     }
 }
