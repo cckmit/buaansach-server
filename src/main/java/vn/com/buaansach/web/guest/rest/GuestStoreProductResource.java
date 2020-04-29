@@ -1,0 +1,30 @@
+package vn.com.buaansach.web.guest.rest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import vn.com.buaansach.web.guest.service.GuestStoreProductService;
+import vn.com.buaansach.web.guest.service.dto.GuestProductDTO;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/v1/guest/store-product")
+public class GuestStoreProductResource {
+    private final String ENTITY_NAME = "guest-store-product";
+    private final Logger log = LoggerFactory.getLogger(GuestStoreProductResource.class);
+    private final GuestStoreProductService guestStoreProductService;
+
+    public GuestStoreProductResource(GuestStoreProductService guestStoreProductService) {
+        this.guestStoreProductService = guestStoreProductService;
+    }
+
+    @GetMapping("/list-by-store/{storeGuid}")
+    public ResponseEntity<List<GuestProductDTO>> getListStoreProduct(@PathVariable String storeGuid) {
+        return ResponseEntity.ok(guestStoreProductService.getListStoreProduct(storeGuid));
+    }
+}
