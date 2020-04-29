@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import vn.com.buaansach.entity.OrderEntity;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
-import vn.com.buaansach.web.guest.service.dto.GuestOrderProductDTO;
 
 import java.time.Instant;
 import java.util.List;

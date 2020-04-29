@@ -1,7 +1,7 @@
 package vn.com.buaansach.web.guest.service.dto.write;
 
 import lombok.Data;
-import vn.com.buaansach.web.guest.service.dto.GuestOrderProductDTO;
+import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderProductDTO;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.com.buaansach.web.guest.service.GuestStoreProductService;
-import vn.com.buaansach.web.guest.service.dto.GuestProductDTO;
+import vn.com.buaansach.web.guest.service.dto.read.GuestStoreProductDTO;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class GuestStoreProductResource {
     }
 
     @GetMapping("/list-by-store/{storeGuid}")
-    public ResponseEntity<List<GuestProductDTO>> getListStoreProduct(@PathVariable String storeGuid) {
+    public ResponseEntity<List<GuestStoreProductDTO>> getListStoreProduct(@PathVariable String storeGuid) {
         return ResponseEntity.ok(guestStoreProductService.getListStoreProduct(storeGuid));
     }
 }

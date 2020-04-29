@@ -3,7 +3,7 @@ package vn.com.buaansach.web.guest.service;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.web.guest.repository.GuestSeatRepository;
-import vn.com.buaansach.web.guest.service.dto.GuestSeatDTO;
+import vn.com.buaansach.web.guest.service.dto.read.GuestSeatDTO;
 
 import java.util.UUID;
 

@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.web.guest.service.GuestSeatService;
-import vn.com.buaansach.web.guest.service.dto.GuestSeatDTO;
+import vn.com.buaansach.web.guest.service.dto.read.GuestSeatDTO;
 
 @RestController
 @RequestMapping("/api/v1/guest/seat")

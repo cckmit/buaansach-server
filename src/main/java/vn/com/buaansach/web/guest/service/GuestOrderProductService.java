@@ -6,7 +6,7 @@ import vn.com.buaansach.entity.ProductEntity;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
 import vn.com.buaansach.web.guest.repository.GuestOrderProductRepository;
 import vn.com.buaansach.web.guest.repository.GuestProductRepository;
-import vn.com.buaansach.web.guest.service.dto.GuestOrderProductDTO;
+import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderProductDTO;
 import vn.com.buaansach.web.guest.service.mapper.GuestOrderProductMapper;
 import vn.com.buaansach.web.pos.util.TimelineUtil;
 

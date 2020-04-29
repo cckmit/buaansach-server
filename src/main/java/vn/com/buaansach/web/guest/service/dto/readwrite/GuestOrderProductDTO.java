@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.guest.service.dto;
+package vn.com.buaansach.web.guest.service.dto.readwrite;
 
 import lombok.Data;
 import vn.com.buaansach.entity.OrderProductEntity;

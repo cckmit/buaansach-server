@@ -2,7 +2,7 @@ package vn.com.buaansach.web.guest.service;
 
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.web.guest.repository.GuestStoreProductRepository;
-import vn.com.buaansach.web.guest.service.dto.GuestProductDTO;
+import vn.com.buaansach.web.guest.service.dto.read.GuestStoreProductDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +15,7 @@ public class GuestStoreProductService {
         this.guestStoreProductRepository = guestStoreProductRepository;
     }
 
-    public List<GuestProductDTO> getListStoreProduct(String storeGuid) {
+    public List<GuestStoreProductDTO> getListStoreProduct(String storeGuid) {
         return guestStoreProductRepository.findListGuestStoreProductDTO(UUID.fromString(storeGuid));
     }
 }
