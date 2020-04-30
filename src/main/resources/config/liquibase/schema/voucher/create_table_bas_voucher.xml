@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="create_table_bas_voucher" author="ductv">
+        <createTable tableName="bas_voucher">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="guid" type="binary(16)">
+                <constraints unique="true" nullable="false" uniqueConstraintName="ux_voucher_guid"/>
+            </column>
+            <column name="voucher_name" type="varchar(50)"/>
+            <column name="voucher_description" type="varchar(255)"/>
+            <column name="voucher_image_url" type="varchar(255)"/>
+            <column name="voucher_discount" type="int"/>
+            <column name="voucher_discount_type" type="varchar(30)"/>
+            <column name="voucher_conditions" type="varchar(500)"/>
+            <column name="voucher_enable" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number_of_voucher" type="int"/>
+
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp"/>
+            <column name="last_modified_by" type="varchar(50)"/>
+            <column name="last_modified_date" type="timestamp"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
+

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="create_table_bas_voucher_usage" author="ductv">
+        <createTable tableName="bas_voucher_usage">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="voucher_code" type="varchar(20)"/>
+            <column name="used_by" type="varchar(50)"/>
+            <column name="used_date" type="timestamp"/>
+            <column name="order_guid" type="binary(16)"/>
+            <!--Each use of voucher code will be inserted here, to get total code usage => count on this table-->
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
+
