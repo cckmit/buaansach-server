@@ -42,6 +42,9 @@ public class UserMapper {
             userEntity.setFirstName(userDTO.getFirstName());
             userEntity.setLastName(userDTO.getLastName());
             userEntity.setEmail(userDTO.getEmail());
+            userEntity.setGender(userDTO.getGender());
+            userEntity.setBirthday(userDTO.getBirthday());
+            userEntity.setAddress(userDTO.getAddress());
             userEntity.setImageUrl(userDTO.getImageUrl());
             userEntity.setActivated(userDTO.isActivated());
             userEntity.setLangKey(userDTO.getLangKey());
