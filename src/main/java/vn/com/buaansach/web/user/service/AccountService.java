@@ -51,6 +51,9 @@ public class AccountService {
             user.setLastName(dto.getLastName());
             user.setEmail(dto.getEmail());
             user.setPhone(dto.getPhone());
+            user.setGender(dto.getGender());
+            user.setBirthday(dto.getBirthday());
+            user.setAddress(dto.getAddress());
             user.setLangKey(dto.getLangKey());
             userRepository.save(user);
         });

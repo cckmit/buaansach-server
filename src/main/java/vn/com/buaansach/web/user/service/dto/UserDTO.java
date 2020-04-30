@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import vn.com.buaansach.entity.enumeration.Gender;
 import vn.com.buaansach.entity.user.AuthorityEntity;
 import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.util.Constants;
@@ -11,6 +12,7 @@ import vn.com.buaansach.util.Constants;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -43,6 +45,12 @@ public class UserDTO extends AuditDTO {
 
     private boolean disabledByAdmin;
 
+    private Gender gender;
+
+    private Instant birthday;
+
+    private String address;
+
     @Size(min = 2, max = 10)
     private String langKey;
 
@@ -60,6 +68,9 @@ public class UserDTO extends AuditDTO {
         this.phone = userEntity.getPhone();
         this.activated = userEntity.isActivated();
         this.disabledByAdmin = userEntity.isDisabledByAdmin();
+        this.gender = userEntity.getGender();
+        this.birthday = userEntity.getBirthday();
+        this.address = userEntity.getAddress();
         this.langKey = userEntity.getLangKey();
         this.imageUrl = userEntity.getImageUrl();
         this.authorities = userEntity.getAuthorities().stream()
