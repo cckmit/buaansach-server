@@ -1,10 +1,10 @@
 package vn.com.buaansach.web.pos.service.dto.readwrite;
 
 import lombok.Data;
-import vn.com.buaansach.entity.ProductEntity;
-import vn.com.buaansach.entity.StoreProductEntity;
+import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.enumeration.StoreProductStatus;
+import vn.com.buaansach.entity.store.StoreProductEntity;
 
 import java.util.UUID;
 
@@ -21,9 +21,8 @@ public class PosStoreProductDTO {
     private String productImageUrl;
     private String productThumbnailUrl;
     private ProductStatus productStatus;
-    private int productNormalPrice;
-    private int productSalePrice;
-    private UUID categoryGuid;
+    private int productPrice;
+    private int productDiscount;
 
     public PosStoreProductDTO() {
     }
@@ -40,9 +39,8 @@ public class PosStoreProductDTO {
         this.productImageUrl = productEntity.getProductImageUrl();
         this.productThumbnailUrl = productEntity.getProductThumbnailUrl();
         this.productStatus = productEntity.getProductStatus();
-        this.productNormalPrice = productEntity.getProductNormalPrice();
-        this.productSalePrice = productEntity.getProductSalePrice();
-        this.categoryGuid = productEntity.getCategoryGuid();
+        this.productPrice = productEntity.getProductPrice();
+        this.productDiscount = productEntity.getProductDiscount();
     }
 
 }

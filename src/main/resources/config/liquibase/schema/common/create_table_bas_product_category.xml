@@ -9,22 +9,12 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="guid" type="binary(16)">
-                <constraints unique="true" nullable="false" uniqueConstraintName="ux_voucher_guid"/>
-            </column>
             <column name="product_guid" type="binary(16)">
                 <constraints nullable="false"/>
             </column>
             <column name="category_guid" type="binary(16)">
                 <constraints nullable="false"/>
             </column>
-
-            <column name="created_by" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_date" type="timestamp"/>
-            <column name="last_modified_by" type="varchar(50)"/>
-            <column name="last_modified_date" type="timestamp"/>
         </createTable>
     </changeSet>
 

@@ -1,19 +1,19 @@
-package vn.com.buaansach.entity;
+package vn.com.buaansach.entity.customer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import vn.com.buaansach.entity.AbstractAuditingEntity;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
-@Table(name = "bas_area")
+@Table(name = "bas_customer_wallet")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AreaEntity extends AbstractAuditingEntity implements Serializable {
+public class CustomerWalletEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -24,10 +24,12 @@ public class AreaEntity extends AbstractAuditingEntity implements Serializable {
     @Column(unique = true)
     private UUID guid;
 
-    @Size(min = 1, max = 50)
-    @Column(name = "area_name", length = 50)
-    private String areaName;
+    @Column(name = "internal_credit")
+    private long internalCredit;
 
-    @Column(name = "store_guid")
-    private UUID storeGuid;
+    @Column(name = "external_credit")
+    private long externalCredit;
+
+    @Column(name = "customer_guid")
+    private UUID customerGuid;
 }

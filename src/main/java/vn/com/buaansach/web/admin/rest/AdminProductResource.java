@@ -10,10 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import vn.com.buaansach.entity.ProductEntity;
+import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminProductService;
+import vn.com.buaansach.web.admin.service.dto.readwrite.AdminProductDTO;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -32,22 +33,21 @@ public class AdminProductResource {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ProductEntity> createProduct(@Valid @RequestPart("payload") ProductEntity payload,
-                                                       @RequestPart(value = "image", required = false) MultipartFile image) {
+    public ResponseEntity<AdminProductDTO> createProduct(@Valid @RequestPart("payload") AdminProductDTO payload,
+                                                         @RequestPart(value = "image", required = false) MultipartFile image) {
         log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminProductService.createProduct(payload, image));
     }
 
-
     @PutMapping("/update")
-    public ResponseEntity<ProductEntity> updateProduct(@Valid @RequestPart("payload") ProductEntity payload,
+    public ResponseEntity<AdminProductDTO> updateProduct(@Valid @RequestPart("payload") AdminProductDTO payload,
                                                        @RequestPart(value = "image", required = false) MultipartFile image) {
         log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminProductService.updateProduct(payload, image));
     }
 
     @GetMapping("/list")
-    public ResponseEntity<Page<ProductEntity>> getPageProduct(@RequestParam(value = "search", defaultValue = "") String search,
+    public ResponseEntity<Page<AdminProductDTO>> getPageProduct(@RequestParam(value = "search", defaultValue = "") String search,
                                                               @RequestParam(value = "page", defaultValue = "1") int page,
                                                               @RequestParam(value = "size", defaultValue = "20") int size,
                                                               @RequestParam(value = "sortField", defaultValue = "createdDate") String sortField,
@@ -64,7 +64,7 @@ public class AdminProductResource {
     }
 
     @GetMapping("/get/{productGuid}")
-    public ResponseEntity<ProductEntity> getProduct(@PathVariable String productGuid) {
+    public ResponseEntity<AdminProductDTO> getProduct(@PathVariable String productGuid) {
         log.debug("REST request from user {} to get {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, productGuid);
         return ResponseEntity.ok(adminProductService.getProduct(productGuid));
     }

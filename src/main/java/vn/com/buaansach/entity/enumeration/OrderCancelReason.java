@@ -1,4 +1,6 @@
 package vn.com.buaansach.entity.enumeration;
 
-public class OrderCancelReason {
+public enum  OrderCancelReason {
+    NO_CUSTOMER,
+    PRODUCT_UNAVAILABLE
 }

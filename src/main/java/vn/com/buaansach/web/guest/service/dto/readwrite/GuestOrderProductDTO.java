@@ -1,8 +1,8 @@
 package vn.com.buaansach.web.guest.service.dto.readwrite;
 
 import lombok.Data;
-import vn.com.buaansach.entity.OrderProductEntity;
-import vn.com.buaansach.entity.ProductEntity;
+import vn.com.buaansach.entity.order.OrderProductEntity;
+import vn.com.buaansach.entity.common.ProductEntity;
 
 import javax.validation.constraints.Size;
 import java.util.UUID;

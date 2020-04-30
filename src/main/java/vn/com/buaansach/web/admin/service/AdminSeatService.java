@@ -1,9 +1,9 @@
 package vn.com.buaansach.web.admin.service;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.AreaEntity;
-import vn.com.buaansach.entity.SeatEntity;
-import vn.com.buaansach.entity.StoreEntity;
+import vn.com.buaansach.entity.store.AreaEntity;
+import vn.com.buaansach.entity.store.SeatEntity;
+import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.web.admin.repository.AdminAreaRepository;
 import vn.com.buaansach.web.admin.repository.AdminSeatRepository;

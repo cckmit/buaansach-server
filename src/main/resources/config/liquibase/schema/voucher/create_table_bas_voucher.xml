@@ -21,7 +21,7 @@
             <column name="voucher_enable" type="boolean" defaultValue="false">
                 <constraints nullable="false"/>
             </column>
-            <column name="number_of_voucher" type="int"/>
+            <column name="number_voucher_code" type="int"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

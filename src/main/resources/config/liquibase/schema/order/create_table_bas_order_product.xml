@@ -9,10 +9,17 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-
             <column name="guid" type="binary(16)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_order_product_guid"/>
             </column>
+            <column name="order_product_group" type="varchar(20)"/>
+            <column name="order_product_quantity" type="int"/>
+            <column name="order_product_price" type="int"/>
+            <column name="order_product_discount" type="int"/>
+            <column name="order_product_note" type="varchar(255)"/>
+            <column name="order_product_status" type="varchar(30)"/>
+            <column name="order_product_status_timeline" type="varchar(1000)"/>
+            <column name="order_product_cancel_reason" type="varchar(255)"/>
 
             <column name="order_guid" type="binary(16)">
                 <constraints nullable="false"/>
@@ -20,20 +27,6 @@
             <column name="product_guid" type="binary(16)">
                 <constraints nullable="false"/>
             </column>
-
-            <column name="order_product_group" type="varchar(16)"/>
-            <column name="order_product_quantity" type="int"/>
-            <column name="order_product_price" type="int"/>
-            <column name="order_product_discount" type="int"/>
-            <column name="order_product_note" type="varchar(255)"/>
-
-            <column name="order_product_status" type="varchar(30)"/>
-            <column name="order_product_status_timeline" type="varchar(1000)"/>
-            <column name="order_product_cancel_reason" type="varchar(255)"/>
-
-            <column name="seat_guid" type="binary(16)"/>
-            <column name="payment_guid" type="binary(16)"/>
-            <column name="recreate_from_order_guid" type="binary(16)"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

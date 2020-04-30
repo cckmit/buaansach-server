@@ -1,4 +1,4 @@
-package vn.com.buaansach.entity;
+package vn.com.buaansach.entity.user;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

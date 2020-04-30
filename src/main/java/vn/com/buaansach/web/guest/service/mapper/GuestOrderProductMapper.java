@@ -1,8 +1,8 @@
 package vn.com.buaansach.web.guest.service.mapper;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.OrderProductEntity;
-import vn.com.buaansach.entity.ProductEntity;
+import vn.com.buaansach.entity.order.OrderProductEntity;
+import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderProductDTO;
 
 import java.util.List;

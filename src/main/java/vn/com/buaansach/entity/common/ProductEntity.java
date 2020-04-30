@@ -1,8 +1,9 @@
-package vn.com.buaansach.entity;
+package vn.com.buaansach.entity.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 
 import javax.persistence.*;
@@ -25,8 +26,8 @@ public class ProductEntity extends AbstractAuditingEntity implements Serializabl
     @Column(unique = true)
     private UUID guid;
 
-    @Size(min = 1, max = 16)
-    @Column(name = "product_code", length = 16)
+    @Size(min = 1, max = 20)
+    @Column(name = "product_code", length = 20)
     private String productCode;
 
     @Size(min = 1, max = 100)
@@ -52,12 +53,9 @@ public class ProductEntity extends AbstractAuditingEntity implements Serializabl
     @Column(name = "product_root_price")
     private int productRootPrice;
 
-    @Column(name = "product_normal_price")
-    private int productNormalPrice;
+    @Column(name = "product_price")
+    private int productPrice;
 
-    @Column(name = "product_sale_price")
-    private int productSalePrice;
-
-    @Column(name = "category_guid")
-    private UUID categoryGuid;
+    @Column(name = "product_discount")
+    private int productDiscount;
 }

@@ -2,7 +2,7 @@ package vn.com.buaansach.web.admin.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.entity.CategoryEntity;
+import vn.com.buaansach.entity.common.CategoryEntity;
 
 import java.util.Optional;
 import java.util.UUID;

@@ -1,8 +1,10 @@
-package vn.com.buaansach.entity;
+package vn.com.buaansach.entity.store;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import vn.com.buaansach.entity.AbstractAuditingEntity;
+import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
 
 import javax.persistence.*;
@@ -34,6 +36,10 @@ public class SeatEntity extends AbstractAuditingEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "seat_status")
     private SeatStatus seatStatus = SeatStatus.EMPTY;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "seat_service_status")
+    private SeatServiceStatus seatServiceStatus = SeatServiceStatus.FINISHED;
 
     @Column(name = "current_order_guid")
     private UUID currentOrderGuid;

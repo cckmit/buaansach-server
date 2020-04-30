@@ -1,7 +1,7 @@
 package vn.com.buaansach.web.guest.service.dto.read;
 
 import lombok.Data;
-import vn.com.buaansach.entity.CategoryEntity;
+import vn.com.buaansach.entity.common.CategoryEntity;
 
 import java.util.UUID;
 

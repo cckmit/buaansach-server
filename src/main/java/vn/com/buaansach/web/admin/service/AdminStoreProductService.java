@@ -1,8 +1,8 @@
 package vn.com.buaansach.web.admin.service;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.ProductEntity;
-import vn.com.buaansach.entity.StoreProductEntity;
+import vn.com.buaansach.entity.common.ProductEntity;
+import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.entity.enumeration.StoreProductStatus;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.web.admin.repository.AdminProductRepository;

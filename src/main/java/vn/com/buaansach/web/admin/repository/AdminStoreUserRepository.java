@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.entity.StoreUserEntity;
+import vn.com.buaansach.entity.store.StoreUserEntity;
 import vn.com.buaansach.web.admin.service.dto.read.AdminStoreUserDTO;
 
 import java.util.List;
@@ -18,8 +18,8 @@ public interface AdminStoreUserRepository extends JpaRepository<StoreUserEntity,
     Optional<StoreUserEntity> findOneByGuid(UUID guid);
 
     @Query("SELECT new vn.com.buaansach.web.admin.service.dto.read.AdminStoreUserDTO(storeUser, user) " +
-            "FROM vn.com.buaansach.entity.StoreUserEntity storeUser " +
-            "LEFT JOIN vn.com.buaansach.entity.UserEntity user " +
+            "FROM vn.com.buaansach.entity.store.StoreUserEntity storeUser " +
+            "LEFT JOIN vn.com.buaansach.entity.user.UserEntity user " +
             "ON storeUser.userLogin = user.login " +
             "WHERE storeUser.storeGuid = :storeGuid")
     List<AdminStoreUserDTO> findByStoreGuid(@Param("storeGuid") UUID storeGuid);

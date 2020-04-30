@@ -1,8 +1,9 @@
-package vn.com.buaansach.entity;
+package vn.com.buaansach.entity.store;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.StoreProductStatus;
 
 import javax.persistence.*;

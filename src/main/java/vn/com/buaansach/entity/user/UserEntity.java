@@ -1,9 +1,11 @@
-package vn.com.buaansach.entity;
+package vn.com.buaansach.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.BatchSize;
+import vn.com.buaansach.entity.AbstractAuditingEntity;
+import vn.com.buaansach.entity.enumeration.Gender;
 import vn.com.buaansach.util.Constants;
 
 import javax.persistence.*;
@@ -55,13 +57,21 @@ public class UserEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "last_name", length = 50)
     private String lastName;
 
+    @Enumerated(EnumType.STRING)
+    private Gender gender = Gender.UNDEFINED;
+
+    private Instant birthday;
+
+    @Size(max = 255)
+    private String address;
+
     @Email
-    @Size(min = 5, max = 255)
+    @Size(min = 5, max = 100)
     @Column(unique = true)
     private String email;
 
     @Pattern(regexp = Constants.PHONE_REGEX)
-    @Size(min = 10, max = 12)
+    @Size(min = 10, max = 20)
     @Column(unique = true)
     private String phone;
 

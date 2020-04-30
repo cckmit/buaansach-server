@@ -1,8 +1,8 @@
 package vn.com.buaansach.web.user.service.mapper;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.AuthorityEntity;
-import vn.com.buaansach.entity.UserEntity;
+import vn.com.buaansach.entity.user.AuthorityEntity;
+import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.web.user.service.dto.UserDTO;
 
 import java.util.HashSet;

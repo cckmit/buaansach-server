@@ -13,7 +13,7 @@
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_voucher_time_condition_guid"/>
             </column>
             <column name="voucher_guid" type="binary(16)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="valid_from" type="timestamp"/>
             <column name="valid_until" type="timestamp"/>

@@ -1,9 +1,9 @@
 package vn.com.buaansach.web.guest.service.dto.read;
 
 import lombok.Data;
-import vn.com.buaansach.entity.AreaEntity;
-import vn.com.buaansach.entity.SeatEntity;
-import vn.com.buaansach.entity.StoreEntity;
+import vn.com.buaansach.entity.store.AreaEntity;
+import vn.com.buaansach.entity.store.SeatEntity;
+import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
 
 import java.util.UUID;

@@ -1,8 +1,8 @@
 package vn.com.buaansach.web.guest.service;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.OrderEntity;
-import vn.com.buaansach.entity.SeatEntity;
+import vn.com.buaansach.entity.order.OrderEntity;
+import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
 import vn.com.buaansach.exception.BadRequestException;

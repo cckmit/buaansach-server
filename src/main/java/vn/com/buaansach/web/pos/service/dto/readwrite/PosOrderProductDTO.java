@@ -3,8 +3,8 @@ package vn.com.buaansach.web.pos.service.dto.readwrite;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import vn.com.buaansach.entity.OrderProductEntity;
-import vn.com.buaansach.entity.ProductEntity;
+import vn.com.buaansach.entity.order.OrderProductEntity;
+import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
 import vn.com.buaansach.web.user.service.dto.AuditDTO;
 

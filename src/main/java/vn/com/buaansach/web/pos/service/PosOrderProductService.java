@@ -1,8 +1,8 @@
 package vn.com.buaansach.web.pos.service;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.OrderProductEntity;
-import vn.com.buaansach.entity.ProductEntity;
+import vn.com.buaansach.entity.order.OrderProductEntity;
+import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
@@ -55,7 +55,7 @@ public class PosOrderProductService {
                     entity.setOrderGuid(orderGuid);
 
                     ProductEntity product = mapProduct.get(entity.getProductGuid());
-                    entity.setOrderProductPrice(product.getProductNormalPrice());
+                    entity.setOrderProductPrice(product.getProductPrice());
                 })
                 .collect(Collectors.toList());
 

@@ -9,6 +9,12 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+            <column name="guid" type="binary(16)">
+                <constraints unique="true" nullable="false" uniqueConstraintName="ux_store_product_guid"/>
+            </column>
+            <column name="store_product_status" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
             <column name="store_guid" type="binary(16)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -16,13 +22,6 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
-            <column name="guid" type="binary(16)">
-                <constraints unique="true" nullable="false" uniqueConstraintName="ux_store_product_guid"/>
-            </column>
-
-            <column name="store_product_status" type="varchar(30)">
-                <constraints nullable="false"/>
-            </column>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

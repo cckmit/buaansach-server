@@ -1,7 +1,7 @@
 package vn.com.buaansach.web.pos.service.mapper;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.OrderEntity;
+import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
 
 @Service

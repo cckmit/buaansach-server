@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
-import vn.com.buaansach.entity.UserEntity;
+import vn.com.buaansach.entity.user.UserEntity;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;

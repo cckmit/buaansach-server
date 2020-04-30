@@ -1,8 +1,9 @@
-package vn.com.buaansach.entity;
+package vn.com.buaansach.entity.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 
 import javax.persistence.*;
@@ -26,8 +27,8 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
     @Column(unique = true)
     private UUID guid;
 
-    @Size(max = 16)
-    @Column(name = "order_code", unique = true, length = 16)
+    @Size(max = 20)
+    @Column(name = "order_code", unique = true, length = 20)
     private String orderCode;
 
     @Enumerated(EnumType.STRING)
@@ -51,8 +52,8 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
     @Column(name = "customer_name", length = 100)
     private String customerName;
 
-    @Size(min = 10, max = 12)
-    @Column(name = "customer_phone", length = 12)
+    @Size(min = 10, max = 20)
+    @Column(name = "customer_phone", length = 20)
     private String customerPhone;
 
     @Column(name = "seat_guid")

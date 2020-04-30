@@ -1,8 +1,9 @@
-package vn.com.buaansach.entity;
+package vn.com.buaansach.entity.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import vn.com.buaansach.entity.AbstractAuditingEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;

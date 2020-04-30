@@ -3,7 +3,7 @@ package vn.com.buaansach.web.user.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import vn.com.buaansach.entity.UserEntity;
+import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.exception.EmailAlreadyUsedException;
 import vn.com.buaansach.exception.InvalidPasswordException;
 import vn.com.buaansach.exception.PhoneAlreadyUsedException;

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import vn.com.buaansach.config.audit.AuditEventConverter;
-import vn.com.buaansach.entity.PersistentAuditEvent;
+import vn.com.buaansach.entity.user.PersistentAuditEvent;
 import vn.com.buaansach.web.admin.repository.AdminPersistenceAuditEventRepository;
 import vn.com.buaansach.util.Constants;
 

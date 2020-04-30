@@ -1,8 +1,8 @@
 package vn.com.buaansach.web.guest.service;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.OrderProductEntity;
-import vn.com.buaansach.entity.ProductEntity;
+import vn.com.buaansach.entity.order.OrderProductEntity;
+import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
 import vn.com.buaansach.web.guest.repository.GuestOrderProductRepository;
 import vn.com.buaansach.web.guest.repository.GuestProductRepository;
@@ -40,7 +40,7 @@ public class GuestOrderProductService {
             entity.setOrderGuid(orderGuid);
 
             ProductEntity product = mapProduct.get(entity.getProductGuid());
-            entity.setOrderProductPrice(product.getProductNormalPrice());
+            entity.setOrderProductPrice(product.getProductPrice());
         }).collect(Collectors.toList());
         return guestOrderProductRepository.saveAll(list);
     }

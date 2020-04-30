@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import vn.com.buaansach.entity.AuthorityEntity;
-import vn.com.buaansach.entity.UserEntity;
+import vn.com.buaansach.entity.user.AuthorityEntity;
+import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.util.Constants;
 
 import javax.validation.constraints.Email;

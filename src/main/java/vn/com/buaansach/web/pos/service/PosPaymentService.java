@@ -1,7 +1,7 @@
 package vn.com.buaansach.web.pos.service;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.PaymentEntity;
+import vn.com.buaansach.entity.order.PaymentEntity;
 import vn.com.buaansach.entity.enumeration.PaymentMethod;
 import vn.com.buaansach.entity.enumeration.PaymentStatus;
 import vn.com.buaansach.web.pos.repository.PosPaymentRepository;

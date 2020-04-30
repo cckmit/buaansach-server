@@ -1,8 +1,8 @@
 package vn.com.buaansach.web.pos.service;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.AreaEntity;
-import vn.com.buaansach.entity.StoreEntity;
+import vn.com.buaansach.entity.store.AreaEntity;
+import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.web.admin.service.StoreUserSecurityService;
 import vn.com.buaansach.web.pos.repository.PosAreaRepository;

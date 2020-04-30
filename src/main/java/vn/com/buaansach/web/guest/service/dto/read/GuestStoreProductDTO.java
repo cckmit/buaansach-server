@@ -1,8 +1,8 @@
 package vn.com.buaansach.web.guest.service.dto.read;
 
 import lombok.Data;
-import vn.com.buaansach.entity.ProductEntity;
-import vn.com.buaansach.entity.StoreProductEntity;
+import vn.com.buaansach.entity.common.ProductEntity;
+import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.enumeration.StoreProductStatus;
 
@@ -21,8 +21,7 @@ public class GuestStoreProductDTO {
     private String productImageUrl;
     private String productThumbnailUrl;
     private ProductStatus productStatus;
-    private int productNormalPrice;
-    private UUID categoryGuid;
+    private int productPrice;
 
     public GuestStoreProductDTO() {
     }
@@ -39,7 +38,6 @@ public class GuestStoreProductDTO {
         this.productImageUrl = productEntity.getProductImageUrl();
         this.productThumbnailUrl = productEntity.getProductThumbnailUrl();
         this.productStatus = productEntity.getProductStatus();
-        this.productNormalPrice = productEntity.getProductNormalPrice();
-        this.categoryGuid = productEntity.getCategoryGuid();
+        this.productPrice = productEntity.getProductPrice();
     }
 }

@@ -15,9 +15,11 @@
             <column name="customer_code" type="varchar(20)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_customer_code"/>
             </column>
-
             <column name="customer_phone" type="varchar(20)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_customer_phone"/>
+            </column>
+            <column name="customer_email" type="varchar(100)">
+                <constraints unique="true" uniqueConstraintName="ux_customer_email"/>
             </column>
             <column name="customer_password_hash" type="varchar(60)">
                 <constraints nullable="false"/>
@@ -27,21 +29,15 @@
             </column>
             <column name="customer_first_name" type="varchar(50)"/>
             <column name="customer_last_name" type="varchar(50)"/>
-            <column name="customer_email" type="varchar(100)">
-                <constraints unique="true" nullable="true" uniqueConstraintName="ux_customer_email"/>
-            </column>
-            <column name="customer_address" type="varchar(255)"/>
-            <column name="customer_gender" type="varchar(10)"/>
+            <column name="customer_gender" type="varchar(20)"/>
             <column name="customer_birthday" type="timestamp"/>
-            <column name="customer_lang_key" type="varchar(10)"/>
+            <column name="customer_address" type="varchar(255)"/>
             <column name="customer_image_url" type="varchar(255)"/>
+            <column name="customer_lang_key" type="varchar(10)"/>
             <column name="customer_reset_key" type="varchar(20)"/>
             <column name="customer_reset_date" type="timestamp"/>
-
             <column name="customer_zalo_id" type="varchar(255)"/>
-            <column name="customer_rank_guid" type="binary(16)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="customer_rank_guid" type="binary(16)"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

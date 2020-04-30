@@ -1,8 +1,9 @@
-package vn.com.buaansach.entity;
+package vn.com.buaansach.entity.store;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.StoreStatus;
 
 import javax.persistence.*;
@@ -26,8 +27,8 @@ public class StoreEntity extends AbstractAuditingEntity implements Serializable 
     @Column(unique = true)
     private UUID guid;
 
-    @Size(min = 1, max = 16)
-    @Column(name = "store_code", unique = true, length = 16)
+    @Size(min = 1, max = 20)
+    @Column(name = "store_code", unique = true, length = 20)
     private String storeCode;
 
     @Size(min = 1, max = 100)

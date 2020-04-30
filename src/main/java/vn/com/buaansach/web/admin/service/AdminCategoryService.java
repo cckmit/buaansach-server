@@ -2,12 +2,13 @@ package vn.com.buaansach.web.admin.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import vn.com.buaansach.entity.CategoryEntity;
-import vn.com.buaansach.entity.FileEntity;
+import vn.com.buaansach.entity.common.CategoryEntity;
+import vn.com.buaansach.entity.common.FileEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.admin.repository.AdminCategoryRepository;
+import vn.com.buaansach.web.admin.repository.AdminProductCategoryRepository;
 import vn.com.buaansach.web.admin.repository.AdminProductRepository;
 import vn.com.buaansach.web.user.service.FileService;
 
@@ -20,11 +21,13 @@ public class AdminCategoryService {
     private final AdminCategoryRepository adminCategoryRepository;
     private final FileService fileService;
     private final AdminProductRepository adminProductRepository;
+    private final AdminProductCategoryRepository adminProductCategoryRepository;
 
-    public AdminCategoryService(AdminCategoryRepository adminCategoryRepository, FileService fileService, AdminProductRepository adminProductRepository) {
+    public AdminCategoryService(AdminCategoryRepository adminCategoryRepository, FileService fileService, AdminProductRepository adminProductRepository, AdminProductCategoryRepository adminProductCategoryRepository) {
         this.adminCategoryRepository = adminCategoryRepository;
         this.fileService = fileService;
         this.adminProductRepository = adminProductRepository;
+        this.adminProductCategoryRepository = adminProductCategoryRepository;
     }
 
     @Transactional
@@ -86,8 +89,7 @@ public class AdminCategoryService {
         CategoryEntity categoryEntity = adminCategoryRepository.findOneByGuid(UUID.fromString(categoryGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with guid: " + categoryGuid));
         fileService.deleteByUrl(categoryEntity.getCategoryImageUrl());
-        /* this will set category of product to null */
-        adminProductRepository.clearProductCategory(categoryEntity.getGuid());
+        adminProductCategoryRepository.deleteByCategoryGuid(categoryEntity.getGuid());
         adminCategoryRepository.delete(categoryEntity);
     }
 }

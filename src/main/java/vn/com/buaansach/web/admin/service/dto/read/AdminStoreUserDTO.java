@@ -2,8 +2,8 @@ package vn.com.buaansach.web.admin.service.dto.read;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import vn.com.buaansach.entity.StoreUserEntity;
-import vn.com.buaansach.entity.UserEntity;
+import vn.com.buaansach.entity.store.StoreUserEntity;
+import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 import vn.com.buaansach.web.user.service.dto.AuditDTO;

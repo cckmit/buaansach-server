@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import vn.com.buaansach.entity.UserEntity;
+import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.security.jwt.TokenProvider;
 import vn.com.buaansach.security.util.SecurityUtils;

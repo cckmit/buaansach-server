@@ -11,7 +11,6 @@
     <include file="config/liquibase/schema/customer/index.xml"/>
     <include file="config/liquibase/schema/voucher/index.xml"/>
 
-
     <!--Data-->
     <include file="config/liquibase/data/initial_data.xml"/>
 

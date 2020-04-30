@@ -2,7 +2,7 @@ package vn.com.buaansach.web.guest.service.dto.readwrite;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import vn.com.buaansach.entity.OrderEntity;
+import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 
 import java.time.Instant;

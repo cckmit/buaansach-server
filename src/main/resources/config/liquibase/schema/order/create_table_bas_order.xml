@@ -12,7 +12,7 @@
             <column name="guid" type="binary(16)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_order_guid"/>
             </column>
-            <column name="order_code" type="varchar(16)">
+            <column name="order_code" type="varchar(20)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_order_code"/>
             </column>
             <column name="order_status" type="varchar(30)"/>
@@ -22,7 +22,7 @@
             <column name="order_cancel_reason" type="varchar(255)"/>
 
             <column name="customer_name" type="varchar(100)"/>
-            <column name="customer_phone" type="varchar(12)"/>
+            <column name="customer_phone" type="varchar(20)"/>
 
             <column name="seat_guid" type="binary(16)"/>
             <column name="payment_guid" type="binary(16)"/>

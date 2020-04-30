@@ -1,7 +1,7 @@
 package vn.com.buaansach.web.pos.service.dto.read;
 
 import lombok.Data;
-import vn.com.buaansach.entity.AreaEntity;
+import vn.com.buaansach.entity.store.AreaEntity;
 
 import java.util.ArrayList;
 import java.util.List;

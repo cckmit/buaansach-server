@@ -1,8 +1,9 @@
-package vn.com.buaansach.entity;
+package vn.com.buaansach.entity.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
 
 import javax.persistence.*;
@@ -25,14 +26,8 @@ public class OrderProductEntity extends AbstractAuditingEntity implements Serial
     @Column(unique = true)
     private UUID guid;
 
-    @Column(name = "order_guid")
-    private UUID orderGuid;
-
-    @Column(name = "product_guid")
-    private UUID productGuid;
-
-    @Size(max = 16)
-    @Column(name = "order_product_group", length = 16)
+    @Size(max = 20)
+    @Column(name = "order_product_group", length = 20)
     private String orderProductGroup;
 
     @Column(name = "order_product_quantity")
@@ -59,4 +54,10 @@ public class OrderProductEntity extends AbstractAuditingEntity implements Serial
     @Size(max = 255)
     @Column(name = "order_product_cancel_reason")
     private String orderProductCancelReason;
+
+    @Column(name = "order_guid")
+    private UUID orderGuid;
+
+    @Column(name = "product_guid")
+    private UUID productGuid;
 }

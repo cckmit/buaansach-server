@@ -2,7 +2,7 @@ package vn.com.buaansach.web.admin.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.entity.AuthorityEntity;
+import vn.com.buaansach.entity.user.AuthorityEntity;
 
 import java.util.Optional;
 

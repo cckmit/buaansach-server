@@ -2,8 +2,8 @@ package vn.com.buaansach.web.admin.service.dto.readwrite;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import vn.com.buaansach.entity.AreaEntity;
-import vn.com.buaansach.entity.SeatEntity;
+import vn.com.buaansach.entity.store.AreaEntity;
+import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.web.user.service.dto.AuditDTO;
 
 import javax.validation.constraints.Size;

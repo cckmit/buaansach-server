@@ -12,14 +12,18 @@
             <column name="guid" type="binary(16)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_order_feedback_guid"/>
             </column>
+            <column name="order_guid" type="binary(16)">
+                <constraints nullable="false"/>
+            </column>
             <column name="customer_name" type="varchar(50)"/>
             <column name="customer_phone" type="varchar(20)"/>
-            <column name="feedback_rating" type="int">
+            <column name="service_quality_rating" type="varchar(30)">
                 <constraints nullable="false"/>
             </column>
-            <column name="feedback_content" type="varchar(500)">
+            <column name="product_quality_rating" type="varchar(30)">
                 <constraints nullable="false"/>
             </column>
+            <column name="feedback_content" type="varchar(500)"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
