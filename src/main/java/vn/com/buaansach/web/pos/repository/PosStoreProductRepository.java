@@ -5,14 +5,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import vn.com.buaansach.entity.StoreProductEntity;
-import vn.com.buaansach.web.pos.service.dto.PosStoreProductDTO;
+import vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreProductDTO;
 
 import java.util.List;
 import java.util.UUID;
 
 @Repository
 public interface PosStoreProductRepository extends JpaRepository<StoreProductEntity, Long> {
-    @Query("SELECT new vn.com.buaansach.web.pos.service.dto.PosStoreProductDTO(storeProduct, product) " +
+    @Query("SELECT new vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreProductDTO(storeProduct, product) " +
             "FROM StoreProductEntity storeProduct " +
             "LEFT JOIN vn.com.buaansach.entity.ProductEntity product " +
             "ON storeProduct.productGuid = product.guid " +

@@ -35,8 +35,8 @@ public class GuestOrderProductService {
         list = list.stream().peek(entity -> {
             entity.setGuid(UUID.randomUUID());
             entity.setOrderProductGroup(orderProductGroup);
-            entity.setOrderProductStatus(OrderProductStatus.CREATED);
-            entity.setOrderProductStatusTimeline(TimelineUtil.initOrderProductStatus(OrderProductStatus.CREATED));
+            entity.setOrderProductStatus(OrderProductStatus.PREPARING);
+            entity.setOrderProductStatusTimeline(TimelineUtil.initOrderProductStatus(OrderProductStatus.PREPARING));
             entity.setOrderGuid(orderGuid);
 
             ProductEntity product = mapProduct.get(entity.getProductGuid());

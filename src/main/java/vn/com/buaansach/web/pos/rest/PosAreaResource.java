@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.service.PosAreaService;
-import vn.com.buaansach.web.pos.service.dto.PosAreaDTO;
+import vn.com.buaansach.web.pos.service.dto.read.PosAreaDTO;
 
 import java.util.List;
 

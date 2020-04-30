@@ -8,8 +8,8 @@ import vn.com.buaansach.web.admin.service.StoreUserSecurityService;
 import vn.com.buaansach.web.pos.repository.PosAreaRepository;
 import vn.com.buaansach.web.pos.repository.PosSeatRepository;
 import vn.com.buaansach.web.pos.repository.PosStoreRepository;
-import vn.com.buaansach.web.pos.service.dto.PosAreaDTO;
-import vn.com.buaansach.web.pos.service.dto.PosSeatDTO;
+import vn.com.buaansach.web.pos.service.dto.read.PosAreaDTO;
+import vn.com.buaansach.web.pos.service.dto.read.PosSeatDTO;
 
 import java.util.ArrayList;
 import java.util.List;

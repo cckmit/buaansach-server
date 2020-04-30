@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.service.PosOrderProductService;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderProductStatusChangeDTO;
-import vn.com.buaansach.web.pos.service.dto.write.PosOrderStatusChangeDTO;
 
 @RestController
 @RequestMapping("/api/v1/pos/order-product")

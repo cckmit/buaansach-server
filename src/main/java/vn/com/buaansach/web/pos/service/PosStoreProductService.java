@@ -2,7 +2,7 @@ package vn.com.buaansach.web.pos.service;
 
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.web.pos.repository.PosStoreProductRepository;
-import vn.com.buaansach.web.pos.service.dto.PosStoreProductDTO;
+import vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreProductDTO;
 
 import java.util.List;
 import java.util.UUID;

@@ -14,16 +14,11 @@ import vn.com.buaansach.web.pos.repository.PosOrderRepository;
 import vn.com.buaansach.web.pos.repository.PosSeatRepository;
 import vn.com.buaansach.web.pos.repository.PosStoreRepository;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
-import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
-import vn.com.buaansach.web.pos.service.dto.write.PosOrderSeatChangeDTO;
-import vn.com.buaansach.web.pos.service.dto.write.PosOrderStatusChangeDTO;
-import vn.com.buaansach.web.pos.service.dto.write.PosOrderUpdateDTO;
-import vn.com.buaansach.web.pos.service.mapper.PosOrderMapper;
+import vn.com.buaansach.web.pos.service.dto.write.*;
 import vn.com.buaansach.web.pos.util.TimelineUtil;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,7 +26,6 @@ import java.util.stream.Collectors;
 @Service
 public class PosOrderService {
     private final PosOrderRepository posOrderRepository;
-    private final PosOrderMapper posOrderMapper;
     private final PosSeatRepository posSeatRepository;
     private final PosStoreRepository posStoreRepository;
     private final PosPaymentService posPaymentService;
@@ -39,9 +33,8 @@ public class PosOrderService {
     private final PosOrderProductService posOrderProductService;
     private final PosOrderProductRepository posOrderProductRepository;
 
-    public PosOrderService(PosOrderRepository posOrderRepository, PosOrderMapper posOrderMapper, PosSeatRepository posSeatRepository, PosStoreRepository posStoreRepository, PosPaymentService posPaymentService, StoreUserSecurityService storeUserSecurityService, PosOrderProductService posOrderProductService, PosOrderProductRepository posOrderProductRepository) {
+    public PosOrderService(PosOrderRepository posOrderRepository, PosSeatRepository posSeatRepository, PosStoreRepository posStoreRepository, PosPaymentService posPaymentService, StoreUserSecurityService storeUserSecurityService, PosOrderProductService posOrderProductService, PosOrderProductRepository posOrderProductRepository) {
         this.posOrderRepository = posOrderRepository;
-        this.posOrderMapper = posOrderMapper;
         this.posSeatRepository = posSeatRepository;
         this.posStoreRepository = posStoreRepository;
         this.posPaymentService = posPaymentService;
@@ -51,7 +44,7 @@ public class PosOrderService {
     }
 
     @Transactional
-    public PosOrderDTO createOrder(PosOrderDTO payload, String currentUser) {
+    public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(payload.getSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found with guid: " + payload.getSeatGuid()));
 
@@ -63,13 +56,17 @@ public class PosOrderService {
 
         storeUserSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
 
-        OrderEntity orderEntity = posOrderMapper.dtoToEntity(payload);
+        OrderEntity orderEntity = new OrderEntity();
         UUID orderGuid = UUID.randomUUID();
         orderEntity.setGuid(orderGuid);
         orderEntity.setOrderCode(OrderCodeGenerator.generate());
         orderEntity.setOrderStatus(OrderStatus.RECEIVED);
         orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderStatus.RECEIVED, currentUser));
         orderEntity.setOrderCheckinTime(Instant.now());
+        orderEntity.setCustomerName(payload.getCustomerName());
+        orderEntity.setCustomerPhone(payload.getCustomerPhone());
+        orderEntity.setSeatGuid(payload.getSeatGuid());
+        orderEntity.setRecreateFromOrderGuid(payload.getRecreateFromOrderGuid());
 
         seatEntity.setSeatStatus(SeatStatus.NON_EMPTY);
         seatEntity.setCurrentOrderGuid(orderGuid);
@@ -87,19 +84,11 @@ public class PosOrderService {
 
         storeUserSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
 
-        String orderProductGroup = (new Date()).getTime() + "";
-        List<PosOrderProductDTO> listUpdateOrderProduct = payload.getListOrderProduct()
-                .stream()
-                .peek(posOrderProductDTO -> {
-                    posOrderProductDTO.setGuid(UUID.randomUUID());
-                    posOrderProductDTO.setOrderProductGroup(orderProductGroup);
-                    posOrderProductDTO.setOrderProductStatus(OrderProductStatus.PREPARING);
-                    posOrderProductDTO.setOrderProductStatusTimeline(TimelineUtil.initOrderProductStatus(OrderProductStatus.PREPARING, currentUser));
-                    posOrderProductDTO.setOrderGuid(payload.getOrderGuid());
-                })
-                .collect(Collectors.toList());
-        posOrderProductService.saveList(listUpdateOrderProduct);
+        orderEntity.setCustomerName(payload.getCustomerName());
+        orderEntity.setCustomerPhone(payload.getCustomerPhone());
+        posOrderRepository.save(orderEntity);
 
+        posOrderProductService.saveList(payload.getOrderGuid(), payload.getListOrderProduct(), currentUser);
         PosOrderDTO result = new PosOrderDTO(orderEntity);
         result.setListOrderProduct(posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(payload.getOrderGuid()));
         return result;
@@ -124,24 +113,36 @@ public class PosOrderService {
     }
 
     @Transactional
-    public void receiveOrder(PosOrderStatusChangeDTO payload, String currentUser) {
-        OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + payload.getOrderGuid()));
+    public void receiveOrder(String orderGuid, String currentUser) {
+        OrderEntity orderEntity = posOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + orderGuid));
 
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + orderEntity.getSeatGuid()));
 
         storeUserSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
+
+        /* receive only when order status is created */
         if (orderEntity.getOrderStatus().equals(OrderStatus.CREATED)) {
             orderEntity.setOrderStatus(OrderStatus.RECEIVED);
             String newTimeline = TimelineUtil.appendOrderStatus(orderEntity.getOrderStatusTimeline(), OrderStatus.RECEIVED, currentUser);
             orderEntity.setOrderStatusTimeline(newTimeline);
+
+            /* switch all order store product from CREATED => PREPARING */
+            List<OrderProductEntity> orderProductEntityList = posOrderProductRepository.findByOrderGuid(orderEntity.getGuid());
+            orderProductEntityList = orderProductEntityList.stream().peek(orderProductEntity -> {
+                orderProductEntity.setOrderProductStatus(OrderProductStatus.PREPARING);
+                String timeline = TimelineUtil.appendOrderProductStatus(orderProductEntity.getOrderProductStatusTimeline(), OrderProductStatus.PREPARING, currentUser);
+                orderProductEntity.setOrderProductStatusTimeline(timeline);
+            }).collect(Collectors.toList());
+
+            posOrderProductRepository.saveAll(orderProductEntityList);
+            posOrderRepository.save(orderEntity);
         }
-        posOrderRepository.save(orderEntity);
     }
 
     @Transactional
-    public void purchaseOrder(PosOrderStatusChangeDTO payload, String currentUser) {
+    public void purchaseOrder(PosOrderPurchaseDTO payload, String currentUser) {
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + payload.getOrderGuid()));
 
@@ -153,12 +154,12 @@ public class PosOrderService {
 
         storeUserSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
 
-        List<OrderProductEntity> orderProductEntityList = posOrderProductRepository.findByOrderGuid(orderEntity.getGuid());
-        long totalCharge = orderProductEntityList.stream().mapToLong(OrderProductEntity::getOrderProductPrice).sum();
+//        List<OrderProductEntity> orderProductEntityList = posOrderProductRepository.findByOrderGuid(orderEntity.getGuid());
+//        long totalCharge = orderProductEntityList.stream().mapToLong(OrderProductEntity::getOrderProductPrice).sum();
 
         switch (payload.getPaymentMethod()) {
             case CASH:
-                PaymentEntity paymentEntity = posPaymentService.makeCashPayment(payload.getOrderGuid(), totalCharge);
+                PaymentEntity paymentEntity = posPaymentService.makeCashPayment(payload.getOrderGuid(), payload.getTotalCharge());
                 orderEntity.setPaymentGuid(paymentEntity.getGuid());
                 orderEntity.setOrderStatus(OrderStatus.PURCHASED);
                 orderEntity.setOrderCheckoutTime(Instant.now());
@@ -173,6 +174,7 @@ public class PosOrderService {
                 posSeatRepository.save(seatEntity);
 
                 posOrderRepository.save(orderEntity);
+                break;
             case VN_PAY:
             case VIETTEL_PAY:
             case CREDIT_CARD:
@@ -181,11 +183,10 @@ public class PosOrderService {
             default:
                 break;
         }
-        payload.setOrderStatus(OrderStatus.PURCHASED);
     }
 
     @Transactional
-    public void cancelOrder(PosOrderStatusChangeDTO payload, String currentUser) {
+    public void cancelOrder(PosOrderCancelDTO payload, String currentUser) {
         if (payload.getCancelReason().isEmpty()) throw new BadRequestException("Cancel Reason is required");
 
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
@@ -230,9 +231,9 @@ public class PosOrderService {
         if (newSeat.getSeatStatus().equals(SeatStatus.NON_EMPTY))
             throw new BadRequestException("New seat is not empty: " + payload.getNewSeatGuid());
 
-        String newTimeline = TimelineUtil.appendOrderStatus(orderEntity.getOrderStatusTimeline(),
-                OrderStatus.CHANGE_SEAT, currentUser);
+        String newTimeline = TimelineUtil.appendOrderStatus(orderEntity.getOrderStatusTimeline(), "CHANGE_SEAT", currentUser);
         orderEntity.setOrderStatusTimeline(newTimeline);
+        orderEntity.setSeatGuid(newSeat.getGuid());
 
         currentSeat.setSeatStatus(SeatStatus.EMPTY);
         currentSeat.setCurrentOrderGuid(null);

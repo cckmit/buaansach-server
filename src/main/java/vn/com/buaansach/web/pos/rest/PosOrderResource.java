@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.service.PosOrderService;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
-import vn.com.buaansach.web.pos.service.dto.write.PosOrderSeatChangeDTO;
-import vn.com.buaansach.web.pos.service.dto.write.PosOrderStatusChangeDTO;
-import vn.com.buaansach.web.pos.service.dto.write.PosOrderUpdateDTO;
+import vn.com.buaansach.web.pos.service.dto.write.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/pos/order")
@@ -23,14 +23,14 @@ public class PosOrderResource {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<PosOrderDTO> createOrder(@RequestBody PosOrderDTO payload) {
+    public ResponseEntity<PosOrderDTO> createOrder(@Valid @RequestBody PosOrderCreateDTO payload) {
         String currentUser = SecurityUtils.getCurrentUserLogin();
         log.debug("REST request from user {} to create {} : {}", currentUser, ENTITY_NAME, payload);
         return ResponseEntity.ok(posOrderService.createOrder(payload, currentUser));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<PosOrderDTO> updateOrder(@RequestBody PosOrderUpdateDTO payload) {
+    public ResponseEntity<PosOrderDTO> updateOrder(@Valid @RequestBody PosOrderUpdateDTO payload) {
         String currentUser = SecurityUtils.getCurrentUserLogin();
         log.debug("REST request from user {} to update {} : {}", currentUser, ENTITY_NAME, payload);
         return ResponseEntity.ok(posOrderService.updateOrder(payload, currentUser));
@@ -57,15 +57,15 @@ public class PosOrderResource {
     }
 
     @PutMapping("/receive")
-    public ResponseEntity<Void> receiveOrder(@RequestBody PosOrderStatusChangeDTO payload) {
+    public ResponseEntity<Void> receiveOrder(@RequestBody String orderGuid) {
         String currentUser = SecurityUtils.getCurrentUserLogin();
-        log.debug("REST request from user {} to receive {} : {}", currentUser, ENTITY_NAME, payload);
-        posOrderService.receiveOrder(payload, currentUser);
+        log.debug("REST request from user {} to receive {} : {}", currentUser, ENTITY_NAME, orderGuid);
+        posOrderService.receiveOrder(orderGuid, currentUser);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/purchase")
-    public ResponseEntity<Void> purchaseOrder(@RequestBody PosOrderStatusChangeDTO payload) {
+    public ResponseEntity<Void> purchaseOrder(@RequestBody PosOrderPurchaseDTO payload) {
         String currentUser = SecurityUtils.getCurrentUserLogin();
         log.debug("REST request from user {} to purchase {} : {}", currentUser, ENTITY_NAME, payload);
         posOrderService.purchaseOrder(payload, currentUser);
@@ -73,7 +73,7 @@ public class PosOrderResource {
     }
 
     @PutMapping("/cancel")
-    public ResponseEntity<Void> cancelOrder(@RequestBody PosOrderStatusChangeDTO payload) {
+    public ResponseEntity<Void> cancelOrder(@RequestBody PosOrderCancelDTO payload) {
         String currentUser = SecurityUtils.getCurrentUserLogin();
         log.debug("REST request from user {} to cancel {} : {}", currentUser, ENTITY_NAME, payload);
         posOrderService.cancelOrder(payload, currentUser);

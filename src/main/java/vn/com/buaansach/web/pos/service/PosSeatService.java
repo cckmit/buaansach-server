@@ -5,7 +5,7 @@ import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.web.admin.service.StoreUserSecurityService;
 import vn.com.buaansach.web.pos.repository.PosSeatRepository;
 import vn.com.buaansach.web.pos.repository.PosStoreRepository;
-import vn.com.buaansach.web.pos.service.dto.PosSeatDTO;
+import vn.com.buaansach.web.pos.service.dto.read.PosSeatDTO;
 
 import java.util.List;
 import java.util.UUID;

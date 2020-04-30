@@ -15,10 +15,10 @@
             </column>
 
             <column name="order_guid" type="binary(16)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints nullable="false"/>
             </column>
             <column name="product_guid" type="binary(16)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints nullable="false"/>
             </column>
 
             <column name="order_product_group" type="varchar(16)"/>

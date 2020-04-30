@@ -15,11 +15,18 @@ public final class TimelineUtil {
     }
 
     public static String appendOrderStatus(String currentTimeline, OrderStatus newStatus) {
-        return currentTimeline + ";" + newStatus.name() + "@@" + Instant.now().toString();
+        String newTimeline = currentTimeline + ";" + newStatus.name() + "@@" + Instant.now().toString();
+        return newTimeline.length() > 1000 ? currentTimeline : newTimeline;
     }
 
     public static String appendOrderStatus(String currentTimeline, OrderStatus newStatus, String actor) {
-        return currentTimeline + ";" + newStatus.name() + "@" + actor + "@" + Instant.now().toString();
+        String newTimeline = currentTimeline + ";" + newStatus.name() + "@" + actor + "@" + Instant.now().toString();
+        return newTimeline.length() > 1000 ? currentTimeline : newTimeline;
+    }
+
+    public static String appendOrderStatus(String currentTimeline, String newStatus, String actor) {
+        String newTimeline = currentTimeline + ";" + newStatus + "@" + actor + "@" + Instant.now().toString();
+        return newTimeline.length() > 1000 ? currentTimeline : newTimeline;
     }
 
     public static String initOrderProductStatus(OrderProductStatus status) {
@@ -31,10 +38,12 @@ public final class TimelineUtil {
     }
 
     public static String appendOrderProductStatus(String currentTimeline, OrderProductStatus newStatus) {
-        return currentTimeline + ";" + newStatus.name() + "@@" + Instant.now().toString();
+        String newTimeline = currentTimeline + ";" + newStatus.name() + "@@" + Instant.now().toString();
+        return newTimeline.length() > 1000 ? currentTimeline : newTimeline;
     }
 
     public static String appendOrderProductStatus(String currentTimeline, OrderProductStatus newStatus, String actor) {
-        return currentTimeline + ";" + newStatus.name() + "@" + actor + "@" + Instant.now().toString();
+        String newTimeline = currentTimeline + ";" + newStatus.name() + "@" + actor + "@" + Instant.now().toString();
+        return newTimeline.length() > 1000 ? currentTimeline : newTimeline;
     }
 }

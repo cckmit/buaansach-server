@@ -32,12 +32,6 @@ public class PosOrderDTO extends AuditDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Instant orderCheckinTime;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Instant orderCheckoutTime;
-
-    @Size(max = 255)
-    private String orderCancelReason;
-
     @Size(max = 100)
     private String customerName;
 
@@ -45,8 +39,6 @@ public class PosOrderDTO extends AuditDTO {
     private String customerPhone;
 
     private UUID seatGuid;
-
-    private UUID paymentGuid;
 
     private UUID recreateFromOrderGuid;
 
@@ -63,12 +55,9 @@ public class PosOrderDTO extends AuditDTO {
         this.orderStatus = orderEntity.getOrderStatus();
         this.orderStatusTimeline = orderEntity.getOrderStatusTimeline();
         this.orderCheckinTime = orderEntity.getOrderCheckinTime();
-        this.orderCheckoutTime = orderEntity.getOrderCheckoutTime();
-        this.orderCancelReason = orderEntity.getOrderCancelReason();
         this.customerName = orderEntity.getCustomerName();
         this.customerPhone = orderEntity.getCustomerPhone();
         this.seatGuid = orderEntity.getSeatGuid();
-        this.paymentGuid = orderEntity.getPaymentGuid();
         this.recreateFromOrderGuid = orderEntity.getRecreateFromOrderGuid();
 
         this.createdBy = orderEntity.getCreatedBy();
