@@ -12,6 +12,7 @@ import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.util.Constants;
+import vn.com.buaansach.web.admin.repository.AdminCategoryRepository;
 import vn.com.buaansach.web.admin.repository.AdminProductCategoryRepository;
 import vn.com.buaansach.web.admin.repository.AdminProductRepository;
 import vn.com.buaansach.web.admin.repository.AdminStoreProductRepository;
@@ -31,13 +32,15 @@ public class AdminProductService {
     private final FileService fileService;
     private final AdminProductMapper adminProductMapper;
     private final AdminProductCategoryRepository adminProductCategoryRepository;
+    private final AdminCategoryRepository adminCategoryRepository;
 
-    public AdminProductService(AdminProductRepository adminProductRepository, AdminStoreProductRepository adminStoreProductRepository, FileService fileService, AdminProductMapper adminProductMapper, AdminProductCategoryRepository adminProductCategoryRepository) {
+    public AdminProductService(AdminProductRepository adminProductRepository, AdminStoreProductRepository adminStoreProductRepository, FileService fileService, AdminProductMapper adminProductMapper, AdminProductCategoryRepository adminProductCategoryRepository, AdminCategoryRepository adminCategoryRepository) {
         this.adminProductRepository = adminProductRepository;
         this.adminStoreProductRepository = adminStoreProductRepository;
         this.fileService = fileService;
         this.adminProductMapper = adminProductMapper;
         this.adminProductCategoryRepository = adminProductCategoryRepository;
+        this.adminCategoryRepository = adminCategoryRepository;
     }
 
     private void saveProductCategory(UUID productGuid, List<CategoryEntity> categories) {
@@ -57,10 +60,9 @@ public class AdminProductService {
         if (adminProductRepository.findOneByProductCode(productEntity.getProductCode()).isPresent()) {
             throw new BadRequestException("Product Code already in use");
         }
-
-        saveProductCategory(productEntity.getGuid(), payload.getCategories());
-
-        productEntity.setGuid(UUID.randomUUID());
+        UUID productGuid = UUID.randomUUID();
+        saveProductCategory(productGuid, payload.getCategories());
+        productEntity.setGuid(productGuid);
         if (image != null) {
             FileEntity fileEntity = fileService.uploadImage(image, Constants.PRODUCT_IMAGE_PATH);
             productEntity.setProductImageUrl(fileEntity.getUrl());
@@ -69,7 +71,7 @@ public class AdminProductService {
     }
 
     public AdminProductDTO getProduct(String productGuid) {
-        List<CategoryEntity> categories = adminProductCategoryRepository.findListCategoryByProductGuid(UUID.fromString(productGuid));
+        List<CategoryEntity> categories = adminCategoryRepository.findListCategoryByProductGuid(UUID.fromString(productGuid));
         ProductEntity productEntity = adminProductRepository.findOneByGuid(UUID.fromString(productGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with guid: " + productGuid));
         return new AdminProductDTO(productEntity, categories);
@@ -119,7 +121,7 @@ public class AdminProductService {
     public Page<AdminProductDTO> getPageProduct(PageRequest request, String search) {
         Page<ProductEntity> pageProductEntity = adminProductRepository.findPageProductWithKeyword(request, search.toLowerCase());
         return pageProductEntity.map(productEntity -> {
-            List<CategoryEntity> categories = adminProductCategoryRepository.findListCategoryByProductGuid(productEntity.getGuid());
+            List<CategoryEntity> categories = adminCategoryRepository.findListCategoryByProductGuid(productEntity.getGuid());
             return new AdminProductDTO(productEntity, categories);
         });
     }

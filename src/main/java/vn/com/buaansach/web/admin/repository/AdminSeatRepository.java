@@ -21,7 +21,4 @@ public interface AdminSeatRepository extends JpaRepository<SeatEntity, Long> {
     List<SeatEntity> findByAreaGuid(UUID areaGuid);
 
     long deleteByAreaGuid(UUID areaGuid);
-
-    @Override
-    void delete(SeatEntity entity);
 }

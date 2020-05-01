@@ -21,6 +21,9 @@ public class AdminAreaDTO extends AuditDTO {
 
     private List<SeatEntity> listSeat = new ArrayList<>();
 
+    public AdminAreaDTO() {
+    }
+
     public AdminAreaDTO(AreaEntity entity, List<SeatEntity> listSeat) {
         this.guid = entity.getGuid();
         this.areaName = entity.getAreaName();
