@@ -33,6 +33,18 @@ public class CustomerFeedbackEntity extends AbstractAuditingEntity implements Se
     @Column(name = "customer_phone", length = 20)
     private String customerPhone;
 
+    @Column(name = "store_guid")
+    private UUID storeGuid;
+
+    @Size(max = 20)
+    @Column(name = "employee_code", length = 20)
+    private String employeeCode;
+
+    @Size(max = 100)
+    @Column(name = "employee_name", length = 100)
+    private String employeeName;
+
+
     @Size(max = 1000)
     @Column(name = "feedback_content", length = 1000)
     private String feedbackContent;

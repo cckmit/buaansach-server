@@ -8,6 +8,7 @@ import vn.com.buaansach.entity.enumeration.PaymentMethod;
 import vn.com.buaansach.entity.enumeration.PaymentStatus;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -29,6 +30,10 @@ public class PaymentEntity extends AbstractAuditingEntity implements Serializabl
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_method")
     private PaymentMethod paymentMethod;
+
+    @Size(max = 255)
+    @Column(name = "payment_note")
+    private String paymentNote;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")

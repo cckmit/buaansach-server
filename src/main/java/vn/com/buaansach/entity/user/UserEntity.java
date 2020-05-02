@@ -33,6 +33,9 @@ public class UserEntity extends AbstractAuditingEntity implements Serializable {
     @Column(unique = true)
     private UUID guid;
 
+    @Column(unique = true)
+    private String code;
+
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
     @Column(length = 50, unique = true, nullable = false)

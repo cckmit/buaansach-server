@@ -12,6 +12,9 @@
             <column name="guid" type="binary(16)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_user_guid"/>
             </column>
+            <column name="code" type="varchar(20)">
+                <constraints unique="true" uniqueConstraintName="ux_user_code"/>
+            </column>
             <column name="login" type="varchar(50)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_user_login"/>
             </column>

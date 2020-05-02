@@ -71,4 +71,7 @@ public class StoreEntity extends AbstractAuditingEntity implements Serializable 
     @Size(max = 10)
     @Column(name = "store_close_hour", length = 10)
     private String storeCloseHour;
+
+    @Column(name = "store_activated")
+    private boolean storeActivated = true;
 }

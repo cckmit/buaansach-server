@@ -4,20 +4,17 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet id="create_table_bas_customer_feedback" author="ductv">
-        <createTable tableName="bas_customer_feedback">
+    <changeSet id="create_table_bas_voucher_store_condition" author="ductv">
+        <createTable tableName="bas_voucher_store_condition">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="guid" type="binary(16)">
-                <constraints unique="true" nullable="false" uniqueConstraintName="ux_customer_feedback_guid"/>
+            <column name="voucher_guid" type="binary(16)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="ux_voucher_guid_store_condition"/>
             </column>
-            <column name="customer_name" type="varchar(50)"/>
-            <column name="customer_phone" type="varchar(20)"/>
-            <column name="store_guid" type="binary(16)"/>
-            <column name="employee_code" type="varchar(20)"/>
-            <column name="employee_name" type="varchar(100)"/>
-            <column name="feedback_content" type="varchar(1000)"/>
+            <column name="store_guid" type="binary(16)">
+                <constraints nullable="false"/>
+            </column>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
