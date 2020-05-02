@@ -20,4 +20,12 @@ public class VoucherInventoryEntity implements Serializable {
     private String code;
 
     private boolean exported;
+
+    public VoucherInventoryEntity() {
+    }
+
+    public VoucherInventoryEntity(String code, boolean exported) {
+        this.code = code;
+        this.exported = exported;
+    }
 }

@@ -22,9 +22,6 @@ public class VoucherTimeConditionEntity extends AbstractAuditingEntity implement
     @JsonIgnore
     private Long id;
 
-    @Column(unique = true)
-    private UUID guid;
-
     @Column(name = "voucher_guid", unique = true)
     private UUID voucherGuid;
 
