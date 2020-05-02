@@ -9,7 +9,7 @@ import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
 
 @Repository
 public interface PosVoucherCodeRepository extends JpaRepository<VoucherCodeEntity, Long> {
-    @Query("SELECT new vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO(vc, v, vt, vu) " +
+    @Query("SELECT new vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO(vc, v, vt, vu, vs) " +
             "FROM VoucherCodeEntity vc " +
             "LEFT JOIN vn.com.buaansach.entity.voucher.VoucherEntity v " +
             "ON vc.voucherGuid = v.guid " +
@@ -17,6 +17,8 @@ public interface PosVoucherCodeRepository extends JpaRepository<VoucherCodeEntit
             "ON vt.voucherGuid = v.guid " +
             "LEFT JOIN vn.com.buaansach.entity.voucher.condition.VoucherUsageConditionEntity vu " +
             "ON vu.voucherGuid = v.guid " +
+            "LEFT JOIN vn.com.buaansach.entity.voucher.condition.VoucherStoreConditionEntity vs " +
+            "ON vs.voucherGuid = v.guid " +
             "WHERE vc.voucherCode = :voucherCode")
     PosVoucherCodeDTO getPosVoucherCodeDTO(@Param("voucherCode") String voucherCode);
 }

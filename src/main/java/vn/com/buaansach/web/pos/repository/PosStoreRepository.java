@@ -18,6 +18,7 @@ public interface PosStoreRepository extends JpaRepository<StoreEntity, Long> {
             "ON store.guid = area.storeGuid " +
             "LEFT JOIN vn.com.buaansach.entity.store.SeatEntity seat " +
             "ON area.guid = seat.areaGuid " +
-            "WHERE seat.guid = :seatGuid")
+            "WHERE seat.guid = :seatGuid " +
+            "AND store.storeActivated = TRUE ")
     Optional<StoreEntity> findOneBySeatGuid(@Param("seatGuid") UUID seatGuid);
 }

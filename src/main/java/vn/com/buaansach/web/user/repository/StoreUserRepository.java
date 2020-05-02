@@ -20,7 +20,7 @@ public interface StoreUserRepository extends JpaRepository<StoreUserEntity, Long
             "LEFT JOIN vn.com.buaansach.entity.user.UserEntity user " +
             "ON storeUser.userLogin = user.login " +
             "WHERE storeUser.userLogin = :userLogin " +
-            "AND store.storeStatus = 'ACTIVATED'" +
+            "AND store.storeActivated = TRUE " +
             "AND storeUser.storeUserStatus = 'WORKING'")
     List<StoreUserDTO> findListStoreUserByUser(@Param("userLogin") String userLogin);
 }

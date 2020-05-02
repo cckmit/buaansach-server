@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.enumeration.VoucherDiscountType;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
+import vn.com.buaansach.entity.voucher.condition.VoucherStoreConditionEntity;
 import vn.com.buaansach.entity.voucher.condition.VoucherTimeConditionEntity;
 import vn.com.buaansach.entity.voucher.condition.VoucherUsageConditionEntity;
 import vn.com.buaansach.web.user.service.dto.AuditDTO;
@@ -32,6 +33,7 @@ public class PosVoucherCodeDTO extends AuditDTO {
 
     private VoucherTimeConditionEntity timeCondition;
     private VoucherUsageConditionEntity usageCondition;
+    private VoucherStoreConditionEntity storeCondition;
 
     public PosVoucherCodeDTO() {
     }
@@ -40,10 +42,11 @@ public class PosVoucherCodeDTO extends AuditDTO {
         assignProperty(voucherCodeEntity, voucherEntity);
     }
 
-    public PosVoucherCodeDTO(VoucherCodeEntity voucherCodeEntity, VoucherEntity voucherEntity, VoucherTimeConditionEntity timeConditionEntity, VoucherUsageConditionEntity usageConditionEntity) {
+    public PosVoucherCodeDTO(VoucherCodeEntity voucherCodeEntity, VoucherEntity voucherEntity, VoucherTimeConditionEntity timeConditionEntity, VoucherUsageConditionEntity usageConditionEntity, VoucherStoreConditionEntity storeConditionEntity) {
         assignProperty(voucherCodeEntity, voucherEntity);
         this.timeCondition = timeConditionEntity;
         this.usageCondition = usageConditionEntity;
+        this.storeCondition = storeConditionEntity;
     }
 
     private void assignProperty(VoucherCodeEntity voucherCodeEntity, VoucherEntity voucherEntity) {
