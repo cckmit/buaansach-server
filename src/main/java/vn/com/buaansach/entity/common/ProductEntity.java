@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
+import vn.com.buaansach.entity.enumeration.ProductDisplay;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
+import vn.com.buaansach.entity.enumeration.ProductType;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -50,12 +52,24 @@ public class ProductEntity extends AbstractAuditingEntity implements Serializabl
     @Column(name = "product_status")
     private ProductStatus productStatus;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "product_type")
+    private ProductType productType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "product_display")
+    private ProductDisplay productDisplay;
+
     @Column(name = "product_root_price")
+    @JsonIgnore
     private int productRootPrice;
 
     @Column(name = "product_price")
     private int productPrice;
 
-    @Column(name = "product_discount")
-    private int productDiscount;
+    @Column(name = "product_position")
+    private int productPosition;
+
+    @Column(name = "product_sale_guid")
+    private UUID productSaleGuid;
 }

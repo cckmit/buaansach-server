@@ -24,9 +24,16 @@
             <column name="product_status" type="varchar(30)">
                 <constraints nullable="false"/>
             </column>
+            <column name="product_type" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_display" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
             <column name="product_root_price" type="int"/>
             <column name="product_price" type="int"/>
-            <column name="product_discount" type="int"/>
+            <column name="product_position" type="int"/>
+            <column name="product_sale_guid" type="binary(16)"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

@@ -15,12 +15,15 @@ import java.util.UUID;
 public class AdminStoreUserDTO extends AuditDTO {
     private UUID guid;
     private String storeGuid;
+    private StoreUserRole storeUserRole;
+    private StoreUserStatus storeUserStatus;
+
+    private String userCode;
     private String userLogin;
     private String firstName;
     private String lastName;
     private boolean activated;
-    private StoreUserRole storeUserRole;
-    private StoreUserStatus storeUserStatus;
+
 
     public AdminStoreUserDTO() {
     }
@@ -28,12 +31,14 @@ public class AdminStoreUserDTO extends AuditDTO {
     public AdminStoreUserDTO(StoreUserEntity storeUserEntity, UserEntity userEntity) {
         this.guid = storeUserEntity.getGuid();
         this.storeGuid = storeUserEntity.getStoreGuid().toString();
+        this.storeUserRole = storeUserEntity.getStoreUserRole();
+        this.storeUserStatus = storeUserEntity.getStoreUserStatus();
+
+        this.userCode = userEntity.getCode();
         this.userLogin = userEntity.getLogin();
         this.firstName = userEntity.getFirstName();
         this.activated = userEntity.isActivated();
         this.lastName = userEntity.getLastName();
-        this.storeUserRole = storeUserEntity.getStoreUserRole();
-        this.storeUserStatus = storeUserEntity.getStoreUserStatus();
 
         this.createdBy = storeUserEntity.getCreatedBy();
         this.createdDate = storeUserEntity.getCreatedDate();

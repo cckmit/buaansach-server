@@ -3,8 +3,8 @@ package vn.com.buaansach.web.pos.service.dto.readwrite;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
+import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.web.user.service.dto.AuditDTO;
 
 import javax.persistence.EnumType;
@@ -26,6 +26,8 @@ public class PosOrderDTO extends AuditDTO {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+    private String orderNote;
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String orderStatusTimeline;
 
@@ -40,7 +42,6 @@ public class PosOrderDTO extends AuditDTO {
 
     private UUID seatGuid;
 
-    private UUID recreateFromOrderGuid;
 
     /* computed */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -53,13 +54,12 @@ public class PosOrderDTO extends AuditDTO {
         this.guid = orderEntity.getGuid();
         this.orderCode = orderEntity.getOrderCode();
         this.orderStatus = orderEntity.getOrderStatus();
+        this.orderNote = orderEntity.getOrderNote();
         this.orderStatusTimeline = orderEntity.getOrderStatusTimeline();
         this.orderCheckinTime = orderEntity.getOrderCheckinTime();
         this.customerName = orderEntity.getCustomerName();
         this.customerPhone = orderEntity.getCustomerPhone();
         this.seatGuid = orderEntity.getSeatGuid();
-        this.recreateFromOrderGuid = orderEntity.getRecreateFromOrderGuid();
-
         this.createdBy = orderEntity.getCreatedBy();
         this.createdDate = orderEntity.getCreatedDate();
         this.lastModifiedBy = orderEntity.getLastModifiedBy();

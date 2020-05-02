@@ -2,6 +2,7 @@ package vn.com.buaansach.web.admin.service;
 
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.common.ProductEntity;
+import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.entity.enumeration.StoreProductStatus;
 import vn.com.buaansach.exception.ResourceNotFoundException;
@@ -43,7 +44,7 @@ public class AdminStoreProductService {
     }
 
     public List<AdminStoreProductDTO> addAllProductToStore(String storeGuid) {
-        List<ProductEntity> listProduct = adminProductRepository.findAllProductNotInStore(UUID.fromString(storeGuid));
+        List<ProductEntity> listProduct = adminProductRepository.findAllProductNotInStoreExcept(UUID.fromString(storeGuid), ProductStatus.STOP_TRADING);
         List<StoreProductEntity> listStoreProduct = new ArrayList<>();
         listProduct.forEach(productEntity -> {
             StoreProductEntity storeProductEntity = new StoreProductEntity();
@@ -68,7 +69,7 @@ public class AdminStoreProductService {
     }
 
     public List<AdminStoreProductDTO> getListStoreProductByStoreGuid(String storeGuid) {
-        return adminStoreProductRepository.findListAdminStoreProductDTO(UUID.fromString(storeGuid));
+        return adminStoreProductRepository.findListAdminStoreProductDTOExcept(UUID.fromString(storeGuid), ProductStatus.STOP_TRADING);
     }
 
     public void deleteStoreProduct(String storeProductGuid) {

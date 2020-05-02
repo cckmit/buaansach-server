@@ -13,6 +13,9 @@ import java.util.Set;
  */
 @Data
 public class AdminCreateUserDTO {
+    @Size(max = 20)
+    private String code;
+
     @Size(min = 1, max = 50)
     private String firstName;
 
@@ -39,4 +42,7 @@ public class AdminCreateUserDTO {
     private String langKey;
 
     private Set<String> authorities;
+
+    public AdminCreateUserDTO() {
+    }
 }

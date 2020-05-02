@@ -31,7 +31,7 @@ public class OrderFeedbackEntity extends AbstractAuditingEntity implements Seria
     private UUID orderGuid;
 
     @Size(max = 50)
-    @Column(name = "rank_name", length = 50)
+    @Column(name = "customer_name", length = 50)
     private String customerName;
 
     @Size(max = 20)

@@ -22,7 +22,7 @@ public class PosStoreProductDTO {
     private String productThumbnailUrl;
     private ProductStatus productStatus;
     private int productPrice;
-    private int productDiscount;
+    private UUID productSaleGuid;
 
     public PosStoreProductDTO() {
     }
@@ -40,7 +40,7 @@ public class PosStoreProductDTO {
         this.productThumbnailUrl = productEntity.getProductThumbnailUrl();
         this.productStatus = productEntity.getProductStatus();
         this.productPrice = productEntity.getProductPrice();
-        this.productDiscount = productEntity.getProductDiscount();
+        this.productSaleGuid = productEntity.getProductSaleGuid();
     }
 
 }

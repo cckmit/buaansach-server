@@ -3,7 +3,9 @@ package vn.com.buaansach.web.admin.service.dto.read;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.common.ProductEntity;
+import vn.com.buaansach.entity.enumeration.ProductDisplay;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
+import vn.com.buaansach.entity.enumeration.ProductType;
 import vn.com.buaansach.entity.enumeration.StoreProductStatus;
 import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.web.user.service.dto.AuditDTO;
@@ -20,8 +22,10 @@ public class AdminStoreProductDTO extends AuditDTO {
 
     private String productName;
     private ProductStatus productStatus;
+    private ProductType productType;
     private int productPrice;
-    private int productDiscount;
+    private int productPosition;
+    private UUID productSaleGuid;
 
     public AdminStoreProductDTO() {
     }
@@ -34,8 +38,10 @@ public class AdminStoreProductDTO extends AuditDTO {
 
         this.productName = productEntity.getProductName();
         this.productStatus = productEntity.getProductStatus();
+        this.productType = productEntity.getProductType();
         this.productPrice = productEntity.getProductPrice();
-        this.productDiscount = productEntity.getProductDiscount();
+        this.productPosition = productEntity.getProductPosition();
+        this.productSaleGuid = productEntity.getProductSaleGuid();
 
         this.createdBy = storeProductEntity.getCreatedBy();
         this.createdDate = storeProductEntity.getCreatedDate();

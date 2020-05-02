@@ -36,4 +36,7 @@ public class CategoryEntity extends AbstractAuditingEntity implements Serializab
     @Size(max = 255)
     @Column(name = "category_image_url")
     private String categoryImageUrl;
+
+    @Column(name = "category_position")
+    private int categoryPosition;
 }

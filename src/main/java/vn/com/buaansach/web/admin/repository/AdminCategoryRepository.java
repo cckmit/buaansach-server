@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import vn.com.buaansach.entity.common.CategoryEntity;
-import vn.com.buaansach.entity.common.ProductEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,9 +21,9 @@ public interface AdminCategoryRepository extends JpaRepository<CategoryEntity, L
             "WHERE bpc.product_guid = :productGuid)", nativeQuery = true)
     List<CategoryEntity> findListCategoryByProductGuid(@Param("productGuid") UUID productGuid);
 
+    @Query("SELECT ce FROM CategoryEntity ce ORDER BY ce.categoryPosition ASC")
+    List<CategoryEntity> findListCategory();
 
-    @Query(value = "SELECT bc.* FROM bas_category bc WHERE bc.guid IN " +
-            "(SELECT bpc.category_guid FROM bas_product_category bpc " +
-            "WHERE bpc.category_guid = :categoryGuid)", nativeQuery = true)
-    List<ProductEntity> findListProductByProductGuid(@Param("categoryGuid") UUID categoryGuid);
+    @Query("SELECT MAX(ce.categoryPosition) FROM CategoryEntity ce")
+    Integer getLastCategoryPosition();
 }

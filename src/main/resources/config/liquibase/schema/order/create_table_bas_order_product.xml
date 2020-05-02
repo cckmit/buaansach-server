@@ -16,6 +16,7 @@
             <column name="order_product_quantity" type="int"/>
             <column name="order_product_price" type="int"/>
             <column name="order_product_discount" type="int"/>
+            <column name="order_product_sale_guid" type="binary(16)"/>
             <column name="order_product_note" type="varchar(255)"/>
             <column name="order_product_status" type="varchar(30)"/>
             <column name="order_product_status_timeline" type="varchar(1000)"/>

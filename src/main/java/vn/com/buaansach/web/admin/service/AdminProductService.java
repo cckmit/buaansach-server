@@ -8,6 +8,7 @@ import vn.com.buaansach.entity.common.CategoryEntity;
 import vn.com.buaansach.entity.common.FileEntity;
 import vn.com.buaansach.entity.common.ProductCategoryEntity;
 import vn.com.buaansach.entity.common.ProductEntity;
+import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
@@ -60,9 +61,12 @@ public class AdminProductService {
         if (adminProductRepository.findOneByProductCode(productEntity.getProductCode()).isPresent()) {
             throw new BadRequestException("Product Code already in use");
         }
+        Integer lastPos = adminProductRepository.getLastProductPosition();
+        int pos = lastPos != null ? lastPos + Constants.POSITION_INCREMENT : Constants.POSITION_INCREMENT - 1;
         UUID productGuid = UUID.randomUUID();
-        saveProductCategory(productGuid, payload.getCategories());
         productEntity.setGuid(productGuid);
+        productEntity.setProductPosition(pos);
+        saveProductCategory(productGuid, payload.getCategories());
         if (image != null) {
             FileEntity fileEntity = fileService.uploadImage(image, Constants.PRODUCT_IMAGE_PATH);
             productEntity.setProductImageUrl(fileEntity.getUrl());
@@ -127,7 +131,7 @@ public class AdminProductService {
     }
 
     public List<ProductEntity> getListProductNotInStore(String storeGuid) {
-        return adminProductRepository.findAllProductNotInStore(UUID.fromString(storeGuid));
+        return adminProductRepository.findAllProductNotInStoreExcept(UUID.fromString(storeGuid), ProductStatus.STOP_TRADING);
     }
 
     @Transactional

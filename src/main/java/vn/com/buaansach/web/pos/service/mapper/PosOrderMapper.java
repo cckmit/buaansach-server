@@ -16,12 +16,12 @@ public class PosOrderMapper {
         entity.setGuid(dto.getGuid());
         entity.setOrderCode(dto.getOrderCode());
         entity.setOrderStatus(dto.getOrderStatus());
+        entity.setOrderNote(dto.getOrderNote());
         entity.setOrderStatusTimeline(dto.getOrderStatusTimeline());
         entity.setOrderCheckinTime(dto.getOrderCheckinTime());
         entity.setCustomerName(dto.getCustomerName());
         entity.setCustomerPhone(dto.getCustomerPhone());
         entity.setSeatGuid(dto.getSeatGuid());
-        entity.setRecreateFromOrderGuid(dto.getRecreateFromOrderGuid());
         return entity;
     }
 }

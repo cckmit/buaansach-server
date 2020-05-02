@@ -15,6 +15,7 @@ public final class Constants {
     public static final String PRODUCT_THUMBNAIL_PATH = "product_thumbnails";
     public static final String CATEGORY_IMAGE_PATH = "category_images";
     public static final String USER_IMAGE_PATH = "user_images";
+    public static final int POSITION_INCREMENT = (int) Math.pow(2, 16);
 
     private Constants() {
     }

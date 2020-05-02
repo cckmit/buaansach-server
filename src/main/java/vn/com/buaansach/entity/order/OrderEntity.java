@@ -35,6 +35,10 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
     @Column(name = "order_status")
     private OrderStatus orderStatus;
 
+    @Size(max = 255)
+    @Column(name = "order_note")
+    private String orderNote;
+
     @Column(name = "order_status_timeline")
     private String orderStatusTimeline;
 
@@ -61,8 +65,5 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
 
     @Column(name = "payment_guid")
     private UUID paymentGuid;
-
-    @Column(name = "recreate_from_order_guid")
-    private UUID recreateFromOrderGuid;
 
 }

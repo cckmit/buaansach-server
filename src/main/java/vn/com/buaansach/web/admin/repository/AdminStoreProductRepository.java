@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.web.admin.service.dto.read.AdminStoreProductDTO;
 
@@ -19,9 +20,9 @@ public interface AdminStoreProductRepository extends JpaRepository<StoreProductE
             "LEFT JOIN vn.com.buaansach.entity.common.ProductEntity product " +
             "ON storeProduct.productGuid = product.guid " +
             "WHERE product.id IS NOT NULL " +
-            "AND product.productStatus <> 'STOP_TRADING' " +
+            "AND product.productStatus <> :productStatus " +
             "AND storeProduct.storeGuid = :storeGuid")
-    List<AdminStoreProductDTO> findListAdminStoreProductDTO(@Param("storeGuid") UUID storeGuid);
+    List<AdminStoreProductDTO> findListAdminStoreProductDTOExcept(@Param("storeGuid") UUID storeGuid, @Param("productStatus") ProductStatus productStatus);
 
 
     Optional<StoreProductEntity> findOneByGuid(UUID storeProductGuid);

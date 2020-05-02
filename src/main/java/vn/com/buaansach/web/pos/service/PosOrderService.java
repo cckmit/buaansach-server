@@ -70,7 +70,6 @@ public class PosOrderService {
         orderEntity.setCustomerName(payload.getCustomerName());
         orderEntity.setCustomerPhone(payload.getCustomerPhone());
         orderEntity.setSeatGuid(payload.getSeatGuid());
-        orderEntity.setRecreateFromOrderGuid(payload.getRecreateFromOrderGuid());
 
         seatEntity.setSeatStatus(SeatStatus.NON_EMPTY);
         seatEntity.setCurrentOrderGuid(orderGuid);

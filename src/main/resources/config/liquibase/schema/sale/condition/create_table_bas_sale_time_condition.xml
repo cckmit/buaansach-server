@@ -4,22 +4,17 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet id="create_table_bas_voucher_code" author="ductv">
-        <createTable tableName="bas_voucher_code">
+    <changeSet id="create_table_bas_sale_time_condition" author="ductv">
+        <createTable tableName="bas_sale_time_condition">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="voucher_code" type="varchar(20)">
-                <constraints unique="true" nullable="false" uniqueConstraintName="ux_voucher_code_code"/>
+            <column name="sale_guid" type="binary(16)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="ux_sale_guid_time_condition"/>
             </column>
-            <column name="voucher_code_usable" type="boolean" defaultValue="true">
-                <constraints nullable="false"/>
-            </column>
-            <column name="voucher_code_usage_count" type="int"/>
-            <column name="customer_phone" type="varchar(20)"/>
-            <column name="voucher_guid" type="binary(16)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="valid_from" type="timestamp"/>
+            <column name="valid_until" type="timestamp"/>
+
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>

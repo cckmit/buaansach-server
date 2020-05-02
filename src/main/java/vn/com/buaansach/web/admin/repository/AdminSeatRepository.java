@@ -13,7 +13,9 @@ import java.util.UUID;
 @Repository
 public interface AdminSeatRepository extends JpaRepository<SeatEntity, Long> {
 
-    @Query(value = "SELECT s.* FROM bas_seat s WHERE s.area_guid IN (SELECT a.guid FROM bas_area a WHERE a.store_guid = :storeGuid)", nativeQuery = true)
+    @Query(value = "SELECT s.* FROM bas_seat s " +
+            "WHERE s.area_guid IN " +
+            "(SELECT a.guid FROM bas_area a WHERE a.store_guid = :storeGuid)", nativeQuery = true)
     List<SeatEntity> findListSeatByStoreGuid(@Param("storeGuid") UUID storeGuid);
 
     Optional<SeatEntity> findOneByGuid(UUID guid);

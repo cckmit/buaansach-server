@@ -26,12 +26,12 @@ public class VoucherEntity extends AbstractAuditingEntity implements Serializabl
     @Column(unique = true)
     private UUID guid;
 
-    @Size(max = 50)
-    @Column(name = "voucher_name", length = 50)
+    @Size(max = 100)
+    @Column(name = "voucher_name", length = 100)
     private String voucherName;
 
-    @Size(max = 255)
-    @Column(name = "voucher_description")
+    @Size(max = 500)
+    @Column(name = "voucher_description", length = 500)
     private String voucherDescription;
 
     @Size(max = 255)

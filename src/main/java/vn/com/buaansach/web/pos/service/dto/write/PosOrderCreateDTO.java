@@ -13,6 +13,4 @@ public class PosOrderCreateDTO {
 
     @Pattern(regexp = Constants.PHONE_REGEX)
     private String customerPhone;
-
-    private UUID recreateFromOrderGuid;
 }

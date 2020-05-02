@@ -4,28 +4,27 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet id="create_table_bas_voucher" author="ductv">
-        <createTable tableName="bas_voucher">
+    <changeSet id="create_table_bas_sale" author="ductv">
+        <createTable tableName="bas_sale">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="guid" type="binary(16)">
-                <constraints unique="true" nullable="false" uniqueConstraintName="ux_voucher_guid"/>
+                <constraints unique="true" nullable="false" uniqueConstraintName="ux_sale_guid"/>
             </column>
-            <column name="voucher_name" type="varchar(100)">
+            <column name="sale_name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="voucher_description" type="varchar(500)"/>
-            <column name="voucher_image_url" type="varchar(255)"/>
-            <column name="voucher_discount" type="int"/>
-            <column name="voucher_discount_type" type="varchar(30)">
+            <column name="sale_description" type="varchar(1000)"/>
+            <column name="sale_image_url" type="varchar(255)"/>
+            <column name="sale_amount" type="int"/>
+            <column name="sale_type" type="varchar(30)">
                 <constraints nullable="false"/>
             </column>
-            <column name="voucher_conditions" type="varchar(500)"/>
-            <column name="voucher_enable" type="boolean" defaultValue="false">
+            <column name="sale_conditions" type="varchar(500)"/>
+            <column name="sale_enable" type="boolean" defaultValue="false">
                 <constraints nullable="false"/>
             </column>
-            <column name="number_voucher_code" type="int"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

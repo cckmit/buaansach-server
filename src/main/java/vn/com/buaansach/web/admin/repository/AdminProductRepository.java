@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import vn.com.buaansach.entity.common.ProductEntity;
+import vn.com.buaansach.entity.enumeration.ProductStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,10 +23,13 @@ public interface AdminProductRepository extends JpaRepository<ProductEntity, Lon
     Page<ProductEntity> findPageProductWithKeyword(Pageable pageable, @Param("search") String search);
 
     @Query("SELECT product FROM ProductEntity product " +
-            "WHERE product.productStatus <> 'STOP_TRADING' " +
+            "WHERE product.productStatus <> :productStatus " +
             "AND product.guid NOT IN (" +
             "SELECT DISTINCT storeProduct.productGuid " +
             "FROM vn.com.buaansach.entity.store.StoreProductEntity storeProduct " +
             "WHERE storeProduct.storeGuid = :storeGuid)")
-    List<ProductEntity> findAllProductNotInStore(UUID storeGuid);
+    List<ProductEntity> findAllProductNotInStoreExcept(@Param("storeGuid") UUID storeGuid, @Param("productStatus") ProductStatus productStatus);
+
+    @Query("SELECT MAX(pe.productPosition) FROM ProductEntity pe")
+    Integer getLastProductPosition();
 }

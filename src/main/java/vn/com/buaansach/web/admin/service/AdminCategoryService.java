@@ -35,7 +35,10 @@ public class AdminCategoryService {
         if (adminCategoryRepository.findOneByCategoryName(categoryEntity.getCategoryName()).isPresent()) {
             throw new BadRequestException("Category Name already in use");
         }
+        Integer lastPos = adminCategoryRepository.getLastCategoryPosition();
+        int pos = lastPos != null ? lastPos + Constants.POSITION_INCREMENT : Constants.POSITION_INCREMENT - 1;
         categoryEntity.setGuid(UUID.randomUUID());
+        categoryEntity.setCategoryPosition(pos);
         if (image != null) {
             FileEntity fileEntity = fileService.uploadImage(image, Constants.CATEGORY_IMAGE_PATH);
             categoryEntity.setCategoryImageUrl(fileEntity.getUrl());
@@ -81,7 +84,7 @@ public class AdminCategoryService {
     }
 
     public List<CategoryEntity> getAllCategory() {
-        return adminCategoryRepository.findAll();
+        return adminCategoryRepository.findListCategory();
     }
 
     @Transactional

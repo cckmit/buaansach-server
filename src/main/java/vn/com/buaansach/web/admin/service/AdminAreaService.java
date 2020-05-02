@@ -1,6 +1,8 @@
 package vn.com.buaansach.web.admin.service;
 
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
+import vn.com.buaansach.entity.enumeration.SeatStatus;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
@@ -35,13 +37,15 @@ public class AdminAreaService {
         List<SeatEntity> listSeat = new ArrayList<>();
         for (int i = 1; i <= numberOfSeats; i++) {
             SeatEntity seatEntity = new SeatEntity();
-            UUID guid = UUID.randomUUID();
-            seatEntity.setGuid(guid);
+            seatEntity.setGuid(UUID.randomUUID());
             if (seatPrefix != null && !seatPrefix.isEmpty()) {
                 seatEntity.setSeatName(seatPrefix.trim() + " " + i);
             } else {
                 seatEntity.setSeatName(String.valueOf(i));
             }
+            seatEntity.setSeatStatus(SeatStatus.EMPTY);
+            seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
+            seatEntity.setCurrentOrderGuid(null);
             seatEntity.setAreaGuid(areaEntity.getGuid());
             listSeat.add(seatEntity);
         }

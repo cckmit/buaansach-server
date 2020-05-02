@@ -10,6 +10,7 @@
     <include file="config/liquibase/schema/order/index.xml"/>
     <include file="config/liquibase/schema/customer/index.xml"/>
     <include file="config/liquibase/schema/voucher/index.xml"/>
+    <include file="config/liquibase/schema/sale/index.xml"/>
 
     <!--Data-->
     <include file="config/liquibase/data/initial_data.xml"/>

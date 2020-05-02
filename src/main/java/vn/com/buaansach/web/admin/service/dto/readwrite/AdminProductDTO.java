@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.common.CategoryEntity;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
+import vn.com.buaansach.entity.enumeration.ProductType;
 import vn.com.buaansach.web.user.service.dto.AuditDTO;
 
 import javax.persistence.EnumType;
@@ -36,11 +37,15 @@ public class AdminProductDTO extends AuditDTO {
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;
 
+    private ProductType productType;
+
     private int productRootPrice;
 
     private int productPrice;
 
-    private int productDiscount;
+    private int productPosition;
+
+    private UUID productSaleGuid;
 
     private List<CategoryEntity> categories;
 
@@ -64,9 +69,11 @@ public class AdminProductDTO extends AuditDTO {
         this.productImageUrl = productEntity.getProductImageUrl();
         this.productThumbnailUrl = productEntity.getProductThumbnailUrl();
         this.productStatus = productEntity.getProductStatus();
+        this.productType = productEntity.getProductType();
         this.productRootPrice = productEntity.getProductRootPrice();
         this.productPrice = productEntity.getProductPrice();
-        this.productDiscount = productEntity.getProductDiscount();
+        this.productPosition = productEntity.getProductPosition();
+        this.productSaleGuid = productEntity.getProductSaleGuid();
 
         this.createdBy = productEntity.getCreatedBy();
         this.createdDate = productEntity.getCreatedDate();

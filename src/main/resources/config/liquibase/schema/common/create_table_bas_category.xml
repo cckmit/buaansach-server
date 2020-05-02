@@ -17,6 +17,7 @@
             </column>
             <column name="category_description" type="varchar(255)"/>
             <column name="category_image_url" type="varchar(255)"/>
+            <column name="category_position" type="int"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

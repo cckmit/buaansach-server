@@ -27,6 +27,9 @@ import java.util.stream.Collectors;
 public class AdminUserDTO extends AuditDTO {
     private UUID guid;
 
+    @Size(max = 20)
+    private String code;
+
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
     private String login;
@@ -66,6 +69,7 @@ public class AdminUserDTO extends AuditDTO {
 
     public AdminUserDTO(UserEntity userEntity) {
         this.guid = userEntity.getGuid();
+        this.code = userEntity.getCode();
         this.login = userEntity.getLogin();
         this.firstName = userEntity.getFirstName();
         this.lastName = userEntity.getLastName();
