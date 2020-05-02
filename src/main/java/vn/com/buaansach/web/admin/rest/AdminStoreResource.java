@@ -16,6 +16,7 @@ import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminStoreService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Secured(AuthoritiesConstants.ADMIN)
 @RestController
@@ -54,6 +55,12 @@ public class AdminStoreResource {
         PageRequest request = PageRequest.of(page - 1, size, sortDirection, sortField);
         log.debug("REST request from user {} to list {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
         return ResponseEntity.ok(adminStoreService.getPageStore(request, search));
+    }
+
+    @GetMapping("/list-all")
+    public ResponseEntity<List<StoreEntity>> getAllStore() {
+        log.debug("REST request from user {} to list all {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);
+        return ResponseEntity.ok(adminStoreService.getAllStore());
     }
 
     @GetMapping("/get/{storeGuid}")

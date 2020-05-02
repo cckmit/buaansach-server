@@ -24,6 +24,6 @@ public class VoucherStoreConditionEntity extends AbstractAuditingEntity implemen
     @Column(name = "voucher_guid", unique = true)
     private UUID voucherGuid;
 
-    @Column(name = "store_guid", unique = true)
+    @Column(name = "store_guid")
     private UUID storeGuid;
 }

@@ -15,7 +15,7 @@
             <column name="area_name" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="area_color" type="varchar(20)">
+            <column name="area_color" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
             <column name="store_guid" type="binary(16)">

@@ -19,6 +19,9 @@ public class AdminAreaDTO extends AuditDTO {
     @Size(min = 1, max = 50)
     private String areaName;
 
+    @Size(min = 1, max = 50)
+    private String areaColor;
+
     private List<SeatEntity> listSeat = new ArrayList<>();
 
     public AdminAreaDTO() {
@@ -27,10 +30,12 @@ public class AdminAreaDTO extends AuditDTO {
     public AdminAreaDTO(AreaEntity entity, List<SeatEntity> listSeat) {
         this.guid = entity.getGuid();
         this.areaName = entity.getAreaName();
-        this.listSeat = listSeat;
+        this.areaColor = entity.getAreaColor();
         this.createdBy = entity.getCreatedBy();
         this.createdDate = entity.getCreatedDate();
         this.lastModifiedBy = entity.getLastModifiedBy();
         this.lastModifiedDate = entity.getLastModifiedDate();
+
+        this.listSeat = listSeat;
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.entity.voucher.VoucherInventoryEntity;
+import vn.com.buaansach.entity.voucher.condition.VoucherStoreConditionEntity;
 import vn.com.buaansach.entity.voucher.condition.VoucherTimeConditionEntity;
 import vn.com.buaansach.entity.voucher.condition.VoucherUsageConditionEntity;
 import vn.com.buaansach.exception.BadRequestException;
@@ -26,14 +27,16 @@ public class AdminVoucherService {
     private final AdminVoucherInventoryRepository adminVoucherInventoryRepository;
     private final AdminVoucherTimeConditionRepository adminVoucherTimeConditionRepository;
     private final AdminVoucherUsageConditionRepository adminVoucherUsageConditionRepository;
+    private final AdminVoucherStoreConditionRepository adminVoucherStoreConditionRepository;
     private final AdminVoucherCodeRepository adminVoucherCodeRepository;
     private final AdminVoucherMapper adminVoucherMapper;
 
-    public AdminVoucherService(AdminVoucherRepository adminVoucherRepository, AdminVoucherInventoryRepository adminVoucherInventoryRepository, AdminVoucherTimeConditionRepository adminVoucherTimeConditionRepository, AdminVoucherUsageConditionRepository adminVoucherUsageConditionRepository, AdminVoucherCodeRepository adminVoucherCodeRepository, AdminVoucherMapper adminVoucherMapper) {
+    public AdminVoucherService(AdminVoucherRepository adminVoucherRepository, AdminVoucherInventoryRepository adminVoucherInventoryRepository, AdminVoucherTimeConditionRepository adminVoucherTimeConditionRepository, AdminVoucherUsageConditionRepository adminVoucherUsageConditionRepository, AdminVoucherStoreConditionRepository adminVoucherStoreConditionRepository, AdminVoucherCodeRepository adminVoucherCodeRepository, AdminVoucherMapper adminVoucherMapper) {
         this.adminVoucherRepository = adminVoucherRepository;
         this.adminVoucherInventoryRepository = adminVoucherInventoryRepository;
         this.adminVoucherTimeConditionRepository = adminVoucherTimeConditionRepository;
         this.adminVoucherUsageConditionRepository = adminVoucherUsageConditionRepository;
+        this.adminVoucherStoreConditionRepository = adminVoucherStoreConditionRepository;
         this.adminVoucherCodeRepository = adminVoucherCodeRepository;
         this.adminVoucherMapper = adminVoucherMapper;
     }
@@ -75,6 +78,8 @@ public class AdminVoucherService {
 
         VoucherTimeConditionEntity timeConditionEntity = payload.getTimeCondition();
         VoucherUsageConditionEntity usageConditionEntity = payload.getUsageCondition();
+        VoucherStoreConditionEntity storeConditionEntity = payload.getStoreCondition();
+
         if (timeConditionEntity != null && timeConditionEntity.getValidFrom() != null) {
             timeConditionEntity.setVoucherGuid(voucherGuid);
             result.setTimeCondition(adminVoucherTimeConditionRepository.save(timeConditionEntity));
@@ -82,6 +87,10 @@ public class AdminVoucherService {
         if (usageConditionEntity != null && usageConditionEntity.getMaxUsage() > 0) {
             usageConditionEntity.setVoucherGuid(voucherGuid);
             result.setUsageCondition(adminVoucherUsageConditionRepository.save(usageConditionEntity));
+        }
+        if (storeConditionEntity != null && storeConditionEntity.getStoreGuid() != null) {
+            storeConditionEntity.setVoucherGuid(voucherGuid);
+            result.setStoreCondition(adminVoucherStoreConditionRepository.save(storeConditionEntity));
         }
         return result;
     }

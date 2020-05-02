@@ -100,4 +100,7 @@ public class AdminStoreService {
         adminStoreRepository.delete(storeEntity);
     }
 
+    public List<StoreEntity> getAllStore() {
+        return adminStoreRepository.findAll();
+    }
 }
