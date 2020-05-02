@@ -2,16 +2,19 @@ package vn.com.buaansach.entity.voucher;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import vn.com.buaansach.entity.AbstractAuditingEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "bas_voucher_code")
 @Data
-public class VoucherCodeEntity implements Serializable {
+public class VoucherCodeEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
