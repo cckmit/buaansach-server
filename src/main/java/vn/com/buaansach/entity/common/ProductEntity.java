@@ -36,6 +36,9 @@ public class ProductEntity extends AbstractAuditingEntity implements Serializabl
     @Column(name = "product_name", length = 100)
     private String productName;
 
+    @Column(name = "product_unit", length = 50)
+    private String productUnit;
+
     @Size(max = 2000)
     @Column(name = "product_description", length = 2000)
     private String productDescription;
