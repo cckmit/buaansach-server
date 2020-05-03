@@ -14,6 +14,7 @@
             </column>
             <column name="order_product_group" type="varchar(20)"/>
             <column name="order_product_quantity" type="int"/>
+            <column name="order_product_root_price" type="int"/>
             <column name="order_product_price" type="int"/>
             <column name="order_product_discount" type="int"/>
             <column name="order_product_sale_guid" type="binary(16)"/>

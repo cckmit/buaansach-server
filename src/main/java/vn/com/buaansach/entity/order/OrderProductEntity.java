@@ -33,6 +33,9 @@ public class OrderProductEntity extends AbstractAuditingEntity implements Serial
     @Column(name = "order_product_quantity")
     private int orderProductQuantity;
 
+    @Column(name = "order_product_root_price")
+    private int orderProductRootPrice;
+
     @Column(name = "order_product_price")
     private int orderProductPrice;
 
