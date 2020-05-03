@@ -30,12 +30,14 @@ public class AdminStoreUserService {
     private final AdminStoreRepository adminStoreRepository;
     private final AdminStoreUserRepository adminStoreUserRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AdminCodeService adminCodeService;
 
-    public AdminStoreUserService(AdminUserRepository adminUserRepository, AdminStoreRepository adminStoreRepository, AdminStoreUserRepository adminStoreUserRepository, PasswordEncoder passwordEncoder) {
+    public AdminStoreUserService(AdminUserRepository adminUserRepository, AdminStoreRepository adminStoreRepository, AdminStoreUserRepository adminStoreUserRepository, PasswordEncoder passwordEncoder, AdminCodeService adminCodeService) {
         this.adminUserRepository = adminUserRepository;
         this.adminStoreRepository = adminStoreRepository;
         this.adminStoreUserRepository = adminStoreUserRepository;
         this.passwordEncoder = passwordEncoder;
+        this.adminCodeService = adminCodeService;
     }
 
     public AdminStoreUserDTO addStoreUser(AdminAddStoreUserDTO request) {
@@ -126,6 +128,7 @@ public class AdminStoreUserService {
             throw new LoginAlreadyUsedException();
         }
         userEntity.setGuid(UUID.randomUUID());
+        userEntity.setCode(adminCodeService.generateCodeForUser());
         userEntity.setLogin(request.getUserLogin());
         userEntity.setPassword(passwordEncoder.encode(request.getPassword()));
         userEntity.setFirstName(request.getFirstName());

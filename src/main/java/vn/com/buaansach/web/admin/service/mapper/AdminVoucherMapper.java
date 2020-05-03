@@ -2,7 +2,7 @@ package vn.com.buaansach.web.admin.service.mapper;
 
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
-import vn.com.buaansach.web.admin.service.dto.AdminVoucherDTO;
+import vn.com.buaansach.web.admin.service.dto.readwrite.AdminVoucherDTO;
 
 @Service
 public class AdminVoucherMapper {

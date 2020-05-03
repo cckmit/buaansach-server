@@ -9,7 +9,7 @@ import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminVoucherService;
-import vn.com.buaansach.web.admin.service.dto.AdminVoucherDTO;
+import vn.com.buaansach.web.admin.service.dto.readwrite.AdminVoucherDTO;
 
 import javax.validation.Valid;
 import java.util.List;

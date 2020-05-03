@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.admin.service.dto;
+package vn.com.buaansach.web.admin.service.dto.readwrite;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

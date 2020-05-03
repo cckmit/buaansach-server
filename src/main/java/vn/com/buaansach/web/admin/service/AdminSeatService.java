@@ -1,6 +1,8 @@
 package vn.com.buaansach.web.admin.service;
 
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
+import vn.com.buaansach.entity.enumeration.SeatStatus;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
@@ -33,6 +35,9 @@ public class AdminSeatService {
         UUID guid = UUID.randomUUID();
         seatEntity.setGuid(guid);
         seatEntity.setSeatName(request.getSeatName());
+        seatEntity.setSeatStatus(SeatStatus.EMPTY);
+        seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
+        seatEntity.setCurrentOrderGuid(null);
         seatEntity.setAreaGuid(request.getAreaGuid());
         return adminSeatRepository.save(seatEntity);
     }

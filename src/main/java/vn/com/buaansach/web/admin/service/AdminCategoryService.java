@@ -35,7 +35,7 @@ public class AdminCategoryService {
         if (adminCategoryRepository.findOneByCategoryName(categoryEntity.getCategoryName()).isPresent()) {
             throw new BadRequestException("Category Name already in use");
         }
-        Integer lastPos = adminCategoryRepository.getLastCategoryPosition();
+        Integer lastPos = adminCategoryRepository.findLastCategoryPosition();
         int pos = lastPos != null ? lastPos + Constants.POSITION_INCREMENT : Constants.POSITION_INCREMENT - 1;
         categoryEntity.setGuid(UUID.randomUUID());
         categoryEntity.setCategoryPosition(pos);

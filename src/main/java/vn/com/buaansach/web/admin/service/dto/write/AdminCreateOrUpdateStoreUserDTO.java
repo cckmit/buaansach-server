@@ -13,9 +13,6 @@ public class AdminCreateOrUpdateStoreUserDTO {
     private UUID guid;
     private UUID storeGuid;
 
-    @Size(max = 20)
-    private String code;
-
     @Size(min = 1, max = 50)
     private String userLogin;
 

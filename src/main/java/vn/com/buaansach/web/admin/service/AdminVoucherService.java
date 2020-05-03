@@ -13,7 +13,7 @@ import vn.com.buaansach.entity.voucher.condition.VoucherUsageConditionEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.web.admin.repository.voucher.*;
-import vn.com.buaansach.web.admin.service.dto.AdminVoucherDTO;
+import vn.com.buaansach.web.admin.service.dto.readwrite.AdminVoucherDTO;
 import vn.com.buaansach.web.admin.service.mapper.AdminVoucherMapper;
 
 import javax.transaction.Transactional;

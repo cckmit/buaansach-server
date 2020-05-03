@@ -17,6 +17,7 @@ public class AdminProductMapper {
         entity.setProductThumbnailUrl(dto.getProductThumbnailUrl());
         entity.setProductStatus(dto.getProductStatus());
         entity.setProductType(dto.getProductType());
+        entity.setProductDisplay(dto.getProductDisplay());
         entity.setProductRootPrice(dto.getProductRootPrice());
         entity.setProductPrice(dto.getProductPrice());
         entity.setProductPosition(dto.getProductPosition());

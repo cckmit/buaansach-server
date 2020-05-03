@@ -27,13 +27,15 @@ public class AdminStoreService {
     private final AdminAreaRepository adminAreaRepository;
     private final AdminStoreUserRepository adminStoreUserRepository;
     private final AdminSeatRepository adminSeatRepository;
+    private final AdminCodeService adminCodeService;
 
-    public AdminStoreService(AdminStoreRepository adminStoreRepository, FileService fileService, AdminAreaRepository adminAreaRepository, AdminStoreUserRepository adminStoreUserRepository, AdminSeatRepository adminSeatRepository) {
+    public AdminStoreService(AdminStoreRepository adminStoreRepository, FileService fileService, AdminAreaRepository adminAreaRepository, AdminStoreUserRepository adminStoreUserRepository, AdminSeatRepository adminSeatRepository, AdminCodeService adminCodeService) {
         this.adminStoreRepository = adminStoreRepository;
         this.fileService = fileService;
         this.adminStoreUserRepository = adminStoreUserRepository;
         this.adminAreaRepository = adminAreaRepository;
         this.adminSeatRepository = adminSeatRepository;
+        this.adminCodeService = adminCodeService;
     }
 
     @Transactional
@@ -42,6 +44,7 @@ public class AdminStoreService {
             throw new BadRequestException("Store Code already in use");
         }
         payload.setGuid(UUID.randomUUID());
+        payload.setStoreCode(adminCodeService.generateCodeForStore());
         if (image != null) {
             FileEntity fileEntity = fileService.uploadImage(image, Constants.STORE_IMAGE_PATH);
             payload.setStoreImageUrl(fileEntity.getUrl());
@@ -54,14 +57,18 @@ public class AdminStoreService {
         StoreEntity currentEntity = adminStoreRepository.findOneByGuid(updateEntity.getGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + updateEntity.getGuid()));
 
-        String updateStoreCode = updateEntity.getStoreCode().toLowerCase();
-        String currentStoreCode = currentEntity.getStoreCode().toLowerCase();
-        /* Change store code, check if code has been used or not */
-        if (!updateStoreCode.equals(currentStoreCode)) {
-            adminStoreRepository.findOneByStoreCode(updateEntity.getStoreCode()).ifPresent(anotherEntity -> {
-                throw new BadRequestException("Store Code already in use");
-            });
-        }
+        /* allow change store code */
+//        String updateStoreCode = updateEntity.getStoreCode().toLowerCase();
+//        String currentStoreCode = currentEntity.getStoreCode().toLowerCase();
+//        /* Change store code, check if code has been used or not */
+//        if (!updateStoreCode.equals(currentStoreCode)) {
+//            adminStoreRepository.findOneByStoreCode(updateEntity.getStoreCode()).ifPresent(anotherEntity -> {
+//                throw new BadRequestException("Store Code already in use");
+//            });
+//        }
+
+        /* do not allow change store code */
+        updateEntity.setStoreCode(currentEntity.getStoreCode());
 
         if (image != null) {
             /* delete current entity's image before update new image */

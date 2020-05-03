@@ -31,5 +31,8 @@ public interface AdminProductRepository extends JpaRepository<ProductEntity, Lon
     List<ProductEntity> findAllProductNotInStoreExcept(@Param("storeGuid") UUID storeGuid, @Param("productStatus") ProductStatus productStatus);
 
     @Query("SELECT MAX(pe.productPosition) FROM ProductEntity pe")
-    Integer getLastProductPosition();
+    Integer findLastProductPosition();
+
+    @Query(value = "SELECT p.id FROM bas_product p ORDER BY p.id DESC LIMIT 1", nativeQuery = true)
+    Long findLastProductId();
 }

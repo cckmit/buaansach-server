@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.common.CategoryEntity;
 import vn.com.buaansach.entity.common.ProductEntity;
+import vn.com.buaansach.entity.enumeration.ProductDisplay;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.enumeration.ProductType;
 import vn.com.buaansach.web.user.service.dto.AuditDTO;
@@ -39,6 +40,8 @@ public class AdminProductDTO extends AuditDTO {
 
     private ProductType productType;
 
+    private ProductDisplay productDisplay;
+
     private int productRootPrice;
 
     private int productPrice;
@@ -70,6 +73,7 @@ public class AdminProductDTO extends AuditDTO {
         this.productThumbnailUrl = productEntity.getProductThumbnailUrl();
         this.productStatus = productEntity.getProductStatus();
         this.productType = productEntity.getProductType();
+        this.productDisplay = productEntity.getProductDisplay();
         this.productRootPrice = productEntity.getProductRootPrice();
         this.productPrice = productEntity.getProductPrice();
         this.productPosition = productEntity.getProductPosition();

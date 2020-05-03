@@ -25,5 +25,5 @@ public interface AdminCategoryRepository extends JpaRepository<CategoryEntity, L
     List<CategoryEntity> findListCategory();
 
     @Query("SELECT MAX(ce.categoryPosition) FROM CategoryEntity ce")
-    Integer getLastCategoryPosition();
+    Integer findLastCategoryPosition();
 }

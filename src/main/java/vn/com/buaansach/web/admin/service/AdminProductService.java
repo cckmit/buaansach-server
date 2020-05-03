@@ -34,14 +34,16 @@ public class AdminProductService {
     private final AdminProductMapper adminProductMapper;
     private final AdminProductCategoryRepository adminProductCategoryRepository;
     private final AdminCategoryRepository adminCategoryRepository;
+    private final AdminCodeService adminCodeService;
 
-    public AdminProductService(AdminProductRepository adminProductRepository, AdminStoreProductRepository adminStoreProductRepository, FileService fileService, AdminProductMapper adminProductMapper, AdminProductCategoryRepository adminProductCategoryRepository, AdminCategoryRepository adminCategoryRepository) {
+    public AdminProductService(AdminProductRepository adminProductRepository, AdminStoreProductRepository adminStoreProductRepository, FileService fileService, AdminProductMapper adminProductMapper, AdminProductCategoryRepository adminProductCategoryRepository, AdminCategoryRepository adminCategoryRepository, AdminCodeService adminCodeService) {
         this.adminProductRepository = adminProductRepository;
         this.adminStoreProductRepository = adminStoreProductRepository;
         this.fileService = fileService;
         this.adminProductMapper = adminProductMapper;
         this.adminProductCategoryRepository = adminProductCategoryRepository;
         this.adminCategoryRepository = adminCategoryRepository;
+        this.adminCodeService = adminCodeService;
     }
 
     private void saveProductCategory(UUID productGuid, List<CategoryEntity> categories) {
@@ -61,10 +63,11 @@ public class AdminProductService {
         if (adminProductRepository.findOneByProductCode(productEntity.getProductCode()).isPresent()) {
             throw new BadRequestException("Product Code already in use");
         }
-        Integer lastPos = adminProductRepository.getLastProductPosition();
+        Integer lastPos = adminProductRepository.findLastProductPosition();
         int pos = lastPos != null ? lastPos + Constants.POSITION_INCREMENT : Constants.POSITION_INCREMENT - 1;
         UUID productGuid = UUID.randomUUID();
         productEntity.setGuid(productGuid);
+        productEntity.setProductCode(adminCodeService.generateCodeForProduct());
         productEntity.setProductPosition(pos);
         saveProductCategory(productGuid, payload.getCategories());
         if (image != null) {
@@ -93,14 +96,18 @@ public class AdminProductService {
         /* Then re-create base on new list */
         saveProductCategory(updateEntity.getGuid(), payload.getCategories());
 
-        String updateProductCode = updateEntity.getProductCode().toLowerCase();
-        String currentProductCode = currentEntity.getProductCode().toLowerCase();
-        /* Change product code, check if code has been used or not */
-        if (!updateProductCode.equals(currentProductCode)) {
-            if (adminProductRepository.findOneByProductCode(updateEntity.getProductCode()).isPresent()) {
-                throw new BadRequestException("Product Code already in use");
-            }
-        }
+        /* allow change product code */
+//        String updateProductCode = updateEntity.getProductCode().toLowerCase();
+//        String currentProductCode = currentEntity.getProductCode().toLowerCase();
+//        /* Change product code, check if code has been used or not */
+//        if (!updateProductCode.equals(currentProductCode)) {
+//            if (adminProductRepository.findOneByProductCode(updateEntity.getProductCode()).isPresent()) {
+//                throw new BadRequestException("Product Code already in use");
+//            }
+//        }
+
+        /* do not allow change product code */
+        updateEntity.setProductCode(currentEntity.getProductCode());
 
         if (image != null) {
             /* if update image */
