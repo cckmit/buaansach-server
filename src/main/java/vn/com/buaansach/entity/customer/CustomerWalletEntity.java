@@ -21,15 +21,12 @@ public class CustomerWalletEntity extends AbstractAuditingEntity implements Seri
     @JsonIgnore
     private Long id;
 
-    @Column(unique = true)
-    private UUID guid;
+    @Column(name = "customer_guid", unique = true)
+    private UUID customerGuid;
 
     @Column(name = "internal_credit")
     private long internalCredit;
 
     @Column(name = "external_credit")
     private long externalCredit;
-
-    @Column(name = "customer_guid")
-    private UUID customerGuid;
 }

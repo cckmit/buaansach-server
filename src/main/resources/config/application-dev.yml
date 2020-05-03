@@ -1,9 +1,6 @@
 logging:
   level:
     vn.com.buaansach: DEBUG
-    org:
-      hibernate:
-        SQL: INFO
 server:
   port: 80
 spring:

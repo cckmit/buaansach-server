@@ -39,10 +39,12 @@ public class PaymentEntity extends AbstractAuditingEntity implements Serializabl
     @Column(name = "payment_status")
     private PaymentStatus paymentStatus = PaymentStatus.PENDING;
 
-    @Column(name = "bank_name")
+    @Size(max = 100)
+    @Column(name = "bank_name", length = 100)
     private String bankName;
 
-    @Column(name = "credit_number")
+    @Size(max = 50)
+    @Column(name = "credit_number", length = 50)
     private String creditNumber;
 
     @Column(name = "total_charge")

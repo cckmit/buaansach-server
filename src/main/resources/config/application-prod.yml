@@ -1,9 +1,6 @@
 logging:
   level:
     vn.com.buaansach: DEBUG
-    org:
-      hibernate:
-        SQL: DEBUG
 server:
   port: 8888
 spring:
@@ -17,7 +14,7 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
     time-zone: UTC
   jpa:
-    show-sql: true
+    show-sql: false
   liquibase:
     change-log: classpath:config/liquibase/master.xml
     drop-first: false

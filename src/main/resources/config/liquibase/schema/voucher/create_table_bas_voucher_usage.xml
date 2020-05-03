@@ -13,6 +13,7 @@
             <column name="used_by" type="varchar(50)"/>
             <column name="used_date" type="timestamp"/>
             <column name="order_guid" type="binary(16)"/>
+            
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
