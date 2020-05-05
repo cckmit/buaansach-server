@@ -15,6 +15,6 @@ public class GuestCategoryService {
     }
 
     public List<CategoryEntity> getListGuestCategoryDTO() {
-        return guestCategoryRepository.findAll();
+        return guestCategoryRepository.findAllCategoryOrderByPosition();
     }
 }
