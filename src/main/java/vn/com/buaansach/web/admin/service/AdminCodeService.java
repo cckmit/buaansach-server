@@ -8,10 +8,11 @@ import vn.com.buaansach.web.admin.repository.AdminUserRepository;
 
 @Service
 public class AdminCodeService {
-    public static final String STORE_CODE_PREFIX = "BCH";
-    public static final String USER_CODE_PREFIX = "BNV";
-    public static final String PRODUCT_CODE_PREFIX = "BSP";
-    public static final int SUFFIX_LENGTH = 5;
+    private static final String STORE_CODE_PREFIX = "BAS";
+    private static final String USER_CODE_PREFIX = "NV";
+    private static final String PRODUCT_CODE_PREFIX = "SP";
+    private static final int LONG_SUFFIX = 5;
+    private static final int SHORT_SUFFIX = 4;
     private final AdminStoreRepository adminStoreRepository;
     private final AdminUserRepository adminUserRepository;
     private final AdminProductRepository adminProductRepository;
@@ -24,20 +25,20 @@ public class AdminCodeService {
 
     public String generateCodeForUser() {
         String lastUserCode = adminUserRepository.findLastUserCode();
-        long lastNumber = lastUserCode == null ? 0L : Long.parseLong(lastUserCode.substring(3));
+        long lastNumber = lastUserCode == null ? 0L : Long.parseLong(lastUserCode.substring(USER_CODE_PREFIX.length()));
         long newNumber = lastNumber + 1L;
-        return USER_CODE_PREFIX + StringUtils.leftPad("" + newNumber, SUFFIX_LENGTH, "0");
+        return USER_CODE_PREFIX + StringUtils.leftPad("" + newNumber, LONG_SUFFIX, "0");
     }
 
     public String generateCodeForStore() {
         Long lastStoreId = adminStoreRepository.findLastStoreId();
         long newNumber = lastStoreId == null ? 1L : lastStoreId + 1L;
-        return STORE_CODE_PREFIX + StringUtils.leftPad("" + newNumber, SUFFIX_LENGTH, "0");
+        return STORE_CODE_PREFIX + StringUtils.leftPad("" + newNumber, SHORT_SUFFIX, "0");
     }
 
     public String generateCodeForProduct() {
         Long lastProductId = adminProductRepository.findLastProductId();
         long newNumber = lastProductId == null ? 1L : lastProductId + 1L;
-        return PRODUCT_CODE_PREFIX + StringUtils.leftPad("" + newNumber, SUFFIX_LENGTH, "0");
+        return PRODUCT_CODE_PREFIX + StringUtils.leftPad("" + newNumber, SHORT_SUFFIX, "0");
     }
 }

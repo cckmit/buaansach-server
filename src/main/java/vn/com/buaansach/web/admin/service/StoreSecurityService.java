@@ -1,23 +1,28 @@
 package vn.com.buaansach.web.admin.service;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.exception.AccessDeniedException;
+import vn.com.buaansach.entity.enumeration.StoreStatus;
 import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
-import vn.com.buaansach.web.admin.repository.AdminStoreUserRepository;
+import vn.com.buaansach.entity.store.StoreEntity;
+import vn.com.buaansach.exception.AccessDeniedException;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
+import vn.com.buaansach.web.admin.repository.AdminStoreRepository;
+import vn.com.buaansach.web.admin.repository.AdminStoreUserRepository;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Service
-public class StoreUserSecurityService {
+public class StoreSecurityService {
     private final AdminStoreUserRepository adminStoreUserRepository;
+    private final AdminStoreRepository adminStoreRepository;
 
-    public StoreUserSecurityService(AdminStoreUserRepository adminStoreUserRepository) {
+    public StoreSecurityService(AdminStoreUserRepository adminStoreUserRepository, AdminStoreRepository adminStoreRepository) {
         this.adminStoreUserRepository = adminStoreUserRepository;
+        this.adminStoreRepository = adminStoreRepository;
     }
 
     private Set<StoreUserRole> getOwnerRole() {
@@ -78,6 +83,15 @@ public class StoreUserSecurityService {
     public void blockAccessIfNotInStore(UUID storeGuid) {
         if (!hasPermission(storeGuid))
             throw new AccessDeniedException();
+    }
+
+    private boolean isClosedOrDeactivated(UUID storeGuid) {
+        StoreEntity storeEntity = adminStoreRepository.findOneByGuid(storeGuid).orElse(null);
+        return storeEntity == null || storeEntity.getStoreStatus().equals(StoreStatus.CLOSED) || !storeEntity.isStoreActivated();
+    }
+
+    public void blockAccessIfStoreIsNotOpenOrDeactivated(UUID storeGuid) {
+        if (isClosedOrDeactivated(storeGuid)) throw new AccessDeniedException();
     }
 
 }

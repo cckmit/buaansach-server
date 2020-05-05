@@ -56,7 +56,7 @@ public class PosOrderProductDTO extends AuditDTO {
     private void assignProperty(OrderProductEntity orderProductEntity) {
         this.guid = orderProductEntity.getGuid();
         this.orderGuid = orderProductEntity.getOrderGuid();
-        this.productGuid = orderProductEntity.getOrderGuid();
+        this.productGuid = orderProductEntity.getProductGuid();
         this.orderProductGroup = orderProductEntity.getOrderProductGroup();
         this.orderProductQuantity = orderProductEntity.getOrderProductQuantity();
         this.orderProductPrice = orderProductEntity.getOrderProductPrice();

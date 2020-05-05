@@ -50,7 +50,7 @@ public class AdminProductResource {
     public ResponseEntity<Page<AdminProductDTO>> getPageProduct(@RequestParam(value = "search", defaultValue = "") String search,
                                                               @RequestParam(value = "page", defaultValue = "1") int page,
                                                               @RequestParam(value = "size", defaultValue = "20") int size,
-                                                              @RequestParam(value = "sortField", defaultValue = "productPosition") String sortField,
+                                                              @RequestParam(value = "sortField", defaultValue = "createdDate") String sortField,
                                                               @RequestParam(value = "sortDirection", defaultValue = "ASC") Sort.Direction sortDirection) {
         PageRequest request = PageRequest.of(page - 1, size, sortDirection, sortField);
         log.debug("REST request from user {} to list {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
