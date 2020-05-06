@@ -12,8 +12,6 @@ import java.util.UUID;
 @Data
 public class PosOrderUpdateDTO {
     private UUID orderGuid;
-    private String customerName;
     @Pattern(regexp = Constants.PHONE_REGEX)
-    private String customerPhone;
     private List<PosOrderProductDTO> listOrderProduct = new ArrayList<>();
 }

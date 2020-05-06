@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
+import vn.com.buaansach.entity.enumeration.OrderType;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -34,6 +35,10 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status")
     private OrderStatus orderStatus;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_type")
+    private OrderType orderType;
 
     @Size(max = 255)
     @Column(name = "order_note")

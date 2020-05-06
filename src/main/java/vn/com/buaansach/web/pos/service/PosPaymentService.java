@@ -16,10 +16,11 @@ public class PosPaymentService {
         this.posPaymentRepository = posPaymentRepository;
     }
 
-    public PaymentEntity makeCashPayment(UUID orderGuid, long totalCharge) {
+    public PaymentEntity makeCashPayment(UUID orderGuid, String note, long totalCharge) {
         PaymentEntity paymentEntity = new PaymentEntity();
         paymentEntity.setGuid(UUID.randomUUID());
         paymentEntity.setOrderGuid(orderGuid);
+        paymentEntity.setPaymentNote(note);
         paymentEntity.setTotalCharge(totalCharge);
         paymentEntity.setPaymentMethod(PaymentMethod.CASH);
         paymentEntity.setPaymentStatus(PaymentStatus.SUCCESSFUL);

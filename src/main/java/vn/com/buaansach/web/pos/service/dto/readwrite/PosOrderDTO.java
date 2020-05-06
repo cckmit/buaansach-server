@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
+import vn.com.buaansach.entity.enumeration.OrderType;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.web.user.service.dto.AuditDTO;
 
@@ -26,6 +27,10 @@ public class PosOrderDTO extends AuditDTO {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+    @Enumerated(EnumType.STRING)
+    private OrderType orderType;
+
+    @Size(max = 255)
     private String orderNote;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -34,14 +39,18 @@ public class PosOrderDTO extends AuditDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Instant orderCheckinTime;
 
-    @Size(max = 100)
-    private String customerName;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private int orderDiscount;
 
-    @Size(max = 12)
+    private UUID orderSaleGuid;
+
+    @Size(max = 20)
+    private String orderVoucherCode;
+
+    @Size(max = 20)
     private String customerPhone;
 
     private UUID seatGuid;
-
 
     /* computed */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -54,11 +63,16 @@ public class PosOrderDTO extends AuditDTO {
         this.guid = orderEntity.getGuid();
         this.orderCode = orderEntity.getOrderCode();
         this.orderStatus = orderEntity.getOrderStatus();
+        this.orderType = orderEntity.getOrderType();
         this.orderNote = orderEntity.getOrderNote();
         this.orderStatusTimeline = orderEntity.getOrderStatusTimeline();
         this.orderCheckinTime = orderEntity.getOrderCheckinTime();
+        this.orderDiscount = orderEntity.getOrderDiscount();
+        this.orderSaleGuid = orderEntity.getOrderSaleGuid();
+        this.orderVoucherCode = orderEntity.getOrderVoucherCode();
         this.customerPhone = orderEntity.getCustomerPhone();
         this.seatGuid = orderEntity.getSeatGuid();
+
         this.createdBy = orderEntity.getCreatedBy();
         this.createdDate = orderEntity.getCreatedDate();
         this.lastModifiedBy = orderEntity.getLastModifiedBy();

@@ -1,9 +1,7 @@
 package vn.com.buaansach.web.pos.service;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.enumeration.OrderProductStatus;
-import vn.com.buaansach.entity.enumeration.OrderStatus;
-import vn.com.buaansach.entity.enumeration.SeatStatus;
+import vn.com.buaansach.entity.enumeration.*;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.order.PaymentEntity;
@@ -36,8 +34,10 @@ public class PosOrderService {
     private final StoreSecurityService storeSecurityService;
     private final PosOrderProductService posOrderProductService;
     private final PosOrderProductRepository posOrderProductRepository;
+    private final PosCustomerService posCustomerService;
+    private final PosSeatService posSeatService;
 
-    public PosOrderService(PosOrderRepository posOrderRepository, PosSeatRepository posSeatRepository, PosStoreRepository posStoreRepository, PosPaymentService posPaymentService, StoreSecurityService storeSecurityService, PosOrderProductService posOrderProductService, PosOrderProductRepository posOrderProductRepository) {
+    public PosOrderService(PosOrderRepository posOrderRepository, PosSeatRepository posSeatRepository, PosStoreRepository posStoreRepository, PosPaymentService posPaymentService, StoreSecurityService storeSecurityService, PosOrderProductService posOrderProductService, PosOrderProductRepository posOrderProductRepository, PosCustomerService posCustomerService, PosSeatService posSeatService) {
         this.posOrderRepository = posOrderRepository;
         this.posSeatRepository = posSeatRepository;
         this.posStoreRepository = posStoreRepository;
@@ -45,6 +45,8 @@ public class PosOrderService {
         this.storeSecurityService = storeSecurityService;
         this.posOrderProductService = posOrderProductService;
         this.posOrderProductRepository = posOrderProductRepository;
+        this.posCustomerService = posCustomerService;
+        this.posSeatService = posSeatService;
     }
 
     @Transactional
@@ -53,28 +55,37 @@ public class PosOrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found with guid: " + payload.getSeatGuid()));
 
         if (seatEntity.getSeatStatus().equals(SeatStatus.NON_EMPTY))
-            throw new BadRequestException("Please complete last order on this seat first");
+            throw new BadRequestException("Complete last order on this seat first");
 
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(payload.getSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + payload.getSeatGuid()));
 
         storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
 
+        /* create customer if not exist */
+        posCustomerService.createCustomerIfNotExist(payload.getCustomerPhone());
+
         OrderEntity orderEntity = new OrderEntity();
         UUID orderGuid = UUID.randomUUID();
         orderEntity.setGuid(orderGuid);
         orderEntity.setOrderCode(OrderCodeGenerator.generate());
         orderEntity.setOrderStatus(OrderStatus.RECEIVED);
+        orderEntity.setOrderType(OrderType.IN_STORE);
         orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderStatus.RECEIVED, currentUser));
         orderEntity.setOrderCheckinTime(Instant.now());
+        orderEntity.setOrderDiscount(0);
+        orderEntity.setOrderSaleGuid(null);
+        orderEntity.setOrderVoucherCode(null);
         orderEntity.setCustomerPhone(payload.getCustomerPhone());
         orderEntity.setSeatGuid(payload.getSeatGuid());
 
         seatEntity.setSeatStatus(SeatStatus.NON_EMPTY);
+        seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
         seatEntity.setCurrentOrderGuid(orderGuid);
+        posSeatRepository.save(seatEntity);
+
         return new PosOrderDTO(posOrderRepository.save(orderEntity));
     }
-
 
     @Transactional
     public PosOrderDTO updateOrder(PosOrderUpdateDTO payload, String currentUser) {
@@ -86,17 +97,19 @@ public class PosOrderService {
 
         storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
 
-        orderEntity.setCustomerPhone(payload.getCustomerPhone());
-        posOrderRepository.save(orderEntity);
-
         posOrderProductService.saveList(payload.getOrderGuid(), payload.getListOrderProduct(), currentUser);
+        /* if has new order product => set seat service status to UN_FINISHED */
+        if (payload.getListOrderProduct().size() > 0) {
+            posSeatService.makeSeatServiceUnfinished(orderEntity.getSeatGuid());
+        }
+
         PosOrderDTO result = new PosOrderDTO(orderEntity);
         result.setListOrderProduct(posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(payload.getOrderGuid()));
         return result;
     }
 
-    public PosOrderDTO getOrderBySeatGuid(String seatGuid) {
-        OrderEntity orderEntity = posOrderRepository.findOneBySeatGuid(UUID.fromString(seatGuid))
+    public PosOrderDTO getSeatCurrentOrder(String seatGuid) {
+        OrderEntity orderEntity = posOrderRepository.findSeatCurrentOrder(UUID.fromString(seatGuid))
                 .orElse(new OrderEntity());
         PosOrderDTO result = new PosOrderDTO(orderEntity);
         if (orderEntity.getGuid() != null) {
@@ -136,8 +149,12 @@ public class PosOrderService {
                 String timeline = TimelineUtil.appendOrderProductStatus(orderProductEntity.getOrderProductStatusTimeline(), OrderProductStatus.PREPARING, currentUser);
                 orderProductEntity.setOrderProductStatusTimeline(timeline);
             }).collect(Collectors.toList());
-
             posOrderProductRepository.saveAll(orderProductEntityList);
+
+            if (orderProductEntityList.size() > 0) {
+                posSeatService.makeSeatServiceUnfinished(orderEntity.getSeatGuid());
+            }
+
             posOrderRepository.save(orderEntity);
         }
     }
@@ -155,12 +172,9 @@ public class PosOrderService {
 
         storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
 
-//        List<OrderProductEntity> orderProductEntityList = posOrderProductRepository.findByOrderGuid(orderEntity.getGuid());
-//        long totalCharge = orderProductEntityList.stream().mapToLong(OrderProductEntity::getOrderProductPrice).sum();
-
         switch (payload.getPaymentMethod()) {
             case CASH:
-                PaymentEntity paymentEntity = posPaymentService.makeCashPayment(payload.getOrderGuid(), payload.getTotalCharge());
+                PaymentEntity paymentEntity = posPaymentService.makeCashPayment(payload.getOrderGuid(), payload.getPaymentNote(), payload.getTotalCharge());
                 orderEntity.setPaymentGuid(paymentEntity.getGuid());
                 orderEntity.setOrderStatus(OrderStatus.PURCHASED);
                 orderEntity.setOrderCheckoutTime(Instant.now());
@@ -170,9 +184,7 @@ public class PosOrderService {
                 orderEntity.setOrderStatusTimeline(newTimeline);
 
                 /* free current seat */
-                seatEntity.setSeatStatus(SeatStatus.EMPTY);
-                seatEntity.setCurrentOrderGuid(null);
-                posSeatRepository.save(seatEntity);
+                posSeatService.resetSeat(seatEntity);
 
                 posOrderRepository.save(orderEntity);
                 break;
@@ -188,8 +200,6 @@ public class PosOrderService {
 
     @Transactional
     public void cancelOrder(PosOrderCancelDTO payload, String currentUser) {
-        if (payload.getCancelReason().isEmpty()) throw new BadRequestException("Cancel Reason is required");
-
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + payload.getOrderGuid()));
 
@@ -205,17 +215,22 @@ public class PosOrderService {
                 OrderStatus.CANCELLED_BY_EMPLOYEE, currentUser);
         orderEntity.setOrderStatusTimeline(newTimeline);
 
-        posSeatRepository.findOneByGuid(orderEntity.getSeatGuid()).ifPresent(seatEntity -> {
-            seatEntity.setSeatStatus(SeatStatus.EMPTY);
-            seatEntity.setCurrentOrderGuid(null);
-            posSeatRepository.save(seatEntity);
-        });
+        posSeatService.resetSeat(orderEntity.getSeatGuid());
         posOrderRepository.save(orderEntity);
     }
 
     @Transactional
     public void changeSeat(PosOrderSeatChangeDTO payload, String currentUser) {
-        storeSecurityService.blockAccessIfNotInStore(payload.getStoreGuid());
+        StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(payload.getCurrentSeatGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + payload.getCurrentSeatGuid()));
+
+        StoreEntity storeNewSeat = posStoreRepository.findOneBySeatGuid(payload.getNewSeatGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + payload.getNewSeatGuid()));
+
+        if (!storeEntity.getGuid().equals(storeNewSeat.getGuid()))
+            throw new BadRequestException("All seat must in same store");
+
+        storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
 
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + payload.getOrderGuid()));
@@ -227,23 +242,28 @@ public class PosOrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found with guid: " + payload.getNewSeatGuid()));
 
         if (currentSeat.getCurrentOrderGuid() == null || !currentSeat.getCurrentOrderGuid().equals(orderEntity.getGuid()))
-            throw new BadRequestException("Order guid not match current seat guid: " + payload.getCurrentSeatGuid());
+            throw new BadRequestException("Order guid does not match current seat guid: " + payload.getCurrentSeatGuid());
 
         if (newSeat.getSeatStatus().equals(SeatStatus.NON_EMPTY))
-            throw new BadRequestException("New seat is not empty: " + payload.getNewSeatGuid());
+            throw new BadRequestException("New seat is already in use: " + payload.getNewSeatGuid());
 
-        String newTimeline = TimelineUtil.appendOrderStatus(orderEntity.getOrderStatusTimeline(), "CHANGE_SEAT", currentUser);
+        String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(), "CHANGE_SEAT", currentUser);
         orderEntity.setOrderStatusTimeline(newTimeline);
         orderEntity.setSeatGuid(newSeat.getGuid());
 
-        currentSeat.setSeatStatus(SeatStatus.EMPTY);
-        currentSeat.setCurrentOrderGuid(null);
 
+        /* update new seat status, service status */
         newSeat.setSeatStatus(SeatStatus.NON_EMPTY);
+        newSeat.setSeatServiceStatus(currentSeat.getSeatServiceStatus());
         newSeat.setCurrentOrderGuid(orderEntity.getGuid());
-
-        posSeatRepository.save(currentSeat);
         posSeatRepository.save(newSeat);
+
+        posSeatService.resetSeat(currentSeat);
+
         posOrderRepository.save(orderEntity);
+    }
+
+    public void changeCustomerPhone() {
+
     }
 }

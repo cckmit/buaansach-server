@@ -16,6 +16,7 @@
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_order_code"/>
             </column>
             <column name="order_status" type="varchar(30)"/>
+            <column name="order_type" type="varchar(30)"/>
             <column name="order_note" type="varchar(255)"/>
             <column name="order_status_timeline" type="varchar(1000)"/>
             <column name="order_checkin_time" type="timestamp"/>

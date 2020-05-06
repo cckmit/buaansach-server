@@ -42,14 +42,14 @@ public class PosOrderResource {
         return ResponseEntity.ok(posOrderService.getOrder(orderGuid));
     }
 
-    @GetMapping("/get-by-seat/{seatGuid}")
-    public ResponseEntity<PosOrderDTO> getOrderBySeatGuid(@PathVariable String seatGuid) {
+    @GetMapping("/get-seat-order/{seatGuid}")
+    public ResponseEntity<PosOrderDTO> getSeatCurrentOrder(@PathVariable String seatGuid) {
         log.debug("REST request from user {} to get {} by seat : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, seatGuid);
-        return ResponseEntity.ok(posOrderService.getOrderBySeatGuid(seatGuid));
+        return ResponseEntity.ok(posOrderService.getSeatCurrentOrder(seatGuid));
     }
 
     @PutMapping("/change-seat")
-    public ResponseEntity<Void> changeSeat(@RequestBody PosOrderSeatChangeDTO payload) {
+    public ResponseEntity<Void> changeSeat(@Valid @RequestBody PosOrderSeatChangeDTO payload) {
         String currentUser = SecurityUtils.getCurrentUserLogin();
         log.debug("REST request from user {} to change seat for {} : {}", currentUser, ENTITY_NAME, payload);
         posOrderService.changeSeat(payload, currentUser);
@@ -65,7 +65,7 @@ public class PosOrderResource {
     }
 
     @PutMapping("/purchase")
-    public ResponseEntity<Void> purchaseOrder(@RequestBody PosOrderPurchaseDTO payload) {
+    public ResponseEntity<Void> purchaseOrder(@Valid @RequestBody PosOrderPurchaseDTO payload) {
         String currentUser = SecurityUtils.getCurrentUserLogin();
         log.debug("REST request from user {} to purchase {} : {}", currentUser, ENTITY_NAME, payload);
         posOrderService.purchaseOrder(payload, currentUser);

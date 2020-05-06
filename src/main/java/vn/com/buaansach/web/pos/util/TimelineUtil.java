@@ -24,7 +24,7 @@ public final class TimelineUtil {
         return newTimeline.length() > 1000 ? currentTimeline : newTimeline;
     }
 
-    public static String appendOrderStatus(String currentTimeline, String newStatus, String actor) {
+    public static String appendCustomOrderStatus(String currentTimeline, String newStatus, String actor) {
         String newTimeline = currentTimeline + ";" + newStatus + "@" + actor + "@" + Instant.now().toString();
         return newTimeline.length() > 1000 ? currentTimeline : newTimeline;
     }
