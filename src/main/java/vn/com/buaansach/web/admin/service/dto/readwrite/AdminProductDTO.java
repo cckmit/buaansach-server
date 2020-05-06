@@ -26,6 +26,9 @@ public class AdminProductDTO extends AuditDTO {
     @Size(min = 1, max = 100)
     private String productName;
 
+    @Size(max = 50)
+    private String productUnit;
+
     @Size(max = 2000)
     private String productDescription;
 
@@ -45,6 +48,8 @@ public class AdminProductDTO extends AuditDTO {
     private int productRootPrice;
 
     private int productPrice;
+
+    private int productDiscount;
 
     private int productPosition;
 
@@ -68,6 +73,7 @@ public class AdminProductDTO extends AuditDTO {
         this.guid = productEntity.getGuid();
         this.productCode = productEntity.getProductCode();
         this.productName = productEntity.getProductName();
+        this.productUnit = productEntity.getProductUnit();
         this.productDescription = productEntity.getProductDescription();
         this.productImageUrl = productEntity.getProductImageUrl();
         this.productThumbnailUrl = productEntity.getProductThumbnailUrl();
@@ -76,6 +82,7 @@ public class AdminProductDTO extends AuditDTO {
         this.productDisplay = productEntity.getProductDisplay();
         this.productRootPrice = productEntity.getProductRootPrice();
         this.productPrice = productEntity.getProductPrice();
+        this.productDiscount = productEntity.getProductDiscount();
         this.productPosition = productEntity.getProductPosition();
         this.productSaleGuid = productEntity.getProductSaleGuid();
 

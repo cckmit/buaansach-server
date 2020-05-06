@@ -22,13 +22,11 @@ import java.util.stream.Collectors;
 public class AdminAreaService {
     private final AdminAreaRepository adminAreaRepository;
     private final AdminStoreRepository adminStoreRepository;
-    private final AdminSeatService adminSeatService;
     private final AdminSeatRepository adminSeatRepository;
 
-    public AdminAreaService(AdminAreaRepository adminAreaRepository, AdminStoreRepository adminStoreRepository, AdminSeatService adminSeatService, AdminSeatRepository adminSeatRepository) {
+    public AdminAreaService(AdminAreaRepository adminAreaRepository, AdminStoreRepository adminStoreRepository, AdminSeatRepository adminSeatRepository) {
         this.adminAreaRepository = adminAreaRepository;
         this.adminStoreRepository = adminStoreRepository;
-        this.adminSeatService = adminSeatService;
         this.adminSeatRepository = adminSeatRepository;
     }
 

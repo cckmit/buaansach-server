@@ -12,6 +12,7 @@ public class AdminProductMapper {
         entity.setGuid(dto.getGuid());
         entity.setProductCode(dto.getProductCode());
         entity.setProductName(dto.getProductName());
+        entity.setProductUnit(dto.getProductUnit());
         entity.setProductDescription(dto.getProductDescription());
         entity.setProductImageUrl(dto.getProductImageUrl());
         entity.setProductThumbnailUrl(dto.getProductThumbnailUrl());
@@ -20,6 +21,7 @@ public class AdminProductMapper {
         entity.setProductDisplay(dto.getProductDisplay());
         entity.setProductRootPrice(dto.getProductRootPrice());
         entity.setProductPrice(dto.getProductPrice());
+        entity.setProductDiscount(dto.getProductDiscount());
         entity.setProductPosition(dto.getProductPosition());
         entity.setProductSaleGuid(dto.getProductSaleGuid());
         return entity;

@@ -7,7 +7,6 @@ import java.util.UUID;
 
 @Data
 public class AdminCreateAreaDTO {
-    /*used for admin and manager*/
     private UUID storeGuid;
     @Size(max = 50)
     private String areaName;
