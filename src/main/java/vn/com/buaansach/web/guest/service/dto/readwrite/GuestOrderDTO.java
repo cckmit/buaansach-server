@@ -32,7 +32,6 @@ public class GuestOrderDTO {
         this.orderCode = orderEntity.getOrderCode();
         this.orderStatus = orderEntity.getOrderStatus();
         this.orderCheckinTime = orderEntity.getOrderCheckinTime();
-        this.customerName = orderEntity.getCustomerName();
         this.customerPhone = orderEntity.getCustomerPhone();
         this.seatGuid = orderEntity.getSeatGuid();
     }

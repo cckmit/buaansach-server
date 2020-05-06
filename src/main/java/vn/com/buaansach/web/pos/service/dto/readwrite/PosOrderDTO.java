@@ -57,7 +57,6 @@ public class PosOrderDTO extends AuditDTO {
         this.orderNote = orderEntity.getOrderNote();
         this.orderStatusTimeline = orderEntity.getOrderStatusTimeline();
         this.orderCheckinTime = orderEntity.getOrderCheckinTime();
-        this.customerName = orderEntity.getCustomerName();
         this.customerPhone = orderEntity.getCustomerPhone();
         this.seatGuid = orderEntity.getSeatGuid();
         this.createdBy = orderEntity.getCreatedBy();

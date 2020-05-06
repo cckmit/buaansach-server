@@ -52,11 +52,16 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
     @Column(name = "order_cancel_reason")
     private String orderCancelReason;
 
-    @Size(max = 100)
-    @Column(name = "customer_name", length = 100)
-    private String customerName;
+    @Column(name = "order_discount")
+    private int orderDiscount;
 
-    @Size(min = 10, max = 20)
+    @Column(name = "order_sale_guid")
+    private UUID orderSaleGuid;
+
+    @Column(name = "order_voucher_code")
+    private String orderVoucherCode;
+
+    @Size(max = 20)
     @Column(name = "customer_phone", length = 20)
     private String customerPhone;
 
@@ -65,5 +70,4 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
 
     @Column(name = "payment_guid")
     private UUID paymentGuid;
-
 }

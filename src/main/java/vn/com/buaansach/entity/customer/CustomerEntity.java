@@ -46,13 +46,9 @@ public class CustomerEntity extends AbstractAuditingEntity implements Serializab
     @Column(name = "customer_activated")
     private boolean customerActivated = true;
 
-    @Size(max = 50)
-    @Column(name = "customer_first_name", length = 50)
-    private String customerFirstName;
-
-    @Size(max = 50)
-    @Column(name = "customer_last_name", length = 50)
-    private String customerLastName;
+    @Size(max = 100)
+    @Column(name = "customer_name", length = 100)
+    private String customerName;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "customer_gender")

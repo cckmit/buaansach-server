@@ -3,7 +3,6 @@ package vn.com.buaansach.web.admin.service.dto.read;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.common.ProductEntity;
-import vn.com.buaansach.entity.enumeration.ProductDisplay;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.enumeration.ProductType;
 import vn.com.buaansach.entity.enumeration.StoreProductStatus;
@@ -21,9 +20,14 @@ public class AdminStoreProductDTO extends AuditDTO {
     private UUID productGuid;
 
     private String productName;
+    private String productUnit;
+    private String productDescription;
+    private String productImageUrl;
+    private String productThumbnailUrl;
     private ProductStatus productStatus;
     private ProductType productType;
     private int productPrice;
+    private int productDiscount;
     private int productPosition;
     private UUID productSaleGuid;
 
@@ -37,9 +41,14 @@ public class AdminStoreProductDTO extends AuditDTO {
         this.productGuid = storeProductEntity.getStoreGuid();
 
         this.productName = productEntity.getProductName();
+        this.productUnit = productEntity.getProductUnit();
+        this.productDescription = productEntity.getProductDescription();
+        this.productImageUrl = productEntity.getProductImageUrl();
+        this.productThumbnailUrl = productEntity.getProductThumbnailUrl();
         this.productStatus = productEntity.getProductStatus();
         this.productType = productEntity.getProductType();
         this.productPrice = productEntity.getProductPrice();
+        this.productDiscount = productEntity.getProductDiscount();
         this.productPosition = productEntity.getProductPosition();
         this.productSaleGuid = productEntity.getProductSaleGuid();
 

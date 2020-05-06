@@ -39,12 +39,6 @@ public class OrderProductEntity extends AbstractAuditingEntity implements Serial
     @Column(name = "order_product_price")
     private int orderProductPrice;
 
-    @Column(name = "order_product_discount")
-    private int orderProductDiscount;
-
-    @Column(name = "order_product_sale_guid")
-    private UUID orderProductSaleGuid;
-
     @Size(max = 255)
     @Column(name = "order_product_note")
     private String orderProductNote;
@@ -60,6 +54,15 @@ public class OrderProductEntity extends AbstractAuditingEntity implements Serial
     @Size(max = 255)
     @Column(name = "order_product_cancel_reason")
     private String orderProductCancelReason;
+
+    @Column(name = "order_product_discount")
+    private int orderProductDiscount;
+
+    @Column(name = "order_product_sale_guid")
+    private UUID orderProductSaleGuid;
+
+    @Column(name = "order_product_voucher_code")
+    private String orderProductVoucherCode;
 
     @Column(name = "order_guid")
     private UUID orderGuid;

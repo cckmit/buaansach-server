@@ -67,7 +67,6 @@ public class PosOrderService {
         orderEntity.setOrderStatus(OrderStatus.RECEIVED);
         orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderStatus.RECEIVED, currentUser));
         orderEntity.setOrderCheckinTime(Instant.now());
-        orderEntity.setCustomerName(payload.getCustomerName());
         orderEntity.setCustomerPhone(payload.getCustomerPhone());
         orderEntity.setSeatGuid(payload.getSeatGuid());
 
@@ -87,7 +86,6 @@ public class PosOrderService {
 
         storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
 
-        orderEntity.setCustomerName(payload.getCustomerName());
         orderEntity.setCustomerPhone(payload.getCustomerPhone());
         posOrderRepository.save(orderEntity);
 

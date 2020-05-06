@@ -33,6 +33,7 @@
             </column>
             <column name="product_root_price" type="int"/>
             <column name="product_price" type="int"/>
+            <column name="product_discount" type="int"/>
             <column name="product_position" type="int"/>
             <column name="product_sale_guid" type="binary(16)"/>
 

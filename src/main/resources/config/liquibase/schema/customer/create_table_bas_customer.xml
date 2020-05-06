@@ -27,8 +27,7 @@
             <column name="customer_activated" type="boolean">
                 <constraints nullable="false"/>
             </column>
-            <column name="customer_first_name" type="varchar(50)"/>
-            <column name="customer_last_name" type="varchar(50)"/>
+            <column name="customer_name" type="varchar(100)"/>
             <column name="customer_gender" type="varchar(20)"/>
             <column name="customer_birthday" type="timestamp"/>
             <column name="customer_address" type="varchar(255)"/>

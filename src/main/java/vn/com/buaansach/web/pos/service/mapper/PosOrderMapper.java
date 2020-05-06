@@ -19,7 +19,6 @@ public class PosOrderMapper {
         entity.setOrderNote(dto.getOrderNote());
         entity.setOrderStatusTimeline(dto.getOrderStatusTimeline());
         entity.setOrderCheckinTime(dto.getOrderCheckinTime());
-        entity.setCustomerName(dto.getCustomerName());
         entity.setCustomerPhone(dto.getCustomerPhone());
         entity.setSeatGuid(dto.getSeatGuid());
         return entity;

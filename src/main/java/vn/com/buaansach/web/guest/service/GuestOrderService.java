@@ -78,7 +78,6 @@ public class GuestOrderService {
         orderEntity.setOrderStatus(OrderStatus.CREATED);
         orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderStatus.CREATED));
         orderEntity.setOrderCheckinTime(Instant.now());
-        orderEntity.setCustomerName(payload.getCustomerName());
         orderEntity.setCustomerPhone(payload.getCustomerPhone());
         orderEntity.setSeatGuid(payload.getSeatGuid());
 
