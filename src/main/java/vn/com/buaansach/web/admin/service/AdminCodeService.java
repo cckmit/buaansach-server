@@ -11,9 +11,9 @@ public class AdminCodeService {
     private static final String STORE_CODE_PREFIX = "BAS";
     private static final String USER_CODE_PREFIX = "NV";
     private static final String PRODUCT_CODE_PREFIX = "SP";
-    private static final int LONG_SUFFIX = 5;
-    private static final int MEDIUM_SUFFIX = 4;
-    private static final int SHORT_SUFFIX = 3;
+    private static final int STORE_CODE_NUMBER_LENGTH = 3;
+    private static final int USER_CODE_NUMBER_LENGTH = 4;
+    private static final int PRODUCT_CODE_NUMBER_LENGTH = 4;
     private final AdminStoreRepository adminStoreRepository;
     private final AdminUserRepository adminUserRepository;
     private final AdminProductRepository adminProductRepository;
@@ -28,18 +28,20 @@ public class AdminCodeService {
         String lastUserCode = adminUserRepository.findLastUserCode();
         long lastNumber = lastUserCode == null ? 0L : Long.parseLong(lastUserCode.substring(USER_CODE_PREFIX.length()));
         long newNumber = lastNumber + 1L;
-        return USER_CODE_PREFIX + StringUtils.leftPad("" + newNumber, LONG_SUFFIX, "0");
+        return USER_CODE_PREFIX + StringUtils.leftPad("" + newNumber, USER_CODE_NUMBER_LENGTH, "0");
     }
 
     public String generateCodeForStore() {
-        Long lastStoreId = adminStoreRepository.findLastStoreId();
-        long newNumber = lastStoreId == null ? 1L : lastStoreId + 1L;
-        return STORE_CODE_PREFIX + StringUtils.leftPad("" + newNumber, SHORT_SUFFIX, "0");
+        String lastCode = adminStoreRepository.findLastStoreCode();
+        long lastNumber = lastCode == null ? 0L : Long.parseLong(lastCode.substring(STORE_CODE_PREFIX.length()));
+        long newNumber = lastNumber + 1L;
+        return STORE_CODE_PREFIX + StringUtils.leftPad("" + newNumber, STORE_CODE_NUMBER_LENGTH, "0");
     }
 
     public String generateCodeForProduct() {
-        Long lastProductId = adminProductRepository.findLastProductId();
-        long newNumber = lastProductId == null ? 1L : lastProductId + 1L;
-        return PRODUCT_CODE_PREFIX + StringUtils.leftPad("" + newNumber, MEDIUM_SUFFIX, "0");
+        String lastCode = adminProductRepository.findLastProductCode();
+        long lastNumber = lastCode == null ? 0L : Long.parseLong(lastCode.substring(PRODUCT_CODE_PREFIX.length()));
+        long newNumber = lastNumber + 1L;
+        return PRODUCT_CODE_PREFIX + StringUtils.leftPad("" + newNumber, PRODUCT_CODE_NUMBER_LENGTH, "0");
     }
 }

@@ -33,6 +33,6 @@ public interface AdminProductRepository extends JpaRepository<ProductEntity, Lon
     @Query("SELECT MAX(pe.productPosition) FROM ProductEntity pe")
     Integer findLastProductPosition();
 
-    @Query(value = "SELECT p.id FROM bas_product p ORDER BY p.id DESC LIMIT 1", nativeQuery = true)
-    Long findLastProductId();
+    @Query(value = "SELECT p.product_code FROM bas_product p ORDER BY p.id DESC LIMIT 1", nativeQuery = true)
+    String findLastProductCode();
 }

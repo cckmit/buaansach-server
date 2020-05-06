@@ -20,6 +20,6 @@ public interface AdminStoreRepository extends JpaRepository<StoreEntity, Long> {
 
     Optional<StoreEntity> findOneByStoreCode(String storeCode);
 
-    @Query(value = "SELECT s.id FROM bas_store s ORDER BY s.id DESC LIMIT 1", nativeQuery = true)
-    Long findLastStoreId();
+    @Query(value = "SELECT s.store_code FROM bas_store s ORDER BY s.id DESC LIMIT 1", nativeQuery = true)
+    String findLastStoreCode();
 }
