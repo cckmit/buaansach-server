@@ -11,11 +11,13 @@ public class PosCategoryDTO {
     private String categoryName;
     private String categoryDescription;
     private String categoryImageUrl;
+    private int categoryPosition;
 
     public PosCategoryDTO(CategoryEntity categoryEntity) {
         this.guid = categoryEntity.getGuid();
         this.categoryName = categoryEntity.getCategoryName();
         this.categoryDescription = categoryEntity.getCategoryDescription();
         this.categoryImageUrl = categoryEntity.getCategoryImageUrl();
+        this.categoryPosition = categoryEntity.getCategoryPosition();
     }
 }

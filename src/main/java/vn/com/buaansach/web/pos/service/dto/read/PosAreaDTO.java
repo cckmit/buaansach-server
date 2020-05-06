@@ -11,6 +11,7 @@ import java.util.UUID;
 public class PosAreaDTO {
     private UUID guid;
     private String areaName;
+    private String areaColor;
     private List<PosSeatDTO> listSeat = new ArrayList<>();
 
     public PosAreaDTO() {
@@ -19,11 +20,13 @@ public class PosAreaDTO {
     public PosAreaDTO(AreaEntity areaEntity) {
         this.guid = areaEntity.getGuid();
         this.areaName = areaEntity.getAreaName();
+        this.areaColor = areaEntity.getAreaColor();
     }
 
     public PosAreaDTO(AreaEntity areaEntity, List<PosSeatDTO> listSeat) {
         this.guid = areaEntity.getGuid();
         this.areaName = areaEntity.getAreaName();
+        this.areaColor = areaEntity.getAreaColor();
         this.listSeat = listSeat;
     }
 }
