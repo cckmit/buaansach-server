@@ -52,6 +52,10 @@ public class StoreSecurityService {
         /* if admin, just return true */
         if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) return true;
 
+        StoreEntity storeEntity = adminStoreRepository.findOneByGuid(storeGuid).orElse(null);
+        if (storeEntity == null) return false;
+        if (!storeEntity.isStoreActivated()) return false;
+
         return adminStoreUserRepository.findOneByUserLoginAndStoreGuid(currentUserLogin, storeGuid)
                 .map(storeUserEntity -> roles.contains(storeUserEntity.getStoreUserRole())
                         /* if user is not working in this store => return false too */
