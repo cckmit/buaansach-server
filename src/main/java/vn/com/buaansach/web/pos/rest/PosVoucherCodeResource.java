@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.security.util.SecurityUtils;
-import vn.com.buaansach.web.pos.service.PosVoucherService;
+import vn.com.buaansach.web.pos.service.PosVoucherCodeService;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
 
 @RestController
@@ -13,16 +13,16 @@ import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
 public class PosVoucherCodeResource {
     private final String ENTITY_NAME = "pos-voucher-code";
     private final Logger log = LoggerFactory.getLogger(PosStoreResource.class);
-    private final PosVoucherService posVoucherService;
+    private final PosVoucherCodeService posVoucherCodeService;
 
-    public PosVoucherCodeResource(PosVoucherService posVoucherService) {
-        this.posVoucherService = posVoucherService;
+    public PosVoucherCodeResource(PosVoucherCodeService posVoucherCodeService) {
+        this.posVoucherCodeService = posVoucherCodeService;
     }
 
     @GetMapping("/get")
     public ResponseEntity<PosVoucherCodeDTO> getVoucherCodeInfo(@RequestParam String storeGuid,
                                                                 @RequestParam String voucherCode) {
         log.debug("REST request from user {} to get {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, voucherCode);
-        return ResponseEntity.ok(posVoucherService.getVoucherCodeInfo(storeGuid, voucherCode));
+        return ResponseEntity.ok(posVoucherCodeService.getVoucherCodeInfo(storeGuid, voucherCode));
     }
 }

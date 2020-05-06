@@ -49,8 +49,8 @@ public class StoreSecurityService {
 
     private boolean checkAccess(Set<StoreUserRole> roles, UUID storeGuid) {
         String currentUserLogin = SecurityUtils.getCurrentUserLogin();
-        /* if admin, just return true */
-        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) return true;
+        /*if allow Admin, uncomment it*/
+//        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) return true;
 
         StoreEntity storeEntity = adminStoreRepository.findOneByGuid(storeGuid).orElse(null);
         if (storeEntity == null) return false;
@@ -86,7 +86,7 @@ public class StoreSecurityService {
 
     public void blockAccessIfNotInStore(UUID storeGuid) {
         if (!hasPermission(storeGuid))
-            throw new AccessDeniedException();
+            throw new AccessDeniedException("You are not member of this store, contact admin or manager");
     }
 
     private boolean isClosedOrDeactivated(UUID storeGuid) {
@@ -95,7 +95,7 @@ public class StoreSecurityService {
     }
 
     public void blockAccessIfStoreIsNotOpenOrDeactivated(UUID storeGuid) {
-        if (isClosedOrDeactivated(storeGuid)) throw new AccessDeniedException();
+        if (isClosedOrDeactivated(storeGuid)) throw new AccessDeniedException("Store has been closed");
     }
 
 }

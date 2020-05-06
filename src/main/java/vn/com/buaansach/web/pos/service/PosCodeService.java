@@ -7,7 +7,7 @@ import vn.com.buaansach.web.pos.repository.PosCustomerRepository;
 @Service
 public class PosCodeService {
     private static final String CUSTOMER_CODE_PREFIX = "KH";
-    private static final int LONG_SUFFIX = 5;
+    private static final int LONG_SUFFIX = 8;
     private final PosCustomerRepository posCustomerRepository;
 
     public PosCodeService(PosCustomerRepository posCustomerRepository) {

@@ -36,11 +36,11 @@ public class PosOrderResource {
         return ResponseEntity.ok(posOrderService.updateOrder(payload, currentUser));
     }
 
-    @GetMapping("/get/{orderGuid}")
-    public ResponseEntity<PosOrderDTO> getOrder(@PathVariable String orderGuid) {
-        log.debug("REST request from user {} to get {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, orderGuid);
-        return ResponseEntity.ok(posOrderService.getOrder(orderGuid));
-    }
+//    @GetMapping("/get/{orderGuid}")
+//    public ResponseEntity<PosOrderDTO> getOrder(@PathVariable String orderGuid) {
+//        log.debug("REST request from user {} to get {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, orderGuid);
+//        return ResponseEntity.ok(posOrderService.getOrder(orderGuid));
+//    }
 
     @GetMapping("/get-seat-order/{seatGuid}")
     public ResponseEntity<PosOrderDTO> getSeatCurrentOrder(@PathVariable String seatGuid) {
@@ -77,6 +77,14 @@ public class PosOrderResource {
         String currentUser = SecurityUtils.getCurrentUserLogin();
         log.debug("REST request from user {} to cancel {} : {}", currentUser, ENTITY_NAME, payload);
         posOrderService.cancelOrder(payload, currentUser);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/change-customer-phone")
+    public ResponseEntity<Void> changeCustomerPhone(@RequestBody PosOrderCustomerPhoneChangeDTO payload) {
+        String currentUser = SecurityUtils.getCurrentUserLogin();
+        log.debug("REST request from user {} to change customer phone for {} : {}", currentUser, ENTITY_NAME, payload);
+        posOrderService.changeCustomerPhone(payload, currentUser);
         return ResponseEntity.ok().build();
     }
 }

@@ -109,6 +109,11 @@ public class PosOrderService {
     }
 
     public PosOrderDTO getSeatCurrentOrder(String seatGuid) {
+        StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(UUID.fromString(seatGuid))
+                .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + seatGuid));
+
+        storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
+
         OrderEntity orderEntity = posOrderRepository.findSeatCurrentOrder(UUID.fromString(seatGuid))
                 .orElse(new OrderEntity());
         PosOrderDTO result = new PosOrderDTO(orderEntity);
@@ -118,13 +123,14 @@ public class PosOrderService {
         return result;
     }
 
-    public PosOrderDTO getOrder(String orderGuid) {
-        OrderEntity orderEntity = posOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + orderGuid));
-        PosOrderDTO result = new PosOrderDTO(orderEntity);
-        result.setListOrderProduct(posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(orderEntity.getGuid()));
-        return new PosOrderDTO(orderEntity);
-    }
+//    public PosOrderDTO getOrder(String orderGuid) {
+//        OrderEntity orderEntity = posOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
+//                .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + orderGuid));
+//
+//        PosOrderDTO result = new PosOrderDTO(orderEntity);
+//        result.setListOrderProduct(posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(orderEntity.getGuid()));
+//        return new PosOrderDTO(orderEntity);
+//    }
 
     @Transactional
     public void receiveOrder(String orderGuid, String currentUser) {
@@ -242,7 +248,7 @@ public class PosOrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found with guid: " + payload.getNewSeatGuid()));
 
         if (currentSeat.getCurrentOrderGuid() == null || !currentSeat.getCurrentOrderGuid().equals(orderEntity.getGuid()))
-            throw new BadRequestException("Order guid does not match current seat guid: " + payload.getCurrentSeatGuid());
+            throw new BadRequestException("Order guid does not match seat current order guid: " + orderEntity.getGuid());
 
         if (newSeat.getSeatStatus().equals(SeatStatus.NON_EMPTY))
             throw new BadRequestException("New seat is already in use: " + payload.getNewSeatGuid());
@@ -263,7 +269,26 @@ public class PosOrderService {
         posOrderRepository.save(orderEntity);
     }
 
-    public void changeCustomerPhone() {
+    @Transactional
+    public void changeCustomerPhone(PosOrderCustomerPhoneChangeDTO payload, String currentUser) {
+        StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(payload.getSeatGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + payload.getSeatGuid()));
 
+        storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
+
+        OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + payload.getOrderGuid()));
+
+        SeatEntity seatEntity = posSeatRepository.findOneByGuid(payload.getSeatGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("Seat not found with guid: " + payload.getSeatGuid()));
+
+        if (seatEntity.getCurrentOrderGuid() == null || !seatEntity.getCurrentOrderGuid().equals(orderEntity.getGuid()))
+            throw new BadRequestException("Order guid does not match seat current order guid: " + payload.getOrderGuid());
+
+        String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(), "CHANGE_PHONE", currentUser);
+        orderEntity.setOrderStatusTimeline(newTimeline);
+        orderEntity.setCustomerPhone(payload.getNewCustomerPhone());
+        posOrderRepository.save(orderEntity);
+        posCustomerService.createCustomerIfNotExist(payload.getNewCustomerPhone());
     }
 }
