@@ -8,11 +8,8 @@ import java.util.UUID;
 
 @Data
 public class PosOrderSeatChangeDTO {
-    @NotBlank
     private UUID currentSeatGuid;
-    @NotBlank
     private UUID newSeatGuid;
-    @NotBlank
     private UUID orderGuid;
     @NotBlank
     @Size(max = 255)

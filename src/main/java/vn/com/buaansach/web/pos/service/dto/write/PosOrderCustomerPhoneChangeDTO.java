@@ -9,9 +9,7 @@ import java.util.UUID;
 
 @Data
 public class PosOrderCustomerPhoneChangeDTO {
-    @NotBlank
     private UUID seatGuid;
-    @NotBlank
     private UUID orderGuid;
     @Pattern(regexp = Constants.PHONE_REGEX)
     private String newCustomerPhone;

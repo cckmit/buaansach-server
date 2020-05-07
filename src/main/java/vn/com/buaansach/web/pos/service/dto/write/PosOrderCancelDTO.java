@@ -8,7 +8,6 @@ import java.util.UUID;
 
 @Data
 public class PosOrderCancelDTO {
-    @NotBlank
     private UUID orderGuid;
     @NotBlank
     @Size(min = 1, max = 255)

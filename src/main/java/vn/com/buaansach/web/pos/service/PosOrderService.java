@@ -63,7 +63,9 @@ public class PosOrderService {
         storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
 
         /* create customer if not exist */
-        posCustomerService.createCustomerByPhone(payload.getCustomerPhone());
+        if (payload.getCustomerPhone() != null) {
+            posCustomerService.createCustomerByPhone(payload.getCustomerPhone());
+        }
 
         OrderEntity orderEntity = new OrderEntity();
         UUID orderGuid = UUID.randomUUID();
