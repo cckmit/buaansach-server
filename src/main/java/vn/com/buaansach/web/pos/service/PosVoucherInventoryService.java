@@ -22,14 +22,24 @@ public class PosVoucherInventoryService {
 
     @Transactional
     public String getOneVoucherCode() {
-        return getListVoucherCode(1).get(0);
+        int remainCode = posVoucherInventoryRepository.countByExportedFalse();
+        if (remainCode < 1) throw new BadRequestException("Number of remain code is not enough");
+        PageRequest request = PageRequest.of(0, 1, Sort.Direction.ASC, "id");
+        Page<VoucherInventoryEntity> page = posVoucherInventoryRepository.getListUnExportedVoucherInventory(request);
+        if (page.getSize() == 0) throw new BadRequestException("Number of remain code is not enough");
+        page = page.map(entity -> {
+            entity.setExported(true);
+            return entity;
+        });
+        posVoucherInventoryRepository.saveAll(page);
+        return page.getContent().get(0).getCode();
     }
 
     @Transactional
     public List<String> getListVoucherCode(int size) {
         int remainCode = posVoucherInventoryRepository.countByExportedFalse();
         if (remainCode < size) throw new BadRequestException("Number of remain code is not enough");
-        PageRequest request = PageRequest.of(0, 1, Sort.Direction.ASC, "id");
+        PageRequest request = PageRequest.of(0, size, Sort.Direction.ASC, "id");
         Page<VoucherInventoryEntity> page = posVoucherInventoryRepository.getListUnExportedVoucherInventory(request);
         page = page.map(entity -> {
             entity.setExported(true);

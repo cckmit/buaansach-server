@@ -63,7 +63,7 @@ public class PosOrderService {
         storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
 
         /* create customer if not exist */
-        posCustomerService.createCustomerIfNotExist(payload.getCustomerPhone());
+        posCustomerService.createCustomerByPhone(payload.getCustomerPhone());
 
         OrderEntity orderEntity = new OrderEntity();
         UUID orderGuid = UUID.randomUUID();
@@ -285,10 +285,13 @@ public class PosOrderService {
         if (seatEntity.getCurrentOrderGuid() == null || !seatEntity.getCurrentOrderGuid().equals(orderEntity.getGuid()))
             throw new BadRequestException("Order guid does not match seat current order guid: " + payload.getOrderGuid());
 
+        /* if customer phone number not change, just return */
+        if (payload.getNewCustomerPhone().equals(orderEntity.getCustomerPhone())) return;
+
         String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(), "CHANGE_PHONE", currentUser);
         orderEntity.setOrderStatusTimeline(newTimeline);
         orderEntity.setCustomerPhone(payload.getNewCustomerPhone());
         posOrderRepository.save(orderEntity);
-        posCustomerService.createCustomerIfNotExist(payload.getNewCustomerPhone());
+        posCustomerService.createCustomerByPhone(payload.getNewCustomerPhone());
     }
 }

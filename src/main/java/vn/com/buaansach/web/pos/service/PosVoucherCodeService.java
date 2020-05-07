@@ -25,8 +25,7 @@ public class PosVoucherCodeService {
         this.posVoucherInventoryService = posVoucherInventoryService;
     }
 
-    public PosVoucherCodeDTO getVoucherCodeInfo(String storeGuid, String voucherCode) {
-        storeSecurityService.blockAccessIfNotInStore(UUID.fromString(storeGuid));
+    public PosVoucherCodeDTO getVoucherCodeInfo(String voucherCode) {
         return posVoucherCodeRepository.getPosVoucherCodeDTO(voucherCode);
     }
 

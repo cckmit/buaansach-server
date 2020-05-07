@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/pos/category")
 public class PosCategoryResource {
     private final String ENTITY_NAME = "pos-category";
-    private final Logger log = LoggerFactory.getLogger(PosAreaResource.class);
+    private final Logger log = LoggerFactory.getLogger(PosCategoryResource.class);
     private final PosCategoryService posCategoryService;
 
     public PosCategoryResource(PosCategoryService posCategoryService) {
