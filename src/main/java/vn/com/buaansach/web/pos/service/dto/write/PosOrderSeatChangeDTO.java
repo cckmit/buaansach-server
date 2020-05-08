@@ -11,7 +11,4 @@ public class PosOrderSeatChangeDTO {
     private UUID currentSeatGuid;
     private UUID newSeatGuid;
     private UUID orderGuid;
-    @NotBlank
-    @Size(max = 255)
-    private String changeReason;
 }

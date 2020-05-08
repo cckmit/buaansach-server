@@ -1,11 +1,12 @@
 package vn.com.buaansach.web.pos.service.dto.readwrite;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
+import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.web.user.service.dto.AuditDTO;
 
 import javax.persistence.EnumType;
@@ -20,11 +21,12 @@ public class PosOrderProductDTO extends AuditDTO {
     private UUID orderGuid;
     private UUID productGuid;
 
-    @Size(max = 16)
+    @Size(max = 20)
     private String orderProductGroup;
     private int orderProductQuantity;
+    @JsonIgnore
+    private int orderProductRootPrice;
     private int orderProductPrice;
-    private int orderProductDiscount;
     @Size(max = 255)
     private String orderProductNote;
     @Enumerated(EnumType.STRING)
@@ -33,9 +35,14 @@ public class PosOrderProductDTO extends AuditDTO {
     private String orderProductStatusTimeline;
     @Size(max = 255)
     private String orderProductCancelReason;
+    private int orderProductDiscount;
+    private UUID orderProductSaleGuid;
+    @Size(max = 20)
+    private String orderProductVoucherCode;
 
     private String productCode;
     private String productName;
+    private String productUnit;
     private String productImageUrl;
 
 
@@ -50,6 +57,7 @@ public class PosOrderProductDTO extends AuditDTO {
         assignProperty(orderProductEntity);
         this.productCode = productEntity.getProductCode();
         this.productName = productEntity.getProductName();
+        this.productUnit = productEntity.getProductUnit();
         this.productImageUrl = productEntity.getProductImageUrl();
     }
 
@@ -59,12 +67,15 @@ public class PosOrderProductDTO extends AuditDTO {
         this.productGuid = orderProductEntity.getProductGuid();
         this.orderProductGroup = orderProductEntity.getOrderProductGroup();
         this.orderProductQuantity = orderProductEntity.getOrderProductQuantity();
+        this.orderProductRootPrice = orderProductEntity.getOrderProductRootPrice();
         this.orderProductPrice = orderProductEntity.getOrderProductPrice();
-        this.orderProductDiscount = orderProductEntity.getOrderProductDiscount();
         this.orderProductNote = orderProductEntity.getOrderProductNote();
         this.orderProductStatus = orderProductEntity.getOrderProductStatus();
         this.orderProductStatusTimeline = orderProductEntity.getOrderProductStatusTimeline();
         this.orderProductCancelReason = orderProductEntity.getOrderProductCancelReason();
+        this.orderProductDiscount = orderProductEntity.getOrderProductDiscount();
+        this.orderProductSaleGuid = orderProductEntity.getOrderProductSaleGuid();
+        this.orderProductVoucherCode = orderProductEntity.getOrderProductVoucherCode();
 
         this.createdBy = orderProductEntity.getCreatedBy();
         this.createdDate = orderProductEntity.getCreatedDate();

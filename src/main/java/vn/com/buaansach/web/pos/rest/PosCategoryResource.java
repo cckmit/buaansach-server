@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.com.buaansach.security.util.SecurityUtils;
@@ -24,11 +25,9 @@ public class PosCategoryResource {
         this.posCategoryService = posCategoryService;
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<PosCategoryDTO>> getListPosCategoryDTO() {
+    @GetMapping("/list-by-store/{storeGuid}")
+    public ResponseEntity<List<PosCategoryDTO>> getListPosCategoryDTO(@PathVariable String storeGuid) {
         log.debug("REST request from user {} to list {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);
-        return ResponseEntity.ok(posCategoryService.getListPosCategoryDTO().stream()
-                .map(PosCategoryDTO::new)
-                .collect(Collectors.toList()));
+        return ResponseEntity.ok(posCategoryService.getListPosCategoryDTO(storeGuid));
     }
 }

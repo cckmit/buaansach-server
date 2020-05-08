@@ -100,7 +100,7 @@ public class PosOrderService {
         storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
 
         posOrderProductService.saveList(payload.getOrderGuid(), payload.getListOrderProduct(), currentUser);
-        /* if has new order product => set seat service status to UN_FINISHED */
+        /* if has new order product => set seat service status to UNFINISHED */
         if (payload.getListOrderProduct().size() > 0) {
             posSeatService.makeSeatServiceUnfinished(orderEntity.getSeatGuid());
         }

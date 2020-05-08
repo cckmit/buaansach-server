@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import vn.com.buaansach.entity.enumeration.OrderProductStatus;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
 
@@ -24,6 +25,8 @@ public interface PosOrderProductRepository extends JpaRepository<OrderProductEnt
             "WHERE orderProduct.orderGuid = :orderGuid " +
             "ORDER BY orderProduct.id ASC")
     List<PosOrderProductDTO> findListPosOrderProductDTOByOrderGuid(@Param("orderGuid") UUID orderGuid);
+
+    List<OrderProductEntity> findByOrderGuidAndOrderProductStatusIn(UUID orderGuid, List<OrderProductStatus> listStatus);
 
     Optional<OrderProductEntity> findOneByGuid(UUID orderProductGuid);
 }

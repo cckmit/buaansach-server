@@ -1,13 +1,14 @@
 package vn.com.buaansach.web.pos.service;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
+import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.web.admin.service.StoreSecurityService;
 import vn.com.buaansach.web.pos.repository.PosOrderProductRepository;
+import vn.com.buaansach.web.pos.repository.PosOrderRepository;
 import vn.com.buaansach.web.pos.repository.PosProductRepository;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderProductStatusChangeDTO;
@@ -23,12 +24,16 @@ public class PosOrderProductService {
     private final PosOrderProductMapper posOrderProductMapper;
     private final StoreSecurityService storeSecurityService;
     private final PosProductRepository posProductRepository;
+    private final PosOrderRepository posOrderRepository;
+    private final PosSeatService posSeatService;
 
-    public PosOrderProductService(PosOrderProductRepository posOrderProductRepository, PosOrderProductMapper posOrderProductMapper, StoreSecurityService storeSecurityService, PosProductRepository posProductRepository) {
+    public PosOrderProductService(PosOrderProductRepository posOrderProductRepository, PosOrderProductMapper posOrderProductMapper, StoreSecurityService storeSecurityService, PosProductRepository posProductRepository, PosOrderRepository posOrderRepository, PosSeatService posSeatService) {
         this.posOrderProductRepository = posOrderProductRepository;
         this.posOrderProductMapper = posOrderProductMapper;
         this.storeSecurityService = storeSecurityService;
         this.posProductRepository = posProductRepository;
+        this.posOrderRepository = posOrderRepository;
+        this.posSeatService = posSeatService;
     }
 
     private Map<UUID, ProductEntity> getMapProduct(List<UUID> uuids) {
@@ -55,7 +60,11 @@ public class PosOrderProductService {
                     entity.setOrderGuid(orderGuid);
 
                     ProductEntity product = mapProduct.get(entity.getProductGuid());
+                    entity.setOrderProductRootPrice(product.getProductRootPrice());
                     entity.setOrderProductPrice(product.getProductPrice());
+                    entity.setOrderProductDiscount(product.getProductDiscount());
+                    entity.setOrderProductSaleGuid(product.getProductSaleGuid());
+                    entity.setOrderProductVoucherCode(null);
                 })
                 .collect(Collectors.toList());
 
@@ -76,6 +85,7 @@ public class PosOrderProductService {
             orderProductEntity.setOrderProductStatusTimeline(timeline);
         }
         posOrderProductRepository.save(orderProductEntity);
+        checkOrderProductStatus(orderProductEntity.getOrderGuid());
     }
 
     public void cancelOrderProduct(PosOrderProductStatusChangeDTO payload, String currentUser) {
@@ -94,5 +104,18 @@ public class PosOrderProductService {
             orderProductEntity.setOrderProductStatusTimeline(timeline);
         }
         posOrderProductRepository.save(orderProductEntity);
+        checkOrderProductStatus(orderProductEntity.getOrderGuid());
+    }
+
+    private void checkOrderProductStatus(UUID orderGuid) {
+        posOrderRepository.findOneByGuid(orderGuid).ifPresent(orderEntity -> {
+            List<OrderProductStatus> listStatus = new ArrayList<>();
+            listStatus.add(OrderProductStatus.CREATED);
+            listStatus.add(OrderProductStatus.PREPARING);
+            List<OrderProductEntity> list = posOrderProductRepository.findByOrderGuidAndOrderProductStatusIn(orderGuid, listStatus);
+            if (list.size() == 0) {
+                posSeatService.makeSeatServiceFinished(orderEntity.getSeatGuid());
+            }
+        });
     }
 }
