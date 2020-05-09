@@ -26,7 +26,7 @@ public class PosVoucherInventoryService {
         if (remainCode < 1) throw new BadRequestException("Number of remain code is not enough");
         PageRequest request = PageRequest.of(0, 1, Sort.Direction.ASC, "id");
         Page<VoucherInventoryEntity> page = posVoucherInventoryRepository.getListUnExportedVoucherInventory(request);
-        if (page.getSize() == 0) throw new BadRequestException("Number of remain code is not enough");
+        if (page.getContent().size() == 0) throw new BadRequestException("Number of remain code is not enough");
         page = page.map(entity -> {
             entity.setExported(true);
             return entity;

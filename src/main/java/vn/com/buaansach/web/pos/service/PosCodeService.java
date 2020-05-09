@@ -23,7 +23,7 @@ public class PosCodeService {
     public String generateCodeForCustomer() {
         PageRequest request = PageRequest.of(0, 1, Sort.Direction.DESC, "id");
         Page<CustomerEntity> page = posCustomerRepository.findPageCustomer(request);
-        String lastCode = page.getSize() == 0 ? null : page.getContent().get(0).getCustomerCode();
+        String lastCode = page.getContent().size() == 0 ? null : page.getContent().get(0).getCustomerCode();
         long lastNumber = lastCode == null ? 0L : Long.parseLong(lastCode.substring(CUSTOMER_CODE_PREFIX.length()));
         long newNumber = lastNumber + 1L;
         return CUSTOMER_CODE_PREFIX + StringUtils.leftPad("" + newNumber, LONG_SUFFIX, "0");

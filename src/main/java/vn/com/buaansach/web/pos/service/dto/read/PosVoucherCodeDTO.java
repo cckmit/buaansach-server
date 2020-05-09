@@ -2,7 +2,7 @@ package vn.com.buaansach.web.pos.service.dto.read;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import vn.com.buaansach.entity.enumeration.VoucherDiscountType;
+import vn.com.buaansach.entity.enumeration.DiscountType;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.entity.voucher.condition.VoucherStoreConditionEntity;
@@ -24,12 +24,15 @@ public class PosVoucherCodeDTO extends AuditDTO {
 
     private String customerPhone;
 
+    private String voucherName;
+    private String voucherDescription;
+    private String voucherImageUrl;
     private int voucherDiscount;
-
     @Enumerated(EnumType.STRING)
-    private VoucherDiscountType voucherDiscountType;
-
+    private DiscountType voucherDiscountType;
     private String voucherConditions;
+    private boolean voucherEnable;
+
 
     private VoucherTimeConditionEntity timeCondition;
     private VoucherUsageConditionEntity usageCondition;
@@ -59,9 +62,13 @@ public class PosVoucherCodeDTO extends AuditDTO {
         this.lastModifiedBy = voucherCodeEntity.getLastModifiedBy();
         this.lastModifiedDate = voucherCodeEntity.getLastModifiedDate();
 
+        this.voucherName = voucherEntity.getVoucherName();
+        this.voucherDescription = voucherEntity.getVoucherDescription();
+        this.voucherImageUrl = voucherEntity.getVoucherImageUrl();
         this.voucherDiscount = voucherEntity.getVoucherDiscount();
         this.voucherDiscountType = voucherEntity.getVoucherDiscountType();
         this.voucherConditions = voucherEntity.getVoucherConditions();
+        this.voucherEnable = voucherEntity.isVoucherEnable();
 
     }
 }

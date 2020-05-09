@@ -5,7 +5,6 @@ import vn.com.buaansach.entity.enumeration.PaymentMethod;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.UUID;
 
@@ -16,5 +15,4 @@ public class PosOrderPurchaseDTO {
     private PaymentMethod paymentMethod;
     @Size(max = 255)
     private String paymentNote;
-    private int totalCharge;
 }

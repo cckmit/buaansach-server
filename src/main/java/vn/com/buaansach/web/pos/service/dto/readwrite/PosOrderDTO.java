@@ -3,6 +3,7 @@ package vn.com.buaansach.web.pos.service.dto.readwrite;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import vn.com.buaansach.entity.enumeration.DiscountType;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.OrderType;
 import vn.com.buaansach.entity.order.OrderEntity;
@@ -42,10 +43,19 @@ public class PosOrderDTO extends AuditDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int orderDiscount;
 
+    @Enumerated(EnumType.STRING)
+    private DiscountType orderDiscountType;
+
     private UUID orderSaleGuid;
 
     @Size(max = 20)
     private String orderVoucherCode;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private long totalAmount;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String cashierLogin;
 
     @Size(max = 20)
     private String customerPhone;
@@ -68,8 +78,11 @@ public class PosOrderDTO extends AuditDTO {
         this.orderStatusTimeline = orderEntity.getOrderStatusTimeline();
         this.orderCheckinTime = orderEntity.getOrderCheckinTime();
         this.orderDiscount = orderEntity.getOrderDiscount();
+        this.orderDiscountType = orderEntity.getOrderDiscountType();
         this.orderSaleGuid = orderEntity.getOrderSaleGuid();
         this.orderVoucherCode = orderEntity.getOrderVoucherCode();
+        this.totalAmount = orderEntity.getTotalAmount();
+        this.cashierLogin = orderEntity.getCashierLogin();
         this.customerPhone = orderEntity.getCustomerPhone();
         this.seatGuid = orderEntity.getSeatGuid();
 

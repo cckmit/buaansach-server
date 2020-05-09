@@ -2,7 +2,7 @@ package vn.com.buaansach.web.admin.service.dto.readwrite;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import vn.com.buaansach.entity.enumeration.VoucherDiscountType;
+import vn.com.buaansach.entity.enumeration.DiscountType;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.entity.voucher.condition.VoucherStoreConditionEntity;
 import vn.com.buaansach.entity.voucher.condition.VoucherTimeConditionEntity;
@@ -31,7 +31,7 @@ public class AdminVoucherDTO extends AuditDTO {
     private int voucherDiscount;
 
     @Enumerated(EnumType.STRING)
-    private VoucherDiscountType voucherDiscountType;
+    private DiscountType voucherDiscountType;
 
     @Size(max = 500)
     private String voucherConditions;

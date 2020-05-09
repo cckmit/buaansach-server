@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
+import vn.com.buaansach.entity.enumeration.DiscountType;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.OrderType;
 
@@ -60,11 +61,22 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
     @Column(name = "order_discount")
     private int orderDiscount;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_discount_type")
+    private DiscountType orderDiscountType;
+
     @Column(name = "order_sale_guid")
     private UUID orderSaleGuid;
 
     @Column(name = "order_voucher_code")
     private String orderVoucherCode;
+
+    @Column(name = "total_amount")
+    private long totalAmount;
+
+    @Size(max = 50)
+    @Column(name = "cashier_login", length = 50)
+    private String cashierLogin;
 
     @Size(max = 20)
     @Column(name = "customer_phone", length = 20)
@@ -75,4 +87,5 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
 
     @Column(name = "payment_guid")
     private UUID paymentGuid;
+
 }

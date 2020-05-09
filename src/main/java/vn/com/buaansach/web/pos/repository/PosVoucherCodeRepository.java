@@ -1,11 +1,16 @@
 package vn.com.buaansach.web.pos.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
+
+import javax.persistence.LockModeType;
+import java.util.Optional;
 
 @Repository
 public interface PosVoucherCodeRepository extends JpaRepository<VoucherCodeEntity, Long> {
@@ -20,5 +25,19 @@ public interface PosVoucherCodeRepository extends JpaRepository<VoucherCodeEntit
             "LEFT JOIN vn.com.buaansach.entity.voucher.condition.VoucherStoreConditionEntity vs " +
             "ON vs.voucherGuid = v.guid " +
             "WHERE vc.voucherCode = :voucherCode")
-    PosVoucherCodeDTO getPosVoucherCodeDTO(@Param("voucherCode") String voucherCode);
+    Optional<PosVoucherCodeDTO> getPosVoucherCodeDTO(@Param("voucherCode") String voucherCode);
+
+    Optional<VoucherCodeEntity> findOneByVoucherCode(String voucherCode);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT vc FROM VoucherCodeEntity vc WHERE vc.voucherCode = :voucherCode")
+    Optional<VoucherCodeEntity> findOneByVoucherCodeForUpdate(@Param("voucherCode") String voucherCode);
+
+    @Modifying
+    @Query("UPDATE VoucherCodeEntity vc SET vc.voucherCodeUsageCount = vc.voucherCodeUsageCount + 1  WHERE vc.voucherCode = :voucherCode")
+    void increaseVoucherCodeUsageCount(@Param("voucherCode") String voucherCode);
+
+    @Modifying
+    @Query("UPDATE VoucherCodeEntity vc SET vc.voucherCodeUsageCount = vc.voucherCodeUsageCount - 1  WHERE vc.voucherCode = :voucherCode")
+    void decreaseVoucherCodeUsageCount(@Param("voucherCode") String voucherCode);
 }

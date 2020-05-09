@@ -1,6 +1,6 @@
 package vn.com.buaansach.entity.enumeration;
 
-public enum VoucherDiscountType {
+public enum DiscountType {
     VALUE,
     PERCENT
 }

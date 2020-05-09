@@ -23,14 +23,19 @@
             <column name="order_checkout_time" type="timestamp"/>
             <column name="order_cancel_reason" type="varchar(255)"/>
 
+            <column name="order_discount_type" type="varchar(30)"/>
             <column name="order_discount" type="int"/>
             <column name="order_sale_guid" type="binary(16)"/>
             <column name="order_voucher_code" type="varchar(20)"/>
-
+            <column name="total_amount" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cashier_login" type="varchar(50)"/>
             <column name="customer_phone" type="varchar(20)"/>
 
             <column name="seat_guid" type="binary(16)"/>
             <column name="payment_guid" type="binary(16)"/>
+
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

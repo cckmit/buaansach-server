@@ -16,6 +16,7 @@ import vn.com.buaansach.web.pos.repository.PosOrderRepository;
 import vn.com.buaansach.web.pos.repository.PosSeatRepository;
 import vn.com.buaansach.web.pos.repository.PosStoreRepository;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
+import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
 import vn.com.buaansach.web.pos.service.dto.write.*;
 import vn.com.buaansach.web.pos.util.TimelineUtil;
 
@@ -76,8 +77,10 @@ public class PosOrderService {
         orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderStatus.RECEIVED, currentUser));
         orderEntity.setOrderCheckinTime(Instant.now());
         orderEntity.setOrderDiscount(0);
+        orderEntity.setOrderDiscountType(null);
         orderEntity.setOrderSaleGuid(null);
         orderEntity.setOrderVoucherCode(null);
+        orderEntity.setTotalAmount(0L);
         orderEntity.setCustomerPhone(payload.getCustomerPhone());
         orderEntity.setSeatGuid(payload.getSeatGuid());
 
@@ -105,9 +108,18 @@ public class PosOrderService {
             posSeatService.makeSeatServiceUnfinished(orderEntity.getSeatGuid());
         }
 
-        PosOrderDTO result = new PosOrderDTO(orderEntity);
-        result.setListOrderProduct(posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(payload.getOrderGuid()));
+        List<PosOrderProductDTO> listPosOrderProductDTO = posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(payload.getOrderGuid());
+        long totalAmount = calculateTotalAmount(listPosOrderProductDTO);
+        orderEntity.setTotalAmount(totalAmount);
+        PosOrderDTO result = new PosOrderDTO(posOrderRepository.save(orderEntity));
+        result.setListOrderProduct(listPosOrderProductDTO);
         return result;
+    }
+
+    private long calculateTotalAmount(List<PosOrderProductDTO> listPosOrderProductDTO) {
+        return listPosOrderProductDTO.stream()
+                .filter(dto -> !dto.getOrderProductStatus().toString().contains("CANCELLED"))
+                .mapToLong(dto -> dto.getOrderProductPrice() * (dto.getOrderProductQuantity() - dto.getOrderProductDiscount())).sum();
     }
 
     public PosOrderDTO getSeatCurrentOrder(String seatGuid) {
@@ -182,10 +194,26 @@ public class PosOrderService {
 
         switch (payload.getPaymentMethod()) {
             case CASH:
-                PaymentEntity paymentEntity = posPaymentService.makeCashPayment(payload.getOrderGuid(), payload.getPaymentNote(), payload.getTotalCharge());
+                long payAmount = orderEntity.getTotalAmount();
+                if (orderEntity.getOrderDiscount() > 0) {
+                    switch (orderEntity.getOrderDiscountType()) {
+                        case VALUE:
+                            payAmount = payAmount - orderEntity.getOrderDiscount();
+                            break;
+                        case PERCENT:
+                            payAmount = payAmount - (payAmount * orderEntity.getOrderDiscount() / 100L);
+                            break;
+                    }
+                }
+
+                payAmount = payAmount > 0 ? payAmount : 0L;
+
+                PaymentEntity paymentEntity = posPaymentService.makeCashPayment(payload.getOrderGuid(),
+                        payload.getPaymentNote(), payAmount);
                 orderEntity.setPaymentGuid(paymentEntity.getGuid());
                 orderEntity.setOrderStatus(OrderStatus.PURCHASED);
                 orderEntity.setOrderCheckoutTime(Instant.now());
+                orderEntity.setCashierLogin(currentUser);
 
                 String newTimeline = TimelineUtil.appendOrderStatus(orderEntity.getOrderStatusTimeline(),
                         OrderStatus.PURCHASED, currentUser);
@@ -292,8 +320,9 @@ public class PosOrderService {
 
         String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(), "CHANGE_PHONE", currentUser);
         orderEntity.setOrderStatusTimeline(newTimeline);
-        orderEntity.setCustomerPhone(payload.getNewCustomerPhone());
+        orderEntity.setCustomerPhone(payload.getNewCustomerPhone().trim());
         posOrderRepository.save(orderEntity);
-        posCustomerService.createCustomerByPhone(payload.getNewCustomerPhone());
+        if (!payload.getNewCustomerPhone().isBlank())
+            posCustomerService.createCustomerByPhone(payload.getNewCustomerPhone().trim());
     }
 }

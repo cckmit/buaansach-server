@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
-import vn.com.buaansach.entity.enumeration.VoucherDiscountType;
+import vn.com.buaansach.entity.enumeration.DiscountType;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -43,7 +43,7 @@ public class VoucherEntity extends AbstractAuditingEntity implements Serializabl
 
     @Enumerated(EnumType.STRING)
     @Column(name = "voucher_discount_type")
-    private VoucherDiscountType voucherDiscountType;
+    private DiscountType voucherDiscountType;
 
     @Size(max = 500)
     @Column(name = "voucher_conditions", length = 500)
