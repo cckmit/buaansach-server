@@ -32,12 +32,4 @@ public interface PosVoucherCodeRepository extends JpaRepository<VoucherCodeEntit
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT vc FROM VoucherCodeEntity vc WHERE vc.voucherCode = :voucherCode")
     Optional<VoucherCodeEntity> findOneByVoucherCodeForUpdate(@Param("voucherCode") String voucherCode);
-
-    @Modifying
-    @Query("UPDATE VoucherCodeEntity vc SET vc.voucherCodeUsageCount = vc.voucherCodeUsageCount + 1  WHERE vc.voucherCode = :voucherCode")
-    void increaseVoucherCodeUsageCount(@Param("voucherCode") String voucherCode);
-
-    @Modifying
-    @Query("UPDATE VoucherCodeEntity vc SET vc.voucherCodeUsageCount = vc.voucherCodeUsageCount - 1  WHERE vc.voucherCode = :voucherCode")
-    void decreaseVoucherCodeUsageCount(@Param("voucherCode") String voucherCode);
 }

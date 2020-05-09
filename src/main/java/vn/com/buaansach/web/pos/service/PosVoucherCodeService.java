@@ -12,7 +12,6 @@ import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.StoreSecurityService;
 import vn.com.buaansach.web.pos.repository.*;
-import vn.com.buaansach.web.pos.rest.PosVoucherCodeResource;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherApplySuccessDTO;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderVoucherCodeDTO;
@@ -98,8 +97,8 @@ public class PosVoucherCodeService {
 
             /* increase usage count */
             VoucherCodeEntity voucherCodeEntity = posVoucherCodeRepository.findOneByVoucherCodeForUpdate(payload.getVoucherCode()).orElseThrow();
-            posVoucherCodeRepository.increaseVoucherCodeUsageCount(voucherCodeEntity.getVoucherCode());
-
+            voucherCodeEntity.setVoucherCodeUsageCount(voucherCodeEntity.getVoucherCodeUsageCount() + 1);
+            posVoucherCodeRepository.save(voucherCodeEntity);
             return new PosVoucherApplySuccessDTO(voucherCodeDTO);
         } else {
             log.error("Reject request from user [{}] to apply voucher code : {}", SecurityUtils.getCurrentUserLogin(), payload);
@@ -115,11 +114,15 @@ public class PosVoucherCodeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + orderEntity.getSeatGuid()));
         storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
 
-        VoucherCodeEntity voucherCodeEntity = posVoucherCodeRepository.findOneByVoucherCodeForUpdate(orderEntity.getOrderVoucherCode()).orElseThrow();
-        if (voucherCodeEntity.getVoucherCodeUsageCount() > 0)
-            posVoucherCodeRepository.decreaseVoucherCodeUsageCount(voucherCodeEntity.getVoucherCode());
+        VoucherCodeEntity voucherCodeEntity = posVoucherCodeRepository.findOneByVoucherCodeForUpdate(orderEntity.getOrderVoucherCode())
+                .orElseThrow(() -> new BadRequestException("No voucher found on order"));
 
-        /* appy voucher code on order entity */
+        if (voucherCodeEntity.getVoucherCodeUsageCount() > 0) {
+            voucherCodeEntity.setVoucherCodeUsageCount(voucherCodeEntity.getVoucherCodeUsageCount() - 1);
+            posVoucherCodeRepository.save(voucherCodeEntity);
+        }
+
+        /* apply voucher code on order entity */
         orderEntity.setOrderVoucherCode(null);
         orderEntity.setOrderDiscountType(null);
         orderEntity.setOrderDiscount(0);
@@ -129,9 +132,11 @@ public class PosVoucherCodeService {
 
     @Transactional
     public void createVoucherForCustomerRegistration(String customerPhone) {
-        VoucherEntity voucherEntity = posVoucherRepository.selectForUpdate(1L).orElseThrow();
+        VoucherEntity voucherEntity = posVoucherRepository.selectForUpdate(1L)
+                .orElseThrow();
         if (!voucherEntity.isVoucherEnable()) return;
-        posVoucherRepository.increaseNumberVoucherCode(1L);
+        voucherEntity.setNumberVoucherCode(voucherEntity.getNumberVoucherCode() + 1);
+        posVoucherRepository.save(voucherEntity);
         VoucherCodeEntity voucherCodeEntity = new VoucherCodeEntity();
         voucherCodeEntity.setCustomerPhone(customerPhone);
         voucherCodeEntity.setVoucherCodeUsageCount(0);
@@ -140,6 +145,4 @@ public class PosVoucherCodeService {
         voucherCodeEntity.setVoucherCode(posVoucherInventoryService.getOneVoucherCode());
         posVoucherCodeRepository.save(voucherCodeEntity);
     }
-
-
 }

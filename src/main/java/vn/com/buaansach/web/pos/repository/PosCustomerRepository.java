@@ -14,6 +14,7 @@ import java.util.Optional;
 @Repository
 public interface PosCustomerRepository extends JpaRepository<CustomerEntity, Long> {
 
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query(value = "SELECT ce FROM CustomerEntity ce")
     Page<CustomerEntity> findPageCustomer(Pageable pageable);
 

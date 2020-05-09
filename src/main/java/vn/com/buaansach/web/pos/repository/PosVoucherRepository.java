@@ -15,10 +15,6 @@ import java.util.UUID;
 @Repository
 public interface PosVoucherRepository extends JpaRepository<VoucherEntity, Long> {
 
-    @Modifying
-    @Query("UPDATE VoucherEntity ve SET ve.numberVoucherCode = ve.numberVoucherCode + 1 WHERE ve.id = :id")
-    void increaseNumberVoucherCode(@Param("id") Long id);
-
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT ve FROM VoucherEntity ve WHERE ve.id = :id")
     Optional<VoucherEntity> selectForUpdate(@Param("id") Long id);
