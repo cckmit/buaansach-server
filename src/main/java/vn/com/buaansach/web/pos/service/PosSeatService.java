@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
 import vn.com.buaansach.entity.store.SeatEntity;
+import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.web.admin.service.StoreSecurityService;
 import vn.com.buaansach.web.pos.repository.PosSeatRepository;
@@ -30,6 +31,11 @@ public class PosSeatService {
         posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + storeGuid));
         return posSeatRepository.findListPosSeatDTOByStoreGuid(UUID.fromString(storeGuid));
+    }
+
+    public PosSeatDTO getPosSeatDTO(String seatGuid) {
+        return posSeatRepository.findPosSeatDTOBySeatGuid(UUID.fromString(seatGuid))
+                .orElseThrow(() -> new BadRequestException("Seat not found with guid: " + seatGuid));
     }
 
     public void resetSeat(SeatEntity seatEntity) {

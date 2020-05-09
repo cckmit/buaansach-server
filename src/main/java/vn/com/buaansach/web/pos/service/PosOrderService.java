@@ -164,6 +164,9 @@ public class PosOrderService {
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + orderGuid));
 
+        SeatEntity seatEntity = posSeatRepository.findOneByGuid(orderEntity.getSeatGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("Seat not found with guid: " + orderEntity.getSeatGuid()));
+
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + orderEntity.getSeatGuid()));
 
@@ -176,6 +179,7 @@ public class PosOrderService {
             orderEntity.setOrderStatusTimeline(newTimeline);
 
             /* switch all order store product from CREATED => PREPARING */
+
             List<OrderProductEntity> orderProductEntityList = posOrderProductRepository.findByOrderGuid(orderEntity.getGuid());
             orderProductEntityList = orderProductEntityList.stream().peek(orderProductEntity -> {
                 orderProductEntity.setOrderProductStatus(OrderProductStatus.PREPARING);
@@ -184,10 +188,14 @@ public class PosOrderService {
             }).collect(Collectors.toList());
             posOrderProductRepository.saveAll(orderProductEntityList);
 
+            if (orderProductEntityList.size() == 0) {
+                seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
+                posSeatRepository.save(seatEntity);
+            }
+
             if (orderProductEntityList.size() > 0) {
                 posSeatService.makeSeatServiceUnfinished(orderEntity.getSeatGuid());
             }
-
             posOrderRepository.save(orderEntity);
         }
     }
@@ -329,13 +337,15 @@ public class PosOrderService {
             throw new BadRequestException("Order guid does not match seat current order guid: " + payload.getOrderGuid());
 
         /* if customer phone number not change, just return */
-        if (payload.getNewCustomerPhone().equals(orderEntity.getCustomerPhone())) return;
+        if (payload.getNewCustomerPhone() == null && orderEntity.getCustomerPhone() == null) return;
+        if (payload.getNewCustomerPhone() != null && payload.getNewCustomerPhone().equals(orderEntity.getCustomerPhone()))
+            return;
 
         String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(), "CHANGE_PHONE", currentUser);
         orderEntity.setOrderStatusTimeline(newTimeline);
         orderEntity.setCustomerPhone(payload.getNewCustomerPhone().trim());
         posOrderRepository.save(orderEntity);
-        if (!payload.getNewCustomerPhone().isBlank())
+        if (payload.getNewCustomerPhone() != null && !payload.getNewCustomerPhone().isBlank())
             posCustomerService.createCustomerByPhone(payload.getNewCustomerPhone().trim());
     }
 }

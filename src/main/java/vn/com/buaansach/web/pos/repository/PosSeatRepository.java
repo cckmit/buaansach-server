@@ -23,6 +23,13 @@ public interface PosSeatRepository extends JpaRepository<SeatEntity, Long> {
             "WHERE store.guid = :storeGuid")
     List<PosSeatDTO> findListPosSeatDTOByStoreGuid(@Param("storeGuid") UUID storeGuid);
 
+    @Query("SELECT new vn.com.buaansach.web.pos.service.dto.read.PosSeatDTO(seat, area) " +
+            "FROM vn.com.buaansach.entity.store.SeatEntity seat " +
+            "LEFT JOIN vn.com.buaansach.entity.store.AreaEntity area " +
+            "ON seat.areaGuid = area.guid " +
+            "WHERE seat.guid = :seatGuid")
+    Optional<PosSeatDTO> findPosSeatDTOBySeatGuid(@Param("seatGuid") UUID seatGuid);
+
     Optional<SeatEntity> findOneByGuid(UUID seatGuid);
 
     Optional<SeatEntity> findOneByCurrentOrderGuid(UUID orderGuid);

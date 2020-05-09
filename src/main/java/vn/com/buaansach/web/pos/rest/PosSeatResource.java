@@ -29,4 +29,10 @@ public class PosSeatResource {
         log.debug("REST request from user [{}] to list {} by store: {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
         return ResponseEntity.ok(posSeatService.getListSeatByStoreGuid(storeGuid));
     }
+
+    @GetMapping("/get/{seatGuid}")
+    public ResponseEntity<PosSeatDTO> getSeat(@PathVariable String seatGuid) {
+        log.debug("REST request from user [{}] to get {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, seatGuid);
+        return ResponseEntity.ok(posSeatService.getPosSeatDTO(seatGuid));
+    }
 }
