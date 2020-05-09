@@ -26,7 +26,7 @@ public class PosSeatResource {
 
     @GetMapping("/list-by-store/{storeGuid}")
     public ResponseEntity<List<PosSeatDTO>> getListSeatByStoreGuid(@PathVariable String storeGuid) {
-        log.debug("REST request from user {} to list {} by store: {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
+        log.debug("REST request from user [{}] to list {} by store: {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
         return ResponseEntity.ok(posSeatService.getListSeatByStoreGuid(storeGuid));
     }
 }

@@ -31,25 +31,25 @@ public class AdminAreaResource {
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AdminAreaDTO> createArea(@Valid @RequestBody AdminCreateAreaDTO payload) {
-        log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminAreaService.createArea(payload));
     }
 
     @PutMapping("/update")
     public ResponseEntity<AdminAreaDTO> updateArea(@Valid @RequestBody AdminAreaDTO payload) {
-        log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminAreaService.updateArea(payload));
     }
 
     @GetMapping("/list-by-store/{storeGuid}")
     public ResponseEntity<List<AdminAreaDTO>> getListAreaByStore(@PathVariable String storeGuid) {
-        log.debug("REST request from user {} to list {} by store : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
+        log.debug("REST request from user [{}] to list {} by store : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
         return ResponseEntity.ok(adminAreaService.getListAreaByStore(storeGuid));
     }
 
     @DeleteMapping("/delete/{areaGuid}")
     public ResponseEntity<Void> deleteArea(@PathVariable String areaGuid) {
-        log.debug("REST request from user {} to delete {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, areaGuid);
+        log.debug("REST request from user [{}] to delete {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, areaGuid);
         adminAreaService.deleteArea(areaGuid);
         return ResponseEntity.noContent().build();
     }

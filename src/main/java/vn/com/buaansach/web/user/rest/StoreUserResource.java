@@ -26,7 +26,7 @@ public class StoreUserResource {
     @GetMapping("/list-by-user")
     public ResponseEntity<List<StoreUserDTO>> getListStoreUserByUser() {
         String currentUser = SecurityUtils.getCurrentUserLogin();
-        log.debug("REST request from user {} to list {}", currentUser, ENTITY_NAME);
+        log.debug("REST request from user [{}] to list {}", currentUser, ENTITY_NAME);
         return ResponseEntity.ok(storeUserService.getListStoreUserByUser(currentUser));
     }
 }

@@ -24,4 +24,5 @@ public interface PosVoucherRepository extends JpaRepository<VoucherEntity, Long>
     Optional<VoucherEntity> selectForUpdate(@Param("id") Long id);
 
     Optional<VoucherEntity> findOneByGuid(UUID voucherGuid);
+
 }

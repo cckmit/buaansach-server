@@ -21,13 +21,13 @@ public class PosCustomerResource {
 
     @PostMapping("/create")
     public ResponseEntity<PosCustomerDTO> getCustomerByPhone(@RequestBody PosCustomerDTO payload) {
-        log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(posCustomerService.posCreateCustomer(payload));
     }
 
     @GetMapping("/get/{customerPhone}")
     public ResponseEntity<PosCustomerDTO> getCustomerByPhone(@PathVariable String customerPhone) {
-        log.debug("REST request from user {} to list {} by phone : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, customerPhone);
+        log.debug("REST request from user [{}] to list {} by phone : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, customerPhone);
         return ResponseEntity.ok(posCustomerService.getCustomerByPhone(customerPhone));
     }
 

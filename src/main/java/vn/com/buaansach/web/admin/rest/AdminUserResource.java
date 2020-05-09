@@ -36,7 +36,7 @@ public class AdminUserResource {
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AdminUserDTO> createUser(@Valid @RequestBody AdminCreateUserDTO payload) {
-        log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(new AdminUserDTO(adminUserService.createUser(payload)));
     }
 
@@ -50,7 +50,7 @@ public class AdminUserResource {
                                                           @RequestParam(value = "sortField", defaultValue = "createdDate") String sortField,
                                                           @RequestParam(value = "sortDirection", defaultValue = "DESC") Sort.Direction sortDirection) {
         PageRequest request = PageRequest.of(page - 1, size, sortDirection, sortField);
-        log.debug("REST request from user {} to list {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
+        log.debug("REST request from user [{}] to list {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
         return ResponseEntity.ok(adminUserService.getPageUser(request, search).map(AdminUserDTO::new));
     }
 
@@ -59,7 +59,7 @@ public class AdminUserResource {
      */
     @PutMapping("/change-password")
     public void changePassword(@Valid @RequestBody AdminPasswordChangeDTO payload) {
-        log.debug("REST request from user {} to change password for {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to change password for {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         adminUserService.adminChangePassword(payload);
     }
 
@@ -68,7 +68,7 @@ public class AdminUserResource {
      */
     @PutMapping("/toggle-activation")
     public void toggleActivation(@RequestBody String login) {
-        log.debug("REST request from user {} to toggle activation for {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, login);
+        log.debug("REST request from user [{}] to toggle activation for {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, login);
         adminUserService.toggleActivation(login);
     }
 }

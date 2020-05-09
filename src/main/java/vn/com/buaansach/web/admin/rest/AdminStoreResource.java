@@ -35,14 +35,14 @@ public class AdminStoreResource {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<StoreEntity> createStore(@Valid @RequestPart("payload") StoreEntity payload,
                                                    @RequestPart(value = "image", required = false) MultipartFile image) {
-        log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminStoreService.createStore(payload, image));
     }
 
     @PutMapping("/update")
     public ResponseEntity<StoreEntity> updateStore(@Valid @RequestPart("payload") StoreEntity payload,
                                                    @RequestPart(value = "image", required = false) MultipartFile image) {
-        log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminStoreService.updateStore(payload, image));
     }
 
@@ -53,25 +53,25 @@ public class AdminStoreResource {
                                                           @RequestParam(value = "sortField", defaultValue = "createdDate") String sortField,
                                                           @RequestParam(value = "sortDirection", defaultValue = "DESC") Sort.Direction sortDirection) {
         PageRequest request = PageRequest.of(page - 1, size, sortDirection, sortField);
-        log.debug("REST request from user {} to list {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
+        log.debug("REST request from user [{}] to list {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
         return ResponseEntity.ok(adminStoreService.getPageStore(request, search));
     }
 
     @GetMapping("/list-all")
     public ResponseEntity<List<StoreEntity>> getAllStore() {
-        log.debug("REST request from user {} to list all {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);
+        log.debug("REST request from user [{}] to list all {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);
         return ResponseEntity.ok(adminStoreService.getAllStore());
     }
 
     @GetMapping("/get/{storeGuid}")
     public ResponseEntity<StoreEntity> getOneStore(@PathVariable String storeGuid) {
-        log.debug("REST request from user {} to get {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
+        log.debug("REST request from user [{}] to get {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
         return ResponseEntity.ok(adminStoreService.getOneStore(storeGuid));
     }
 
     @DeleteMapping("/delete/{storeGuid}")
     public ResponseEntity<Void> deleteStore(@PathVariable String storeGuid) {
-        log.debug("REST request from user {} to delete {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
+        log.debug("REST request from user [{}] to delete {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
         adminStoreService.deleteStore(storeGuid);
         return ResponseEntity.noContent().build();
     }

@@ -28,32 +28,32 @@ public class AdminVoucherResource {
 
     @PostMapping("/create")
     public ResponseEntity<AdminVoucherDTO> createVoucher(@Valid @RequestBody AdminVoucherDTO payload) {
-        log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminVoucherService.createVoucher(payload));
     }
 
     @PutMapping("/update")
     public ResponseEntity<AdminVoucherDTO> updateVoucher(@Valid @RequestBody AdminVoucherDTO payload) {
-        log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminVoucherService.updateVoucher(payload));
     }
 
     @PutMapping("/toggle-voucher")
     public ResponseEntity<Void> toggleVoucher(@RequestBody String voucherGuid) {
-        log.debug("REST request from user {} to toggle {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, voucherGuid);
+        log.debug("REST request from user [{}] to toggle {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, voucherGuid);
         adminVoucherService.toggleVoucher(voucherGuid);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/list")
     public ResponseEntity<List<AdminVoucherDTO>> getListVoucher() {
-        log.debug("REST request from user {} to list {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);
+        log.debug("REST request from user [{}] to list {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);
         return ResponseEntity.ok(adminVoucherService.getListVoucher());
     }
 
     @GetMapping("/list-voucher-code/{voucherGuid}")
     public ResponseEntity<List<VoucherCodeEntity>> getListVoucherCodeByVoucherGuid(@PathVariable String voucherGuid){
-        log.debug("REST request from user {} to list voucher code by {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, voucherGuid);
+        log.debug("REST request from user [{}] to list voucher code by {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, voucherGuid);
         return ResponseEntity.ok(adminVoucherService.getListVoucherCodeByVoucherGuid(voucherGuid));
     }
 }

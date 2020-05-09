@@ -31,7 +31,7 @@ public class AdminStoreUserResource {
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AdminStoreUserDTO> createStoreUser(@Valid @RequestBody AdminCreateOrUpdateStoreUserDTO payload) {
-        log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminStoreUserService.createStoreUser(payload));
     }
 
@@ -40,25 +40,25 @@ public class AdminStoreUserResource {
      */
     @PostMapping("/add")
     public ResponseEntity<AdminStoreUserDTO> addStoreUser(@Valid @RequestBody AdminAddStoreUserDTO payload) {
-        log.debug("REST request from user {} to add {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to add {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminStoreUserService.addStoreUser(payload));
     }
 
     @PutMapping("/update")
     public ResponseEntity<AdminStoreUserDTO> updateStoreUser(@Valid @RequestBody AdminCreateOrUpdateStoreUserDTO payload) {
-        log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminStoreUserService.updateStoreUser(payload));
     }
 
     @GetMapping("/list-by-store/{storeGuid}")
     public ResponseEntity<List<AdminStoreUserDTO>> getListStoreUserByStoreGuid(@PathVariable String storeGuid) {
-        log.debug("REST request from user {} to list {} by store : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
+        log.debug("REST request from user [{}] to list {} by store : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
         return ResponseEntity.ok(adminStoreUserService.getListStoreUserByStoreGuid(storeGuid));
     }
 
     @PutMapping("/toggle-account-activation/{storeUserGuid}")
     public ResponseEntity<Void> toggleAccountActivation(@PathVariable String storeUserGuid) {
-        log.debug("REST request from user {} to toggle account activation for {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeUserGuid);
+        log.debug("REST request from user [{}] to toggle account activation for {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeUserGuid);
         adminStoreUserService.toggleAccountActivation(storeUserGuid);
         return ResponseEntity.noContent().build();
     }
@@ -68,7 +68,7 @@ public class AdminStoreUserResource {
      */
     @DeleteMapping("/delete/{storeUserGuid}")
     public ResponseEntity<Void> deleteStoreUser(@PathVariable String storeUserGuid) {
-        log.debug("REST request from user {} to delete {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeUserGuid);
+        log.debug("REST request from user [{}] to delete {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeUserGuid);
         adminStoreUserService.deleteStoreUser(storeUserGuid);
         return ResponseEntity.noContent().build();
     }

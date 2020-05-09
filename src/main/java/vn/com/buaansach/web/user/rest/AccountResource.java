@@ -63,7 +63,7 @@ public class AccountResource {
 
     @GetMapping("/info")
     public ResponseEntity<UserDTO> getAccountInfo() {
-        log.debug("REST request from user {} to get account info", SecurityUtils.getCurrentUserLogin());
+        log.debug("REST request from user [{}] to get account info", SecurityUtils.getCurrentUserLogin());
         return userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin())
                 .map(userEntity -> ResponseEntity.ok(new UserDTO(userEntity)))
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with login: " + SecurityUtils.getCurrentUserLogin()));
@@ -72,14 +72,14 @@ public class AccountResource {
     @PutMapping("/update")
     public ResponseEntity<Void> updateAccount(@Valid @RequestPart("dto") UpdateAccountDTO dto,
                                               @RequestPart(value = "image", required = false) MultipartFile image) {
-        log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, dto);
+        log.debug("REST request from user [{}] to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, dto);
         accountService.updateAccount(dto, image);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/change-password")
     public ResponseEntity<Void> changePassword(@Valid @RequestBody UserPasswordChangeDTO dto) {
-        log.debug("REST request from user {} to change password for {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, dto);
+        log.debug("REST request from user [{}] to change password for {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, dto);
         accountService.changePassword(dto.getCurrentPassword(), dto.getNewPassword());
         return ResponseEntity.noContent().build();
     }

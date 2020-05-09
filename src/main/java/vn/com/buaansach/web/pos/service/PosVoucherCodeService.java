@@ -1,5 +1,7 @@
 package vn.com.buaansach.web.pos.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
@@ -7,8 +9,10 @@ import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.StoreSecurityService;
 import vn.com.buaansach.web.pos.repository.*;
+import vn.com.buaansach.web.pos.rest.PosVoucherCodeResource;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherApplySuccessDTO;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderVoucherCodeDTO;
@@ -27,6 +31,7 @@ public class PosVoucherCodeService {
     private final PosSeatRepository posSeatRepository;
     private final PosStoreRepository posStoreRepository;
     private final PosVoucherUsageRepository posVoucherUsageRepository;
+    private final Logger log = LoggerFactory.getLogger(PosVoucherCodeService.class);
 
     public PosVoucherCodeService(StoreSecurityService storeSecurityService, PosVoucherCodeRepository posVoucherCodeRepository, PosVoucherRepository posVoucherRepository, PosVoucherInventoryService posVoucherInventoryService, PosOrderRepository posOrderRepository, PosSeatRepository posSeatRepository, PosStoreRepository posStoreRepository, PosVoucherUsageRepository posVoucherUsageRepository) {
         this.storeSecurityService = storeSecurityService;
@@ -70,8 +75,12 @@ public class PosVoucherCodeService {
     @Transactional
     public PosVoucherApplySuccessDTO applyOrderVoucherCode(PosOrderVoucherCodeDTO payload) {
         PosVoucherCodeDTO voucherCodeDTO = posVoucherCodeRepository.getPosVoucherCodeDTO(payload.getVoucherCode())
-                .orElseThrow(() -> new ResourceNotFoundException("Voucher code not found " + payload.getVoucherCode()));
+                .orElseThrow(() -> {
+                    log.error("Reject request from user [{}] to apply voucher code : {}", SecurityUtils.getCurrentUserLogin(), payload);
+                    throw new ResourceNotFoundException("Voucher code not found " + payload.getVoucherCode());
+                });
         if (voucherCodeDTO.getCustomerPhone() != null && !voucherCodeDTO.getCustomerPhone().equals(payload.getCustomerPhone())) {
+            log.error("Reject request from user [{}] to apply voucher code : {}", SecurityUtils.getCurrentUserLogin(), payload);
             throw new BadRequestException("Voucher code can't be used for phone number: " + payload.getCustomerPhone());
         }
         if (isVoucherCodeValid(voucherCodeDTO, null)) {
@@ -93,6 +102,7 @@ public class PosVoucherCodeService {
 
             return new PosVoucherApplySuccessDTO(voucherCodeDTO);
         } else {
+            log.error("Reject request from user [{}] to apply voucher code : {}", SecurityUtils.getCurrentUserLogin(), payload);
             throw new BadRequestException("Voucher code is not valid");
         }
     }

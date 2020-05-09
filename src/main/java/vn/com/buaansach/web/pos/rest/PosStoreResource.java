@@ -27,19 +27,19 @@ public class PosStoreResource {
 
     @GetMapping("/accessible/{storeGuid}")
     public ResponseEntity<Boolean> checkAccessibility(@PathVariable String storeGuid) {
-        log.debug("REST request from user {} to get accessible {} by store: {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
+        log.debug("REST request from user [{}] to get accessible {} by store: {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
         return ResponseEntity.ok(storeSecurityService.hasPermission(UUID.fromString(storeGuid)));
     }
 
     @GetMapping("/get/{storeGuid}")
     public ResponseEntity<PosStoreDTO> getStore(@PathVariable String storeGuid) {
-        log.debug("REST request from user {} to get {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
+        log.debug("REST request from user [{}] to get {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
         return ResponseEntity.ok(posStoreService.getStore(storeGuid));
     }
 
     @PutMapping("/change-status")
     public ResponseEntity<Void> changeStoreStatus(@RequestBody PosStoreStatusChangeDTO payload){
-        log.debug("REST request from user {} to change {} status : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to change {} status : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         posStoreService.changeStoreStatus(payload);
         return ResponseEntity.ok().build();
     }

@@ -35,14 +35,14 @@ public class AdminProductResource {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AdminProductDTO> createProduct(@Valid @RequestPart("payload") AdminProductDTO payload,
                                                          @RequestPart(value = "image", required = false) MultipartFile image) {
-        log.debug("REST request from user {} to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminProductService.createProduct(payload, image));
     }
 
     @PutMapping("/update")
     public ResponseEntity<AdminProductDTO> updateProduct(@Valid @RequestPart("payload") AdminProductDTO payload,
                                                        @RequestPart(value = "image", required = false) MultipartFile image) {
-        log.debug("REST request from user {} to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(adminProductService.updateProduct(payload, image));
     }
 
@@ -53,25 +53,25 @@ public class AdminProductResource {
                                                               @RequestParam(value = "sortField", defaultValue = "createdDate") String sortField,
                                                               @RequestParam(value = "sortDirection", defaultValue = "ASC") Sort.Direction sortDirection) {
         PageRequest request = PageRequest.of(page - 1, size, sortDirection, sortField);
-        log.debug("REST request from user {} to list {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
+        log.debug("REST request from user [{}] to list {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
         return ResponseEntity.ok(adminProductService.getPageProduct(request, search));
     }
 
     @GetMapping("/list-not-in-store/{storeGuid}")
     public ResponseEntity<List<ProductEntity>> getListProductNotInStore(@PathVariable String storeGuid){
-        log.debug("REST request from user {} to list {} not in store : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
+        log.debug("REST request from user [{}] to list {} not in store : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
         return ResponseEntity.ok(adminProductService.getListProductNotInStore(storeGuid));
     }
 
     @GetMapping("/get/{productGuid}")
     public ResponseEntity<AdminProductDTO> getProduct(@PathVariable String productGuid) {
-        log.debug("REST request from user {} to get {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, productGuid);
+        log.debug("REST request from user [{}] to get {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, productGuid);
         return ResponseEntity.ok(adminProductService.getProduct(productGuid));
     }
 
     @DeleteMapping("/delete/{productGuid}")
     public ResponseEntity<Void> deleteProduct(@PathVariable String productGuid) {
-        log.debug("REST request from user {} to delete {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, productGuid);
+        log.debug("REST request from user [{}] to delete {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, productGuid);
         adminProductService.deleteProduct(productGuid);
         return ResponseEntity.noContent().build();
     }

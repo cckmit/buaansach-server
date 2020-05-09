@@ -11,10 +11,8 @@ import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.util.OrderCodeGenerator;
 import vn.com.buaansach.web.admin.service.StoreSecurityService;
-import vn.com.buaansach.web.pos.repository.PosOrderProductRepository;
-import vn.com.buaansach.web.pos.repository.PosOrderRepository;
-import vn.com.buaansach.web.pos.repository.PosSeatRepository;
-import vn.com.buaansach.web.pos.repository.PosStoreRepository;
+import vn.com.buaansach.web.pos.repository.*;
+import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
 import vn.com.buaansach.web.pos.service.dto.write.*;
@@ -37,8 +35,10 @@ public class PosOrderService {
     private final PosOrderProductRepository posOrderProductRepository;
     private final PosCustomerService posCustomerService;
     private final PosSeatService posSeatService;
+    private final PosVoucherRepository posVoucherRepository;
+    private final PosVoucherCodeRepository posVoucherCodeRepository;
 
-    public PosOrderService(PosOrderRepository posOrderRepository, PosSeatRepository posSeatRepository, PosStoreRepository posStoreRepository, PosPaymentService posPaymentService, StoreSecurityService storeSecurityService, PosOrderProductService posOrderProductService, PosOrderProductRepository posOrderProductRepository, PosCustomerService posCustomerService, PosSeatService posSeatService) {
+    public PosOrderService(PosOrderRepository posOrderRepository, PosSeatRepository posSeatRepository, PosStoreRepository posStoreRepository, PosPaymentService posPaymentService, StoreSecurityService storeSecurityService, PosOrderProductService posOrderProductService, PosOrderProductRepository posOrderProductRepository, PosCustomerService posCustomerService, PosSeatService posSeatService, PosVoucherRepository posVoucherRepository, PosVoucherCodeRepository posVoucherCodeRepository) {
         this.posOrderRepository = posOrderRepository;
         this.posSeatRepository = posSeatRepository;
         this.posStoreRepository = posStoreRepository;
@@ -48,6 +48,8 @@ public class PosOrderService {
         this.posOrderProductRepository = posOrderProductRepository;
         this.posCustomerService = posCustomerService;
         this.posSeatService = posSeatService;
+        this.posVoucherRepository = posVoucherRepository;
+        this.posVoucherCodeRepository = posVoucherCodeRepository;
     }
 
     @Transactional
@@ -112,6 +114,12 @@ public class PosOrderService {
         long totalAmount = calculateTotalAmount(listPosOrderProductDTO);
         orderEntity.setTotalAmount(totalAmount);
         PosOrderDTO result = new PosOrderDTO(posOrderRepository.save(orderEntity));
+
+        if (orderEntity.getOrderVoucherCode() != null && !orderEntity.getOrderVoucherCode().isBlank()) {
+            PosVoucherCodeDTO voucherCodeDTO = posVoucherCodeRepository.getPosVoucherCodeDTO(orderEntity.getOrderVoucherCode())
+                    .orElse(null);
+            result.updateVoucherAttribute(voucherCodeDTO);
+        }
         result.setListOrderProduct(listPosOrderProductDTO);
         return result;
     }
@@ -133,6 +141,11 @@ public class PosOrderService {
         PosOrderDTO result = new PosOrderDTO(orderEntity);
         if (orderEntity.getGuid() != null) {
             result.setListOrderProduct(posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(orderEntity.getGuid()));
+        }
+        if (orderEntity.getOrderVoucherCode() != null && !orderEntity.getOrderVoucherCode().isBlank()) {
+            PosVoucherCodeDTO voucherCodeDTO = posVoucherCodeRepository.getPosVoucherCodeDTO(orderEntity.getOrderVoucherCode())
+                    .orElse(null);
+            result.updateVoucherAttribute(voucherCodeDTO);
         }
         return result;
     }

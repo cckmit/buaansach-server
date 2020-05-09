@@ -25,14 +25,14 @@ public class AdminVoucherInventoryResource {
 
     @PostMapping("/generate")
     public ResponseEntity<Void> generateVoucherInventory(@RequestBody AdminVoucherInventoryGenerateDTO payload) {
-        log.debug("REST request from user {} to generate {}: {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to generate {}: {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         adminVoucherInventoryService.generateVoucherInventory(payload);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/status")
     public ResponseEntity<AdminVoucherInventoryStatusDTO> getVoucherInventoryStatus() {
-        log.debug("REST request from user {} to get status of {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);
+        log.debug("REST request from user [{}] to get status of {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);
         return ResponseEntity.ok(adminVoucherInventoryService.countRemainVoucherCode());
     }
 

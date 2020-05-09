@@ -25,7 +25,7 @@ public class PosOrderProductResource {
     @PutMapping("/serve")
     public ResponseEntity<Void> serveOrderProduct(@RequestBody PosOrderProductStatusChangeDTO payload) {
         String currentUser = SecurityUtils.getCurrentUserLogin();
-        log.debug("REST request from user {} to serve {} : {}", currentUser, ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to serve {} : {}", currentUser, ENTITY_NAME, payload);
         posOrderProductService.serveOrderProduct(payload, currentUser);
         return ResponseEntity.ok().build();
     }
@@ -33,7 +33,7 @@ public class PosOrderProductResource {
     @PutMapping("/cancel")
     public ResponseEntity<Void> cancelOrderProduct(@RequestBody PosOrderProductStatusChangeDTO payload) {
         String currentUser = SecurityUtils.getCurrentUserLogin();
-        log.debug("REST request from user {} to cancel {} : {}", currentUser, ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to cancel {} : {}", currentUser, ENTITY_NAME, payload);
         posOrderProductService.cancelOrderProduct(payload, currentUser);
         return ResponseEntity.ok().build();
     }

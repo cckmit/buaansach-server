@@ -26,7 +26,7 @@ public class GuestCategoryResource {
 
     @GetMapping("/list")
     public ResponseEntity<List<GuestCategoryDTO>> getListPosCategoryDTO() {
-        log.debug("REST request from user {} to list {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);
+        log.debug("REST request from user [{}] to list {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);
         return ResponseEntity.ok(guestCategoryService.getListGuestCategoryDTO().stream()
                 .map(GuestCategoryDTO::new)
                 .collect(Collectors.toList()));

@@ -1,5 +1,6 @@
 package vn.com.buaansach.web.pos.service.dto.readwrite;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -7,6 +8,7 @@ import vn.com.buaansach.entity.enumeration.DiscountType;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.OrderType;
 import vn.com.buaansach.entity.order.OrderEntity;
+import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
 import vn.com.buaansach.web.user.service.dto.AuditDTO;
 
 import javax.persistence.EnumType;
@@ -49,6 +51,7 @@ public class PosOrderDTO extends AuditDTO {
     private UUID orderSaleGuid;
 
     @Size(max = 20)
+    @JsonIgnore
     private String orderVoucherCode;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -62,6 +65,16 @@ public class PosOrderDTO extends AuditDTO {
 
     private UUID seatGuid;
 
+    /* voucher info */
+    private boolean hasVoucher = false;
+    private String voucherName;
+    private String voucherDescription;
+    private String voucherImageUrl;
+    private int voucherDiscount;
+    private DiscountType voucherDiscountType;
+    private Instant voucherCreatedDate;
+    private String voucherCustomerPhone;
+
     /* computed */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<PosOrderProductDTO> listOrderProduct = new ArrayList<>();
@@ -70,6 +83,25 @@ public class PosOrderDTO extends AuditDTO {
     }
 
     public PosOrderDTO(OrderEntity orderEntity) {
+        assignProperty(orderEntity);
+    }
+
+    public void updateVoucherAttribute(PosVoucherCodeDTO dto) {
+        if (dto != null) {
+            this.hasVoucher = true;
+            this.voucherName = dto.getVoucherName();
+            this.voucherDescription = dto.getVoucherDescription();
+            this.voucherImageUrl = dto.getVoucherImageUrl();
+            this.voucherDiscount = dto.getVoucherDiscount();
+            this.voucherDiscountType = dto.getVoucherDiscountType();
+            this.voucherCreatedDate = dto.getCreatedDate();
+            this.voucherCustomerPhone = dto.getCustomerPhone();
+        } else {
+            this.hasVoucher = false;
+        }
+    }
+
+    private void assignProperty(OrderEntity orderEntity) {
         this.guid = orderEntity.getGuid();
         this.orderCode = orderEntity.getOrderCode();
         this.orderStatus = orderEntity.getOrderStatus();
