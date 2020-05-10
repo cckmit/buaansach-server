@@ -22,10 +22,10 @@ public class GuestSeatResource {
     public ResponseEntity<GuestSeatDTO> getSeat(@PathVariable String seatGuid) {
         return ResponseEntity.ok(guestSeatService.getSeat(seatGuid));
     }
-
-    @PutMapping("/change-seat")
-    public ResponseEntity<Void> changeSeat() {
-        return null;
-    }
+//
+//    @PutMapping("/change-seat")
+//    public ResponseEntity<Void> changeSeat() {
+//        return null;
+//    }
 
 }

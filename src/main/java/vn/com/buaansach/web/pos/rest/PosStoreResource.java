@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.security.util.SecurityUtils;
-import vn.com.buaansach.web.admin.service.StoreSecurityService;
+import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.PosStoreService;
 import vn.com.buaansach.web.pos.service.dto.read.PosStoreDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosStoreStatusChangeDTO;
@@ -17,18 +17,18 @@ import java.util.UUID;
 public class PosStoreResource {
     private final String ENTITY_NAME = "pos-store";
     private final Logger log = LoggerFactory.getLogger(PosStoreResource.class);
-    private final StoreSecurityService storeSecurityService;
+    private final PosStoreSecurity posStoreSecurity;
     private final PosStoreService posStoreService;
 
-    public PosStoreResource(StoreSecurityService storeSecurityService, PosStoreService posStoreService) {
-        this.storeSecurityService = storeSecurityService;
+    public PosStoreResource(PosStoreSecurity posStoreSecurity, PosStoreService posStoreService) {
+        this.posStoreSecurity = posStoreSecurity;
         this.posStoreService = posStoreService;
     }
 
     @GetMapping("/accessible/{storeGuid}")
     public ResponseEntity<Boolean> checkAccessibility(@PathVariable String storeGuid) {
         log.debug("REST request from user [{}] to get accessible {} by store: {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
-        return ResponseEntity.ok(storeSecurityService.hasPermission(UUID.fromString(storeGuid)));
+        return ResponseEntity.ok(posStoreSecurity.hasPermission(UUID.fromString(storeGuid)));
     }
 
     @GetMapping("/get/{storeGuid}")

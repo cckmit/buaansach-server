@@ -10,8 +10,8 @@ import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.util.OrderCodeGenerator;
-import vn.com.buaansach.web.admin.service.StoreSecurityService;
 import vn.com.buaansach.web.pos.repository.*;
+import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
@@ -30,7 +30,7 @@ public class PosOrderService {
     private final PosSeatRepository posSeatRepository;
     private final PosStoreRepository posStoreRepository;
     private final PosPaymentService posPaymentService;
-    private final StoreSecurityService storeSecurityService;
+    private final PosStoreSecurity posStoreSecurity;
     private final PosOrderProductService posOrderProductService;
     private final PosOrderProductRepository posOrderProductRepository;
     private final PosCustomerService posCustomerService;
@@ -38,12 +38,12 @@ public class PosOrderService {
     private final PosVoucherRepository posVoucherRepository;
     private final PosVoucherCodeRepository posVoucherCodeRepository;
 
-    public PosOrderService(PosOrderRepository posOrderRepository, PosSeatRepository posSeatRepository, PosStoreRepository posStoreRepository, PosPaymentService posPaymentService, StoreSecurityService storeSecurityService, PosOrderProductService posOrderProductService, PosOrderProductRepository posOrderProductRepository, PosCustomerService posCustomerService, PosSeatService posSeatService, PosVoucherRepository posVoucherRepository, PosVoucherCodeRepository posVoucherCodeRepository) {
+    public PosOrderService(PosOrderRepository posOrderRepository, PosSeatRepository posSeatRepository, PosStoreRepository posStoreRepository, PosPaymentService posPaymentService, PosStoreSecurity posStoreSecurity, PosOrderProductService posOrderProductService, PosOrderProductRepository posOrderProductRepository, PosCustomerService posCustomerService, PosSeatService posSeatService, PosVoucherRepository posVoucherRepository, PosVoucherCodeRepository posVoucherCodeRepository) {
         this.posOrderRepository = posOrderRepository;
         this.posSeatRepository = posSeatRepository;
         this.posStoreRepository = posStoreRepository;
         this.posPaymentService = posPaymentService;
-        this.storeSecurityService = storeSecurityService;
+        this.posStoreSecurity = posStoreSecurity;
         this.posOrderProductService = posOrderProductService;
         this.posOrderProductRepository = posOrderProductRepository;
         this.posCustomerService = posCustomerService;
@@ -63,7 +63,7 @@ public class PosOrderService {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(payload.getSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + payload.getSeatGuid()));
 
-        storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
+        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         /* create customer if not exist */
         if (payload.getCustomerPhone() != null) {
@@ -102,7 +102,7 @@ public class PosOrderService {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + orderEntity.getSeatGuid()));
 
-        storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
+        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         posOrderProductService.saveList(payload.getOrderGuid(), payload.getListOrderProduct(), currentUser);
         /* if has new order product => set seat service status to UNFINISHED */
@@ -134,7 +134,7 @@ public class PosOrderService {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(UUID.fromString(seatGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + seatGuid));
 
-        storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
+        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         OrderEntity orderEntity = posOrderRepository.findSeatCurrentOrder(UUID.fromString(seatGuid))
                 .orElse(new OrderEntity());
@@ -170,7 +170,7 @@ public class PosOrderService {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + orderEntity.getSeatGuid()));
 
-        storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
+        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         /* receive only when order status is created */
         if (orderEntity.getOrderStatus().equals(OrderStatus.CREATED)) {
@@ -211,7 +211,7 @@ public class PosOrderService {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + orderEntity.getSeatGuid()));
 
-        storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
+        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         switch (payload.getPaymentMethod()) {
             case CASH:
@@ -263,7 +263,7 @@ public class PosOrderService {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + orderEntity.getSeatGuid()));
 
-        storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
+        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         orderEntity.setOrderStatus(OrderStatus.CANCELLED_BY_EMPLOYEE);
         orderEntity.setOrderCancelReason(payload.getCancelReason());
@@ -287,7 +287,7 @@ public class PosOrderService {
         if (!storeEntity.getGuid().equals(storeNewSeat.getGuid()))
             throw new BadRequestException("All seat must in same store");
 
-        storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
+        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + payload.getOrderGuid()));
@@ -325,7 +325,7 @@ public class PosOrderService {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(payload.getSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + payload.getSeatGuid()));
 
-        storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
+        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + payload.getOrderGuid()));

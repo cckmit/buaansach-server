@@ -1,9 +1,9 @@
 package vn.com.buaansach.web.guest.service;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
+import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.web.guest.repository.GuestOrderProductRepository;
 import vn.com.buaansach.web.guest.repository.GuestProductRepository;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderProductDTO;
@@ -55,5 +55,9 @@ public class GuestOrderProductService {
             mapProduct.put(product.getGuid(), product);
         });
         return mapProduct;
+    }
+
+    public List<GuestOrderProductDTO> getOrderProduct(String orderGuid) {
+        return guestOrderProductRepository.findListGuestOrderProductDTOByOrderGuid(UUID.fromString(orderGuid));
     }
 }

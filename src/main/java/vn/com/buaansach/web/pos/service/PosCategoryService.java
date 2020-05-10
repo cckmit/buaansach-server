@@ -21,11 +21,11 @@ public class PosCategoryService {
     }
 
     public List<PosCategoryDTO> getListPosCategoryDTO(String storeGuid) {
-        List<CategoryEntity> categories = posCategoryRepository.findAll();
+        List<CategoryEntity> categories = posCategoryRepository.findAllCategoryOrderByPosition();
         List<PosCategoryDTO> result = new ArrayList<>();
         categories.forEach(category -> {
             PosCategoryDTO dto = new PosCategoryDTO(category);
-            dto.setListStoreProduct(posStoreProductRepository.findListPosStoreProductByCategory(UUID.fromString(storeGuid), category.getGuid()));
+            dto.setListStoreProduct(posStoreProductRepository.findListPosStoreProductByStoreAndCategory(UUID.fromString(storeGuid), category.getGuid()));
             result.add(dto);
         });
         return result;

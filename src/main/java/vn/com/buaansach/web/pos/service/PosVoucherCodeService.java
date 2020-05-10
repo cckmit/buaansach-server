@@ -10,8 +10,8 @@ import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
-import vn.com.buaansach.web.admin.service.StoreSecurityService;
 import vn.com.buaansach.web.pos.repository.*;
+import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherApplySuccessDTO;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderVoucherCodeDTO;
@@ -22,7 +22,7 @@ import java.util.UUID;
 
 @Service
 public class PosVoucherCodeService {
-    private final StoreSecurityService storeSecurityService;
+    private final PosStoreSecurity posStoreSecurity;
     private final PosVoucherCodeRepository posVoucherCodeRepository;
     private final PosVoucherRepository posVoucherRepository;
     private final PosVoucherInventoryService posVoucherInventoryService;
@@ -32,8 +32,8 @@ public class PosVoucherCodeService {
     private final PosVoucherUsageRepository posVoucherUsageRepository;
     private final Logger log = LoggerFactory.getLogger(PosVoucherCodeService.class);
 
-    public PosVoucherCodeService(StoreSecurityService storeSecurityService, PosVoucherCodeRepository posVoucherCodeRepository, PosVoucherRepository posVoucherRepository, PosVoucherInventoryService posVoucherInventoryService, PosOrderRepository posOrderRepository, PosSeatRepository posSeatRepository, PosStoreRepository posStoreRepository, PosVoucherUsageRepository posVoucherUsageRepository) {
-        this.storeSecurityService = storeSecurityService;
+    public PosVoucherCodeService(PosStoreSecurity posStoreSecurity, PosVoucherCodeRepository posVoucherCodeRepository, PosVoucherRepository posVoucherRepository, PosVoucherInventoryService posVoucherInventoryService, PosOrderRepository posOrderRepository, PosSeatRepository posSeatRepository, PosStoreRepository posStoreRepository, PosVoucherUsageRepository posVoucherUsageRepository) {
+        this.posStoreSecurity = posStoreSecurity;
         this.posVoucherCodeRepository = posVoucherCodeRepository;
         this.posVoucherRepository = posVoucherRepository;
         this.posVoucherInventoryService = posVoucherInventoryService;
@@ -87,7 +87,7 @@ public class PosVoucherCodeService {
                     .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + payload.getOrderGuid()));
             StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
                     .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + orderEntity.getSeatGuid()));
-            storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
+            posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
             /* appy voucher code on order entity */
             orderEntity.setOrderVoucherCode(payload.getVoucherCode());
@@ -112,7 +112,7 @@ public class PosVoucherCodeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + payload.getOrderGuid()));
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + orderEntity.getSeatGuid()));
-        storeSecurityService.blockAccessIfNotInStore(storeEntity.getGuid());
+        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         VoucherCodeEntity voucherCodeEntity = posVoucherCodeRepository.findOneByVoucherCodeForUpdate(orderEntity.getOrderVoucherCode())
                 .orElseThrow(() -> new BadRequestException("No voucher found on order"));

@@ -1,10 +1,14 @@
 package vn.com.buaansach.web.guest.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.entity.enumeration.OrderStatus;
+import vn.com.buaansach.entity.enumeration.OrderType;
+import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
+import vn.com.buaansach.entity.enumeration.SeatStatus;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
-import vn.com.buaansach.entity.enumeration.OrderStatus;
-import vn.com.buaansach.entity.enumeration.SeatStatus;
+import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.util.OrderCodeGenerator;
@@ -14,6 +18,7 @@ import vn.com.buaansach.web.guest.repository.GuestOrderProductRepository;
 import vn.com.buaansach.web.guest.repository.GuestOrderRepository;
 import vn.com.buaansach.web.guest.repository.GuestSeatRepository;
 import vn.com.buaansach.web.guest.repository.GuestStoreRepository;
+import vn.com.buaansach.web.guest.security.GuestStoreSecurity;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderDTO;
 import vn.com.buaansach.web.guest.service.dto.write.GuestCancelOrderDTO;
 import vn.com.buaansach.web.guest.service.dto.write.GuestCreateOrderDTO;
@@ -26,6 +31,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class GuestOrderService {
     private final GuestOrderRepository guestOrderRepository;
     private final GuestSeatRepository guestSeatRepository;
@@ -33,15 +39,7 @@ public class GuestOrderService {
     private final GuestOrderProductService guestOrderProductService;
     private final GuestSocketService guestSocketService;
     private final GuestStoreRepository guestStoreRepository;
-
-    public GuestOrderService(GuestOrderRepository guestOrderRepository, GuestSeatRepository guestSeatRepository, GuestOrderProductRepository guestOrderProductRepository, GuestOrderProductService guestOrderProductService, GuestSocketService guestSocketService, GuestStoreRepository guestStoreRepository) {
-        this.guestOrderRepository = guestOrderRepository;
-        this.guestSeatRepository = guestSeatRepository;
-        this.guestOrderProductRepository = guestOrderProductRepository;
-        this.guestOrderProductService = guestOrderProductService;
-        this.guestSocketService = guestSocketService;
-        this.guestStoreRepository = guestStoreRepository;
-    }
+    private final GuestStoreSecurity guestStoreSecurity;
 
     public GuestOrderDTO getOrder(String orderGuid, String seatGuid) {
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
@@ -65,6 +63,11 @@ public class GuestOrderService {
 
     @Transactional
     public GuestOrderDTO createOrder(GuestCreateOrderDTO payload) {
+        StoreEntity storeEntity = guestStoreRepository.findOneByGuid(payload.getStoreGuid())
+                .orElseThrow(() -> new GuestResourceNotFoundException("notfound.store"));
+
+        guestStoreSecurity.blockAccessIfStoreIsNotOpenOrDeactivated(storeEntity.getGuid());
+
         SeatEntity seatEntity = guestSeatRepository.findOneByGuid(payload.getSeatGuid())
                 .orElseThrow(() -> new GuestResourceNotFoundException("notfound.seat"));
 
@@ -76,12 +79,19 @@ public class GuestOrderService {
         orderEntity.setGuid(orderGuid);
         orderEntity.setOrderCode(OrderCodeGenerator.generate());
         orderEntity.setOrderStatus(OrderStatus.CREATED);
+        orderEntity.setOrderType(OrderType.IN_STORE);
         orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderStatus.CREATED));
         orderEntity.setOrderCheckinTime(Instant.now());
+        orderEntity.setOrderDiscount(0);
+        orderEntity.setOrderDiscountType(null);
+        orderEntity.setOrderSaleGuid(null);
+        orderEntity.setOrderVoucherCode(null);
+        orderEntity.setTotalAmount(0L);
         orderEntity.setCustomerPhone(payload.getCustomerPhone());
         orderEntity.setSeatGuid(payload.getSeatGuid());
 
         seatEntity.setSeatStatus(SeatStatus.NON_EMPTY);
+        seatEntity.setSeatServiceStatus(SeatServiceStatus.UNFINISHED);
         seatEntity.setCurrentOrderGuid(orderGuid);
         guestSeatRepository.save(seatEntity);
 
@@ -104,9 +114,6 @@ public class GuestOrderService {
     }
 
     public void cancelOrder(GuestCancelOrderDTO payload) {
-        if (payload.getCancelReason().isEmpty())
-            throw new GuestBadRequestException("badRequest.cancelReasonIsRequired");
-
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(payload.getOrderGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + payload.getOrderGuid()));
         if (!orderEntity.getOrderStatus().equals(OrderStatus.CREATED))

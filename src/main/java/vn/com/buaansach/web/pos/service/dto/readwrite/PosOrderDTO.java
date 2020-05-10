@@ -23,46 +23,32 @@ import java.util.UUID;
 @Data
 public class PosOrderDTO extends AuditDTO {
     private UUID guid;
-
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String orderCode;
-
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
-
     @Enumerated(EnumType.STRING)
     private OrderType orderType;
-
     @Size(max = 255)
     private String orderNote;
-
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String orderStatusTimeline;
-
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Instant orderCheckinTime;
-
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int orderDiscount;
-
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Enumerated(EnumType.STRING)
     private DiscountType orderDiscountType;
-
     private UUID orderSaleGuid;
-
-    @Size(max = 20)
     @JsonIgnore
     private String orderVoucherCode;
-
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long totalAmount;
-
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String cashierLogin;
-
     @Size(max = 20)
     private String customerPhone;
-
     private UUID seatGuid;
 
     /* voucher info */

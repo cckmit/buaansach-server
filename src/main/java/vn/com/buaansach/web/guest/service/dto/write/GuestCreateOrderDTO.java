@@ -9,6 +9,5 @@ public class GuestCreateOrderDTO {
     private UUID storeGuid;
     private UUID areaGuid;
     private UUID seatGuid;
-    private String customerName;
     private String customerPhone;
 }

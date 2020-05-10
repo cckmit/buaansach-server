@@ -1,6 +1,7 @@
 package vn.com.buaansach.web.guest.service;
 
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.web.guest.repository.GuestStoreProductRepository;
 import vn.com.buaansach.web.guest.service.dto.read.GuestStoreProductDTO;
 
@@ -16,6 +17,6 @@ public class GuestStoreProductService {
     }
 
     public List<GuestStoreProductDTO> getListStoreProduct(String storeGuid) {
-        return guestStoreProductRepository.findListGuestStoreProductDTO(UUID.fromString(storeGuid));
+        return guestStoreProductRepository.findListGuestStoreProductDTOExceptStatus(UUID.fromString(storeGuid), ProductStatus.STOP_TRADING);
     }
 }

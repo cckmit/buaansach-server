@@ -11,17 +11,21 @@ import java.util.UUID;
 @Data
 public class GuestStoreProductDTO {
     private UUID guid;
+    private StoreProductStatus storeProductStatus;
     private UUID storeGuid;
     private UUID productGuid;
-    private StoreProductStatus storeProductStatus;
 
     private String productCode;
     private String productName;
+    private String productUnit;
     private String productDescription;
     private String productImageUrl;
     private String productThumbnailUrl;
     private ProductStatus productStatus;
     private int productPrice;
+    private int productDiscount;
+    private int productPosition;
+    private UUID productSaleGuid;
 
     public GuestStoreProductDTO() {
     }
@@ -34,10 +38,14 @@ public class GuestStoreProductDTO {
 
         this.productCode = productEntity.getProductCode();
         this.productName = productEntity.getProductName();
+        this.productUnit = productEntity.getProductUnit();
         this.productDescription = productEntity.getProductDescription();
         this.productImageUrl = productEntity.getProductImageUrl();
         this.productThumbnailUrl = productEntity.getProductThumbnailUrl();
         this.productStatus = productEntity.getProductStatus();
         this.productPrice = productEntity.getProductPrice();
+        this.productDiscount = productEntity.getProductDiscount();
+        this.productPosition = productEntity.getProductPosition();
+        this.productSaleGuid = productEntity.getProductSaleGuid();
     }
 }

@@ -1,29 +1,25 @@
-package vn.com.buaansach.web.admin.service;
+package vn.com.buaansach.web.pos.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.StoreStatus;
 import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.AccessDeniedException;
-import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
-import vn.com.buaansach.web.admin.repository.AdminStoreRepository;
-import vn.com.buaansach.web.admin.repository.AdminStoreUserRepository;
+import vn.com.buaansach.web.pos.repository.PosStoreRepository;
+import vn.com.buaansach.web.pos.repository.PosStoreUserRepository;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Service
-public class StoreSecurityService {
-    private final AdminStoreUserRepository adminStoreUserRepository;
-    private final AdminStoreRepository adminStoreRepository;
-
-    public StoreSecurityService(AdminStoreUserRepository adminStoreUserRepository, AdminStoreRepository adminStoreRepository) {
-        this.adminStoreUserRepository = adminStoreUserRepository;
-        this.adminStoreRepository = adminStoreRepository;
-    }
+@RequiredArgsConstructor
+public class PosStoreSecurity {
+    private final PosStoreUserRepository posStoreUserRepository;
+    private final PosStoreRepository posStoreRepository;
 
     private Set<StoreUserRole> getOwnerRole() {
         Set<StoreUserRole> checkRoles = new HashSet<>();
@@ -52,11 +48,11 @@ public class StoreSecurityService {
         /*if allow Admin, uncomment it*/
 //        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) return true;
 
-        StoreEntity storeEntity = adminStoreRepository.findOneByGuid(storeGuid).orElse(null);
+        StoreEntity storeEntity = posStoreRepository.findOneByGuid(storeGuid).orElse(null);
         if (storeEntity == null) return false;
         if (!storeEntity.isStoreActivated()) return false;
 
-        return adminStoreUserRepository.findOneByUserLoginAndStoreGuid(currentUserLogin, storeGuid)
+        return posStoreUserRepository.findOneByUserLoginAndStoreGuid(currentUserLogin, storeGuid)
                 .map(storeUserEntity -> roles.contains(storeUserEntity.getStoreUserRole())
                         /* if user is not working in this store => return false too */
                         && storeUserEntity.getStoreUserStatus().equals(StoreUserStatus.WORKING)).orElse(false);
@@ -90,7 +86,7 @@ public class StoreSecurityService {
     }
 
     private boolean isClosedOrDeactivated(UUID storeGuid) {
-        StoreEntity storeEntity = adminStoreRepository.findOneByGuid(storeGuid).orElse(null);
+        StoreEntity storeEntity = posStoreRepository.findOneByGuid(storeGuid).orElse(null);
         return storeEntity == null || storeEntity.getStoreStatus().equals(StoreStatus.CLOSED) || !storeEntity.isStoreActivated();
     }
 

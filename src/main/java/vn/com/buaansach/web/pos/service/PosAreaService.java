@@ -4,10 +4,10 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
-import vn.com.buaansach.web.admin.service.StoreSecurityService;
 import vn.com.buaansach.web.pos.repository.PosAreaRepository;
 import vn.com.buaansach.web.pos.repository.PosSeatRepository;
 import vn.com.buaansach.web.pos.repository.PosStoreRepository;
+import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosAreaDTO;
 import vn.com.buaansach.web.pos.service.dto.read.PosSeatDTO;
 
@@ -21,17 +21,17 @@ public class PosAreaService {
     private final PosStoreRepository posStoreRepository;
     private final PosAreaRepository posAreaRepository;
     private final PosSeatRepository posSeatRepository;
-    private final StoreSecurityService storeSecurityService;
+    private final PosStoreSecurity posStoreSecurity;
 
-    public PosAreaService(PosStoreRepository posStoreRepository, PosAreaRepository posAreaRepository, PosSeatRepository posSeatRepository, StoreSecurityService storeSecurityService) {
+    public PosAreaService(PosStoreRepository posStoreRepository, PosAreaRepository posAreaRepository, PosSeatRepository posSeatRepository, PosStoreSecurity posStoreSecurity) {
         this.posStoreRepository = posStoreRepository;
         this.posAreaRepository = posAreaRepository;
         this.posSeatRepository = posSeatRepository;
-        this.storeSecurityService = storeSecurityService;
+        this.posStoreSecurity = posStoreSecurity;
     }
 
     public List<PosAreaDTO> getListAreaWithSeatByStoreGuid(String storeGuid) {
-        storeSecurityService.blockAccessIfNotInStore(UUID.fromString(storeGuid));
+        posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
 
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + storeGuid));
@@ -50,7 +50,7 @@ public class PosAreaService {
     }
 
     public List<PosAreaDTO> getListAreaWithoutSeatByStoreGuid(String storeGuid) {
-        storeSecurityService.blockAccessIfNotInStore(UUID.fromString(storeGuid));
+        posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
 
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + storeGuid));

@@ -23,8 +23,8 @@ public class GuestStoreProductResource {
         this.guestStoreProductService = guestStoreProductService;
     }
 
-    @GetMapping("/list-by-store/{storeGuid}")
-    public ResponseEntity<List<GuestStoreProductDTO>> getListStoreProduct(@PathVariable String storeGuid) {
-        return ResponseEntity.ok(guestStoreProductService.getListStoreProduct(storeGuid));
-    }
+//    @GetMapping("/list-by-store/{storeGuid}")
+//    public ResponseEntity<List<GuestStoreProductDTO>> getListStoreProduct(@PathVariable String storeGuid) {
+//        return ResponseEntity.ok(guestStoreProductService.getListStoreProduct(storeGuid));
+//    }
 }

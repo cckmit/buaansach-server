@@ -2,7 +2,10 @@ package vn.com.buaansach.web.guest.service.dto.read;
 
 import lombok.Data;
 import vn.com.buaansach.entity.common.CategoryEntity;
+import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderProductDTO;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -12,6 +15,8 @@ public class GuestCategoryDTO {
     private String categoryDescription;
     private String categoryImageUrl;
     private int categoryPosition;
+
+    private List<GuestStoreProductDTO> listStoreProduct = new ArrayList<>();
 
     public GuestCategoryDTO(CategoryEntity categoryEntity) {
         this.guid = categoryEntity.getGuid();

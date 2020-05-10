@@ -6,10 +6,10 @@ import vn.com.buaansach.entity.enumeration.OrderProductStatus;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
-import vn.com.buaansach.web.admin.service.StoreSecurityService;
 import vn.com.buaansach.web.pos.repository.PosOrderProductRepository;
 import vn.com.buaansach.web.pos.repository.PosOrderRepository;
 import vn.com.buaansach.web.pos.repository.PosProductRepository;
+import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderProductStatusChangeDTO;
 import vn.com.buaansach.web.pos.service.mapper.PosOrderProductMapper;
@@ -22,15 +22,15 @@ import java.util.stream.Collectors;
 public class PosOrderProductService {
     private final PosOrderProductRepository posOrderProductRepository;
     private final PosOrderProductMapper posOrderProductMapper;
-    private final StoreSecurityService storeSecurityService;
+    private final PosStoreSecurity posStoreSecurity;
     private final PosProductRepository posProductRepository;
     private final PosOrderRepository posOrderRepository;
     private final PosSeatService posSeatService;
 
-    public PosOrderProductService(PosOrderProductRepository posOrderProductRepository, PosOrderProductMapper posOrderProductMapper, StoreSecurityService storeSecurityService, PosProductRepository posProductRepository, PosOrderRepository posOrderRepository, PosSeatService posSeatService) {
+    public PosOrderProductService(PosOrderProductRepository posOrderProductRepository, PosOrderProductMapper posOrderProductMapper, PosStoreSecurity posStoreSecurity, PosProductRepository posProductRepository, PosOrderRepository posOrderRepository, PosSeatService posSeatService) {
         this.posOrderProductRepository = posOrderProductRepository;
         this.posOrderProductMapper = posOrderProductMapper;
-        this.storeSecurityService = storeSecurityService;
+        this.posStoreSecurity = posStoreSecurity;
         this.posProductRepository = posProductRepository;
         this.posOrderRepository = posOrderRepository;
         this.posSeatService = posSeatService;
@@ -72,7 +72,7 @@ public class PosOrderProductService {
     }
 
     public void serveOrderProduct(PosOrderProductStatusChangeDTO payload, String currentUser) {
-        storeSecurityService.blockAccessIfNotInStore(payload.getStoreGuid());
+        posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
 
         OrderProductEntity orderProductEntity = posOrderProductRepository.findOneByGuid(payload.getOrderProductGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Order Product not found with guid: " + payload.getOrderProductGuid()));
@@ -90,7 +90,7 @@ public class PosOrderProductService {
 
     public void cancelOrderProduct(PosOrderProductStatusChangeDTO payload, String currentUser) {
         if (payload.getOrderProductCancelReason().isEmpty()) throw new BadRequestException("Cancel Reason is required");
-        storeSecurityService.blockAccessIfNotInStore(payload.getStoreGuid());
+        posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
 
         OrderProductEntity orderProductEntity = posOrderProductRepository.findOneByGuid(payload.getOrderProductGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Order Product not found with guid: " + payload.getOrderProductGuid()));

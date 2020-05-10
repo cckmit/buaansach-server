@@ -32,5 +32,5 @@ public interface PosStoreProductRepository extends JpaRepository<StoreProductEnt
             "AND storeProduct.storeGuid = :storeGuid " +
             "AND productCategory.categoryGuid = :categoryGuid " +
             "ORDER BY product.productPosition ASC")
-    List<PosStoreProductDTO> findListPosStoreProductByCategory(@Param("storeGuid") UUID storeGuid, @Param("categoryGuid") UUID categoryGuid);
+    List<PosStoreProductDTO> findListPosStoreProductByStoreAndCategory(@Param("storeGuid") UUID storeGuid, @Param("categoryGuid") UUID categoryGuid);
 }
