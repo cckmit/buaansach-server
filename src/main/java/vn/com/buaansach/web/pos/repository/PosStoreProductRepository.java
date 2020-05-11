@@ -17,7 +17,7 @@ public interface PosStoreProductRepository extends JpaRepository<StoreProductEnt
             "LEFT JOIN vn.com.buaansach.entity.common.ProductEntity product " +
             "ON storeProduct.productGuid = product.guid " +
             "WHERE product.id IS NOT NULL " +
-            "AND product.productStatus <> 'STOP_TRADING' " +
+            "AND storeProduct.storeProductStatus <> 'STOP_TRADING' " +
             "AND storeProduct.storeGuid = :storeGuid")
     List<PosStoreProductDTO> findListPosStoreProductDTO(@Param("storeGuid") UUID storeGuid);
 
@@ -28,7 +28,7 @@ public interface PosStoreProductRepository extends JpaRepository<StoreProductEnt
             "LEFT JOIN vn.com.buaansach.entity.common.ProductCategoryEntity productCategory " +
             "ON productCategory.productGuid = product.guid " +
             "WHERE product.id IS NOT NULL " +
-            "AND product.productStatus <> 'STOP_TRADING' " +
+            "AND storeProduct.storeProductStatus <> 'STOP_TRADING' " +
             "AND storeProduct.storeGuid = :storeGuid " +
             "AND productCategory.categoryGuid = :categoryGuid " +
             "ORDER BY product.productPosition ASC")

@@ -20,9 +20,9 @@ public class GuestStoreResource {
     private final Logger log = LoggerFactory.getLogger(GuestStoreResource.class);
     private final GuestStoreService guestStoreService;
 
-    @GetMapping("/get/{storeGuid}")
-    public ResponseEntity<GuestStoreDTO> getStore(@PathVariable String storeGuid){
-        log.debug("REST request from user [{}] to get {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
-        return ResponseEntity.ok(guestStoreService.getStore(storeGuid));
+    @GetMapping("/get-by-seat/{seatGuid}")
+    public ResponseEntity<GuestStoreDTO> getStoreBySeat(@PathVariable String seatGuid){
+        log.debug("REST request from user [{}] to get {} by seat : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, seatGuid);
+        return ResponseEntity.ok(guestStoreService.getStoreBySeat(seatGuid));
     }
 }

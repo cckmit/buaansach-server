@@ -13,7 +13,8 @@ import java.util.UUID;
 public class GuestStoreService {
     private final GuestStoreRepository guestStoreRepository;
 
-    public GuestStoreDTO getStore(String storeGuid) {
-        return new GuestStoreDTO(guestStoreRepository.findOneByGuid(UUID.fromString(storeGuid)).orElseThrow(() -> new GuestResourceNotFoundException("notFound.store")));
+    public GuestStoreDTO getStoreBySeat(String seatGuid) {
+        return new GuestStoreDTO(guestStoreRepository.findOneBySeatGuid(UUID.fromString(seatGuid))
+                .orElseThrow(() -> new GuestResourceNotFoundException("storeNotFound")));
     }
 }

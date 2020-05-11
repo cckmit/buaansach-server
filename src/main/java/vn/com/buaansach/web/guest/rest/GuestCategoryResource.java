@@ -24,9 +24,9 @@ public class GuestCategoryResource {
         this.guestCategoryService = guestCategoryService;
     }
 
-    @GetMapping("/list-by-store/{storeGuid}")
-    public ResponseEntity<List<GuestCategoryDTO>> getListPosCategoryDTO(@PathVariable String storeGuid) {
-        log.debug("REST request from user [{}] to list {} by store: {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
-        return ResponseEntity.ok(guestCategoryService.getListGuestCategoryDTO(storeGuid));
+    @GetMapping("/list-by-seat/{seatGuid}")
+    public ResponseEntity<List<GuestCategoryDTO>> getListPosCategoryDTO(@PathVariable String seatGuid) {
+        log.debug("REST request from user [{}] to list {} by seat: {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, seatGuid);
+        return ResponseEntity.ok(guestCategoryService.getListGuestCategoryDTO(seatGuid));
     }
 }

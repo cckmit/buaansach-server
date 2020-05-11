@@ -3,6 +3,7 @@ package vn.com.buaansach.web.guest.service.dto.readwrite;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
+import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.web.guest.service.dto.read.GuestStoreProductDTO;

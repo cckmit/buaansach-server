@@ -1,7 +1,10 @@
 package vn.com.buaansach.web.pos.service;
 
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.enumeration.*;
+import vn.com.buaansach.entity.enumeration.OrderStatus;
+import vn.com.buaansach.entity.enumeration.OrderType;
+import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
+import vn.com.buaansach.entity.enumeration.SeatStatus;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.order.PaymentEntity;
@@ -22,7 +25,6 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class PosOrderService {
@@ -127,7 +129,7 @@ public class PosOrderService {
     private long calculateTotalAmount(List<PosOrderProductDTO> listPosOrderProductDTO) {
         return listPosOrderProductDTO.stream()
                 .filter(dto -> !dto.getOrderProductStatus().toString().contains("CANCELLED"))
-                .mapToLong(dto -> dto.getOrderProductPrice() * (dto.getOrderProductQuantity() - dto.getOrderProductDiscount())).sum();
+                .mapToLong(dto -> dto.getOrderProductQuantity() * (dto.getOrderProductPrice() - dto.getOrderProductDiscount())).sum();
     }
 
     public PosOrderDTO getSeatCurrentOrder(String seatGuid) {
@@ -164,9 +166,6 @@ public class PosOrderService {
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + orderGuid));
 
-        SeatEntity seatEntity = posSeatRepository.findOneByGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Seat not found with guid: " + orderEntity.getSeatGuid()));
-
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + orderEntity.getSeatGuid()));
 
@@ -178,19 +177,9 @@ public class PosOrderService {
             String newTimeline = TimelineUtil.appendOrderStatus(orderEntity.getOrderStatusTimeline(), OrderStatus.RECEIVED, currentUser);
             orderEntity.setOrderStatusTimeline(newTimeline);
 
-            /* switch all order store product from CREATED => PREPARING */
-
             List<OrderProductEntity> orderProductEntityList = posOrderProductRepository.findByOrderGuid(orderEntity.getGuid());
-            orderProductEntityList = orderProductEntityList.stream().peek(orderProductEntity -> {
-                orderProductEntity.setOrderProductStatus(OrderProductStatus.PREPARING);
-                String timeline = TimelineUtil.appendOrderProductStatus(orderProductEntity.getOrderProductStatusTimeline(), OrderProductStatus.PREPARING, currentUser);
-                orderProductEntity.setOrderProductStatusTimeline(timeline);
-            }).collect(Collectors.toList());
-            posOrderProductRepository.saveAll(orderProductEntityList);
-
             if (orderProductEntityList.size() == 0) {
-                seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
-                posSeatRepository.save(seatEntity);
+                posSeatService.makeSeatServiceFinished(orderEntity.getSeatGuid());
             }
 
             if (orderProductEntityList.size() > 0) {

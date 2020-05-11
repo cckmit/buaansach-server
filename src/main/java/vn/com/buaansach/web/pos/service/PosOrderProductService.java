@@ -85,7 +85,7 @@ public class PosOrderProductService {
             orderProductEntity.setOrderProductStatusTimeline(timeline);
         }
         posOrderProductRepository.save(orderProductEntity);
-        checkOrderProductStatus(orderProductEntity.getOrderGuid());
+        checkSeatServiceStatus(orderProductEntity.getOrderGuid());
     }
 
     public void cancelOrderProduct(PosOrderProductStatusChangeDTO payload, String currentUser) {
@@ -104,10 +104,10 @@ public class PosOrderProductService {
             orderProductEntity.setOrderProductStatusTimeline(timeline);
         }
         posOrderProductRepository.save(orderProductEntity);
-        checkOrderProductStatus(orderProductEntity.getOrderGuid());
+        checkSeatServiceStatus(orderProductEntity.getOrderGuid());
     }
 
-    private void checkOrderProductStatus(UUID orderGuid) {
+    private void checkSeatServiceStatus(UUID orderGuid) {
         posOrderRepository.findOneByGuid(orderGuid).ifPresent(orderEntity -> {
             List<OrderProductStatus> listStatus = new ArrayList<>();
             listStatus.add(OrderProductStatus.CREATED);
