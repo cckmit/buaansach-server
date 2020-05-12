@@ -76,6 +76,9 @@ public class CustomerEntity extends AbstractAuditingEntity implements Serializab
     @Column(name = "customer_reset_date")
     private Instant customerResetDate;
 
+    @Column(name = "has_zalo")
+    private boolean hasZalo;
+
     @Size(max = 255)
     @Column(name = "customer_zalo_id")
     private String customerZaloId;
