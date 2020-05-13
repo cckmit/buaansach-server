@@ -10,6 +10,7 @@ import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
+import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.pos.repository.*;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherApplySuccessDTO;
@@ -132,15 +133,17 @@ public class PosVoucherCodeService {
 
     @Transactional
     public void createVoucherForCustomerRegistration(String customerPhone) {
-        VoucherEntity voucherEntity = posVoucherRepository.selectForUpdate(1L)
+        VoucherEntity voucherEntity = posVoucherRepository
+                .findById(Constants.DEFAULT_FIRST_REG_VOUCHER_ID)
                 .orElseThrow();
         if (!voucherEntity.isVoucherEnable()) return;
-        voucherEntity.setNumberVoucherCode(voucherEntity.getNumberVoucherCode() + 1);
+        voucherEntity.setNumberVoucherCode(posVoucherCodeRepository.countNumberVoucherCodeByVoucherGuid(voucherEntity.getGuid()));
         posVoucherRepository.save(voucherEntity);
         VoucherCodeEntity voucherCodeEntity = new VoucherCodeEntity();
         voucherCodeEntity.setCustomerPhone(customerPhone);
         voucherCodeEntity.setVoucherCodeUsageCount(0);
-        voucherCodeEntity.setVoucherCodeUsable(true);
+        /* will be set to true later if customer has zalo id */
+        voucherCodeEntity.setVoucherCodeUsable(false);
         voucherCodeEntity.setVoucherGuid(voucherEntity.getGuid());
         voucherCodeEntity.setVoucherCode(posVoucherInventoryService.getOneVoucherCode());
         posVoucherCodeRepository.save(voucherCodeEntity);

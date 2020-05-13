@@ -2,7 +2,6 @@ package vn.com.buaansach.web.pos.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,4 +20,9 @@ public interface PosVoucherRepository extends JpaRepository<VoucherEntity, Long>
 
     Optional<VoucherEntity> findOneByGuid(UUID voucherGuid);
 
+    @Query("SELECT ve FROM VoucherEntity ve " +
+            "LEFT JOIN vn.com.buaansach.entity.voucher.VoucherCodeEntity vce " +
+            "ON ve.guid = vce.voucherGuid " +
+            "WHERE vce.voucherCode = :voucherCode")
+    Optional<VoucherEntity> findOneByVoucherCode(@Param("voucherCode") String voucherCode);
 }

@@ -11,6 +11,7 @@ import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
 
 import javax.persistence.LockModeType;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface PosVoucherCodeRepository extends JpaRepository<VoucherCodeEntity, Long> {
@@ -32,4 +33,7 @@ public interface PosVoucherCodeRepository extends JpaRepository<VoucherCodeEntit
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT vc FROM VoucherCodeEntity vc WHERE vc.voucherCode = :voucherCode")
     Optional<VoucherCodeEntity> findOneByVoucherCodeForUpdate(@Param("voucherCode") String voucherCode);
+
+    @Query("SELECT COUNT(vc) FROM VoucherCodeEntity vc WHERE vc.voucherGuid = :voucherGuid")
+    int countNumberVoucherCodeByVoucherGuid(@Param("voucherGuid") UUID voucherGuid);
 }

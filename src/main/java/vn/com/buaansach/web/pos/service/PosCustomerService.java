@@ -1,8 +1,5 @@
 package vn.com.buaansach.web.pos.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.customer.CustomerEntity;
@@ -57,12 +54,8 @@ public class PosCustomerService {
 
     @Transactional
     public CustomerEntity createCustomer(CustomerEntity customerEntity) {
-
-        PageRequest request = PageRequest.of(0, 1, Sort.Direction.DESC, "id");
-        Page<CustomerEntity> page = posCustomerRepository.findPageCustomer(request);
-        String lastCode = page.getContent().size() == 0 ? null : page.getContent().get(0).getCustomerCode();
         customerEntity.setGuid(UUID.randomUUID());
-        customerEntity.setCustomerCode(posCodeService.generateCodeForCustomer(lastCode));
+        customerEntity.setCustomerCode(posCodeService.generateCodeForCustomer(customerEntity.getCustomerPhone(), customerEntity.getCreatedDate()));
         customerEntity.setCustomerPassword(passwordEncoder.encode(RandomUtil.generatePassword()));
         customerEntity.setCustomerActivated(true);
         customerEntity.setCustomerLangKey(Constants.DEFAULT_LANGUAGE);

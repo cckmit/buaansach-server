@@ -1,5 +1,6 @@
 package vn.com.buaansach.web.pos.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.OrderType;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PosOrderService {
     private final PosOrderRepository posOrderRepository;
     private final PosSeatRepository posSeatRepository;
@@ -39,31 +41,18 @@ public class PosOrderService {
     private final PosSeatService posSeatService;
     private final PosVoucherRepository posVoucherRepository;
     private final PosVoucherCodeRepository posVoucherCodeRepository;
-
-    public PosOrderService(PosOrderRepository posOrderRepository, PosSeatRepository posSeatRepository, PosStoreRepository posStoreRepository, PosPaymentService posPaymentService, PosStoreSecurity posStoreSecurity, PosOrderProductService posOrderProductService, PosOrderProductRepository posOrderProductRepository, PosCustomerService posCustomerService, PosSeatService posSeatService, PosVoucherRepository posVoucherRepository, PosVoucherCodeRepository posVoucherCodeRepository) {
-        this.posOrderRepository = posOrderRepository;
-        this.posSeatRepository = posSeatRepository;
-        this.posStoreRepository = posStoreRepository;
-        this.posPaymentService = posPaymentService;
-        this.posStoreSecurity = posStoreSecurity;
-        this.posOrderProductService = posOrderProductService;
-        this.posOrderProductRepository = posOrderProductRepository;
-        this.posCustomerService = posCustomerService;
-        this.posSeatService = posSeatService;
-        this.posVoucherRepository = posVoucherRepository;
-        this.posVoucherCodeRepository = posVoucherCodeRepository;
-    }
+    private final PosVoucherCodeService posVoucherCodeService;
 
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(payload.getSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Seat not found with guid: " + payload.getSeatGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException("pos@seatNotFound@: " + payload.getSeatGuid()));
 
         if (seatEntity.getSeatStatus().equals(SeatStatus.NON_EMPTY))
-            throw new BadRequestException("Complete last order on this seat first");
+            throw new BadRequestException("pos@seatNonEmpty@" + payload.getSeatGuid());
 
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(payload.getSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + payload.getSeatGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException("pos@seatNotInAnyStore@ " + payload.getSeatGuid()));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
@@ -329,6 +318,19 @@ public class PosOrderService {
         if (payload.getNewCustomerPhone() == null && orderEntity.getCustomerPhone() == null) return;
         if (payload.getNewCustomerPhone() != null && payload.getNewCustomerPhone().equals(orderEntity.getCustomerPhone()))
             return;
+
+        if (orderEntity.getOrderVoucherCode() != null) {
+            /* if current order has apply voucher code that use for specific phone number => auto cancel voucher for that order */
+            posVoucherCodeRepository.findOneByVoucherCode(orderEntity.getOrderVoucherCode()).ifPresent(voucherCodeEntity -> {
+                if (voucherCodeEntity.getCustomerPhone() != null) {
+                    PosOrderVoucherCodeDTO dto = new PosOrderVoucherCodeDTO();
+                    dto.setCustomerPhone(orderEntity.getCustomerPhone());
+                    dto.setOrderGuid(orderEntity.getGuid());
+                    dto.setVoucherCode(orderEntity.getOrderVoucherCode());
+                    posVoucherCodeService.cancelVoucherCode(dto);
+                }
+            });
+        }
 
         String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(), "CHANGE_PHONE", currentUser);
         orderEntity.setOrderStatusTimeline(newTimeline);
