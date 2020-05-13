@@ -29,4 +29,6 @@ public interface PosOrderProductRepository extends JpaRepository<OrderProductEnt
     List<OrderProductEntity> findByOrderGuidAndOrderProductStatusIn(UUID orderGuid, List<OrderProductStatus> listStatus);
 
     Optional<OrderProductEntity> findOneByGuid(UUID orderProductGuid);
+
+    List<OrderProductEntity> findByGuidIn(List<UUID> uuids);
 }

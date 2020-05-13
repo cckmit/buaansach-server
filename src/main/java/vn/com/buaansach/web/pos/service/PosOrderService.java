@@ -2,13 +2,11 @@ package vn.com.buaansach.web.pos.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.enumeration.OrderStatus;
-import vn.com.buaansach.entity.enumeration.OrderType;
-import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
-import vn.com.buaansach.entity.enumeration.SeatStatus;
+import vn.com.buaansach.entity.enumeration.*;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.order.PaymentEntity;
+import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
@@ -39,9 +37,9 @@ public class PosOrderService {
     private final PosOrderProductRepository posOrderProductRepository;
     private final PosCustomerService posCustomerService;
     private final PosSeatService posSeatService;
-    private final PosVoucherRepository posVoucherRepository;
     private final PosVoucherCodeRepository posVoucherCodeRepository;
     private final PosVoucherCodeService posVoucherCodeService;
+    private final PosAreaRepository posAreaRepository;
 
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
@@ -53,6 +51,9 @@ public class PosOrderService {
 
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(payload.getSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("pos@seatNotInAnyStore@ " + payload.getSeatGuid()));
+
+        AreaEntity areaEntity = posAreaRepository.findOneByGuid(seatEntity.getAreaGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("pos@areaNotFound@ " + seatEntity.getAreaGuid()));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
@@ -66,7 +67,11 @@ public class PosOrderService {
         orderEntity.setGuid(orderGuid);
         orderEntity.setOrderCode(OrderCodeGenerator.generate());
         orderEntity.setOrderStatus(OrderStatus.RECEIVED);
-        orderEntity.setOrderType(OrderType.IN_STORE);
+        if (areaEntity.getAreaType().equals(AreaType.IN_STORE)){
+            orderEntity.setOrderType(OrderType.IN_STORE);
+        } else {
+            orderEntity.setOrderType(OrderType.OUT_STORE);
+        }
         orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderStatus.RECEIVED, currentUser));
         orderEntity.setOrderCheckinTime(Instant.now());
         orderEntity.setOrderDiscount(0);

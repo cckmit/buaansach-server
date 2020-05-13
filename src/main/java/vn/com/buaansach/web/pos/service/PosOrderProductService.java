@@ -11,6 +11,7 @@ import vn.com.buaansach.web.pos.repository.PosOrderRepository;
 import vn.com.buaansach.web.pos.repository.PosProductRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
+import vn.com.buaansach.web.pos.service.dto.write.PosOrderProductServeDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderProductStatusChangeDTO;
 import vn.com.buaansach.web.pos.service.mapper.PosOrderProductMapper;
 import vn.com.buaansach.web.pos.util.TimelineUtil;
@@ -88,6 +89,25 @@ public class PosOrderProductService {
         checkSeatServiceStatus(orderProductEntity.getOrderGuid());
     }
 
+    public void serveAllOrderProduct(PosOrderProductServeDTO payload, String currentUser) {
+        posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
+        List<OrderProductEntity> list = posOrderProductRepository.findByGuidIn(payload.getListOrderProductGuid());
+        list.forEach(orderProductEntity -> {
+            if (!orderProductEntity.getOrderGuid().equals(payload.getOrderGuid())) {
+                throw new BadRequestException("Order product not along with order guid: " + payload.getOrderGuid());
+            }
+            if (orderProductEntity.getOrderProductStatus().equals(OrderProductStatus.PREPARING)) {
+                orderProductEntity.setOrderProductStatus(OrderProductStatus.SERVED);
+                String timeline = TimelineUtil.appendOrderProductStatus(orderProductEntity.getOrderProductStatusTimeline(),
+                        OrderProductStatus.SERVED,
+                        currentUser);
+                orderProductEntity.setOrderProductStatusTimeline(timeline);
+            }
+        });
+        posOrderProductRepository.saveAll(list);
+        checkSeatServiceStatus(payload.getOrderGuid());
+    }
+
     public void cancelOrderProduct(PosOrderProductStatusChangeDTO payload, String currentUser) {
         if (payload.getOrderProductCancelReason().isEmpty()) throw new BadRequestException("Cancel Reason is required");
         posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
@@ -118,4 +138,5 @@ public class PosOrderProductService {
             }
         });
     }
+
 }

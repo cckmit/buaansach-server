@@ -1,6 +1,6 @@
 package vn.com.buaansach.entity.enumeration;
 
-public enum OrderType {
+public enum AreaType {
     IN_STORE,
     OUT_STORE
 }

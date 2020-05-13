@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.service.PosOrderProductService;
+import vn.com.buaansach.web.pos.service.dto.write.PosOrderProductServeDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderProductStatusChangeDTO;
 
 @RestController
@@ -27,6 +28,14 @@ public class PosOrderProductResource {
         String currentUser = SecurityUtils.getCurrentUserLogin();
         log.debug("REST request from user [{}] to serve {} : {}", currentUser, ENTITY_NAME, payload);
         posOrderProductService.serveOrderProduct(payload, currentUser);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/serve-all")
+    public ResponseEntity<Void> serveAllOrderProduct(@RequestBody PosOrderProductServeDTO payload) {
+        String currentUser = SecurityUtils.getCurrentUserLogin();
+        log.debug("REST request from user [{}] to serve all {} : {}", currentUser, ENTITY_NAME, payload);
+        posOrderProductService.serveAllOrderProduct(payload, currentUser);
         return ResponseEntity.ok().build();
     }
 

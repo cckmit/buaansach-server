@@ -58,6 +58,7 @@ public class AdminAreaService {
         AreaEntity areaEntity = new AreaEntity();
         areaEntity.setGuid(UUID.randomUUID());
         areaEntity.setAreaName(request.getAreaName());
+        areaEntity.setAreaType(request.getAreaType());
         areaEntity.setAreaColor(request.getAreaColor());
         areaEntity.setStoreGuid(request.getStoreGuid());
         areaEntity = adminAreaRepository.save(areaEntity);
@@ -92,6 +93,7 @@ public class AdminAreaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Area not found with guid: " + updateEntity.getGuid()));
 
         currentEntity.setAreaName(updateEntity.getAreaName());
+//        currentEntity.setAreaType(updateEntity.getAreaType());
         currentEntity.setAreaColor(updateEntity.getAreaColor());
         return new AdminAreaDTO(adminAreaRepository.save(currentEntity), updateEntity.getListSeat());
     }
