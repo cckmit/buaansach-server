@@ -3,7 +3,6 @@ package vn.com.buaansach.web.guest.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.common.CategoryEntity;
-import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.enumeration.StoreProductStatus;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.web.guest.exception.GuestResourceNotFoundException;
@@ -26,7 +25,7 @@ public class GuestCategoryService {
 
     public List<GuestCategoryDTO> getListGuestCategoryDTO(String seatGuid) {
         StoreEntity storeEntity = guestStoreRepository.findOneBySeatGuid(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new GuestResourceNotFoundException("storeNotFound"));
+                .orElseThrow(() -> new GuestResourceNotFoundException("guest.storeNotFound"));
 
         List<CategoryEntity> categories = guestCategoryRepository.findAllCategoryOrderByPositionAsc();
         List<GuestCategoryDTO> result = new ArrayList<>();

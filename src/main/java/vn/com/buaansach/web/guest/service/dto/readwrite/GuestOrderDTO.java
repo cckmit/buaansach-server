@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import vn.com.buaansach.entity.enumeration.DiscountType;
+import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.OrderType;
 import vn.com.buaansach.entity.order.OrderEntity;
-import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
 
 import javax.persistence.EnumType;
@@ -56,25 +56,12 @@ public class GuestOrderDTO {
     private Instant voucherCreatedDate;
     private String voucherCustomerPhone;
 
+    private boolean hasFeedback = false;
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<GuestOrderProductDTO> listOrderProduct = new ArrayList<>();
 
     public GuestOrderDTO() {
-    }
-
-    public void updateVoucherAttribute(PosVoucherCodeDTO dto) {
-        if (dto != null) {
-            this.hasVoucher = true;
-            this.voucherName = dto.getVoucherName();
-            this.voucherDescription = dto.getVoucherDescription();
-            this.voucherImageUrl = dto.getVoucherImageUrl();
-            this.voucherDiscount = dto.getVoucherDiscount();
-            this.voucherDiscountType = dto.getVoucherDiscountType();
-            this.voucherCreatedDate = dto.getCreatedDate();
-            this.voucherCustomerPhone = dto.getCustomerPhone();
-        } else {
-            this.hasVoucher = false;
-        }
     }
 
     public GuestOrderDTO(OrderEntity orderEntity) {
@@ -93,5 +80,20 @@ public class GuestOrderDTO {
         this.cashierLogin = orderEntity.getCashierLogin();
         this.customerPhone = orderEntity.getCustomerPhone();
         this.seatGuid = orderEntity.getSeatGuid();
+    }
+
+    public void updateVoucherAttribute(PosVoucherCodeDTO dto) {
+        if (dto != null) {
+            this.hasVoucher = true;
+            this.voucherName = dto.getVoucherName();
+            this.voucherDescription = dto.getVoucherDescription();
+            this.voucherImageUrl = dto.getVoucherImageUrl();
+            this.voucherDiscount = dto.getVoucherDiscount();
+            this.voucherDiscountType = dto.getVoucherDiscountType();
+            this.voucherCreatedDate = dto.getCreatedDate();
+            this.voucherCustomerPhone = dto.getCustomerPhone();
+        } else {
+            this.hasVoucher = false;
+        }
     }
 }

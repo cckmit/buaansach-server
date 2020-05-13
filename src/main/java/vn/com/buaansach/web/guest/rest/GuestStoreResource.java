@@ -21,8 +21,8 @@ public class GuestStoreResource {
     private final GuestStoreService guestStoreService;
 
     @GetMapping("/get-by-seat/{seatGuid}")
-    public ResponseEntity<GuestStoreDTO> getStoreBySeat(@PathVariable String seatGuid){
-        log.debug("REST request from user [{}] to get {} by seat : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, seatGuid);
+    public ResponseEntity<GuestStoreDTO> getStoreBySeat(@PathVariable String seatGuid) {
+        log.debug("REST request from user [{}] to get [{}] by seat : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, seatGuid);
         return ResponseEntity.ok(guestStoreService.getStoreBySeat(seatGuid));
     }
 }

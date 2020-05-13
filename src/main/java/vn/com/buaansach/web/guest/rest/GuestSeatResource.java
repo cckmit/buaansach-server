@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.guest.service.GuestSeatService;
 import vn.com.buaansach.web.guest.service.dto.read.GuestSeatDTO;
 
@@ -20,6 +21,7 @@ public class GuestSeatResource {
 
     @GetMapping("/get/{seatGuid}")
     public ResponseEntity<GuestSeatDTO> getSeat(@PathVariable String seatGuid) {
+        log.debug("REST request from user [{}] to get [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, seatGuid);
         return ResponseEntity.ok(guestSeatService.getSeat(seatGuid));
     }
 //

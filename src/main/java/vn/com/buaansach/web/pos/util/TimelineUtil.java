@@ -6,17 +6,9 @@ import vn.com.buaansach.entity.enumeration.OrderStatus;
 import java.time.Instant;
 
 public final class TimelineUtil {
-    public static String initOrderStatus(OrderStatus status) {
-        return status.name() + "@@" + Instant.now().toString();
-    }
 
     public static String initOrderStatus(OrderStatus status, String actor) {
         return status.name() + "@" + actor + "@" + Instant.now().toString();
-    }
-
-    public static String appendOrderStatus(String currentTimeline, OrderStatus newStatus) {
-        String newTimeline = currentTimeline + ";" + newStatus.name() + "@@" + Instant.now().toString();
-        return newTimeline.length() > 1000 ? currentTimeline : newTimeline;
     }
 
     public static String appendOrderStatus(String currentTimeline, OrderStatus newStatus, String actor) {
@@ -29,17 +21,8 @@ public final class TimelineUtil {
         return newTimeline.length() > 1000 ? currentTimeline : newTimeline;
     }
 
-    public static String initOrderProductStatus(OrderProductStatus status) {
-        return status.name() + "@@" + Instant.now().toString();
-    }
-
     public static String initOrderProductStatus(OrderProductStatus status, String actor) {
         return status.name() + "@" + actor + "@" + Instant.now().toString();
-    }
-
-    public static String appendOrderProductStatus(String currentTimeline, OrderProductStatus newStatus) {
-        String newTimeline = currentTimeline + ";" + newStatus.name() + "@@" + Instant.now().toString();
-        return newTimeline.length() > 1000 ? currentTimeline : newTimeline;
     }
 
     public static String appendOrderProductStatus(String currentTimeline, OrderProductStatus newStatus, String actor) {

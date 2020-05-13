@@ -22,9 +22,9 @@ public class GuestOrderProductResource {
     private final Logger log = LoggerFactory.getLogger(GuestOrderProductResource.class);
     private final GuestOrderProductService guestOrderProductService;
 
-    @GetMapping("/get/{orderGuid}")
+    @GetMapping("/list-by-order/{orderGuid}")
     public ResponseEntity<List<GuestOrderProductDTO>> getOrderProduct(@PathVariable String orderGuid) {
-        log.debug("REST request from user [{}] to get {} by order : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, orderGuid);
+        log.debug("REST request from user [{}] to get [{}] by order : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, orderGuid);
         return ResponseEntity.ok(guestOrderProductService.getOrderProduct(orderGuid));
     }
 }

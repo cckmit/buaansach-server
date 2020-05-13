@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
+import vn.com.buaansach.entity.enumeration.OrderFeedbackAction;
 import vn.com.buaansach.entity.enumeration.ProductQualityRating;
 import vn.com.buaansach.entity.enumeration.ServiceQualityRating;
 
@@ -30,13 +31,9 @@ public class OrderFeedbackEntity extends AbstractAuditingEntity implements Seria
     @Column(name = "order_guid")
     private UUID orderGuid;
 
-    @Size(max = 50)
-    @Column(name = "customer_name", length = 50)
-    private String customerName;
-
-    @Size(max = 20)
-    @Column(name = "customer_phone", length = 20)
-    private String customerPhone;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_feedback_action")
+    private OrderFeedbackAction orderFeedbackAction;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "service_quality_rating")

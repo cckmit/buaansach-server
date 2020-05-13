@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.guest.service.GuestOrderService;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderDTO;
-import vn.com.buaansach.web.guest.service.dto.write.GuestCancelOrderDTO;
 import vn.com.buaansach.web.guest.service.dto.write.GuestCreateOrderDTO;
 import vn.com.buaansach.web.guest.service.dto.write.GuestOrderUpdateDTO;
 
@@ -24,31 +23,30 @@ public class GuestOrderResource {
         this.guestOrderService = guestOrderService;
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<GuestOrderDTO> getOrder(@RequestParam("orderGuid") String orderGuid,
-                                                  @RequestParam("seatGuid") String seatGuid) {
-        log.debug("REST request from user [{}] to get {} : {} by seat: {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, orderGuid, seatGuid);
-        return ResponseEntity.ok(guestOrderService.getOrder(orderGuid, seatGuid));
+    @GetMapping("/get/{orderGuid}")
+    public ResponseEntity<GuestOrderDTO> getOrder(@PathVariable String orderGuid) {
+        log.debug("REST request from user [{}] to get [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, orderGuid);
+        return ResponseEntity.ok(guestOrderService.getOrder(orderGuid));
     }
 
     @PostMapping("/create")
     public ResponseEntity<GuestOrderDTO> createOrder(@Valid @RequestBody GuestCreateOrderDTO payload) {
-        log.debug("REST request from user [{}] to create {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
-        return ResponseEntity.ok(guestOrderService.createOrder(payload));
+        String currentUser = SecurityUtils.getCurrentUserLogin();
+        log.debug("REST request from user [{}] to create [{}] : [{}]", currentUser, ENTITY_NAME, payload);
+        return ResponseEntity.ok(guestOrderService.createOrder(payload, currentUser));
     }
 
     @PutMapping("/update")
     public ResponseEntity<GuestOrderDTO> updateOrder(@Valid @RequestBody GuestOrderUpdateDTO payload) {
-        log.debug("REST request from user [{}] to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
-        return ResponseEntity.ok(guestOrderService.updateOrder(payload));
+        String currentUser = SecurityUtils.getCurrentUserLogin();
+        log.debug("REST request from user [{}] to update [{}] : [{}]", currentUser, ENTITY_NAME, payload);
+        return ResponseEntity.ok(guestOrderService.updateOrder(payload, currentUser));
     }
 
 //    @PutMapping("/cancel")
 //    public ResponseEntity<Void> cancelOrder(@RequestBody GuestCancelOrderDTO payload) {
-//        log.debug("REST request from user [{}] to cancel {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+//        log.debug("REST request from user [{}] to cancel [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
 //        guestOrderService.cancelOrder(payload);
 //        return ResponseEntity.ok().build();
 //    }
-
-
 }

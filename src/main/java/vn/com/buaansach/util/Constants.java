@@ -16,6 +16,7 @@ public final class Constants {
     public static final String CATEGORY_IMAGE_PATH = "category_images";
     public static final String USER_IMAGE_PATH = "user_images";
     public static final int POSITION_INCREMENT = (int) Math.pow(2, 16);
+    public static final long DEFAULT_FIRST_REG_VOUCHER_ID = 1L;
 
     private Constants() {
     }

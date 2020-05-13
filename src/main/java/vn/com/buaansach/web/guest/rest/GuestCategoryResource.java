@@ -26,7 +26,7 @@ public class GuestCategoryResource {
 
     @GetMapping("/list-by-seat/{seatGuid}")
     public ResponseEntity<List<GuestCategoryDTO>> getListPosCategoryDTO(@PathVariable String seatGuid) {
-        log.debug("REST request from user [{}] to list {} by seat: {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, seatGuid);
+        log.debug("REST request from user [{}] to list [{}] by seat: [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, seatGuid);
         return ResponseEntity.ok(guestCategoryService.getListGuestCategoryDTO(seatGuid));
     }
 }

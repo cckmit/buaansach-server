@@ -22,7 +22,8 @@ public interface GuestStoreProductRepository extends JpaRepository<StoreProductE
             "WHERE product.id IS NOT NULL " +
             "AND product.productStatus <> :productStatus " +
             "AND storeProduct.storeGuid = :storeGuid")
-    List<GuestStoreProductDTO> findListGuestStoreProductDTOExceptStatus(@Param("storeGuid") UUID storeGuid, @Param("productStatus") ProductStatus productStatus);
+    List<GuestStoreProductDTO> findListGuestStoreProductDTOExceptStatus(@Param("storeGuid") UUID storeGuid,
+                                                                        @Param("productStatus") ProductStatus productStatus);
 
     @Query("SELECT new vn.com.buaansach.web.guest.service.dto.read.GuestStoreProductDTO(storeProduct, product) " +
             "FROM StoreProductEntity storeProduct " +
@@ -35,5 +36,7 @@ public interface GuestStoreProductRepository extends JpaRepository<StoreProductE
             "AND storeProduct.storeGuid = :storeGuid " +
             "AND productCategory.categoryGuid = :categoryGuid " +
             "ORDER BY product.productPosition ASC")
-    List<GuestStoreProductDTO> findListGuestStoreProductByStoreAndCategoryExceptStatus(@Param("storeGuid") UUID storeGuid, @Param("categoryGuid") UUID categoryGuid, @Param("storeProductStatus") StoreProductStatus storeProductStatus);
+    List<GuestStoreProductDTO> findListGuestStoreProductByStoreAndCategoryExceptStatus(@Param("storeGuid") UUID storeGuid,
+                                                                                       @Param("categoryGuid") UUID categoryGuid,
+                                                                                       @Param("storeProductStatus") StoreProductStatus storeProductStatus);
 }

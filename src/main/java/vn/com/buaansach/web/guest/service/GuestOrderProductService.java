@@ -25,7 +25,7 @@ public class GuestOrderProductService {
         this.guestProductRepository = guestProductRepository;
     }
 
-    public List<OrderProductEntity> saveList(UUID orderGuid, List<GuestOrderProductDTO> dtos) {
+    public List<OrderProductEntity> saveList(UUID orderGuid, List<GuestOrderProductDTO> dtos, String currentUser) {
         List<OrderProductEntity> list = guestOrderProductMapper.listDtoToListEntity(dtos);
 
         List<UUID> uuids = list.stream().map(OrderProductEntity::getProductGuid).collect(Collectors.toList());
@@ -36,11 +36,15 @@ public class GuestOrderProductService {
             entity.setGuid(UUID.randomUUID());
             entity.setOrderProductGroup(orderProductGroup);
             entity.setOrderProductStatus(OrderProductStatus.PREPARING);
-            entity.setOrderProductStatusTimeline(TimelineUtil.initOrderProductStatus(OrderProductStatus.PREPARING));
+            entity.setOrderProductStatusTimeline(TimelineUtil.initOrderProductStatus(OrderProductStatus.PREPARING, currentUser));
             entity.setOrderGuid(orderGuid);
 
             ProductEntity product = mapProduct.get(entity.getProductGuid());
+            entity.setOrderProductRootPrice(product.getProductRootPrice());
             entity.setOrderProductPrice(product.getProductPrice());
+            entity.setOrderProductDiscount(product.getProductDiscount());
+            entity.setOrderProductSaleGuid(product.getProductSaleGuid());
+            entity.setOrderProductVoucherCode(null);
         }).collect(Collectors.toList());
         return guestOrderProductRepository.saveAll(list);
     }

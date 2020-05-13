@@ -20,7 +20,7 @@ public class GuestStoreSecurity {
     }
 
     public void blockAccessIfStoreIsNotOpenOrDeactivated(UUID storeGuid) {
-        if (isClosedOrDeactivated(storeGuid)) throw new AccessDeniedException("Store has been closed");
+        if (isClosedOrDeactivated(storeGuid)) throw new AccessDeniedException("guest.storeClosed");
     }
 
 }
