@@ -37,6 +37,7 @@ public class AdminSeatService {
         seatEntity.setSeatName(request.getSeatName());
         seatEntity.setSeatStatus(SeatStatus.EMPTY);
         seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
+        seatEntity.setSeatLocked(false);
         seatEntity.setCurrentOrderGuid(null);
         seatEntity.setAreaGuid(request.getAreaGuid());
         return adminSeatRepository.save(seatEntity);

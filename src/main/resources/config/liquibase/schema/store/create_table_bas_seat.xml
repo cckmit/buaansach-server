@@ -21,6 +21,11 @@
             <column name="seat_service_status" type="varchar(30)">
                 <constraints nullable="false"/>
             </column>
+
+            <column name="seat_locked" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="current_order_guid" type="binary(16)"/>
             <column name="area_guid" type="binary(16)">
                 <constraints nullable="false"/>

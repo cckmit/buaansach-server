@@ -41,6 +41,9 @@ public class SeatEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "seat_service_status")
     private SeatServiceStatus seatServiceStatus = SeatServiceStatus.FINISHED;
 
+    @Column(name = "seat_locked")
+    private boolean seatLocked;
+
     @Column(name = "current_order_guid")
     private UUID currentOrderGuid;
 

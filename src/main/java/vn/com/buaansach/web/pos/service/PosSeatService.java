@@ -68,4 +68,10 @@ public class PosSeatService {
         posSeatRepository.save(seatEntity);
     }
 
+    public void toggleLock(String seatGuid) {
+        SeatEntity seatEntity = posSeatRepository.findOneByGuid(UUID.fromString(seatGuid))
+                .orElseThrow(() -> new ResourceNotFoundException("Seat not found with guid: " + seatGuid));
+        seatEntity.setSeatLocked(!seatEntity.isSeatLocked());
+        posSeatRepository.save(seatEntity);
+    }
 }
