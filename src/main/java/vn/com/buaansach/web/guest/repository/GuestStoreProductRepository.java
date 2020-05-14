@@ -39,4 +39,6 @@ public interface GuestStoreProductRepository extends JpaRepository<StoreProductE
     List<GuestStoreProductDTO> findListGuestStoreProductByStoreAndCategoryExceptStatus(@Param("storeGuid") UUID storeGuid,
                                                                                        @Param("categoryGuid") UUID categoryGuid,
                                                                                        @Param("storeProductStatus") StoreProductStatus storeProductStatus);
+
+    List<StoreProductEntity> findByStoreGuidAndProductGuidIn(UUID storeGuid, List<UUID> uuids);
 }

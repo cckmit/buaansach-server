@@ -2,13 +2,11 @@ package vn.com.buaansach.web.guest.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.enumeration.OrderStatus;
-import vn.com.buaansach.entity.enumeration.OrderType;
-import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
-import vn.com.buaansach.entity.enumeration.SeatStatus;
+import vn.com.buaansach.entity.enumeration.*;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
+import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.util.OrderCodeGenerator;
 import vn.com.buaansach.web.guest.exception.GuestBadRequestException;
 import vn.com.buaansach.web.guest.exception.GuestResourceNotFoundException;
@@ -26,6 +24,7 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +39,7 @@ public class GuestOrderService {
     private final GuestSeatService guestSeatService;
     private final GuestOrderFeedbackRepository guestOrderFeedbackRepository;
     private final GuestCustomerService guestCustomerService;
+    private final GuestStoreProductRepository guestStoreProductRepository;
 
     public GuestOrderDTO getOrder(String orderGuid) {
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
@@ -110,6 +110,14 @@ public class GuestOrderService {
 
         if (payload.getListOrderProduct().size() <= 0)
             throw new GuestBadRequestException("guest@listOrderProductEmpty@" + payload.getOrderGuid());
+
+        List<UUID> listProductGuid = payload.getListOrderProduct().stream().map(GuestOrderProductDTO::getProductGuid).collect(Collectors.toList());
+
+        List<StoreProductEntity> listStoreProduct = guestStoreProductRepository.findByStoreGuidAndProductGuidIn(payload.getStoreGuid(), listProductGuid);
+        List<StoreProductEntity> listUnavailable = listStoreProduct.stream().filter(item -> item.getStoreProductStatus().equals(StoreProductStatus.UNAVAILABLE)).collect(Collectors.toList());
+        if (listUnavailable.size() > 0) {
+            throw new GuestBadRequestException("guest@storeProductUnavailable@");
+        }
 
         guestOrderProductService.saveList(payload.getOrderGuid(), payload.getListOrderProduct(), currentUser);
 
