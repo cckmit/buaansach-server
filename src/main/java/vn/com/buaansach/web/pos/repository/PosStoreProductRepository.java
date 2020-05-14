@@ -8,6 +8,7 @@ import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreProductDTO;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -33,4 +34,6 @@ public interface PosStoreProductRepository extends JpaRepository<StoreProductEnt
             "AND productCategory.categoryGuid = :categoryGuid " +
             "ORDER BY product.productPosition ASC")
     List<PosStoreProductDTO> findListPosStoreProductByStoreAndCategory(@Param("storeGuid") UUID storeGuid, @Param("categoryGuid") UUID categoryGuid);
+
+    Optional<StoreProductEntity> findOneByGuid(UUID storeProductGuid);
 }
