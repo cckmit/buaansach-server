@@ -93,7 +93,7 @@ public class GuestOrderService {
 
         GuestOrderDTO result = new GuestOrderDTO(guestOrderRepository.save(orderEntity));
 
-        GuestSocketDTO socketDTO = new GuestSocketDTO("GUEST_CREATE_ORDER", result);
+        GuestSocketDTO socketDTO = new GuestSocketDTO("GUEST_CREATE_ORDER", result.getSeatGuid());
         guestSocketService.sendMessage("/topic/pos/" + payload.getStoreGuid(), socketDTO);
         return result;
     }
@@ -130,7 +130,7 @@ public class GuestOrderService {
         GuestOrderDTO result = new GuestOrderDTO(guestOrderRepository.save(orderEntity));
         result.setListOrderProduct(listOrderProductDTO);
 
-        GuestSocketDTO socketDTO = new GuestSocketDTO("GUEST_UPDATE_ORDER", result);
+        GuestSocketDTO socketDTO = new GuestSocketDTO("GUEST_UPDATE_ORDER", result.getSeatGuid());
         guestSocketService.sendMessage("/topic/pos/" + payload.getStoreGuid(), socketDTO);
         return result;
     }
