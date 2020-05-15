@@ -35,7 +35,9 @@
             <column name="customer_lang_key" type="varchar(10)"/>
             <column name="customer_reset_key" type="varchar(20)"/>
             <column name="customer_reset_date" type="timestamp"/>
-            <column name="has_zalo" type="boolean"/>
+            <column name="customer_zalo_status" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
             <column name="customer_zalo_id" type="varchar(255)"/>
             <column name="customer_rank_guid" type="binary(16)"/>
 

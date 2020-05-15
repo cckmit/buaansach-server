@@ -1,8 +1,10 @@
 package vn.com.buaansach.web.pos.service;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.entity.enumeration.VoucherCodeSentStatus;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
@@ -11,38 +13,33 @@ import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.Constants;
-import vn.com.buaansach.web.pos.repository.*;
+import vn.com.buaansach.web.pos.repository.PosOrderRepository;
+import vn.com.buaansach.web.pos.repository.PosStoreRepository;
+import vn.com.buaansach.web.pos.repository.PosVoucherCodeRepository;
+import vn.com.buaansach.web.pos.repository.PosVoucherRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherApplySuccessDTO;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderVoucherCodeDTO;
+import vn.com.buaansach.web.pos.websocket.PosSocketService;
+import vn.com.buaansach.web.pos.websocket.dto.PosSocketDTO;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PosVoucherCodeService {
+    private final Logger log = LoggerFactory.getLogger(PosVoucherCodeService.class);
     private final PosStoreSecurity posStoreSecurity;
     private final PosVoucherCodeRepository posVoucherCodeRepository;
     private final PosVoucherRepository posVoucherRepository;
     private final PosVoucherInventoryService posVoucherInventoryService;
     private final PosOrderRepository posOrderRepository;
-    private final PosSeatRepository posSeatRepository;
     private final PosStoreRepository posStoreRepository;
-    private final PosVoucherUsageRepository posVoucherUsageRepository;
-    private final Logger log = LoggerFactory.getLogger(PosVoucherCodeService.class);
+    private final PosSocketService posSocketService;
 
-    public PosVoucherCodeService(PosStoreSecurity posStoreSecurity, PosVoucherCodeRepository posVoucherCodeRepository, PosVoucherRepository posVoucherRepository, PosVoucherInventoryService posVoucherInventoryService, PosOrderRepository posOrderRepository, PosSeatRepository posSeatRepository, PosStoreRepository posStoreRepository, PosVoucherUsageRepository posVoucherUsageRepository) {
-        this.posStoreSecurity = posStoreSecurity;
-        this.posVoucherCodeRepository = posVoucherCodeRepository;
-        this.posVoucherRepository = posVoucherRepository;
-        this.posVoucherInventoryService = posVoucherInventoryService;
-        this.posOrderRepository = posOrderRepository;
-        this.posSeatRepository = posSeatRepository;
-        this.posStoreRepository = posStoreRepository;
-        this.posVoucherUsageRepository = posVoucherUsageRepository;
-    }
 
     public PosVoucherCodeDTO getVoucherCodeInfo(String voucherCode) {
         return posVoucherCodeRepository.getPosVoucherCodeDTO(voucherCode)
@@ -144,8 +141,13 @@ public class PosVoucherCodeService {
         voucherCodeEntity.setVoucherCodeUsageCount(0);
         /* will be set to true later if customer has zalo id */
         voucherCodeEntity.setVoucherCodeUsable(false);
+        voucherCodeEntity.setVoucherCodeSentStatus(VoucherCodeSentStatus.UNSET);
         voucherCodeEntity.setVoucherGuid(voucherEntity.getGuid());
         voucherCodeEntity.setVoucherCode(posVoucherInventoryService.getOneVoucherCode());
         posVoucherCodeRepository.save(voucherCodeEntity);
+        PosSocketDTO dto = new PosSocketDTO();
+        dto.setMessage("POS_CREATE_CUSTOMER");
+        dto.setPayload(customerPhone);
+        posSocketService.sendMessage("/topic/manager", dto);
     }
 }

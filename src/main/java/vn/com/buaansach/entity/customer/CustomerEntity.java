@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
+import vn.com.buaansach.entity.enumeration.CustomerZaloStatus;
 import vn.com.buaansach.entity.enumeration.Gender;
 
 import javax.persistence.*;
@@ -76,8 +77,9 @@ public class CustomerEntity extends AbstractAuditingEntity implements Serializab
     @Column(name = "customer_reset_date")
     private Instant customerResetDate;
 
-    @Column(name = "has_zalo")
-    private boolean hasZalo;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "customer_zalo_status")
+    private CustomerZaloStatus customerZaloStatus = CustomerZaloStatus.UNKNOWN;
 
     @Size(max = 255)
     @Column(name = "customer_zalo_id")

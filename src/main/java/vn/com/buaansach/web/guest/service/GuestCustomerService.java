@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.customer.CustomerEntity;
+import vn.com.buaansach.entity.enumeration.CustomerZaloStatus;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.util.RandomUtil;
 import vn.com.buaansach.web.guest.repository.GuestCustomerRepository;
@@ -35,6 +36,7 @@ public class GuestCustomerService {
         customerEntity.setCustomerCode(guestCodeService.generateCodeForCustomer(customerEntity.getCustomerPhone(), customerEntity.getCreatedDate()));
         customerEntity.setCustomerPassword(passwordEncoder.encode(RandomUtil.generatePassword()));
         customerEntity.setCustomerActivated(true);
+        customerEntity.setCustomerZaloStatus(CustomerZaloStatus.UNKNOWN);
         customerEntity.setCustomerLangKey(Constants.DEFAULT_LANGUAGE);
         CustomerEntity result = guestCustomerRepository.save(customerEntity);
         // save customer first to make sure save customer successfully then create voucher for customer

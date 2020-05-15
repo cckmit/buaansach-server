@@ -16,6 +16,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="voucher_code_usage_count" type="int"/>
+            <column name="voucher_code_sent_status" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
             <column name="customer_phone" type="varchar(20)"/>
             <column name="voucher_guid" type="binary(16)">
                 <constraints nullable="false"/>
