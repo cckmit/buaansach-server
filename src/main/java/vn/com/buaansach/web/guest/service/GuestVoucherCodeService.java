@@ -43,6 +43,6 @@ public class GuestVoucherCodeService {
         GuestSocketDTO dto = new GuestSocketDTO();
         dto.setMessage("GUEST_CREATE_CUSTOMER");
         dto.setPayload(customerPhone);
-        guestSocketService.sendMessage("/topic/manager", dto);
+        guestSocketService.sendMessage("/topic/customer-care", dto);
     }
 }

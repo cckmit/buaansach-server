@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.manager.repository;
+package vn.com.buaansach.web.customer_care.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,33 +7,32 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import vn.com.buaansach.entity.customer.CustomerEntity;
-import vn.com.buaansach.entity.enumeration.CustomerZaloStatus;
 import vn.com.buaansach.entity.enumeration.VoucherCodeSentStatus;
-import vn.com.buaansach.web.manager.service.dto.ManagerCustomerVoucherCodeDTO;
+import vn.com.buaansach.web.customer_care.service.dto.CustomerCareCustomerVoucherCodeDTO;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ManagerCustomerRepository extends JpaRepository<CustomerEntity, Long> {
+public interface CustomerCareCustomerRepository extends JpaRepository<CustomerEntity, Long> {
     Optional<CustomerEntity> findOneByCustomerPhone(String customerPhone);
 
-    @Query("SELECT new vn.com.buaansach.web.manager.service.dto.ManagerCustomerVoucherCodeDTO(customer, voucherCode) " +
+    @Query("SELECT new vn.com.buaansach.web.customer_care.service.dto.CustomerCareCustomerVoucherCodeDTO(customer, voucherCode) " +
             "FROM CustomerEntity customer " +
             "LEFT JOIN vn.com.buaansach.entity.voucher.VoucherCodeEntity voucherCode " +
             "ON customer.customerPhone = voucherCode.customerPhone " +
             "WHERE voucherCode.voucherGuid = :voucherGuid " +
             "AND customer.customerPhone LIKE %:search%")
-    Page<ManagerCustomerVoucherCodeDTO> findPageManagerCustomerCodeDTO(@Param("voucherGuid") UUID voucherGuid, @Param("search") String search, Pageable pageable);
+    Page<CustomerCareCustomerVoucherCodeDTO> findPageManagerCustomerCodeDTO(@Param("voucherGuid") UUID voucherGuid, @Param("search") String search, Pageable pageable);
 
-    @Query("SELECT new vn.com.buaansach.web.manager.service.dto.ManagerCustomerVoucherCodeDTO(customer, voucherCode) " +
+    @Query("SELECT new vn.com.buaansach.web.customer_care.service.dto.CustomerCareCustomerVoucherCodeDTO(customer, voucherCode) " +
             "FROM CustomerEntity customer " +
             "LEFT JOIN vn.com.buaansach.entity.voucher.VoucherCodeEntity voucherCode " +
             "ON customer.customerPhone = voucherCode.customerPhone " +
             "WHERE voucherCode.voucherGuid = :voucherGuid " +
             "AND voucherCode.voucherCodeSentStatus = :voucherCodeSentStatus " +
             "ORDER BY customer.createdDate ASC")
-    List<ManagerCustomerVoucherCodeDTO> findUnsentVoucher(@Param("voucherGuid") UUID voucherGuid,
-                                                          @Param("voucherCodeSentStatus") VoucherCodeSentStatus voucherCodeSentStatus);
+    List<CustomerCareCustomerVoucherCodeDTO> findUnsentVoucher(@Param("voucherGuid") UUID voucherGuid,
+                                                               @Param("voucherCodeSentStatus") VoucherCodeSentStatus voucherCodeSentStatus);
 }

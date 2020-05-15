@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.manager.service.dto;
+package vn.com.buaansach.web.customer_care.service.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ManagerCustomerVoucherCodeDTO extends AuditDTO {
+public class CustomerCareCustomerVoucherCodeDTO extends AuditDTO {
     private UUID customerGuid;
     private String customerCode;
     private String customerPhone;
@@ -35,10 +35,10 @@ public class ManagerCustomerVoucherCodeDTO extends AuditDTO {
     private VoucherCodeSentStatus voucherCodeSentStatus;
     private int voucherCodeUsageCount;
 
-    public ManagerCustomerVoucherCodeDTO() {
+    public CustomerCareCustomerVoucherCodeDTO() {
     }
 
-    public ManagerCustomerVoucherCodeDTO(CustomerEntity customerEntity, VoucherCodeEntity voucherCodeEntity) {
+    public CustomerCareCustomerVoucherCodeDTO(CustomerEntity customerEntity, VoucherCodeEntity voucherCodeEntity) {
         this.customerGuid = customerEntity.getGuid();
         this.customerCode = customerEntity.getCustomerCode();
         this.customerPhone = customerEntity.getCustomerPhone();

@@ -148,6 +148,6 @@ public class PosVoucherCodeService {
         PosSocketDTO dto = new PosSocketDTO();
         dto.setMessage("POS_CREATE_CUSTOMER");
         dto.setPayload(customerPhone);
-        posSocketService.sendMessage("/topic/manager", dto);
+        posSocketService.sendMessage("/topic/customer-care", dto);
     }
 }

@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.manager.repository;
+package vn.com.buaansach.web.customer_care.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ManagerVoucherCodeRepository extends JpaRepository<VoucherCodeEntity, Long> {
+public interface CustomerCareVoucherCodeRepository extends JpaRepository<VoucherCodeEntity, Long> {
     @Query("SELECT new vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO(vc, v, vt, vu, vs) " +
             "FROM VoucherCodeEntity vc " +
             "LEFT JOIN vn.com.buaansach.entity.voucher.VoucherEntity v " +
