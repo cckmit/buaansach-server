@@ -81,6 +81,7 @@ public class PosOrderService {
         orderEntity.setTotalAmount(0L);
         orderEntity.setCustomerPhone(payload.getCustomerPhone());
         orderEntity.setSeatGuid(payload.getSeatGuid());
+        orderEntity.setCashierLogin(currentUser);
 
         seatEntity.setSeatStatus(SeatStatus.NON_EMPTY);
         seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
@@ -167,6 +168,7 @@ public class PosOrderService {
 
         /* receive only when order status is created */
         if (orderEntity.getOrderStatus().equals(OrderStatus.CREATED)) {
+            orderEntity.setCashierLogin(currentUser);
             orderEntity.setOrderStatus(OrderStatus.RECEIVED);
             String newTimeline = TimelineUtil.appendOrderStatus(orderEntity.getOrderStatusTimeline(), OrderStatus.RECEIVED, currentUser);
             orderEntity.setOrderStatusTimeline(newTimeline);
@@ -217,7 +219,7 @@ public class PosOrderService {
                 orderEntity.setPaymentGuid(paymentEntity.getGuid());
                 orderEntity.setOrderStatus(OrderStatus.PURCHASED);
                 orderEntity.setOrderCheckoutTime(Instant.now());
-                orderEntity.setCashierLogin(currentUser);
+//                orderEntity.setCashierLogin(currentUser);
 
                 String newTimeline = TimelineUtil.appendOrderStatus(orderEntity.getOrderStatusTimeline(),
                         OrderStatus.PURCHASED, currentUser);

@@ -6,6 +6,7 @@ import vn.com.buaansach.entity.enumeration.StoreStatus;
 import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 import vn.com.buaansach.entity.store.StoreEntity;
+import vn.com.buaansach.entity.store.StoreUserEntity;
 import vn.com.buaansach.exception.AccessDeniedException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.repository.PosStoreRepository;
@@ -51,6 +52,10 @@ public class PosStoreSecurity {
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(storeGuid).orElse(null);
         if (storeEntity == null) return false;
         if (!storeEntity.isStoreActivated()) return false;
+
+        posStoreUserRepository.findOneByUserLoginAndStoreGuid(currentUserLogin, storeGuid).ifPresent(storeUserEntity -> {
+            System.out.println(storeUserEntity);
+        });
 
         return posStoreUserRepository.findOneByUserLoginAndStoreGuid(currentUserLogin, storeGuid)
                 .map(storeUserEntity -> roles.contains(storeUserEntity.getStoreUserRole())

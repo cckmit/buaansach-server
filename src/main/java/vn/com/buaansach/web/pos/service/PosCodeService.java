@@ -1,6 +1,7 @@
 package vn.com.buaansach.web.pos.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -15,7 +16,7 @@ public class PosCodeService {
         CRC32 crc32 = new CRC32();
         crc32.reset();
         crc32.update(plainText.getBytes());
-        return crc32.getValue() + "";
+        return StringUtils.leftPad(crc32.getValue() + "", 10, "0");
     }
 
 }
