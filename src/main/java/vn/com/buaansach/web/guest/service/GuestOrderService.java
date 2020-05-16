@@ -63,6 +63,9 @@ public class GuestOrderService {
         SeatEntity seatEntity = guestSeatRepository.findOneByGuid(payload.getSeatGuid())
                 .orElseThrow(() -> new GuestResourceNotFoundException("guest@seatNotFound@" + payload.getSeatGuid()));
 
+        if (seatEntity.isSeatLocked())
+            throw new GuestBadRequestException("guest@seatLocked@" + payload.getSeatGuid());
+
         if (seatEntity.getSeatStatus().equals(SeatStatus.NON_EMPTY))
             throw new GuestBadRequestException("guest@seatNonEmpty@" + payload.getSeatGuid());
 
@@ -99,6 +102,16 @@ public class GuestOrderService {
     }
 
     public GuestOrderDTO updateOrder(GuestOrderUpdateDTO payload, String currentUser) {
+        /* check order product size */
+        if (payload.getListOrderProduct().size() == 0)
+            throw new GuestBadRequestException("guest@listOrderProductEmpty@" + payload.getOrderGuid());
+
+        /* check store status */
+        StoreEntity storeEntity = guestStoreRepository.findOneByGuid(payload.getStoreGuid())
+                .orElseThrow(() -> new GuestResourceNotFoundException("guest@storeNotFound@" + payload.getStoreGuid()));
+        guestStoreSecurity.blockAccessIfStoreIsNotOpenOrDeactivated(storeEntity.getGuid());
+
+        /* check order status */
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(payload.getOrderGuid())
                 .orElseThrow(() -> new GuestResourceNotFoundException("guest@orderNotFound@" + payload.getOrderGuid()));
 
@@ -108,11 +121,18 @@ public class GuestOrderService {
         if (orderEntity.getOrderStatus().toString().contains("CANCELLED"))
             throw new GuestBadRequestException("guest@orderCancelled@" + payload.getOrderGuid());
 
-        if (payload.getListOrderProduct().size() <= 0)
-            throw new GuestBadRequestException("guest@listOrderProductEmpty@" + payload.getOrderGuid());
+        /* check seat locked */
+        SeatEntity seatEntity = guestSeatRepository.findOneByGuid(orderEntity.getSeatGuid())
+                .orElseThrow(() -> new GuestResourceNotFoundException("guest@seatNotFound@" + orderEntity.getSeatGuid()));
 
+        if (seatEntity.isSeatLocked())
+            throw new GuestBadRequestException("guest@seatLocked@" + seatEntity.getGuid());
+
+        if (!orderEntity.getGuid().equals(seatEntity.getCurrentOrderGuid()))
+            throw new GuestBadRequestException("guest@orderNotMatchesSeat@" + orderEntity.getGuid() + ";" + seatEntity.getGuid());
+
+        /* check product availability */
         List<UUID> listProductGuid = payload.getListOrderProduct().stream().map(GuestOrderProductDTO::getProductGuid).collect(Collectors.toList());
-
         List<StoreProductEntity> listStoreProduct = guestStoreProductRepository.findByStoreGuidAndProductGuidIn(payload.getStoreGuid(), listProductGuid);
         List<StoreProductEntity> listUnavailable = listStoreProduct.stream().filter(item -> item.getStoreProductStatus().equals(StoreProductStatus.UNAVAILABLE)).collect(Collectors.toList());
         if (listUnavailable.size() > 0) {

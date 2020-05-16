@@ -5,6 +5,7 @@ import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.web.guest.exception.GuestResourceNotFoundException;
 import vn.com.buaansach.web.guest.repository.GuestSeatRepository;
 import vn.com.buaansach.web.guest.service.dto.read.GuestSeatDTO;
 
@@ -53,4 +54,15 @@ public class GuestSeatService {
         guestSeatRepository.save(seatEntity);
     }
 
+    public boolean isOrderMatchesSeat(String orderGuid, String seatGuid) {
+        SeatEntity seatEntity = guestSeatRepository.findOneByGuid(UUID.fromString(seatGuid))
+                .orElseThrow(() -> new GuestResourceNotFoundException("guest@seatNotFound@" + seatGuid));
+        if (seatEntity.getCurrentOrderGuid() == null && orderGuid == null) return true;
+        if (seatEntity.getCurrentOrderGuid() == null && orderGuid != null) return false;
+        if (seatEntity.getCurrentOrderGuid() != null && orderGuid == null) return false;
+        if (seatEntity.getCurrentOrderGuid() != null && orderGuid != null) {
+            return seatEntity.getCurrentOrderGuid().toString().equals(orderGuid);
+        }
+        return false;
+    }
 }

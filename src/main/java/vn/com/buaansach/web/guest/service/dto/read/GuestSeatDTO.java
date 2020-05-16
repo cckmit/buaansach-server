@@ -16,6 +16,7 @@ public class GuestSeatDTO {
     private String seatName;
     private SeatStatus seatStatus;
     private SeatServiceStatus seatServiceStatus;
+    private boolean seatLocked;
 
     private UUID areaGuid;
     private String areaName;
@@ -32,6 +33,7 @@ public class GuestSeatDTO {
         this.seatName = seatEntity.getSeatName();
         this.seatStatus = seatEntity.getSeatStatus();
         this.seatServiceStatus = seatEntity.getSeatServiceStatus();
+        this.seatLocked = seatEntity.isSeatLocked();
 
         this.areaGuid = areaEntity.getGuid();
         this.areaName = areaEntity.getAreaName();

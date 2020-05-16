@@ -24,6 +24,13 @@ public class GuestSeatResource {
         log.debug("REST request from user [{}] to get [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, seatGuid);
         return ResponseEntity.ok(guestSeatService.getSeat(seatGuid));
     }
+
+    @GetMapping("/is-order-matches-seat")
+    public ResponseEntity<Boolean> isOrderMatchesSeat(@RequestParam("orderGuid") String orderGuid,
+                                                    @RequestParam("seatGuid") String seatGuid) {
+        log.debug("REST request from user [{}] to check [{}] : [{}] matches order : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, seatGuid, orderGuid);
+        return ResponseEntity.ok(guestSeatService.isOrderMatchesSeat(orderGuid, seatGuid));
+    }
 //
 //    @PutMapping("/change-seat")
 //    public ResponseEntity<Void> changeSeat() {
