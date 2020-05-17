@@ -6,9 +6,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/bas_prod?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: root
-    password: admin
+    url: jdbc:mysql://db:3306/bas_prod?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+    username: homestead
+    password: passpasspass
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
@@ -42,11 +42,11 @@ app:
     token-time: 86400
     # Token valid for 7 days with remember me
     token-time-for-remember: 604800
-  upload-dir: 'bas/storage/'
-  server-domain: 'http://192.168.2.2'
+  upload-dir: '/bas/storage/'
+  server-domain: 'https://api.buaansach.com.vn'
   mail:
     enable: true
     from: noreply.buaansach@gmail.com
     send-creation-mail: false
-    cms-ui-url: 'http://192.168.2.2:9001'
-    customer-ui-url: 'http://192.168.2.2:9002'
+    cms-ui-url: 'https://buaansach.com.vn'
+    customer-ui-url: 'https://pos.buaansach.com.vn'
