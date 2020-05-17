@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.entity.common.FileEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.user.repository.FileRepository;
 
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +34,8 @@ public class FileService {
     private String serverDomain;
     @Value("${app.upload-dir}")
     private String uploadDir;
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
 
     public FileService(FileRepository fileRepository) {
         this.fileRepository = fileRepository;
@@ -109,10 +112,10 @@ public class FileService {
             Files.copy(file.getInputStream(), Paths.get(localDir, fileName));
             // path for client side
             String clientSidePath;
-            if (serverPort != 80) {
-                clientSidePath = serverDomain + ":" + serverPort + "/storage/" + customPath;
-            } else {
+            if (activeProfile.equals(Constants.SPRING_PROFILE_PRODUCTION)) {
                 clientSidePath = serverDomain + "/storage/" + customPath;
+            } else {
+                clientSidePath = serverDomain + ":" + serverPort + "/storage/" + customPath;
             }
             fileEntity.setLocalUrl(localDir + "/" + fileName);
             fileEntity.setUrl(clientSidePath + "/" + fileName);
