@@ -31,7 +31,7 @@ public class MailService {
     private String host;
     @Value("${app.mail.enable}")
     private String enableSendMail;
-    @Value("${app.mail.client-base-url}")
+    @Value("${app.mail.cms-ui-url}")
     private String clientBaseUrl;
 
     public MailService(JavaMailSender javaMailSender,

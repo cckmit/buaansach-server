@@ -2,7 +2,7 @@ logging:
   level:
     vn.com.buaansach: DEBUG
 server:
-  port: 8888
+  port: 9000
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -19,3 +19,34 @@ spring:
     change-log: classpath:config/liquibase/master.xml
     drop-first: false
     enabled: true
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    username: noreply.buaansach@gmail.com
+    password: Bingo102
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 5000
+          starttls:
+            enable: true
+          timeout: 5000
+          writetimeout: 5000
+app:
+  jwt:
+    # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
+    base64-secret: Ka7xdBsrLXVkEeMRYXsfl0b3Z3iSjiUO8H9cIMRmdAiwNCF5R8/eN/11jVlI7sHLgMXG2gTTTKlMhtJq7U6pSg==
+    # Token is valid 24 hours
+    token-time: 86400
+    # Token valid for 7 days with remember me
+    token-time-for-remember: 604800
+  upload-dir: 'bas/storage/'
+  server-domain: 'http://192.168.2.2'
+  mail:
+    enable: true
+    from: noreply.buaansach@gmail.com
+    send-creation-mail: false
+    cms-ui-url: 'http://192.168.2.2:9001'
+    customer-ui-url: 'http://192.168.2.2:9002'
