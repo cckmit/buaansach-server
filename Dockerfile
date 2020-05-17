@@ -11,7 +11,7 @@ RUN mkdir $APP_HOME
 COPY --chown=gradle:gradle . $APP_HOME
 WORKDIR $APP_HOME
 
-RUN bu
+RUN gradle build -x test --no-daemon
 
 #Copy executable jar
 RUN cp build/libs/buaansach-0.0.1-SNAPSHOT.war buaansach-0.0.1-SNAPSHOT.war
