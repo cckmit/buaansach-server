@@ -42,7 +42,7 @@ app:
     token-time: 86400
     # Token valid for 7 days with remember me
     token-time-for-remember: 604800
-  upload-dir: 'bas/storage/'
+  upload-dir: '/bas/storage/'
   server-domain: 'http://192.168.2.2'
   mail:
     enable: true
