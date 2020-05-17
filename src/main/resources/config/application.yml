@@ -3,7 +3,7 @@ spring:
   application:
     name: buaansach
   profiles:
-    active: dev
+    active: prod
   messages:
     basename: i18n/messages
   servlet:
