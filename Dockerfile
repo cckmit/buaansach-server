@@ -12,6 +12,7 @@ RUN gradle build -x test --no-daemon
 
 #Copy executable jar
 FROM gradle:jdk11
+ENV TZ 'Asia/Ho_Chi_Minh'
 
 #expose running port of application.
 EXPOSE 9000
@@ -25,4 +26,4 @@ COPY --chown=gradle:gradle . $APP_HOME
 WORKDIR $APP_HOME
 
 COPY --from=build /app/build/libs/buaansach-0.0.1-SNAPSHOT.war buaansach-0.0.1-SNAPSHOT.war
-ENTRYPOINT java -jar -Dspring.profiles.active=prod buaansach-0.0.1-SNAPSHOT.war
+ENTRYPOINT java -jar buaansach-0.0.1-SNAPSHOT.war
