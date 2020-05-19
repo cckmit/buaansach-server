@@ -1,9 +1,10 @@
 package vn.com.buaansach.web.admin.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.user.AuthorityEntity;
 import vn.com.buaansach.entity.store.StoreUserEntity;
+import vn.com.buaansach.entity.user.AuthorityEntity;
 import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.exception.AccessDeniedException;
 import vn.com.buaansach.exception.LoginAlreadyUsedException;
@@ -14,9 +15,9 @@ import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.admin.repository.AdminStoreRepository;
 import vn.com.buaansach.web.admin.repository.AdminStoreUserRepository;
 import vn.com.buaansach.web.admin.repository.AdminUserRepository;
+import vn.com.buaansach.web.admin.service.dto.read.AdminStoreUserDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminAddStoreUserDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateOrUpdateStoreUserDTO;
-import vn.com.buaansach.web.admin.service.dto.read.AdminStoreUserDTO;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
@@ -25,6 +26,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AdminStoreUserService {
     private final AdminUserRepository adminUserRepository;
     private final AdminStoreRepository adminStoreRepository;
@@ -32,30 +34,22 @@ public class AdminStoreUserService {
     private final PasswordEncoder passwordEncoder;
     private final AdminCodeService adminCodeService;
 
-    public AdminStoreUserService(AdminUserRepository adminUserRepository, AdminStoreRepository adminStoreRepository, AdminStoreUserRepository adminStoreUserRepository, PasswordEncoder passwordEncoder, AdminCodeService adminCodeService) {
-        this.adminUserRepository = adminUserRepository;
-        this.adminStoreRepository = adminStoreRepository;
-        this.adminStoreUserRepository = adminStoreUserRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.adminCodeService = adminCodeService;
-    }
-
     public AdminStoreUserDTO addStoreUser(AdminAddStoreUserDTO request) {
         /* check user existence */
         String loginOrEmail = request.getUserLoginOrEmail().toLowerCase();
         UserEntity userEntity = adminUserRepository.findOneByLoginOrEmail(loginOrEmail, loginOrEmail)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with username or email:" + loginOrEmail));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@userNotFound@" + loginOrEmail));
 
         /* check store existence */
         adminStoreRepository.findOneByGuid(request.getStoreGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + request.getStoreGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + request.getStoreGuid()));
 
         StoreUserEntity storeUserEntity = new StoreUserEntity();
         storeUserEntity.setGuid(UUID.randomUUID());
-        storeUserEntity.setStoreGuid(request.getStoreGuid());
-        storeUserEntity.setUserLogin(userEntity.getLogin());
         storeUserEntity.setStoreUserRole(request.getStoreUserRole());
         storeUserEntity.setStoreUserStatus(request.getStoreUserStatus());
+        storeUserEntity.setStoreGuid(request.getStoreGuid());
+        storeUserEntity.setUserLogin(userEntity.getLogin());
         return new AdminStoreUserDTO(adminStoreUserRepository.save(storeUserEntity), userEntity);
     }
 
@@ -63,7 +57,7 @@ public class AdminStoreUserService {
     public AdminStoreUserDTO createStoreUser(AdminCreateOrUpdateStoreUserDTO request) {
         /* check store existence */
         adminStoreRepository.findOneByGuid(request.getStoreGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + request.getStoreGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + request.getStoreGuid()));
 
         UserEntity userEntity = createUser(request);
 
@@ -80,7 +74,7 @@ public class AdminStoreUserService {
     @Transactional
     public AdminStoreUserDTO updateStoreUser(AdminCreateOrUpdateStoreUserDTO request) {
         StoreUserEntity storeUserEntity = adminStoreUserRepository.findOneByGuid(request.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Store User not found with guid: " + request.getGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@storeUserNotFound@" + request.getGuid()));
 
         storeUserEntity.setStoreUserRole(request.getStoreUserRole());
         storeUserEntity.setStoreUserStatus(request.getStoreUserStatus());
@@ -99,21 +93,22 @@ public class AdminStoreUserService {
 
     public void toggleAccountActivation(String storeUserGuid) {
         StoreUserEntity storeUserEntity = adminStoreUserRepository.findOneByGuid(UUID.fromString(storeUserGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Store User not found with guid: " + storeUserGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@storeUserNotFound@" + storeUserGuid));
 
         if (SecurityUtils.getCurrentUserLogin().equals(storeUserEntity.getUserLogin()))
             throw new AccessDeniedException("You cannot deactivate your account");
 
+        /* user to update activation */
         UserEntity userEntity = adminUserRepository.findOneByLogin(storeUserEntity.getUserLogin())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with login: " + storeUserEntity.getUserLogin()));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@userNotFound@" + storeUserEntity.getUserLogin()));
 
-        /* when user doesn't have role admin try to change activate status of admin account */
+        /* when non admin account trying to toggle status for admin account */
         if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)
                 && userEntity.getAuthorities().contains(new AuthorityEntity(AuthoritiesConstants.ADMIN))) {
-            throw new AccessDeniedException("Cannot deactivate administrator's account");
+            throw new AccessDeniedException("Cannot toggle activation for an admin account");
         }
 
-        /* when user doesn't have role admin try to change activate status of account that was disabled by admin account */
+        /* when user doesn't have role admin try to change activate status of account that was disabled by admin */
         if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN) && userEntity.isDisabledByAdmin()) {
             throw new AccessDeniedException("Account has been deactivate by administrator.");
         }
@@ -143,7 +138,7 @@ public class AdminStoreUserService {
 
     private UserEntity updateUser(String userLogin, AdminCreateOrUpdateStoreUserDTO request) {
         UserEntity updateUser = adminUserRepository.findOneByLogin(userLogin)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with login: " + userLogin));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@userNotFound@" + userLogin));
         boolean hasChanges = false;
         if (request.getPassword() != null && !request.getPassword().isEmpty()) {
             updateUser.setPassword(passwordEncoder.encode(request.getPassword()));
