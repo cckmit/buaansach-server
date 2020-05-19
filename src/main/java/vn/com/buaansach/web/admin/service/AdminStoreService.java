@@ -1,5 +1,6 @@
 package vn.com.buaansach.web.admin.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -10,10 +11,7 @@ import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.util.Constants;
-import vn.com.buaansach.web.admin.repository.AdminAreaRepository;
-import vn.com.buaansach.web.admin.repository.AdminSeatRepository;
-import vn.com.buaansach.web.admin.repository.AdminStoreRepository;
-import vn.com.buaansach.web.admin.repository.AdminStoreUserRepository;
+import vn.com.buaansach.web.admin.repository.*;
 import vn.com.buaansach.web.user.service.FileService;
 
 import javax.transaction.Transactional;
@@ -21,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AdminStoreService {
     private final FileService fileService;
     private final AdminStoreRepository adminStoreRepository;
@@ -28,20 +27,12 @@ public class AdminStoreService {
     private final AdminStoreUserRepository adminStoreUserRepository;
     private final AdminSeatRepository adminSeatRepository;
     private final AdminCodeService adminCodeService;
-
-    public AdminStoreService(AdminStoreRepository adminStoreRepository, FileService fileService, AdminAreaRepository adminAreaRepository, AdminStoreUserRepository adminStoreUserRepository, AdminSeatRepository adminSeatRepository, AdminCodeService adminCodeService) {
-        this.adminStoreRepository = adminStoreRepository;
-        this.fileService = fileService;
-        this.adminStoreUserRepository = adminStoreUserRepository;
-        this.adminAreaRepository = adminAreaRepository;
-        this.adminSeatRepository = adminSeatRepository;
-        this.adminCodeService = adminCodeService;
-    }
+    private final AdminStoreProductRepository adminStoreProductRepository;
 
     @Transactional
     public StoreEntity createStore(StoreEntity payload, MultipartFile image) {
         if (adminStoreRepository.findOneByStoreCode(payload.getStoreCode()).isPresent()) {
-            throw new BadRequestException("Store Code already in use");
+            throw new BadRequestException("admin@storeCodeExist@" + payload.getStoreCode());
         }
         payload.setGuid(UUID.randomUUID());
         payload.setStoreCode(adminCodeService.generateCodeForStore());
@@ -55,7 +46,7 @@ public class AdminStoreService {
     @Transactional
     public StoreEntity updateStore(StoreEntity updateEntity, MultipartFile image) {
         StoreEntity currentEntity = adminStoreRepository.findOneByGuid(updateEntity.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + updateEntity.getGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + updateEntity.getGuid()));
 
         /* allow change store code */
 //        String updateStoreCode = updateEntity.getStoreCode().toLowerCase();
@@ -91,18 +82,19 @@ public class AdminStoreService {
 
     public StoreEntity getOneStore(String storeGuid) {
         return adminStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + storeGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + storeGuid));
     }
 
     @Transactional
     public void deleteStore(String storeGuid) {
         /* be careful when delete store - must test more cases to catch all possible errors */
         StoreEntity storeEntity = adminStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid:" + storeGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + storeGuid));
         List<SeatEntity> listSeat = adminSeatRepository.findListSeatByStoreGuid(storeEntity.getGuid());
         adminSeatRepository.deleteInBatch(listSeat);
         adminAreaRepository.deleteByStoreGuid(storeEntity.getGuid());
         adminStoreUserRepository.deleteByStoreGuid(storeEntity.getGuid());
+        adminStoreProductRepository.deleteByStoreGuid(storeEntity.getGuid());
         fileService.deleteByUrl(storeEntity.getStoreImageUrl());
         adminStoreRepository.delete(storeEntity);
     }

@@ -28,4 +28,6 @@ public interface AdminStoreProductRepository extends JpaRepository<StoreProductE
     Optional<StoreProductEntity> findOneByGuid(UUID storeProductGuid);
 
     List<StoreProductEntity> findByProductGuid(UUID productGuid);
+
+    void deleteByStoreGuid(UUID guid);
 }
