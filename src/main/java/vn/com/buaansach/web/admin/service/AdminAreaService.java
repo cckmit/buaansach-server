@@ -54,7 +54,7 @@ public class AdminAreaService {
     @Transactional
     public AdminAreaDTO createArea(AdminCreateAreaDTO request) {
         adminStoreRepository.findOneByGuid(request.getStoreGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + request.getStoreGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + request.getStoreGuid()));
 
         AreaEntity areaEntity = new AreaEntity();
         areaEntity.setGuid(UUID.randomUUID());
@@ -74,7 +74,7 @@ public class AdminAreaService {
 
     public List<AdminAreaDTO> getListAreaByStore(String storeGuid) {
         adminStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + storeGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + storeGuid));
 
         List<AreaEntity> listArea = adminAreaRepository.findByStoreGuid(UUID.fromString(storeGuid));
         List<SeatEntity> listSeat = adminSeatRepository.findListSeatByStoreGuid(UUID.fromString(storeGuid));
@@ -91,7 +91,7 @@ public class AdminAreaService {
 
     public AdminAreaDTO updateArea(AdminAreaDTO updateEntity) {
         AreaEntity currentEntity = adminAreaRepository.findOneByGuid(updateEntity.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Area not found with guid: " + updateEntity.getGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@areaNotFound@" + updateEntity.getGuid()));
 
         currentEntity.setAreaName(updateEntity.getAreaName());
 //        currentEntity.setAreaType(updateEntity.getAreaType());
@@ -102,7 +102,7 @@ public class AdminAreaService {
     @Transactional
     public void deleteArea(String areaGuid) {
         AreaEntity areaEntity = adminAreaRepository.findOneByGuid(UUID.fromString(areaGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Area not found with guid: " + areaGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@areaNotFound@" + areaGuid));
 
         adminSeatRepository.deleteByAreaGuid(areaEntity.getGuid());
         adminAreaRepository.delete(areaEntity);
