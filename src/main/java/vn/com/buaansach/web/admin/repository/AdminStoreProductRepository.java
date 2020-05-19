@@ -25,7 +25,6 @@ public interface AdminStoreProductRepository extends JpaRepository<StoreProductE
             "ORDER BY product.productPosition ASC")
     List<AdminStoreProductDTO> findListAdminStoreProductDTOExcept(@Param("storeGuid") UUID storeGuid, @Param("productStatus") ProductStatus productStatus);
 
-
     Optional<StoreProductEntity> findOneByGuid(UUID storeProductGuid);
 
     List<StoreProductEntity> findByProductGuid(UUID productGuid);
