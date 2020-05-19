@@ -1,10 +1,11 @@
 package vn.com.buaansach.web.admin.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
-import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.entity.enumeration.StoreProductStatus;
+import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.web.admin.repository.AdminProductRepository;
 import vn.com.buaansach.web.admin.repository.AdminStoreProductRepository;
@@ -16,17 +17,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AdminStoreProductService {
     private final AdminStoreProductRepository adminStoreProductRepository;
     private final AdminProductRepository adminProductRepository;
     private final AdminStoreRepository adminStoreRepository;
-
-    public AdminStoreProductService(AdminStoreProductRepository adminStoreProductRepository, AdminProductRepository adminProductRepository, AdminStoreRepository adminStoreRepository) {
-        this.adminStoreProductRepository = adminStoreProductRepository;
-        this.adminProductRepository = adminProductRepository;
-        this.adminStoreRepository = adminStoreRepository;
-    }
-
 
     public AdminStoreProductDTO addProductToStore(AdminStoreProductDTO payload) {
         adminStoreRepository.findOneByGuid(payload.getStoreGuid())

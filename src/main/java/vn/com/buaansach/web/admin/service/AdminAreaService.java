@@ -1,5 +1,6 @@
 package vn.com.buaansach.web.admin.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
@@ -19,16 +20,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AdminAreaService {
     private final AdminAreaRepository adminAreaRepository;
     private final AdminStoreRepository adminStoreRepository;
     private final AdminSeatRepository adminSeatRepository;
-
-    public AdminAreaService(AdminAreaRepository adminAreaRepository, AdminStoreRepository adminStoreRepository, AdminSeatRepository adminSeatRepository) {
-        this.adminAreaRepository = adminAreaRepository;
-        this.adminStoreRepository = adminStoreRepository;
-        this.adminSeatRepository = adminSeatRepository;
-    }
 
     /* used when create area with init seats */
     private List<SeatEntity> createListSeat(AreaEntity areaEntity, int numberOfSeats, String seatPrefix) {

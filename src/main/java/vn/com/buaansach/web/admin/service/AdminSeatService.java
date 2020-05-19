@@ -1,5 +1,6 @@
 package vn.com.buaansach.web.admin.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
@@ -16,20 +17,15 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AdminSeatService {
     private final AdminSeatRepository adminSeatRepository;
     private final AdminAreaRepository adminAreaRepository;
     private final AdminStoreRepository adminStoreRepository;
 
-    public AdminSeatService(AdminSeatRepository adminSeatRepository, AdminAreaRepository adminAreaRepository, AdminStoreRepository adminStoreRepository) {
-        this.adminSeatRepository = adminSeatRepository;
-        this.adminAreaRepository = adminAreaRepository;
-        this.adminStoreRepository = adminStoreRepository;
-    }
-
     public SeatEntity createSeat(AdminCreateSeatDTO request) {
         adminAreaRepository.findOneByGuid(request.getAreaGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Area not found with guid: " + request.getAreaGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@areaNotFound@" + request.getAreaGuid()));
 
         SeatEntity seatEntity = new SeatEntity();
         UUID guid = UUID.randomUUID();
@@ -45,26 +41,26 @@ public class AdminSeatService {
 
     public SeatEntity updateSeat(SeatEntity updateEntity) {
         SeatEntity currentEntity = adminSeatRepository.findOneByGuid(updateEntity.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Seat not found with guid: " + updateEntity.getGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@seatNotFound@" + updateEntity.getGuid()));
         currentEntity.setSeatName(updateEntity.getSeatName());
         return adminSeatRepository.save(currentEntity);
     }
 
     public List<SeatEntity> getListSeatByAreaGuid(String areaGuid) {
         AreaEntity areaEntity = adminAreaRepository.findOneByGuid(UUID.fromString(areaGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Area not found with guid: " + areaGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@areaNotFound@" + areaGuid));
         return adminSeatRepository.findByAreaGuid(areaEntity.getGuid());
     }
 
     public List<SeatEntity> getListSeatByStoreGuid(String storeGuid) {
         StoreEntity storeEntity = adminStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + storeGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + storeGuid));
         return adminSeatRepository.findListSeatByStoreGuid(storeEntity.getGuid());
     }
 
     public void deleteSeat(String seatGuid) {
         SeatEntity seatEntity = adminSeatRepository.findOneByGuid(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Seat not found with guid: " + seatGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@seatNotFound@" + seatGuid));
         adminSeatRepository.delete(seatEntity);
     }
 

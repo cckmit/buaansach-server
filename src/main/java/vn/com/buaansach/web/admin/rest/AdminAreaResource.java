@@ -1,5 +1,6 @@
 package vn.com.buaansach.web.admin.rest;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -18,15 +19,11 @@ import java.util.List;
 @Secured(AuthoritiesConstants.ADMIN)
 @RestController
 @RequestMapping("/api/v1/admin/area")
+@RequiredArgsConstructor
 public class AdminAreaResource {
     private static final String ENTITY_NAME = "admin-area";
     private final Logger log = LoggerFactory.getLogger(AdminAreaResource.class);
-
     private final AdminAreaService adminAreaService;
-
-    public AdminAreaResource(AdminAreaService adminAreaService) {
-        this.adminAreaService = adminAreaService;
-    }
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
