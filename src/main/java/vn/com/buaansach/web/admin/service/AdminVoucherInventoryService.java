@@ -1,5 +1,6 @@
 package vn.com.buaansach.web.admin.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.voucher.VoucherInventoryEntity;
 import vn.com.buaansach.exception.BadRequestException;
@@ -15,12 +16,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AdminVoucherInventoryService {
     private final AdminVoucherInventoryRepository adminVoucherInventoryRepository;
-
-    public AdminVoucherInventoryService(AdminVoucherInventoryRepository adminVoucherInventoryRepository) {
-        this.adminVoucherInventoryRepository = adminVoucherInventoryRepository;
-    }
 
     @Transactional
     public void generateVoucherInventory(AdminVoucherInventoryGenerateDTO payload) {
@@ -31,17 +29,17 @@ public class AdminVoucherInventoryService {
         if (total > 1000000)
             throw new BadRequestException("Number of voucher is too large");
 
-        List<VoucherInventoryEntity> existedVouchers = adminVoucherInventoryRepository.findAll();
-        Set<String> existed = existedVouchers.stream().map(VoucherInventoryEntity::getCode).collect(Collectors.toSet());
+        List<VoucherInventoryEntity> existedVoucherCodes = adminVoucherInventoryRepository.findAll();
+        Set<String> existedCodes = existedVoucherCodes.stream().map(VoucherInventoryEntity::getCode).collect(Collectors.toSet());
 
-        Set<String> setCode = new HashSet<>();
-        while (setCode.size() < payload.getNumberOfVoucherCode()) {
+        Set<String> setNewCodes = new HashSet<>();
+        while (setNewCodes.size() < payload.getNumberOfVoucherCode()) {
             String code = VoucherUtil.generateVoucherCode(length).toLowerCase();
-            if (!existed.contains(code)) {
-                setCode.add(code);
+            if (!existedCodes.contains(code)) {
+                setNewCodes.add(code);
             }
         }
-        List<VoucherInventoryEntity> inventoryEntities = setCode.stream().map(code -> new VoucherInventoryEntity(code, false)).collect(Collectors.toList());
+        List<VoucherInventoryEntity> inventoryEntities = setNewCodes.stream().map(code -> new VoucherInventoryEntity(code, false)).collect(Collectors.toList());
         adminVoucherInventoryRepository.saveAll(inventoryEntities);
     }
 

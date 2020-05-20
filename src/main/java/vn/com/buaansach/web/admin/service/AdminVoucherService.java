@@ -1,5 +1,6 @@
 package vn.com.buaansach.web.admin.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -22,6 +23,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AdminVoucherService {
     private final AdminVoucherRepository adminVoucherRepository;
     private final AdminVoucherInventoryRepository adminVoucherInventoryRepository;
@@ -30,16 +32,6 @@ public class AdminVoucherService {
     private final AdminVoucherStoreConditionRepository adminVoucherStoreConditionRepository;
     private final AdminVoucherCodeRepository adminVoucherCodeRepository;
     private final AdminVoucherMapper adminVoucherMapper;
-
-    public AdminVoucherService(AdminVoucherRepository adminVoucherRepository, AdminVoucherInventoryRepository adminVoucherInventoryRepository, AdminVoucherTimeConditionRepository adminVoucherTimeConditionRepository, AdminVoucherUsageConditionRepository adminVoucherUsageConditionRepository, AdminVoucherStoreConditionRepository adminVoucherStoreConditionRepository, AdminVoucherCodeRepository adminVoucherCodeRepository, AdminVoucherMapper adminVoucherMapper) {
-        this.adminVoucherRepository = adminVoucherRepository;
-        this.adminVoucherInventoryRepository = adminVoucherInventoryRepository;
-        this.adminVoucherTimeConditionRepository = adminVoucherTimeConditionRepository;
-        this.adminVoucherUsageConditionRepository = adminVoucherUsageConditionRepository;
-        this.adminVoucherStoreConditionRepository = adminVoucherStoreConditionRepository;
-        this.adminVoucherCodeRepository = adminVoucherCodeRepository;
-        this.adminVoucherMapper = adminVoucherMapper;
-    }
 
     public List<AdminVoucherDTO> getListVoucher() {
         return adminVoucherRepository.findListAdminVoucherDTO();
@@ -100,7 +92,7 @@ public class AdminVoucherService {
     }
 
     public void toggleVoucher(String voucherGuid) {
-        VoucherEntity voucherEntity = adminVoucherRepository.findOneByGuid(UUID.fromString(voucherGuid)).orElseThrow(() -> new ResourceNotFoundException("Voucher not found with guid: " + voucherGuid));
+        VoucherEntity voucherEntity = adminVoucherRepository.findOneByGuid(UUID.fromString(voucherGuid)).orElseThrow(() -> new ResourceNotFoundException("admin@voucherNotFound@" + voucherGuid));
         voucherEntity.setVoucherEnable(!voucherEntity.isVoucherEnable());
         adminVoucherRepository.save(voucherEntity);
     }

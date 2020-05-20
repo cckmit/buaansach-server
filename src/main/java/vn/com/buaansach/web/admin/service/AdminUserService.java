@@ -1,5 +1,6 @@
 package vn.com.buaansach.web.admin.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AdminUserService {
     private final AdminUserRepository adminUserRepository;
 
@@ -37,13 +39,6 @@ public class AdminUserService {
 
     @Value("${app.mail.send-creation-mail}")
     private String sendCreationMail;
-
-    public AdminUserService(AdminUserRepository adminUserRepository, PasswordEncoder passwordEncoder, AdminAuthorityRepository adminAuthorityRepository, MailService mailService) {
-        this.adminUserRepository = adminUserRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.adminAuthorityRepository = adminAuthorityRepository;
-        this.mailService = mailService;
-    }
 
     public UserEntity createUser(AdminCreateUserDTO dto) {
         if (adminUserRepository.findOneByLogin(dto.getLogin().toLowerCase()).isPresent()) {
@@ -101,7 +96,7 @@ public class AdminUserService {
 
     public void adminChangePassword(AdminPasswordChangeDTO dto) {
         UserEntity userEntity = adminUserRepository.findOneByLogin(dto.getLogin())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with login: " + dto.getLogin()));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@userNotFound@" + dto.getLogin()));
         String encryptedPassword = passwordEncoder.encode(dto.getNewPassword());
         userEntity.setPassword(encryptedPassword);
         adminUserRepository.save(userEntity);
@@ -112,7 +107,7 @@ public class AdminUserService {
             throw new AccessDeniedException("You cannot deactivate your account");
 
         UserEntity userEntity = adminUserRepository.findOneByLogin(login)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with login: " + login));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@userNotFound@" + login));
 
         userEntity.setDisabledByAdmin(userEntity.isActivated());
         userEntity.setActivated(!userEntity.isActivated());
