@@ -61,7 +61,7 @@ public class AdminProductService {
         ProductEntity productEntity = adminProductMapper.dtoToEntity(payload);
 
         if (adminProductRepository.findOneByProductCode(productEntity.getProductCode()).isPresent()) {
-            throw new BadRequestException("Product Code already in use");
+            throw new BadRequestException("admin@productCodeExist@" + productEntity.getProductCode());
         }
         Integer lastPos = adminProductRepository.findLastProductPosition();
         int pos = lastPos != null ? lastPos + Constants.POSITION_INCREMENT : Constants.POSITION_INCREMENT - 1;
@@ -80,7 +80,7 @@ public class AdminProductService {
     public AdminProductDTO getProduct(String productGuid) {
         List<CategoryEntity> categories = adminCategoryRepository.findListCategoryByProductGuid(UUID.fromString(productGuid));
         ProductEntity productEntity = adminProductRepository.findOneByGuid(UUID.fromString(productGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with guid: " + productGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@productNotFound@" + productGuid));
         return new AdminProductDTO(productEntity, categories);
     }
 
@@ -89,7 +89,7 @@ public class AdminProductService {
         ProductEntity updateEntity = adminProductMapper.dtoToEntity(payload);
 
         ProductEntity currentEntity = adminProductRepository.findOneByGuid(updateEntity.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with guid: " + updateEntity.getGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@productNotFound@" + updateEntity.getGuid()));
 
         /* Delete all product category first */
         adminProductCategoryRepository.deleteByProductGuid(updateEntity.getGuid());
@@ -144,7 +144,7 @@ public class AdminProductService {
     @Transactional
     public void deleteProduct(String productGuid) {
         ProductEntity productEntity = adminProductRepository.findOneByGuid(UUID.fromString(productGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with guid: " + productGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@productNotFound@" + productGuid));
         fileService.deleteByUrl(productEntity.getProductImageUrl());
         fileService.deleteByUrl(productEntity.getProductThumbnailUrl());
 

@@ -156,7 +156,7 @@ public class AdminStoreUserService {
     /* remove user from store, but account will remain in system */
     public void deleteStoreUser(String storeUserGuid) {
         StoreUserEntity storeUserEntity = adminStoreUserRepository.findOneByGuid(UUID.fromString(storeUserGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Store User not found with guid: " + storeUserGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("admin@storeUserNotFound@" + storeUserGuid));
         adminStoreUserRepository.delete(storeUserEntity);
     }
 

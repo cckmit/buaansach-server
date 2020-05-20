@@ -66,7 +66,7 @@ public class AccountResource {
         log.debug("REST request from user [{}] to get account info", SecurityUtils.getCurrentUserLogin());
         return userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin())
                 .map(userEntity -> ResponseEntity.ok(new UserDTO(userEntity)))
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with login: " + SecurityUtils.getCurrentUserLogin()));
+                .orElseThrow(() -> new ResourceNotFoundException("user@userNotFound@" + SecurityUtils.getCurrentUserLogin()));
     }
 
     @PutMapping("/update")

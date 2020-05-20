@@ -15,7 +15,7 @@ public class CustomerCareVoucherCodeService {
 
     public void updateFirstRegVoucherCode(CustomerCareUpdateVoucherCodeDTO payload) {
         VoucherCodeEntity voucherCodeEntity = customerCareVoucherCodeRepository.findOneByVoucherCode(payload.getVoucherCode())
-                .orElseThrow(() -> new ResourceNotFoundException("manager@voucherCodeNotFound@" + payload.getVoucherCode()));
+                .orElseThrow(() -> new ResourceNotFoundException("customerCare@voucherCodeNotFound@" + payload.getVoucherCode()));
         voucherCodeEntity.setVoucherCodeSentStatus(payload.getVoucherCodeSentStatus());
         if (payload.getVoucherCodeSentStatus().equals(VoucherCodeSentStatus.SENT)) {
             voucherCodeEntity.setVoucherCodeUsable(true);

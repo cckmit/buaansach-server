@@ -1,5 +1,6 @@
 package vn.com.buaansach.web.guest.rest;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -15,14 +16,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/guest/category")
+@RequiredArgsConstructor
 public class GuestCategoryResource {
     private final String ENTITY_NAME = "guest-category";
     private final Logger log = LoggerFactory.getLogger(GuestCategoryResource.class);
     private final GuestCategoryService guestCategoryService;
-
-    public GuestCategoryResource(GuestCategoryService guestCategoryService) {
-        this.guestCategoryService = guestCategoryService;
-    }
 
     @GetMapping("/list-by-seat/{seatGuid}")
     public ResponseEntity<List<GuestCategoryDTO>> getListPosCategoryDTO(@PathVariable String seatGuid) {

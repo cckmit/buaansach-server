@@ -75,7 +75,7 @@ public class PosVoucherCodeService {
         PosVoucherCodeDTO voucherCodeDTO = posVoucherCodeRepository.getPosVoucherCodeDTO(payload.getVoucherCode())
                 .orElseThrow(() -> {
                     log.error("Reject request from user [{}] to apply voucher code : [{}]", SecurityUtils.getCurrentUserLogin(), payload);
-                    throw new ResourceNotFoundException("Voucher code not found " + payload.getVoucherCode());
+                    throw new ResourceNotFoundException("pos@voucherCodeNotFound@" + payload.getVoucherCode());
                 });
         if (voucherCodeDTO.getCustomerPhone() != null && !voucherCodeDTO.getCustomerPhone().equals(payload.getCustomerPhone())) {
             log.error("Reject request from user [{}] to apply voucher code : [{}]", SecurityUtils.getCurrentUserLogin(), payload);

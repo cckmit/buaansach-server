@@ -35,7 +35,7 @@ public class CustomerCareCustomerVoucherCodeResource {
                                                                                     @RequestParam(value = "sortField", defaultValue = "createdDate") String sortField,
                                                                                     @RequestParam(value = "sortDirection", defaultValue = "ASC") Sort.Direction sortDirection) {
         PageRequest request = PageRequest.of(page - 1, size, sortDirection, sortField);
-        log.debug("REST request from user [{}] to list {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
+        log.debug("REST request from user [{}] to list [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
         return ResponseEntity.ok(customerCareCustomerVoucherCodeService.getPageCustomer(request, search));
     }
 

@@ -15,6 +15,6 @@ public class GuestStoreService {
 
     public GuestStoreDTO getStoreBySeat(String seatGuid) {
         return new GuestStoreDTO(guestStoreRepository.findOneBySeatGuid(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new GuestResourceNotFoundException("storeNotFound")));
+                .orElseThrow(() -> new GuestResourceNotFoundException("guest@storeNotFound")));
     }
 }

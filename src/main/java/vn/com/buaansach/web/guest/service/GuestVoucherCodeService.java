@@ -40,6 +40,7 @@ public class GuestVoucherCodeService {
         voucherCodeEntity.setVoucherCode(guestVoucherInventoryService.getOneVoucherCode());
         guestVoucherCodeRepository.save(voucherCodeEntity);
 
+        /* Gửi thông báo tới bộ phận CSKH */
         GuestSocketDTO dto = new GuestSocketDTO();
         dto.setMessage("GUEST_CREATE_CUSTOMER");
         dto.setPayload(customerPhone);

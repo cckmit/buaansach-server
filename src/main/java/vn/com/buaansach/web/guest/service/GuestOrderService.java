@@ -129,7 +129,7 @@ public class GuestOrderService {
             throw new GuestBadRequestException("guest@seatLocked@" + seatEntity.getGuid());
 
         if (!orderEntity.getGuid().equals(seatEntity.getCurrentOrderGuid()))
-            throw new GuestBadRequestException("guest@orderNotMatchesSeat@" + orderEntity.getGuid() + ";" + seatEntity.getGuid());
+            throw new GuestBadRequestException("guest@orderNotMatchSeat@orderGuid=" + orderEntity.getGuid() + ";seatOrderGuid=" + seatEntity.getCurrentOrderGuid());
 
         /* check product availability */
         List<UUID> listProductGuid = payload.getListOrderProduct().stream().map(GuestOrderProductDTO::getProductGuid).collect(Collectors.toList());
@@ -139,7 +139,7 @@ public class GuestOrderService {
             throw new GuestBadRequestException("guest@storeProductUnavailable@");
         }
 
-        guestOrderProductService.saveList(payload.getOrderGuid(), payload.getListOrderProduct(), currentUser);
+        guestOrderProductService.saveListOrderProduct(payload.getOrderGuid(), payload.getListOrderProduct(), currentUser);
 
         guestSeatService.makeSeatServiceUnfinished(orderEntity.getSeatGuid());
 
@@ -150,6 +150,7 @@ public class GuestOrderService {
         GuestOrderDTO result = new GuestOrderDTO(guestOrderRepository.save(orderEntity));
         result.setListOrderProduct(listOrderProductDTO);
 
+        /* Gửi thông báo tới nhân viên */
         GuestSocketDTO socketDTO = new GuestSocketDTO("GUEST_UPDATE_ORDER", result.getSeatGuid());
         guestSocketService.sendMessage("/topic/pos/" + payload.getStoreGuid(), socketDTO);
         return result;

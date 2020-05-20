@@ -14,7 +14,7 @@ public class CustomerCareCustomerService {
 
     public void updateCustomer(CustomerCareUpdateCustomerDTO payload) {
         CustomerEntity customerEntity = customerCareCustomerRepository.findOneByCustomerPhone(payload.getCustomerPhone())
-                .orElseThrow(() -> new ResourceNotFoundException("manager@customerNotFound@" + payload.getCustomerPhone()));
+                .orElseThrow(() -> new ResourceNotFoundException("customerCare@customerNotFound@" + payload.getCustomerPhone()));
         customerEntity.setCustomerZaloStatus(payload.getCustomerZaloStatus());
         customerCareCustomerRepository.save(customerEntity);
     }

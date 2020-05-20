@@ -1,5 +1,6 @@
 package vn.com.buaansach.web.guest.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
@@ -14,18 +15,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class GuestOrderProductService {
     private final GuestOrderProductRepository guestOrderProductRepository;
     private final GuestOrderProductMapper guestOrderProductMapper;
     private final GuestProductRepository guestProductRepository;
 
-    public GuestOrderProductService(GuestOrderProductRepository guestOrderProductRepository, GuestOrderProductMapper guestOrderProductMapper, GuestProductRepository guestProductRepository) {
-        this.guestOrderProductRepository = guestOrderProductRepository;
-        this.guestOrderProductMapper = guestOrderProductMapper;
-        this.guestProductRepository = guestProductRepository;
-    }
-
-    public List<OrderProductEntity> saveList(UUID orderGuid, List<GuestOrderProductDTO> dtos, String currentUser) {
+    public List<OrderProductEntity> saveListOrderProduct(UUID orderGuid, List<GuestOrderProductDTO> dtos, String currentUser) {
         List<OrderProductEntity> list = guestOrderProductMapper.listDtoToListEntity(dtos);
 
         List<UUID> uuids = list.stream().map(OrderProductEntity::getProductGuid).collect(Collectors.toList());

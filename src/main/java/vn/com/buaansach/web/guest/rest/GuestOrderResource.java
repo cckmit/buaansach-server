@@ -1,5 +1,6 @@
 package vn.com.buaansach.web.guest.rest;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +15,11 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/guest/order")
+@RequiredArgsConstructor
 public class GuestOrderResource {
     private final String ENTITY_NAME = "guest-order";
     private final Logger log = LoggerFactory.getLogger(GuestOrderResource.class);
     private final GuestOrderService guestOrderService;
-
-    public GuestOrderResource(GuestOrderService guestOrderService) {
-        this.guestOrderService = guestOrderService;
-    }
 
     @GetMapping("/get/{orderGuid}")
     public ResponseEntity<GuestOrderDTO> getOrder(@PathVariable String orderGuid) {

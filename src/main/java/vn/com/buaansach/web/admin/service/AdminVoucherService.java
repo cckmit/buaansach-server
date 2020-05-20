@@ -41,7 +41,7 @@ public class AdminVoucherService {
     public AdminVoucherDTO createVoucher(AdminVoucherDTO payload) {
         int remainCode = adminVoucherInventoryRepository.countByExportedFalse();
         if (payload.getNumberVoucherCode() > remainCode)
-            throw new BadRequestException("Number of remain code is not enough");
+            throw new BadRequestException("admin@remainCodeNotEnough@");
 
         PageRequest request = PageRequest.of(0, payload.getNumberVoucherCode(), Sort.Direction.ASC, "id");
         Page<VoucherInventoryEntity> page = adminVoucherInventoryRepository.getListUnExportedVoucherInventory(request);
