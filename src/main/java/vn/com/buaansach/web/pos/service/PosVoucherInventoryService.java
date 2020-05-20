@@ -1,5 +1,6 @@
 package vn.com.buaansach.web.pos.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -13,12 +14,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PosVoucherInventoryService {
     private final PosVoucherInventoryRepository posVoucherInventoryRepository;
-
-    public PosVoucherInventoryService(PosVoucherInventoryRepository posVoucherInventoryRepository) {
-        this.posVoucherInventoryRepository = posVoucherInventoryRepository;
-    }
 
     @Transactional
     public String getOneVoucherCode() {

@@ -1,5 +1,6 @@
 package vn.com.buaansach.web.pos.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
@@ -20,6 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PosOrderProductService {
     private final PosOrderProductRepository posOrderProductRepository;
     private final PosOrderProductMapper posOrderProductMapper;
@@ -27,15 +29,6 @@ public class PosOrderProductService {
     private final PosProductRepository posProductRepository;
     private final PosOrderRepository posOrderRepository;
     private final PosSeatService posSeatService;
-
-    public PosOrderProductService(PosOrderProductRepository posOrderProductRepository, PosOrderProductMapper posOrderProductMapper, PosStoreSecurity posStoreSecurity, PosProductRepository posProductRepository, PosOrderRepository posOrderRepository, PosSeatService posSeatService) {
-        this.posOrderProductRepository = posOrderProductRepository;
-        this.posOrderProductMapper = posOrderProductMapper;
-        this.posStoreSecurity = posStoreSecurity;
-        this.posProductRepository = posProductRepository;
-        this.posOrderRepository = posOrderRepository;
-        this.posSeatService = posSeatService;
-    }
 
     private Map<UUID, ProductEntity> getMapProduct(List<UUID> uuids) {
         Map<UUID, ProductEntity> mapProduct = new HashMap<>();
@@ -45,9 +38,13 @@ public class PosOrderProductService {
         return mapProduct;
     }
 
-    public List<OrderProductEntity> saveList(UUID orderGuid, List<PosOrderProductDTO> dtos, String currentUser) {
+    /**
+     * Lưu các sản phẩm cho đơn hàng
+     */
+    public List<OrderProductEntity> saveListOrderProduct(UUID orderGuid, List<PosOrderProductDTO> dtos, String currentUser) {
         List<OrderProductEntity> list = posOrderProductMapper.listDtoToListEntity(dtos);
 
+        /* Tạo 1 map product để sau đó lấy thông tin product dựa theo mã guid được nhanh hơn */
         List<UUID> uuids = list.stream().map(OrderProductEntity::getProductGuid).collect(Collectors.toList());
         Map<UUID, ProductEntity> mapProduct = getMapProduct(uuids);
 
@@ -72,11 +69,14 @@ public class PosOrderProductService {
         return posOrderProductRepository.saveAll(list);
     }
 
+    /**
+     * Đổi trạng thái một orderProduct của một đơn hàng từ PREPARING sang SERVED
+     */
     public void serveOrderProduct(PosOrderProductStatusChangeDTO payload, String currentUser) {
         posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
 
         OrderProductEntity orderProductEntity = posOrderProductRepository.findOneByGuid(payload.getOrderProductGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Order Product not found with guid: " + payload.getOrderProductGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException("pos@orderProductNotFound@" + payload.getOrderProductGuid()));
 
         if (orderProductEntity.getOrderProductStatus().equals(OrderProductStatus.PREPARING)) {
             orderProductEntity.setOrderProductStatus(OrderProductStatus.SERVED);
@@ -89,16 +89,21 @@ public class PosOrderProductService {
         checkSeatServiceStatus(orderProductEntity.getOrderGuid());
     }
 
+    /**
+     * Đổi trạng thái tất cả orderProduct của một đơn hàng từ PREPARING sang SERVED
+     */
     public void serveAllOrderProduct(PosOrderProductServeDTO payload, String currentUser) {
         posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
         List<OrderProductEntity> list = posOrderProductRepository.findByGuidIn(payload.getListOrderProductGuid());
         list.forEach(orderProductEntity -> {
             if (!orderProductEntity.getOrderGuid().equals(payload.getOrderGuid())) {
-                throw new BadRequestException("Order product not along with order guid: " + payload.getOrderGuid());
+                /* mã đơn của sản phẩm khác với mã đơn được gửi kèm trong payload => không hợp lệ */
+                throw new BadRequestException("pos@orderProductNotMatchOrder@" + payload.getOrderGuid());
             }
             if (orderProductEntity.getOrderProductStatus().equals(OrderProductStatus.PREPARING)) {
                 orderProductEntity.setOrderProductStatus(OrderProductStatus.SERVED);
-                String timeline = TimelineUtil.appendOrderProductStatus(orderProductEntity.getOrderProductStatusTimeline(),
+                String timeline = TimelineUtil.appendOrderProductStatus(
+                        orderProductEntity.getOrderProductStatusTimeline(),
                         OrderProductStatus.SERVED,
                         currentUser);
                 orderProductEntity.setOrderProductStatusTimeline(timeline);
@@ -109,12 +114,14 @@ public class PosOrderProductService {
     }
 
     public void cancelOrderProduct(PosOrderProductStatusChangeDTO payload, String currentUser) {
-        if (payload.getOrderProductCancelReason().isEmpty()) throw new BadRequestException("Cancel Reason is required");
+        if (payload.getOrderProductCancelReason().isEmpty())
+            throw new BadRequestException("pos@orderProductCancelReasonRequired@" + payload.getOrderProductGuid());
         posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
 
         OrderProductEntity orderProductEntity = posOrderProductRepository.findOneByGuid(payload.getOrderProductGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Order Product not found with guid: " + payload.getOrderProductGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException("pos@orderProductNotFound@" + payload.getOrderProductGuid()));
 
+        /* chỉ thực hiện hủy orderProduct khi trạng thái khác trạng thái CANCELLED...*/
         if (!orderProductEntity.getOrderProductStatus().toString().contains("CANCELLED")) {
             orderProductEntity.setOrderProductCancelReason(payload.getOrderProductCancelReason());
             orderProductEntity.setOrderProductStatus(OrderProductStatus.CANCELLED_BY_EMPLOYEE);
@@ -122,11 +129,13 @@ public class PosOrderProductService {
                     OrderProductStatus.CANCELLED_BY_EMPLOYEE,
                     currentUser);
             orderProductEntity.setOrderProductStatusTimeline(timeline);
+            posOrderProductRepository.save(orderProductEntity);
+            checkSeatServiceStatus(orderProductEntity.getOrderGuid());
         }
-        posOrderProductRepository.save(orderProductEntity);
-        checkSeatServiceStatus(orderProductEntity.getOrderGuid());
     }
 
+    /* Thực hiện kiểm tra trạng thái phục vụ của chỗ ngồi
+    dựa trên trạng thái của các sản phẩm thuộc đơn hàng tại vị trí đó */
     private void checkSeatServiceStatus(UUID orderGuid) {
         posOrderRepository.findOneByGuid(orderGuid).ifPresent(orderEntity -> {
             List<OrderProductStatus> listStatus = new ArrayList<>();

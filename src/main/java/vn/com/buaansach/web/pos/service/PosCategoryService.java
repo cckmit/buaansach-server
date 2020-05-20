@@ -1,7 +1,9 @@
 package vn.com.buaansach.web.pos.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.common.CategoryEntity;
+import vn.com.buaansach.entity.enumeration.StoreProductStatus;
 import vn.com.buaansach.web.pos.repository.PosCategoryRepository;
 import vn.com.buaansach.web.pos.repository.PosStoreProductRepository;
 import vn.com.buaansach.web.pos.service.dto.read.PosCategoryDTO;
@@ -11,21 +13,20 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PosCategoryService {
     private final PosCategoryRepository posCategoryRepository;
     private final PosStoreProductRepository posStoreProductRepository;
 
-    public PosCategoryService(PosCategoryRepository posCategoryRepository, PosStoreProductRepository posStoreProductRepository) {
-        this.posCategoryRepository = posCategoryRepository;
-        this.posStoreProductRepository = posStoreProductRepository;
-    }
-
     public List<PosCategoryDTO> getListPosCategoryDTO(String storeGuid) {
-        List<CategoryEntity> categories = posCategoryRepository.findAllCategoryOrderByPosition();
+        List<CategoryEntity> categories = posCategoryRepository.findAllCategoryOrderByPositionAsc();
         List<PosCategoryDTO> result = new ArrayList<>();
         categories.forEach(category -> {
             PosCategoryDTO dto = new PosCategoryDTO(category);
-            dto.setListStoreProduct(posStoreProductRepository.findListPosStoreProductByStoreAndCategory(UUID.fromString(storeGuid), category.getGuid()));
+            dto.setListStoreProduct(posStoreProductRepository.findListPosStoreProductByStoreAndCategoryExceptStatus(
+                    UUID.fromString(storeGuid),
+                    category.getGuid(),
+                    StoreProductStatus.STOP_TRADING));
             result.add(dto);
         });
         return result;

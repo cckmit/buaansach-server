@@ -6,7 +6,6 @@ import vn.com.buaansach.entity.enumeration.StoreStatus;
 import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 import vn.com.buaansach.entity.store.StoreEntity;
-import vn.com.buaansach.entity.store.StoreUserEntity;
 import vn.com.buaansach.exception.AccessDeniedException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.repository.PosStoreRepository;
@@ -53,10 +52,6 @@ public class PosStoreSecurity {
         if (storeEntity == null) return false;
         if (!storeEntity.isStoreActivated()) return false;
 
-        posStoreUserRepository.findOneByUserLoginAndStoreGuid(currentUserLogin, storeGuid).ifPresent(storeUserEntity -> {
-            System.out.println(storeUserEntity);
-        });
-
         return posStoreUserRepository.findOneByUserLoginAndStoreGuid(currentUserLogin, storeGuid)
                 .map(storeUserEntity -> roles.contains(storeUserEntity.getStoreUserRole())
                         /* if user is not working in this store => return false too */
@@ -87,7 +82,7 @@ public class PosStoreSecurity {
 
     public void blockAccessIfNotInStore(UUID storeGuid) {
         if (!hasPermission(storeGuid))
-            throw new AccessDeniedException("You are not member of this store, contact admin or manager");
+            throw new AccessDeniedException("pos@notMemberOfStore@" + storeGuid);
     }
 
     private boolean isClosedOrDeactivated(UUID storeGuid) {
@@ -96,7 +91,7 @@ public class PosStoreSecurity {
     }
 
     public void blockAccessIfStoreIsNotOpenOrDeactivated(UUID storeGuid) {
-        if (isClosedOrDeactivated(storeGuid)) throw new AccessDeniedException("Store has been closed");
+        if (isClosedOrDeactivated(storeGuid)) throw new AccessDeniedException("pos@storeHasBeenClosed@" + storeGuid);
     }
 
 }

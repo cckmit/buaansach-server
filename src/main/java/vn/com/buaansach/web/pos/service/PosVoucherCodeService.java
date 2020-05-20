@@ -43,7 +43,7 @@ public class PosVoucherCodeService {
 
     public PosVoucherCodeDTO getVoucherCodeInfo(String voucherCode) {
         return posVoucherCodeRepository.getPosVoucherCodeDTO(voucherCode)
-                .orElseThrow(() -> new ResourceNotFoundException("Voucher code not found " + voucherCode));
+                .orElseThrow(() -> new ResourceNotFoundException("pos@voucherCodeNotFound@" + voucherCode));
     }
 
     private boolean isVoucherCodeValid(PosVoucherCodeDTO dto, UUID storeGuid) {
@@ -71,80 +71,92 @@ public class PosVoucherCodeService {
 
     @Transactional
     public PosVoucherApplySuccessDTO applyOrderVoucherCode(PosOrderVoucherCodeDTO payload) {
+        /* Không tìm thấy mã code sẽ log error nhằm mục đích phát hiện hành vi cố tình thử sai */
         PosVoucherCodeDTO voucherCodeDTO = posVoucherCodeRepository.getPosVoucherCodeDTO(payload.getVoucherCode())
                 .orElseThrow(() -> {
-                    log.error("Reject request from user [{}] to apply voucher code : {}", SecurityUtils.getCurrentUserLogin(), payload);
+                    log.error("Reject request from user [{}] to apply voucher code : [{}]", SecurityUtils.getCurrentUserLogin(), payload);
                     throw new ResourceNotFoundException("Voucher code not found " + payload.getVoucherCode());
                 });
         if (voucherCodeDTO.getCustomerPhone() != null && !voucherCodeDTO.getCustomerPhone().equals(payload.getCustomerPhone())) {
-            log.error("Reject request from user [{}] to apply voucher code : {}", SecurityUtils.getCurrentUserLogin(), payload);
-            throw new BadRequestException("Voucher code can't be used for phone number: " + payload.getCustomerPhone());
+            log.error("Reject request from user [{}] to apply voucher code : [{}]", SecurityUtils.getCurrentUserLogin(), payload);
+            throw new BadRequestException("pos@voucherCodeIllegalForCustomerPhone@" + payload.getCustomerPhone());
         }
+        /* Kiểm tra các điều kiện của voucherCode trước khi thực hiện áp dụng */
         if (isVoucherCodeValid(voucherCodeDTO, null)) {
             OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
-                    .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + payload.getOrderGuid()));
+                    .orElseThrow(() -> new ResourceNotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
             StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
-                    .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + orderEntity.getSeatGuid()));
+                    .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
             posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
-            /* appy voucher code on order entity */
+            /* Tăng lượt sử dụng của mã code */
+            VoucherCodeEntity voucherCodeEntity = posVoucherCodeRepository.findOneByVoucherCodeForUpdate(payload.getVoucherCode())
+                    .orElseThrow(() -> new BadRequestException("pos@voucherCodeNotExist@" + payload.getVoucherCode()));
+            voucherCodeEntity.setVoucherCodeUsageCount(voucherCodeEntity.getVoucherCodeUsageCount() + 1);
+            posVoucherCodeRepository.save(voucherCodeEntity);
+
+            /* Áp dụng khuyến mãi cho hóa đơn */
             orderEntity.setOrderVoucherCode(payload.getVoucherCode());
             orderEntity.setOrderDiscountType(voucherCodeDTO.getVoucherDiscountType());
             orderEntity.setOrderDiscount(voucherCodeDTO.getVoucherDiscount());
             posOrderRepository.save(orderEntity);
 
-            /* increase usage count */
-            VoucherCodeEntity voucherCodeEntity = posVoucherCodeRepository.findOneByVoucherCodeForUpdate(payload.getVoucherCode()).orElseThrow();
-            voucherCodeEntity.setVoucherCodeUsageCount(voucherCodeEntity.getVoucherCodeUsageCount() + 1);
-            posVoucherCodeRepository.save(voucherCodeEntity);
             return new PosVoucherApplySuccessDTO(voucherCodeDTO);
         } else {
-            log.error("Reject request from user [{}] to apply voucher code : {}", SecurityUtils.getCurrentUserLogin(), payload);
-            throw new BadRequestException("Voucher code is not valid");
+            log.error("Reject request from user [{}] to apply voucher code : [{}]", SecurityUtils.getCurrentUserLogin(), payload);
+            throw new BadRequestException("pos@voucherCodeInvalid@" + payload.getVoucherCode());
         }
     }
 
     @Transactional
     public void cancelVoucherCode(PosOrderVoucherCodeDTO payload) {
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + payload.getOrderGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Seat not found in any store: " + orderEntity.getSeatGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         VoucherCodeEntity voucherCodeEntity = posVoucherCodeRepository.findOneByVoucherCodeForUpdate(orderEntity.getOrderVoucherCode())
-                .orElseThrow(() -> new BadRequestException("No voucher found on order"));
+                .orElseThrow(() -> new BadRequestException("pos@voucherCodeNotExist@" + orderEntity.getOrderVoucherCode()));
 
+        /* Nếu lượt sử dụng > 0 mới thực hiện trừ số lượt đã sử dụng */
         if (voucherCodeEntity.getVoucherCodeUsageCount() > 0) {
             voucherCodeEntity.setVoucherCodeUsageCount(voucherCodeEntity.getVoucherCodeUsageCount() - 1);
             posVoucherCodeRepository.save(voucherCodeEntity);
         }
 
-        /* apply voucher code on order entity */
+        /* Hủy các khuyến mãi đã áp dụng trên đơn */
         orderEntity.setOrderVoucherCode(null);
         orderEntity.setOrderDiscountType(null);
         orderEntity.setOrderDiscount(0);
         posOrderRepository.save(orderEntity);
-        /* decrease usage count */
     }
 
+    /**
+     * Tạo voucher code cho SĐT mới
+     * */
     @Transactional
     public void createVoucherForCustomerRegistration(String customerPhone) {
         VoucherEntity voucherEntity = posVoucherRepository
                 .findById(Constants.DEFAULT_FIRST_REG_VOUCHER_ID)
                 .orElseThrow();
+        /* Voucher đã bị vô hiệu hóa */
         if (!voucherEntity.isVoucherEnable()) return;
+
         voucherEntity.setNumberVoucherCode(posVoucherCodeRepository.countNumberVoucherCodeByVoucherGuid(voucherEntity.getGuid()) + 1);
         posVoucherRepository.save(voucherEntity);
         VoucherCodeEntity voucherCodeEntity = new VoucherCodeEntity();
         voucherCodeEntity.setCustomerPhone(customerPhone);
         voucherCodeEntity.setVoucherCodeUsageCount(0);
-        /* will be set to true later if customer has zalo id */
+
+        /* Bộ phân CSKH sẽ kiểm tra SĐT đã đăng ký Zalo hay chưa và đổi trạng thái usable sang true */
         voucherCodeEntity.setVoucherCodeUsable(false);
         voucherCodeEntity.setVoucherCodeSentStatus(VoucherCodeSentStatus.UNSET);
         voucherCodeEntity.setVoucherGuid(voucherEntity.getGuid());
         voucherCodeEntity.setVoucherCode(posVoucherInventoryService.getOneVoucherCode());
         posVoucherCodeRepository.save(voucherCodeEntity);
+
+        /* Gửi thông báo tới bộ phận CSKH */
         PosSocketDTO dto = new PosSocketDTO();
         dto.setMessage("POS_CREATE_CUSTOMER");
         dto.setPayload(customerPhone);

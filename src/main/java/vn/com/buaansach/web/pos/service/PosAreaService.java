@@ -1,5 +1,6 @@
 package vn.com.buaansach.web.pos.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
@@ -17,24 +18,18 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PosAreaService {
     private final PosStoreRepository posStoreRepository;
     private final PosAreaRepository posAreaRepository;
     private final PosSeatRepository posSeatRepository;
     private final PosStoreSecurity posStoreSecurity;
 
-    public PosAreaService(PosStoreRepository posStoreRepository, PosAreaRepository posAreaRepository, PosSeatRepository posSeatRepository, PosStoreSecurity posStoreSecurity) {
-        this.posStoreRepository = posStoreRepository;
-        this.posAreaRepository = posAreaRepository;
-        this.posSeatRepository = posSeatRepository;
-        this.posStoreSecurity = posStoreSecurity;
-    }
-
     public List<PosAreaDTO> getListAreaWithSeatByStoreGuid(String storeGuid) {
         posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
 
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + storeGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFound@" + storeGuid));
 
         List<AreaEntity> listArea = posAreaRepository.findByStoreGuid(storeEntity.getGuid());
         List<PosSeatDTO> listSeat = posSeatRepository.findListPosSeatDTOByStoreGuid(storeEntity.getGuid());
@@ -53,7 +48,7 @@ public class PosAreaService {
         posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
 
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("Store not found with guid: " + storeGuid));
+                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFound@" + storeGuid));
         return posAreaRepository.findByStoreGuid(storeEntity.getGuid())
                 .stream()
                 .map(PosAreaDTO::new)

@@ -22,12 +22,18 @@ public class PosStoreUserResource {
     private final Logger log = LoggerFactory.getLogger(PosStoreUserResource.class);
     private final PosStoreUserService posStoreUserService;
 
+    /**
+     * Dùng cho trang thống kê
+     */
     @GetMapping("/get/{storeGuid}")
     public ResponseEntity<List<PosStoreUserDTO>> getListStoreUser(@PathVariable String storeGuid) {
         log.debug("REST request from user [{}] to get [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
         return ResponseEntity.ok(posStoreUserService.getListStoreUser(storeGuid));
     }
 
+    /**
+     * Dùng cho trang thống kê, dựa theo role của user đối với cửa hàng để cho phép xem báo cáo các nhân viên khác
+     */
     @GetMapping("/get-current-store-user-role/{storeGuid}")
     public ResponseEntity<String> getCurrentStoreUserRole(@PathVariable String storeGuid) {
         log.debug("REST request from user [{}] to get current [{}] role : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);

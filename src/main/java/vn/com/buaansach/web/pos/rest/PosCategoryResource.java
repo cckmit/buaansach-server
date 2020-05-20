@@ -1,5 +1,6 @@
 package vn.com.buaansach.web.pos.rest;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -12,22 +13,18 @@ import vn.com.buaansach.web.pos.service.PosCategoryService;
 import vn.com.buaansach.web.pos.service.dto.read.PosCategoryDTO;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/pos/category")
+@RequiredArgsConstructor
 public class PosCategoryResource {
     private final String ENTITY_NAME = "pos-category";
     private final Logger log = LoggerFactory.getLogger(PosCategoryResource.class);
     private final PosCategoryService posCategoryService;
 
-    public PosCategoryResource(PosCategoryService posCategoryService) {
-        this.posCategoryService = posCategoryService;
-    }
-
     @GetMapping("/list-by-store/{storeGuid}")
     public ResponseEntity<List<PosCategoryDTO>> getListPosCategoryDTO(@PathVariable String storeGuid) {
-        log.debug("REST request from user [{}] to list {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);
+        log.debug("REST request from user [{}] to list [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);
         return ResponseEntity.ok(posCategoryService.getListPosCategoryDTO(storeGuid));
     }
 }

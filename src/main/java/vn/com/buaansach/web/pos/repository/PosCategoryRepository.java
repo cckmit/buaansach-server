@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface PosCategoryRepository extends JpaRepository<CategoryEntity, Long> {
     @Query("SELECT ce FROM CategoryEntity ce ORDER BY ce.categoryPosition ASC")
-    List<CategoryEntity> findAllCategoryOrderByPosition();
+    List<CategoryEntity> findAllCategoryOrderByPositionAsc();
 }

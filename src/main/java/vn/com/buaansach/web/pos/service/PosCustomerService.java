@@ -41,12 +41,12 @@ public class PosCustomerService {
             customerEntity.setCustomerName(payload.getCustomerName());
             return new PosCustomerDTO(createCustomer(customerEntity));
         }
-        throw new BadRequestException("Customer phone already exists" + payload.getCustomerPhone());
+        throw new BadRequestException("pos@customerPhoneExist@" + payload.getCustomerPhone());
     }
 
     public PosCustomerDTO getCustomerByPhone(String customerPhone) {
         return new PosCustomerDTO(posCustomerRepository.findOneByCustomerPhone(customerPhone)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with phone: " + customerPhone)));
+                .orElseThrow(() -> new ResourceNotFoundException("pos@customerPhoneNotFound@" + customerPhone)));
     }
 
     @Transactional

@@ -26,14 +26,14 @@ public class PosSaleReportResource {
 
     @PostMapping("/current-user")
     public ResponseEntity<PosSaleReportDTO> getCurrentUserReport(@RequestBody PosSaleReportParams payload) {
-        log.debug("REST request from user [{}] to get {} for current user : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to get [{}] for current user : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(posSaleReportService.getCurrentUserSaleReport(payload));
     }
 
     @Secured(AuthoritiesConstants.ADMIN)
     @PostMapping("/get-report")
     public ResponseEntity<PosSaleReportDTO> getReport(@RequestBody PosSaleReportParams payload) {
-        log.debug("REST request from user [{}] to get {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to get [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(posSaleReportService.getSaleReport(payload));
     }
 }
