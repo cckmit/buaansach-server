@@ -134,7 +134,7 @@ public class PosVoucherCodeService {
                 .findById(Constants.DEFAULT_FIRST_REG_VOUCHER_ID)
                 .orElseThrow();
         if (!voucherEntity.isVoucherEnable()) return;
-        voucherEntity.setNumberVoucherCode(posVoucherCodeRepository.countNumberVoucherCodeByVoucherGuid(voucherEntity.getGuid()));
+        voucherEntity.setNumberVoucherCode(posVoucherCodeRepository.countNumberVoucherCodeByVoucherGuid(voucherEntity.getGuid()) + 1);
         posVoucherRepository.save(voucherEntity);
         VoucherCodeEntity voucherCodeEntity = new VoucherCodeEntity();
         voucherCodeEntity.setCustomerPhone(customerPhone);

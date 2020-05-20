@@ -28,7 +28,7 @@ public class GuestVoucherCodeService {
                 .orElseThrow();
         /* if voucher is disabled, voucher code wont be created */
         if (!voucherEntity.isVoucherEnable()) return;
-        voucherEntity.setNumberVoucherCode(guestVoucherCodeRepository.countNumberVoucherCodeByVoucherGuid(voucherEntity.getGuid()));
+        voucherEntity.setNumberVoucherCode(guestVoucherCodeRepository.countNumberVoucherCodeByVoucherGuid(voucherEntity.getGuid()) + 1);
         guestVoucherRepository.save(voucherEntity);
         VoucherCodeEntity voucherCodeEntity = new VoucherCodeEntity();
         voucherCodeEntity.setCustomerPhone(customerPhone);
