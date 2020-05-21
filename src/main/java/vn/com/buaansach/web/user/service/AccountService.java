@@ -38,13 +38,15 @@ public class AccountService {
             }
 
             Optional<UserEntity> optionalEmail = userRepository.findOneByEmailIgnoreCase(dto.getEmail());
-            Optional<UserEntity> optionalPhone = userRepository.findOneByPhone(dto.getPhone());
             if (optionalEmail.isPresent()) {
                 if (!optionalEmail.get().getLogin().equals(user.getLogin())) throw new EmailAlreadyUsedException();
             }
 
-            if (optionalPhone.isPresent()) {
-                if (!optionalPhone.get().getLogin().equals(user.getLogin())) throw new PhoneAlreadyUsedException();
+            if (dto.getPhone() != null){
+                Optional<UserEntity> optionalPhone = userRepository.findOneByPhone(dto.getPhone());
+                if (optionalPhone.isPresent()) {
+                    if (!optionalPhone.get().getLogin().equals(user.getLogin())) throw new PhoneAlreadyUsedException();
+                }
             }
 
             user.setFirstName(dto.getFirstName());

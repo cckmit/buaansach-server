@@ -57,7 +57,7 @@ public class AccountResource {
         HttpHeaders httpHeaders = new HttpHeaders();
         String tokenType = "Bearer";
         httpHeaders.add("Authorization", tokenType + " " + jwt);
-        log.debug("REST request to authenticate user: {}", SecurityUtils.getCurrentUserLogin());
+        log.debug("REST request to authenticate user: [{}]", SecurityUtils.getCurrentUserLogin());
         return new ResponseEntity<>(new JwtTokenDTO(jwt, tokenType), httpHeaders, HttpStatus.OK);
     }
 
@@ -70,16 +70,16 @@ public class AccountResource {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Void> updateAccount(@Valid @RequestPart("dto") UpdateAccountDTO dto,
+    public ResponseEntity<Void> updateAccount(@Valid @RequestPart("payload") UpdateAccountDTO payload,
                                               @RequestPart(value = "image", required = false) MultipartFile image) {
-        log.debug("REST request from user [{}] to update {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, dto);
-        accountService.updateAccount(dto, image);
+        log.debug("REST request from user [{}] to update [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        accountService.updateAccount(payload, image);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/change-password")
     public ResponseEntity<Void> changePassword(@Valid @RequestBody UserPasswordChangeDTO dto) {
-        log.debug("REST request from user [{}] to change password for {} : {}", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, dto);
+        log.debug("REST request from user [{}] to change password for [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, dto);
         accountService.changePassword(dto.getCurrentPassword(), dto.getNewPassword());
         return ResponseEntity.noContent().build();
     }
@@ -89,19 +89,19 @@ public class AccountResource {
         email = email.replace("\"", "");
         Optional<UserEntity> user = accountService.requestPasswordReset(email);
         if (user.isPresent()) {
-            log.debug("REST request to reset password for email : {}", email);
+            log.debug("REST request to reset password for email : [{}]", email);
             mailService.sendPasswordResetMail(user.get());
         } else {
             // Pretend the request has been successful to prevent checking which emails really exist
             // but log that an invalid attempt has been made
-            log.warn("Password reset requested for non existing mail : {}", email);
+            log.warn("Password reset requested for non existing mail : [{}]", email);
         }
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/reset-password/finish")
     public ResponseEntity<Void> finishPasswordReset(@Valid @RequestBody PasswordResetDTO dto) {
-        log.debug("REST request to complete password reset : {}", dto);
+        log.debug("REST request to complete password reset : [{}]", dto);
         Optional<UserEntity> user = accountService.completePasswordReset(dto.getNewPassword(), dto.getKey());
         if (!user.isPresent()) {
             throw new ResourceNotFoundException("No user was found for this reset key: " + dto.getKey());
