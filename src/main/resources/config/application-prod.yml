@@ -7,8 +7,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://db:3306/bas_prod?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: homestead
-    password: passpasspass
+    username: buaansach_user
+    password: Plain$ecuredText4bas_prod@2020!
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
