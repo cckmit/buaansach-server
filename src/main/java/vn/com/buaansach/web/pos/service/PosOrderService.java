@@ -216,6 +216,8 @@ public class PosOrderService {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
 
+        if (!orderEntity.getOrderStatus().equals(OrderStatus.RECEIVED)) throw new BadRequestException("pos@orderStatusNotValid@" + payload.getOrderGuid());
+
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         switch (payload.getPaymentMethod()) {
