@@ -9,6 +9,7 @@ import vn.com.buaansach.entity.common.FileEntity;
 import vn.com.buaansach.entity.common.ProductCategoryEntity;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
+import vn.com.buaansach.entity.enumeration.StoreProductStatus;
 import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
@@ -108,6 +109,15 @@ public class AdminProductService {
 
         /* do not allow change product code */
         updateEntity.setProductCode(currentEntity.getProductCode());
+
+        /* if product is stop trading => stop trading for all store product too */
+        if (updateEntity.getProductStatus().equals(ProductStatus.STOP_TRADING)){
+            List<StoreProductEntity> listStoreProduct = adminStoreProductRepository.findByProductGuid(updateEntity.getGuid());
+            listStoreProduct = listStoreProduct.stream()
+                    .peek(storeProductEntity -> storeProductEntity.setStoreProductStatus(StoreProductStatus.STOP_TRADING))
+                    .collect(Collectors.toList());
+            adminStoreProductRepository.saveAll(listStoreProduct);
+        }
 
         if (image != null) {
             /* if update image */

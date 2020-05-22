@@ -7,6 +7,7 @@ import vn.com.buaansach.entity.store.StoreUserEntity;
 import vn.com.buaansach.entity.user.AuthorityEntity;
 import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.exception.AccessDeniedException;
+import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.LoginAlreadyUsedException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
@@ -43,6 +44,9 @@ public class AdminStoreUserService {
         /* check store existence */
         adminStoreRepository.findOneByGuid(request.getStoreGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + request.getStoreGuid()));
+
+        if (adminStoreUserRepository.findOneByUserLoginAndStoreGuid(userEntity.getLogin(), request.getStoreGuid()).isPresent())
+            throw new BadRequestException("admin@storeUserExist@userLogin=" + userEntity.getLogin() + ";storeGuid=" + request.getStoreGuid());
 
         StoreUserEntity storeUserEntity = new StoreUserEntity();
         storeUserEntity.setGuid(UUID.randomUUID());
