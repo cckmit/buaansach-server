@@ -32,6 +32,8 @@ public class GuestOrderDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Instant orderCheckinTime;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Instant orderCheckoutTime;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int orderDiscount;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Enumerated(EnumType.STRING)
@@ -72,6 +74,7 @@ public class GuestOrderDTO {
         this.orderNote = orderEntity.getOrderNote();
         this.orderStatusTimeline = orderEntity.getOrderStatusTimeline();
         this.orderCheckinTime = orderEntity.getOrderCheckinTime();
+        this.orderCheckoutTime = orderEntity.getOrderCheckoutTime();
         this.orderDiscount = orderEntity.getOrderDiscount();
         this.orderDiscountType = orderEntity.getOrderDiscountType();
         this.orderSaleGuid = orderEntity.getOrderSaleGuid();
