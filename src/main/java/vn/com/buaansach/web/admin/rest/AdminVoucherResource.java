@@ -11,6 +11,7 @@ import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminVoucherService;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminVoucherDTO;
+import vn.com.buaansach.web.admin.service.dto.write.AdminUpdateVoucherDTO;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -30,10 +31,10 @@ public class AdminVoucherResource {
         return ResponseEntity.ok(adminVoucherService.createVoucher(payload));
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<AdminVoucherDTO> updateVoucher(@Valid @RequestBody AdminVoucherDTO payload) {
-        log.debug("REST request from user [{}] to update [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
-        return ResponseEntity.ok(adminVoucherService.updateVoucher(payload));
+    @PutMapping("/update-basic")
+    public ResponseEntity<AdminVoucherDTO> updateVoucherBasic(@Valid @RequestBody AdminUpdateVoucherDTO payload) {
+        log.debug("REST request from user [{}] to update basic [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        return ResponseEntity.ok(adminVoucherService.updateVoucherBasic(payload));
     }
 
     @PutMapping("/toggle-voucher")

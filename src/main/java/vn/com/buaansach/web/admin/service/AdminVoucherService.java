@@ -15,6 +15,7 @@ import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.web.admin.repository.voucher.*;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminVoucherDTO;
+import vn.com.buaansach.web.admin.service.dto.write.AdminUpdateVoucherDTO;
 import vn.com.buaansach.web.admin.service.mapper.AdminVoucherMapper;
 
 import javax.transaction.Transactional;
@@ -87,8 +88,14 @@ public class AdminVoucherService {
         return result;
     }
 
-    public AdminVoucherDTO updateVoucher(AdminVoucherDTO payload) {
-        return null;
+    public AdminVoucherDTO updateVoucherBasic(AdminUpdateVoucherDTO payload) {
+        VoucherEntity voucherEntity = adminVoucherRepository.findOneByGuid(payload.getGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("admin@voucherNotFound@" + payload.getGuid()));
+        voucherEntity.setVoucherName(payload.getVoucherName());
+        voucherEntity.setVoucherDescription(payload.getVoucherDescription());
+        voucherEntity.setVoucherDiscount(payload.getVoucherDiscount());
+        voucherEntity.setVoucherDiscountType(payload.getVoucherDiscountType());
+        return new AdminVoucherDTO(adminVoucherRepository.save(voucherEntity));
     }
 
     public void toggleVoucher(String voucherGuid) {
