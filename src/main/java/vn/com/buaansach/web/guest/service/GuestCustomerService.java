@@ -5,9 +5,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.customer.CustomerEntity;
 import vn.com.buaansach.entity.enumeration.CustomerZaloStatus;
+import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.util.RandomUtil;
 import vn.com.buaansach.web.guest.repository.GuestCustomerRepository;
+import vn.com.buaansach.web.guest.service.dto.readwrite.GuestCustomerDTO;
+import vn.com.buaansach.web.pos.service.dto.readwrite.PosCustomerDTO;
 
 import javax.transaction.Transactional;
 import java.util.UUID;
@@ -28,6 +31,18 @@ public class GuestCustomerService {
             customerEntity.setCustomerName(customerName);
             createCustomer(customerEntity);
         }
+    }
+
+    @Transactional
+    public GuestCustomerDTO guestCreateCustomer(GuestCustomerDTO payload) {
+        if (guestCustomerRepository.findOneByCustomerPhone(payload.getCustomerPhone()).isEmpty()) {
+            CustomerEntity customerEntity = new CustomerEntity();
+            customerEntity.setCustomerPhone(payload.getCustomerPhone());
+            customerEntity.setCustomerGender(payload.getCustomerGender());
+            customerEntity.setCustomerName(payload.getCustomerName());
+            return new GuestCustomerDTO(createCustomer(customerEntity));
+        }
+        throw new BadRequestException("guest@customerPhoneExist@" + payload.getCustomerPhone());
     }
 
     @Transactional

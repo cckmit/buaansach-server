@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.pos.service.dto.readwrite;
+package vn.com.buaansach.web.guest.service.dto.readwrite;
 
 import lombok.Data;
 import vn.com.buaansach.entity.customer.CustomerEntity;
@@ -8,7 +8,7 @@ import vn.com.buaansach.util.Constants;
 import javax.validation.constraints.Pattern;
 
 @Data
-public class PosCustomerDTO {
+public class GuestCustomerDTO {
     private String customerName;
 
     private Gender customerGender;
@@ -16,10 +16,10 @@ public class PosCustomerDTO {
     @Pattern(regexp = Constants.PHONE_REGEX)
     private String customerPhone;
 
-    public PosCustomerDTO() {
+    public GuestCustomerDTO() {
     }
 
-    public PosCustomerDTO(CustomerEntity customerEntity) {
+    public GuestCustomerDTO(CustomerEntity customerEntity) {
         this.customerPhone = customerEntity.getCustomerPhone();
         this.customerName = customerEntity.getCustomerName();
         this.customerGender = customerEntity.getCustomerGender();

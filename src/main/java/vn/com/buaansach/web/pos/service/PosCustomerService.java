@@ -11,7 +11,6 @@ import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.util.RandomUtil;
 import vn.com.buaansach.web.pos.repository.PosCustomerRepository;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosCustomerDTO;
-import vn.com.buaansach.web.pos.websocket.PosSocketService;
 
 import javax.transaction.Transactional;
 import java.util.UUID;
@@ -38,6 +37,7 @@ public class PosCustomerService {
         if (posCustomerRepository.findOneByCustomerPhone(payload.getCustomerPhone()).isEmpty()) {
             CustomerEntity customerEntity = new CustomerEntity();
             customerEntity.setCustomerPhone(payload.getCustomerPhone());
+            customerEntity.setCustomerGender(payload.getCustomerGender());
             customerEntity.setCustomerName(payload.getCustomerName());
             return new PosCustomerDTO(createCustomer(customerEntity));
         }

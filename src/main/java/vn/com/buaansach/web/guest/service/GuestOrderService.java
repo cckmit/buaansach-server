@@ -69,9 +69,9 @@ public class GuestOrderService {
         if (seatEntity.getSeatStatus().equals(SeatStatus.NON_EMPTY))
             throw new GuestBadRequestException("guest@seatNonEmpty@" + payload.getSeatGuid());
 
-        if (payload.getCustomerPhone() != null) {
-            guestCustomerService.guestCreateCustomerIfNotExist(payload.getCustomerName(), payload.getCustomerPhone());
-        }
+//        if (payload.getCustomerPhone() != null) {
+//            guestCustomerService.guestCreateCustomerIfNotExist(payload.getCustomerName(), payload.getCustomerPhone());
+//        }
 
         OrderEntity orderEntity = new OrderEntity();
         UUID orderGuid = UUID.randomUUID();
@@ -86,7 +86,7 @@ public class GuestOrderService {
         orderEntity.setOrderSaleGuid(null);
         orderEntity.setOrderVoucherCode(null);
         orderEntity.setTotalAmount(0L);
-        orderEntity.setCustomerPhone(payload.getCustomerPhone());
+        orderEntity.setCustomerPhone(null);
         orderEntity.setSeatGuid(payload.getSeatGuid());
 
         seatEntity.setSeatStatus(SeatStatus.NON_EMPTY);
