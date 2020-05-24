@@ -19,9 +19,9 @@ jobs:
           command: |
             TAG=staging
             # ssh root@$STAGING_DOMAIN
-            ssh root@$DOCKER_REGISTRY "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin $DOCKER_REGISTRY && docker pull $DOCKER_REGISTRY/backend:$TAG"
+            ssh root@$DOCKER_REGISTRY "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin $DOCKER_REGISTRY && docker pull $DOCKER_REGISTRY/backend:$TAG && cd /root/app/buaansach-config-ui && docker-compose up -d --no-deps --build server"
 workflows:
-  build-and-test:
+  build-and-deploy:
     jobs:
       # - build
       - deploy-staging
