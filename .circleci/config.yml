@@ -24,6 +24,9 @@ jobs:
     steps:
       - checkout
 
+      - setup_remote_docker:
+        docker_layer_caching: true
+
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -38,5 +41,7 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-      # run docker!
-      - run: docker build --pull --rm -f "Dockerfile" -t buaansachserver:latest "."
+      - run: |
+          docker build --pull --rm -f "Dockerfile" -t buaansachserver:latest "."
+          docker login -u ductrancntt -p 74f581b0-9ea5-4fa2-bc07-0ba9c2c636dc
+          docker push buaansachserver
