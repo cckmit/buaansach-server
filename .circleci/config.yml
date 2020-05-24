@@ -21,7 +21,7 @@ jobs:
             # ssh root@$STAGING_DOMAIN
             ssh root@$DOCKER_REGISTRY "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin $DOCKER_REGISTRY && docker pull $DOCKER_REGISTRY/backend:$TAG && cd /root/app/buaansach-config-ui && docker-compose -f docker-compose-staging.yml up -d --force-recreate --build server"
 
-  deploy-production:
+  build-production:
     machine:
       image: ubuntu-1604:201903-01
     steps:
@@ -35,16 +35,31 @@ jobs:
             docker build -t $DOCKER_REGISTRY/backend:$TAG .
             docker push $DOCKER_REGISTRY/backend:$TAG
 
+  deploy-production:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - run:
+          name: Deploy
+          command: ssh-keyscan $PRODUCTION_DOMAIN >> ~/.ssh/known_hosts
       - run:
           name: Deploy
           command: |
             TAG=production
-            # ssh root@$PRODUCTION_DOMAIN
-            ssh root@$DOCKER_REGISTRY "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin $DOCKER_REGISTRY && docker pull $DOCKER_REGISTRY/backend:$TAG && cd /root/app/buaansach-config-ui && docker-compose -f docker-compose-production.yml up -d --force-recreate --build server"
+            ssh root@$PRODUCTION_DOMAIN "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin $DOCKER_REGISTRY && docker pull $DOCKER_REGISTRY/backend:$TAG && cd /root/app/buaansach-config-ui && docker-compose -f docker-compose-production.yml up -d --force-recreate --build server"
 workflows:
   build-and-deploy:
     jobs:
       # - build
-      - deploy-staging
+      # - build
+      # - deploy-staging
+      # - hold:
+      #     type: approval
+      #     requires:
+      #       - deploy-staging
+      - build-production
       - deploy-production:
-          type: approval
+          requires:
+            - build-production
+        # requires:
+        #   - hold
