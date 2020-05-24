@@ -1,11 +1,10 @@
 version: 2.1
 jobs:
-  deploy-staging:
+  build-staging:
     machine:
       image: ubuntu-1604:201903-01
     steps:
       - checkout
-
       - run:
           name: Build docker
           command: |
@@ -13,7 +12,13 @@ jobs:
             TAG=staging
             docker build -t $DOCKER_REGISTRY/backend:$TAG .
             docker push $DOCKER_REGISTRY/backend:$TAG
-
+  deploy-staging:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - run:
+          name: Setup ssh
+          command: ssh-keyscan $STAGING_DOMAIN >> ~/.ssh/known_hosts
       - run:
           name: Deploy
           command: |
@@ -39,7 +44,7 @@ jobs:
       image: ubuntu-1604:201903-01
     steps:
       - run:
-          name: Deploy
+          name: Setup ssh
           command: ssh-keyscan $PRODUCTION_DOMAIN >> ~/.ssh/known_hosts
       - run:
           name: Deploy
@@ -50,15 +55,17 @@ workflows:
   build-and-deploy:
     jobs:
       # - build
-      # - build
-      # - deploy-staging
-      # - hold:
-      #     type: approval
-      #     requires:
-      #       - deploy-staging
-      - build-production
+      - build-staging
+      - deploy-staging:
+          requires:
+            - build-staging
+      - hold:
+          type: approval
+          requires:
+            - deploy-staging
+      - build-production:
+          requires:
+            - hold
       - deploy-production:
           requires:
             - build-production
-        # requires:
-        #   - hold
