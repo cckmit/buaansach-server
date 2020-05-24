@@ -1,29 +1,27 @@
-# Java Gradle CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-java/ for more details
-#
-version: 2
+version: 2.1
 jobs:
-  build:
-    machine: true
+  deploy-staging:
+    machine:
+      image: ubuntu-1604:201903-01
     steps:
       - checkout
-      
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "build.gradle" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
 
-      - run: gradle dependencies
+      - run:
+          name: Build docker
+          command: |
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin $DOCKER_REGISTRY
+            TAG=staging
+            docker build -t $DOCKER_REGISTRY/backend:$TAG .
+            docker push $DOCKER_REGISTRY/backend:$TAG
 
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: v1-dependencies-{{ checksum "build.gradle" }}
-
-      - run: |
-          docker build --pull --rm -f "Dockerfile" -t buaansachserver:latest "."
-          docker login -u ductrancntt -p 74f581b0-9ea5-4fa2-bc07-0ba9c2c636dc
-          docker push buaansachserver
+      - run:
+          name: Deploy
+          command: |
+            TAG=staging
+            # ssh root@$STAGING_DOMAIN
+            ssh root@$DOCKER_REGISTRY "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin $DOCKER_REGISTRY && docker pull $DOCKER_REGISTRY/backend:$TAG"
+workflows:
+  build-and-test:
+    jobs:
+      # - build
+      - deploy-staging
