@@ -48,5 +48,5 @@ app:
     enable: true
     from: noreply.buaansach@gmail.com
     send-creation-mail: false
-    cms-ui-url: 'https://ductran.tech
+    cms-ui-url: 'https://ductran.tech'
     customer-ui-url: 'https://pos.ductran.tech'
