@@ -112,10 +112,10 @@ public class FileService {
             Files.copy(file.getInputStream(), Paths.get(localDir, fileName));
             // path for client side
             String clientSidePath;
-            if (activeProfile.equals(Constants.SPRING_PROFILE_PRODUCTION)) {
-                clientSidePath = serverDomain + "/storage/" + customPath;
-            } else {
+            if (activeProfile.equals(Constants.SPRING_PROFILE_DEVELOPMENT)) {
                 clientSidePath = serverDomain + ":" + serverPort + "/storage/" + customPath;
+            } else {
+                clientSidePath = serverDomain + "/storage/" + customPath;
             }
             fileEntity.setLocalUrl(localDir + "/" + fileName);
             fileEntity.setUrl(clientSidePath + "/" + fileName);
