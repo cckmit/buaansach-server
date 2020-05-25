@@ -22,7 +22,7 @@ spring:
   mail:
     default-encoding: UTF-8
     host: smtp.gmail.com
-    username: noreply.buaansach@gmail.com
+    username: noreply.ductran.tech@gmail.com
     password: Bingo102
     port: 587
     properties:
@@ -46,7 +46,6 @@ app:
   server-domain: 'http://192.168.2.2'
   mail:
     enable: true
-    from: noreply.buaansach@gmail.com
+    from: noreply.ductran.tech@gmail.com
     send-creation-mail: false
     cms-ui-url: 'http://192.168.2.2:8081'
-    customer-ui-url: 'http://192.168.2.2:8082'

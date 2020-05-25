@@ -48,5 +48,4 @@ app:
     enable: true
     from: noreply.buaansach@gmail.com
     send-creation-mail: false
-    cms-ui-url: 'https://buaansach.com.vn'
-    customer-ui-url: 'https://pos.buaansach.com.vn'
+    cms-ui-url: 'https://pos.buaansach.com.vn'
