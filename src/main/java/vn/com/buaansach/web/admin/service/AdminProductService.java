@@ -111,7 +111,7 @@ public class AdminProductService {
         updateEntity.setProductCode(currentEntity.getProductCode());
 
         /* if product is stop trading => stop trading for all store product too */
-        if (updateEntity.getProductStatus().equals(ProductStatus.STOP_TRADING)){
+        if (updateEntity.getProductStatus().equals(ProductStatus.STOP_TRADING)) {
             List<StoreProductEntity> listStoreProduct = adminStoreProductRepository.findByProductGuid(updateEntity.getGuid());
             listStoreProduct = listStoreProduct.stream()
                     .peek(storeProductEntity -> storeProductEntity.setStoreProductStatus(StoreProductStatus.STOP_TRADING))
@@ -166,4 +166,22 @@ public class AdminProductService {
         adminProductRepository.delete(productEntity);
     }
 
+    @Transactional
+    public void updateProductPosition(AdminProductDTO payload) {
+        adminProductRepository.updatePosition(payload.getGuid(), payload.getProductPosition());
+    }
+
+    @Transactional
+    public void updateListProductPosition(List<AdminProductDTO> payload) {
+        int pos = Constants.POSITION_INCREMENT - 1;
+        for (AdminProductDTO productDTO : payload) {
+            adminProductRepository.updatePosition(productDTO.getGuid(), pos);
+            pos += Constants.POSITION_INCREMENT;
+        }
+    }
+
+    public List<AdminProductDTO> getAllProductOrderByPositionAsc() {
+        List<ProductEntity> listProduct = adminProductRepository.findListProductOrderByPositionAsc();
+        return listProduct.stream().map(AdminProductDTO::new).collect(Collectors.toList());
+    }
 }

@@ -44,6 +44,12 @@ public class AdminProductResource {
         return ResponseEntity.ok(adminProductService.updateProduct(payload, image));
     }
 
+    @GetMapping("/list-all")
+    public ResponseEntity<List<AdminProductDTO>> getAllProduct(){
+        log.debug("REST request from user [{}] to list all [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);
+        return ResponseEntity.ok(adminProductService.getAllProductOrderByPositionAsc());
+    }
+
     @GetMapping("/list")
     public ResponseEntity<Page<AdminProductDTO>> getPageProduct(@RequestParam(value = "search", defaultValue = "") String search,
                                                                 @RequestParam(value = "page", defaultValue = "1") int page,
@@ -72,5 +78,19 @@ public class AdminProductResource {
         log.debug("REST request from user [{}] to delete [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, productGuid);
         adminProductService.deleteProduct(productGuid);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/update-position")
+    public ResponseEntity<Void> updateCategoryPosition(@Valid @RequestBody AdminProductDTO payload) {
+        log.debug("REST request from user [{}] to update [{}] position : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        adminProductService.updateProductPosition(payload);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/update-list-position")
+    public ResponseEntity<Void> updateListCategoryPosition(@RequestBody List<AdminProductDTO> payload){
+        log.debug("REST request from user [{}] to update list [{}] position : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        adminProductService.updateListProductPosition(payload);
+        return ResponseEntity.ok().build();
     }
 }

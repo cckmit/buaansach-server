@@ -2,10 +2,13 @@ package vn.com.buaansach.web.admin.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import vn.com.buaansach.entity.common.CategoryEntity;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 
@@ -35,4 +38,11 @@ public interface AdminProductRepository extends JpaRepository<ProductEntity, Lon
 
     @Query(value = "SELECT p.product_code FROM bas_product p ORDER BY p.id DESC LIMIT 1", nativeQuery = true)
     String findLastProductCode();
+
+    @Modifying
+    @Query(value = "UPDATE bas_product SET product_position = ?2  WHERE guid = ?1", nativeQuery = true)
+    void updatePosition(UUID productGuid, int pos);
+
+    @Query("SELECT p FROM ProductEntity p ORDER BY p.productPosition ASC")
+    List<ProductEntity> findListProductOrderByPositionAsc();
 }
