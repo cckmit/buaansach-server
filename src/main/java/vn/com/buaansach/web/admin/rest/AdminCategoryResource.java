@@ -40,6 +40,20 @@ public class AdminCategoryResource {
         return ResponseEntity.ok(adminCategoryService.updateCategory(payload, image));
     }
 
+    @PutMapping("/update-position")
+    public ResponseEntity<Void> updateCategoryPosition(@Valid @RequestBody CategoryEntity payload) {
+        log.debug("REST request from user [{}] to update [{}] position : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        adminCategoryService.updateCategoryPosition(payload);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/update-list-position")
+    public ResponseEntity<Void> updateListCategoryPosition(@RequestBody List<CategoryEntity> payload){
+        log.debug("REST request from user [{}] to update list [{}] position : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        adminCategoryService.updateListCategoryPosition(payload);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/list")
     public ResponseEntity<List<CategoryEntity>> getAllCategory() {
         log.debug("REST request from user [{}] to list all [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);

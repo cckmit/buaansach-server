@@ -88,4 +88,22 @@ public class AdminCategoryService {
         adminProductCategoryRepository.deleteByCategoryGuid(categoryEntity.getGuid());
         adminCategoryRepository.delete(categoryEntity);
     }
+
+    @Transactional
+    public void updateCategoryPosition(CategoryEntity payload) {
+        CategoryEntity currentEntity = adminCategoryRepository.findOneByGuid(payload.getGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("admin@categoryNotFound@" + payload.getGuid()));
+        adminCategoryRepository.updatePosition(payload.getGuid(), payload.getCategoryPosition());
+//        currentEntity.setCategoryPosition(payload.getCategoryPosition());
+//        adminCategoryRepository.save(currentEntity);
+    }
+
+    @Transactional
+    public void updateListCategoryPosition(List<CategoryEntity> payload) {
+        int pos = Constants.POSITION_INCREMENT - 1;
+        for (CategoryEntity categoryEntity : payload) {
+            adminCategoryRepository.updatePosition(categoryEntity.getGuid(), pos);
+            pos += Constants.POSITION_INCREMENT;
+        }
+    }
 }

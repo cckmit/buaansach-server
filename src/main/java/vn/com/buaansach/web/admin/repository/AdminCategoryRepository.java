@@ -1,6 +1,7 @@
 package vn.com.buaansach.web.admin.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -26,4 +27,8 @@ public interface AdminCategoryRepository extends JpaRepository<CategoryEntity, L
 
     @Query("SELECT MAX(ce.categoryPosition) FROM CategoryEntity ce")
     Integer findLastCategoryPosition();
+
+    @Modifying
+    @Query(value = "UPDATE bas_category SET category_position = ?2  WHERE guid = ?1", nativeQuery = true)
+    void updatePosition(UUID categoryGuid, int pos);
 }
