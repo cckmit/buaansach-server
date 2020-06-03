@@ -4,24 +4,29 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
+import vn.com.buaansach.entity.order.OrderEntity;
+import vn.com.buaansach.entity.order.OrderProductEntity;
+import vn.com.buaansach.entity.order.PaymentEntity;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
-import vn.com.buaansach.web.admin.repository.AdminAreaRepository;
-import vn.com.buaansach.web.admin.repository.AdminSeatRepository;
-import vn.com.buaansach.web.admin.repository.AdminStoreRepository;
+import vn.com.buaansach.web.admin.repository.*;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateSeatDTO;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AdminSeatService {
     private final AdminSeatRepository adminSeatRepository;
     private final AdminAreaRepository adminAreaRepository;
-    private final AdminStoreRepository adminStoreRepository;
+    private final AdminOrderRepository adminOrderRepository;
+    private final AdminOrderProductRepository adminOrderProductRepository;
+    private final AdminPaymentRepository adminPaymentRepository;
 
     public SeatEntity createSeat(AdminCreateSeatDTO request) {
         adminAreaRepository.findOneByGuid(request.getAreaGuid())
@@ -46,21 +51,35 @@ public class AdminSeatService {
         return adminSeatRepository.save(currentEntity);
     }
 
-    public List<SeatEntity> getListSeatByAreaGuid(String areaGuid) {
-        AreaEntity areaEntity = adminAreaRepository.findOneByGuid(UUID.fromString(areaGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("admin@areaNotFound@" + areaGuid));
-        return adminSeatRepository.findByAreaGuid(areaEntity.getGuid());
-    }
+//    public List<SeatEntity> getListSeatByAreaGuid(String areaGuid) {
+//        AreaEntity areaEntity = adminAreaRepository.findOneByGuid(UUID.fromString(areaGuid))
+//                .orElseThrow(() -> new ResourceNotFoundException("admin@areaNotFound@" + areaGuid));
+//        return adminSeatRepository.findByAreaGuid(areaEntity.getGuid());
+//    }
+//
+//    public List<SeatEntity> getListSeatByStoreGuid(String storeGuid) {
+//        StoreEntity storeEntity = adminStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
+//                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + storeGuid));
+//        return adminSeatRepository.findListSeatByStoreGuid(storeEntity.getGuid());
+//    }
 
-    public List<SeatEntity> getListSeatByStoreGuid(String storeGuid) {
-        StoreEntity storeEntity = adminStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + storeGuid));
-        return adminSeatRepository.findListSeatByStoreGuid(storeEntity.getGuid());
-    }
-
+    @Transactional
     public void deleteSeat(String seatGuid) {
         SeatEntity seatEntity = adminSeatRepository.findOneByGuid(UUID.fromString(seatGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("admin@seatNotFound@" + seatGuid));
+
+        List<OrderEntity> listOrder = adminOrderRepository.findBySeatGuid(seatEntity.getGuid());
+
+        List<UUID> listOrderGuid = listOrder.stream().map(OrderEntity::getGuid).collect(Collectors.toList());
+        List<PaymentEntity> listPayment = adminPaymentRepository.findByOrderGuidIn(listOrderGuid);
+        List<OrderProductEntity> listOrderProduct = adminOrderProductRepository.findByOrderGuidIn(listOrderGuid);
+
+        /* delete all orders, order products, payments related to this seat */
+        adminPaymentRepository.deleteInBatch(listPayment);
+        adminOrderProductRepository.deleteInBatch(listOrderProduct);
+        adminOrderRepository.deleteInBatch(listOrder);
+
+        /* finally, delete seat */
         adminSeatRepository.delete(seatEntity);
     }
 

@@ -4,12 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
+import vn.com.buaansach.entity.order.OrderEntity;
+import vn.com.buaansach.entity.order.OrderProductEntity;
+import vn.com.buaansach.entity.order.PaymentEntity;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
-import vn.com.buaansach.web.admin.repository.AdminAreaRepository;
-import vn.com.buaansach.web.admin.repository.AdminSeatRepository;
-import vn.com.buaansach.web.admin.repository.AdminStoreRepository;
+import vn.com.buaansach.web.admin.repository.*;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminAreaDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateAreaDTO;
 
@@ -25,6 +26,9 @@ public class AdminAreaService {
     private final AdminAreaRepository adminAreaRepository;
     private final AdminStoreRepository adminStoreRepository;
     private final AdminSeatRepository adminSeatRepository;
+    private final AdminOrderRepository adminOrderRepository;
+    private final AdminOrderProductRepository adminOrderProductRepository;
+    private final AdminPaymentRepository adminPaymentRepository;
 
     /* used when create area with init seats */
     private List<SeatEntity> createListSeat(AreaEntity areaEntity, int numberOfSeats, String seatPrefix) {
@@ -100,7 +104,24 @@ public class AdminAreaService {
         AreaEntity areaEntity = adminAreaRepository.findOneByGuid(UUID.fromString(areaGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("admin@areaNotFound@" + areaGuid));
 
-        adminSeatRepository.deleteByAreaGuid(areaEntity.getGuid());
+        List<SeatEntity> listSeat = adminSeatRepository.findByAreaGuid(areaEntity.getGuid());
+
+        List<UUID> listSeatGuid = listSeat.stream().map(SeatEntity::getGuid).collect(Collectors.toList());
+        List<OrderEntity> listOrder = adminOrderRepository.findBySeatGuidIn(listSeatGuid);
+
+        List<UUID> listOrderGuid = listOrder.stream().map(OrderEntity::getGuid).collect(Collectors.toList());
+        List<PaymentEntity> listPayment = adminPaymentRepository.findByOrderGuidIn(listOrderGuid);
+        List<OrderProductEntity> listOrderProduct = adminOrderProductRepository.findByOrderGuidIn(listOrderGuid);
+
+        /* delete all orders, order products, payments related to all seat of area */
+        adminPaymentRepository.deleteInBatch(listPayment);
+        adminOrderProductRepository.deleteInBatch(listOrderProduct);
+        adminOrderRepository.deleteInBatch(listOrder);
+
+        /* then delete all seat of area */
+        adminSeatRepository.deleteInBatch(listSeat);
+
+        /* finally, delete area */
         adminAreaRepository.delete(areaEntity);
     }
 
