@@ -2,17 +2,20 @@ package vn.com.buaansach.web.guest.service.dto.readwrite;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.web.guest.service.dto.read.GuestStoreProductDTO;
+import vn.com.buaansach.web.user.service.dto.AuditDTO;
 
 import javax.validation.constraints.Size;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class GuestOrderProductDTO {
+public class GuestOrderProductDTO extends AuditDTO {
     private UUID guid;
     private UUID orderGuid;
     private UUID productGuid;
@@ -71,6 +74,8 @@ public class GuestOrderProductDTO {
         this.orderProductDiscount = orderProductEntity.getOrderProductDiscount();
         this.orderProductSaleGuid = orderProductEntity.getOrderProductSaleGuid();
         this.orderProductVoucherCode = orderProductEntity.getOrderProductVoucherCode();
+
+        this.createdDate = orderProductEntity.getCreatedDate();
     }
 
 }

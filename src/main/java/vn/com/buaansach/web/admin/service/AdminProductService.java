@@ -1,5 +1,6 @@
 package vn.com.buaansach.web.admin.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AdminProductService {
     private final AdminProductRepository adminProductRepository;
     private final AdminStoreProductRepository adminStoreProductRepository;
@@ -36,16 +38,6 @@ public class AdminProductService {
     private final AdminProductCategoryRepository adminProductCategoryRepository;
     private final AdminCategoryRepository adminCategoryRepository;
     private final AdminCodeService adminCodeService;
-
-    public AdminProductService(AdminProductRepository adminProductRepository, AdminStoreProductRepository adminStoreProductRepository, FileService fileService, AdminProductMapper adminProductMapper, AdminProductCategoryRepository adminProductCategoryRepository, AdminCategoryRepository adminCategoryRepository, AdminCodeService adminCodeService) {
-        this.adminProductRepository = adminProductRepository;
-        this.adminStoreProductRepository = adminStoreProductRepository;
-        this.fileService = fileService;
-        this.adminProductMapper = adminProductMapper;
-        this.adminProductCategoryRepository = adminProductCategoryRepository;
-        this.adminCategoryRepository = adminCategoryRepository;
-        this.adminCodeService = adminCodeService;
-    }
 
     private void saveProductCategory(UUID productGuid, List<CategoryEntity> categories) {
         List<ProductCategoryEntity> productCategories = categories.stream().map(categoryEntity -> {
