@@ -21,6 +21,11 @@ public final class TimelineUtil {
         return newTimeline.length() > 1000 ? currentTimeline : newTimeline;
     }
 
+    public static String appendCustomOrderStatus(String currentTimeline, String newStatus, String actor, String metaData) {
+        String newTimeline = currentTimeline + ";" + newStatus + "@" + actor + "@" + Instant.now().toString() + "@" + metaData;
+        return newTimeline.length() > 1000 ? currentTimeline : newTimeline;
+    }
+
     public static String initOrderProductStatus(OrderProductStatus status, String actor) {
         return status.name() + "@" + actor + "@" + Instant.now().toString();
     }

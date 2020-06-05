@@ -342,7 +342,10 @@ public class PosOrderService {
         if (newSeat.getSeatStatus().equals(SeatStatus.NON_EMPTY))
             throw new BadRequestException("pos@newSeatNotEmpty@" + payload.getNewSeatGuid());
 
-        String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(), "CHANGE_SEAT", currentUser);
+        String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(),
+                "CHANGE_SEAT",
+                currentUser,
+                currentSeat.getGuid() + "*" + newSeat.getGuid());
         orderEntity.setOrderStatusTimeline(newTimeline);
         orderEntity.setSeatGuid(newSeat.getGuid());
 
@@ -395,11 +398,9 @@ public class PosOrderService {
             });
         }
 
-        String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(), "CHANGE_PHONE", currentUser);
+        String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(), "CHANGE_PHONE", currentUser, payload.getNewCustomerPhone());
         orderEntity.setOrderStatusTimeline(newTimeline);
         orderEntity.setCustomerPhone(payload.getNewCustomerPhone().trim());
         posOrderRepository.save(orderEntity);
-        if (payload.getNewCustomerPhone() != null && !payload.getNewCustomerPhone().isBlank())
-            posCustomerService.createCustomerByPhone(payload.getNewCustomerPhone().trim());
     }
 }
