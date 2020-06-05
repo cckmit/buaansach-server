@@ -36,6 +36,10 @@ public class PosOrderDTO extends AuditDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Instant orderCheckinTime;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Instant orderCheckoutTime;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String orderCancelReason;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int orderDiscount;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Enumerated(EnumType.STRING)
@@ -50,6 +54,7 @@ public class PosOrderDTO extends AuditDTO {
     @Size(max = 20)
     private String customerPhone;
     private UUID seatGuid;
+    private UUID paymentGuid;
 
     /* voucher info */
     private boolean hasVoucher = false;
@@ -95,6 +100,8 @@ public class PosOrderDTO extends AuditDTO {
         this.orderNote = orderEntity.getOrderNote();
         this.orderStatusTimeline = orderEntity.getOrderStatusTimeline();
         this.orderCheckinTime = orderEntity.getOrderCheckinTime();
+        this.orderCheckoutTime = orderEntity.getOrderCheckoutTime();
+        this.orderCancelReason = orderEntity.getOrderCancelReason();
         this.orderDiscount = orderEntity.getOrderDiscount();
         this.orderDiscountType = orderEntity.getOrderDiscountType();
         this.orderSaleGuid = orderEntity.getOrderSaleGuid();
@@ -103,6 +110,7 @@ public class PosOrderDTO extends AuditDTO {
         this.cashierLogin = orderEntity.getCashierLogin();
         this.customerPhone = orderEntity.getCustomerPhone();
         this.seatGuid = orderEntity.getSeatGuid();
+        this.paymentGuid = orderEntity.getPaymentGuid();
 
         this.createdBy = orderEntity.getCreatedBy();
         this.createdDate = orderEntity.getCreatedDate();

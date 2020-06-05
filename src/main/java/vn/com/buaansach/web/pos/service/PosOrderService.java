@@ -2,7 +2,10 @@ package vn.com.buaansach.web.pos.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.enumeration.*;
+import vn.com.buaansach.entity.enumeration.OrderStatus;
+import vn.com.buaansach.entity.enumeration.OrderType;
+import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
+import vn.com.buaansach.entity.enumeration.SeatStatus;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.order.PaymentEntity;
@@ -71,12 +74,22 @@ public class PosOrderService {
         /* Đơn tạo bởi nhân viên sẽ mặc định ở trạng thái RECEIVED */
         orderEntity.setOrderStatus(OrderStatus.RECEIVED);
 
-        /* Dựa theo loại khu vực để xác định là đơn bán tại quán hay đem về */
-        if (areaEntity.getAreaType().equals(AreaType.IN_STORE)) {
-            orderEntity.setOrderType(OrderType.IN_STORE);
-        } else {
-            orderEntity.setOrderType(OrderType.OUT_STORE);
+        /* Dựa theo loại khu vực để xác định loại đơn hàng */
+        switch (areaEntity.getAreaType()) {
+            case IN_STORE:
+                orderEntity.setOrderType(OrderType.IN_STORE);
+                break;
+            case TAKE_AWAY:
+                orderEntity.setOrderType(OrderType.TAKE_AWAY);
+                break;
+            case ONLINE:
+                orderEntity.setOrderType(OrderType.ONLINE);
+                break;
+            case TEST:
+                orderEntity.setOrderType(OrderType.TEST);
+                break;
         }
+
         orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderStatus.RECEIVED, currentUser));
         orderEntity.setOrderCheckinTime(Instant.now());
         orderEntity.setOrderDiscount(0);
@@ -174,7 +187,7 @@ public class PosOrderService {
 
     /**
      * Nhận đơn hàng do khách gọi
-     * */
+     */
     @Transactional
     public void receiveOrder(String orderGuid, String currentUser) {
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
@@ -216,7 +229,8 @@ public class PosOrderService {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
 
-        if (!orderEntity.getOrderStatus().equals(OrderStatus.RECEIVED)) throw new BadRequestException("pos@orderStatusNotValid@" + payload.getOrderGuid());
+        if (!orderEntity.getOrderStatus().equals(OrderStatus.RECEIVED))
+            throw new BadRequestException("pos@orderStatusNotValid@" + payload.getOrderGuid());
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
@@ -244,6 +258,7 @@ public class PosOrderService {
                 orderEntity.setPaymentGuid(paymentEntity.getGuid());
                 orderEntity.setOrderStatus(OrderStatus.PURCHASED);
                 orderEntity.setOrderCheckoutTime(Instant.now());
+                orderEntity.setCashierLogin(currentUser);
 
                 String newTimeline = TimelineUtil.appendOrderStatus(
                         orderEntity.getOrderStatusTimeline(),
@@ -268,7 +283,7 @@ public class PosOrderService {
 
     /**
      * Hủy đơn hàng
-     * */
+     */
     @Transactional
     public void cancelOrder(PosOrderCancelDTO payload, String currentUser) {
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
@@ -281,6 +296,7 @@ public class PosOrderService {
 
         orderEntity.setOrderStatus(OrderStatus.CANCELLED_BY_EMPLOYEE);
         orderEntity.setOrderCancelReason(payload.getCancelReason());
+        orderEntity.setCashierLogin(currentUser);
 
         String newTimeline = TimelineUtil.appendOrderStatus(
                 orderEntity.getOrderStatusTimeline(),
@@ -344,7 +360,7 @@ public class PosOrderService {
 
     /**
      * Đổi SĐT của đơn hàng
-     * */
+     */
     @Transactional
     public void changeCustomerPhone(PosOrderCustomerPhoneChangeDTO payload, String currentUser) {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(payload.getSeatGuid())
