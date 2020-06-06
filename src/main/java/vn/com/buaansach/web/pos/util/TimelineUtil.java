@@ -6,6 +6,8 @@ import vn.com.buaansach.entity.enumeration.OrderStatus;
 import java.time.Instant;
 
 public final class TimelineUtil {
+    private static final int MAX_ORDER_STATUS_TIMELINE = 5000;
+    private static final int MAX_ORDER_PRODUCT_STATUS_TIMELINE = 1000;
 
     public static String initOrderStatus(OrderStatus status, String actor) {
         return status.name() + "@" + actor + "@" + Instant.now().toString();
@@ -13,17 +15,17 @@ public final class TimelineUtil {
 
     public static String appendOrderStatus(String currentTimeline, OrderStatus newStatus, String actor) {
         String newTimeline = currentTimeline + ";" + newStatus.name() + "@" + actor + "@" + Instant.now().toString();
-        return newTimeline.length() > 1000 ? currentTimeline : newTimeline;
+        return newTimeline.length() > MAX_ORDER_STATUS_TIMELINE ? currentTimeline : newTimeline;
     }
 
     public static String appendCustomOrderStatus(String currentTimeline, String newStatus, String actor) {
         String newTimeline = currentTimeline + ";" + newStatus + "@" + actor + "@" + Instant.now().toString();
-        return newTimeline.length() > 1000 ? currentTimeline : newTimeline;
+        return newTimeline.length() > MAX_ORDER_STATUS_TIMELINE ? currentTimeline : newTimeline;
     }
 
     public static String appendCustomOrderStatus(String currentTimeline, String newStatus, String actor, String metaData) {
         String newTimeline = currentTimeline + ";" + newStatus + "@" + actor + "@" + Instant.now().toString() + "@" + metaData;
-        return newTimeline.length() > 1000 ? currentTimeline : newTimeline;
+        return newTimeline.length() > MAX_ORDER_STATUS_TIMELINE ? currentTimeline : newTimeline;
     }
 
     public static String initOrderProductStatus(OrderProductStatus status, String actor) {
@@ -32,6 +34,6 @@ public final class TimelineUtil {
 
     public static String appendOrderProductStatus(String currentTimeline, OrderProductStatus newStatus, String actor) {
         String newTimeline = currentTimeline + ";" + newStatus.name() + "@" + actor + "@" + Instant.now().toString();
-        return newTimeline.length() > 1000 ? currentTimeline : newTimeline;
+        return newTimeline.length() > MAX_ORDER_PRODUCT_STATUS_TIMELINE ? currentTimeline : newTimeline;
     }
 }

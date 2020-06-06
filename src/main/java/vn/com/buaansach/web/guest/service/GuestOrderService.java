@@ -143,6 +143,9 @@ public class GuestOrderService {
 
         guestSeatService.makeSeatServiceUnfinished(orderEntity.getSeatGuid());
 
+        String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(), "UPDATE_ORDER", currentUser);
+        orderEntity.setOrderStatusTimeline(newTimeline);
+
         List<GuestOrderProductDTO> listOrderProductDTO = guestOrderProductRepository.findListGuestOrderProductDTOByOrderGuid(orderEntity.getGuid());
         long totalAmount = calculateTotalAmount(listOrderProductDTO);
         orderEntity.setTotalAmount(totalAmount);

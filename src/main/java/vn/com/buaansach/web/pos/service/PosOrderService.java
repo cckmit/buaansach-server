@@ -131,6 +131,12 @@ public class PosOrderService {
             posSeatService.makeSeatServiceUnfinished(orderEntity.getSeatGuid());
         }
 
+        String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(),
+                "UPDATE_ORDER",
+                currentUser,
+                payload.getListOrderProduct().size() + "");
+        orderEntity.setOrderStatusTimeline(newTimeline);
+
         List<PosOrderProductDTO> listPosOrderProductDTO = posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(payload.getOrderGuid());
         long totalAmount = calculateTotalAmount(listPosOrderProductDTO);
         orderEntity.setTotalAmount(totalAmount);

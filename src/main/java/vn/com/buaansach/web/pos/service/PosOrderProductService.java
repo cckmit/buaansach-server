@@ -148,4 +148,7 @@ public class PosOrderProductService {
         });
     }
 
+    public List<PosOrderProductDTO> getOrderProductByOrderGuid(String orderGuid) {
+        return posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(UUID.fromString(orderGuid));
+    }
 }
