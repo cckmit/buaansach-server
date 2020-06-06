@@ -21,13 +21,12 @@ public class GuestOrderProductService {
     private final GuestOrderProductMapper guestOrderProductMapper;
     private final GuestProductRepository guestProductRepository;
 
-    public List<OrderProductEntity> saveListOrderProduct(UUID orderGuid, List<GuestOrderProductDTO> dtos, String currentUser) {
+    public List<OrderProductEntity> saveListOrderProduct(UUID orderProductGroup, UUID orderGuid, List<GuestOrderProductDTO> dtos, String currentUser) {
         List<OrderProductEntity> list = guestOrderProductMapper.listDtoToListEntity(dtos);
 
         List<UUID> uuids = list.stream().map(OrderProductEntity::getProductGuid).collect(Collectors.toList());
         Map<UUID, ProductEntity> mapProduct = getMapProduct(uuids);
 
-        String orderProductGroup = (new Date()).getTime() + "";
         list = list.stream().peek(entity -> {
             entity.setGuid(UUID.randomUUID());
             entity.setOrderProductGroup(orderProductGroup);

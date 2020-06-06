@@ -123,7 +123,8 @@ public class PosOrderService {
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         /* Lưu tất cả orderProduct của đơn hàng */
-        posOrderProductService.saveListOrderProduct(payload.getOrderGuid(), payload.getListOrderProduct(), currentUser);
+        UUID orderProductGroup = UUID.randomUUID();
+        posOrderProductService.saveListOrderProduct(orderProductGroup, payload.getOrderGuid(), payload.getListOrderProduct(), currentUser);
 
         /* Thông thường validate trên ui thì size sẽ phải lớn hơn 0 mới gọi được, kiểm tra lần nữa cho chắc cốp.
          Khi size > 0 thì trạng thái phục vụ của chỗ sẽ đổi thành UNFINISHED */
@@ -134,7 +135,7 @@ public class PosOrderService {
         String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(),
                 "UPDATE_ORDER",
                 currentUser,
-                payload.getListOrderProduct().size() + "");
+                payload.getListOrderProduct().size() + "*" + orderProductGroup.toString());
         orderEntity.setOrderStatusTimeline(newTimeline);
 
         List<PosOrderProductDTO> listPosOrderProductDTO = posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(payload.getOrderGuid());

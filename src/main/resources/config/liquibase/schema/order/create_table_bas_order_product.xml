@@ -12,7 +12,7 @@
             <column name="guid" type="binary(16)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_order_product_guid"/>
             </column>
-            <column name="order_product_group" type="varchar(20)"/>
+            <column name="order_product_group" type="binary(16)"/>
             <column name="order_product_quantity" type="int"/>
             <column name="order_product_root_price" type="int"/>
             <column name="order_product_price" type="int"/>

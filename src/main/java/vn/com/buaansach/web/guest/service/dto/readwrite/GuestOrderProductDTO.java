@@ -20,7 +20,7 @@ public class GuestOrderProductDTO extends AuditDTO {
     private UUID orderGuid;
     private UUID productGuid;
 
-    private String orderProductGroup;
+    private UUID orderProductGroup;
     private int orderProductQuantity;
     @JsonIgnore
     private int orderProductRootPrice;

@@ -21,8 +21,7 @@ public class PosOrderProductDTO extends AuditDTO {
     private UUID orderGuid;
     private UUID productGuid;
 
-    @Size(max = 20)
-    private String orderProductGroup;
+    private UUID orderProductGroup;
     private int orderProductQuantity;
     @JsonIgnore
     private int orderProductRootPrice;

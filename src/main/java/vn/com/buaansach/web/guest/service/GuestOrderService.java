@@ -139,11 +139,15 @@ public class GuestOrderService {
             throw new GuestBadRequestException("guest@storeProductUnavailable@");
         }
 
-        guestOrderProductService.saveListOrderProduct(payload.getOrderGuid(), payload.getListOrderProduct(), currentUser);
+        UUID orderProductGroup = UUID.randomUUID();
+        guestOrderProductService.saveListOrderProduct(orderProductGroup, payload.getOrderGuid(), payload.getListOrderProduct(), currentUser);
 
         guestSeatService.makeSeatServiceUnfinished(orderEntity.getSeatGuid());
 
-        String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(), "UPDATE_ORDER", currentUser);
+        String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(),
+                "UPDATE_ORDER",
+                currentUser,
+                payload.getListOrderProduct().size() + "*" + orderProductGroup.toString());
         orderEntity.setOrderStatusTimeline(newTimeline);
 
         List<GuestOrderProductDTO> listOrderProductDTO = guestOrderProductRepository.findListGuestOrderProductDTOByOrderGuid(orderEntity.getGuid());

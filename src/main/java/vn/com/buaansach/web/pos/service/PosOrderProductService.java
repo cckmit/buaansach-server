@@ -41,14 +41,13 @@ public class PosOrderProductService {
     /**
      * Lưu các sản phẩm cho đơn hàng
      */
-    public List<OrderProductEntity> saveListOrderProduct(UUID orderGuid, List<PosOrderProductDTO> dtos, String currentUser) {
+    public List<OrderProductEntity> saveListOrderProduct(UUID orderProductGroup, UUID orderGuid, List<PosOrderProductDTO> dtos, String currentUser) {
         List<OrderProductEntity> list = posOrderProductMapper.listDtoToListEntity(dtos);
 
         /* Tạo 1 map product để sau đó lấy thông tin product dựa theo mã guid được nhanh hơn */
         List<UUID> uuids = list.stream().map(OrderProductEntity::getProductGuid).collect(Collectors.toList());
         Map<UUID, ProductEntity> mapProduct = getMapProduct(uuids);
 
-        String orderProductGroup = (new Date()).getTime() + "";
         list = list.stream()
                 .peek(entity -> {
                     entity.setGuid(UUID.randomUUID());
