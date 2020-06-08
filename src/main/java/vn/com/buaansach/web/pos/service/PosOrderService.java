@@ -407,7 +407,7 @@ public class PosOrderService {
 
         String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(), "CHANGE_PHONE", currentUser, payload.getNewCustomerPhone());
         orderEntity.setOrderStatusTimeline(newTimeline);
-        orderEntity.setCustomerPhone(payload.getNewCustomerPhone().trim());
+        orderEntity.setCustomerPhone(payload.getNewCustomerPhone());
         posOrderRepository.save(orderEntity);
     }
 }
