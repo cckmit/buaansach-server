@@ -43,6 +43,7 @@ public class GuestOrderProductDTO extends AuditDTO {
     private String productName;
     private String productUnit;
     private String productImageUrl;
+    private String productThumbnailUrl;
 
     public GuestOrderProductDTO() {
     }
@@ -57,6 +58,7 @@ public class GuestOrderProductDTO extends AuditDTO {
         this.productName = productEntity.getProductName();
         this.productUnit = productEntity.getProductUnit();
         this.productImageUrl = productEntity.getProductImageUrl();
+        this.productThumbnailUrl = productEntity.getProductThumbnailUrl();
     }
 
     private void assignProperty(OrderProductEntity orderProductEntity) {

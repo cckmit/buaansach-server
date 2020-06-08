@@ -65,7 +65,7 @@ public class AdminProductService {
         saveProductCategory(productGuid, payload.getCategories());
         if (image != null) {
             FileEntity fileEntity = fileService.uploadImage(image, Constants.PRODUCT_IMAGE_PATH);
-            productEntity.setProductImageUrl(fileEntity.getUrl());
+            productEntity.setProductThumbnailUrl(fileEntity.getUrl());
         }
         return new AdminProductDTO(adminProductRepository.save(productEntity), payload.getCategories());
     }
@@ -113,16 +113,16 @@ public class AdminProductService {
 
         if (image != null) {
             /* if update image */
-            fileService.deleteByUrl(currentEntity.getProductImageUrl());
+            fileService.deleteByUrl(currentEntity.getProductThumbnailUrl());
             FileEntity newImage = fileService.uploadImage(image, Constants.PRODUCT_IMAGE_PATH);
-            updateEntity.setProductImageUrl(newImage.getUrl());
+            updateEntity.setProductThumbnailUrl(newImage.getUrl());
         } else {
             /* if updateEntity has imageUrl = null or empty
              * => user has cleared image
              * => delete currentEntity's image
              */
-            if (updateEntity.getProductImageUrl() == null || updateEntity.getProductImageUrl().isEmpty()) {
-                fileService.deleteByUrl(currentEntity.getProductImageUrl());
+            if (updateEntity.getProductThumbnailUrl() == null || updateEntity.getProductThumbnailUrl().isEmpty()) {
+                fileService.deleteByUrl(currentEntity.getProductThumbnailUrl());
             }
         }
 
