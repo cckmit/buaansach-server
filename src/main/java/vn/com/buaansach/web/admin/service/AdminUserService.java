@@ -13,6 +13,7 @@ import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.util.RandomUtil;
+import vn.com.buaansach.util.sequence.UserCodeGenerator;
 import vn.com.buaansach.web.admin.repository.AdminAuthorityRepository;
 import vn.com.buaansach.web.admin.repository.AdminUserRepository;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateUserDTO;
@@ -50,6 +51,7 @@ public class AdminUserService {
         } else {
             UserEntity newUserEntity = new UserEntity();
             newUserEntity.setGuid(UUID.randomUUID());
+            newUserEntity.setCode(UserCodeGenerator.generate());
             newUserEntity.setFirstName(dto.getFirstName());
             newUserEntity.setLastName(dto.getLastName());
             newUserEntity.setLogin(dto.getLogin().toLowerCase());

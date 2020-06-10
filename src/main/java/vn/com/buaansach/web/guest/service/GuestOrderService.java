@@ -7,7 +7,7 @@ import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.entity.store.StoreProductEntity;
-import vn.com.buaansach.util.OrderCodeGenerator;
+import vn.com.buaansach.util.sequence.OrderCodeGenerator;
 import vn.com.buaansach.web.guest.exception.GuestBadRequestException;
 import vn.com.buaansach.web.guest.exception.GuestResourceNotFoundException;
 import vn.com.buaansach.web.guest.repository.*;

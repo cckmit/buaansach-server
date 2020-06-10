@@ -19,6 +19,7 @@ public class AdminStoreProductDTO extends AuditDTO {
     private UUID storeGuid;
     private UUID productGuid;
 
+    private String productCode;
     private String productName;
     private String productUnit;
     private String productDescription;
@@ -39,7 +40,12 @@ public class AdminStoreProductDTO extends AuditDTO {
         this.storeProductStatus = storeProductEntity.getStoreProductStatus();
         this.storeGuid = storeProductEntity.getStoreGuid();
         this.productGuid = storeProductEntity.getStoreGuid();
+        this.createdBy = storeProductEntity.getCreatedBy();
+        this.createdDate = storeProductEntity.getCreatedDate();
+        this.lastModifiedBy = storeProductEntity.getLastModifiedBy();
+        this.lastModifiedDate = storeProductEntity.getLastModifiedDate();
 
+        this.productCode = productEntity.getProductCode();
         this.productName = productEntity.getProductName();
         this.productUnit = productEntity.getProductUnit();
         this.productDescription = productEntity.getProductDescription();
@@ -51,11 +57,6 @@ public class AdminStoreProductDTO extends AuditDTO {
         this.productDiscount = productEntity.getProductDiscount();
         this.productPosition = productEntity.getProductPosition();
         this.productSaleGuid = productEntity.getProductSaleGuid();
-
-        this.createdBy = storeProductEntity.getCreatedBy();
-        this.createdDate = storeProductEntity.getCreatedDate();
-        this.lastModifiedBy = storeProductEntity.getLastModifiedBy();
-        this.lastModifiedDate = storeProductEntity.getLastModifiedDate();
     }
 
     public void updateAudit(StoreProductEntity storeProductEntity) {

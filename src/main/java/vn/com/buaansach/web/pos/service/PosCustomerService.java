@@ -8,6 +8,7 @@ import vn.com.buaansach.entity.enumeration.CustomerZaloStatus;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.util.Constants;
+import vn.com.buaansach.util.sequence.CustomerCodeGenerator;
 import vn.com.buaansach.util.RandomUtil;
 import vn.com.buaansach.web.pos.repository.PosCustomerRepository;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosCustomerDTO;
@@ -19,7 +20,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PosCustomerService {
     private final PosCustomerRepository posCustomerRepository;
-    private final PosCodeService posCodeService;
     private final PasswordEncoder passwordEncoder;
     private final PosVoucherCodeService posVoucherCodeService;
 
@@ -52,7 +52,7 @@ public class PosCustomerService {
     @Transactional
     public CustomerEntity createCustomer(CustomerEntity customerEntity) {
         customerEntity.setGuid(UUID.randomUUID());
-        customerEntity.setCustomerCode(posCodeService.generateCodeForCustomer(customerEntity.getCustomerPhone(), customerEntity.getCreatedDate()));
+        customerEntity.setCustomerCode(CustomerCodeGenerator.generate());
         customerEntity.setCustomerPassword(passwordEncoder.encode(RandomUtil.generatePassword()));
         customerEntity.setCustomerActivated(true);
         customerEntity.setCustomerZaloStatus(CustomerZaloStatus.UNKNOWN);

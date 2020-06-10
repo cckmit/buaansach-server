@@ -7,10 +7,10 @@ import vn.com.buaansach.entity.customer.CustomerEntity;
 import vn.com.buaansach.entity.enumeration.CustomerZaloStatus;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.util.Constants;
+import vn.com.buaansach.util.sequence.CustomerCodeGenerator;
 import vn.com.buaansach.util.RandomUtil;
 import vn.com.buaansach.web.guest.repository.GuestCustomerRepository;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestCustomerDTO;
-import vn.com.buaansach.web.pos.service.dto.readwrite.PosCustomerDTO;
 
 import javax.transaction.Transactional;
 import java.util.UUID;
@@ -19,7 +19,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class GuestCustomerService {
     private final GuestCustomerRepository guestCustomerRepository;
-    private final GuestCodeService guestCodeService;
     private final PasswordEncoder passwordEncoder;
     private final GuestVoucherCodeService guestVoucherCodeService;
 
@@ -48,7 +47,7 @@ public class GuestCustomerService {
     @Transactional
     public CustomerEntity createCustomer(CustomerEntity customerEntity) {
         customerEntity.setGuid(UUID.randomUUID());
-        customerEntity.setCustomerCode(guestCodeService.generateCodeForCustomer(customerEntity.getCustomerPhone(), customerEntity.getCreatedDate()));
+        customerEntity.setCustomerCode(CustomerCodeGenerator.generate());
         customerEntity.setCustomerPassword(passwordEncoder.encode(RandomUtil.generatePassword()));
         customerEntity.setCustomerActivated(true);
         customerEntity.setCustomerZaloStatus(CustomerZaloStatus.UNKNOWN);

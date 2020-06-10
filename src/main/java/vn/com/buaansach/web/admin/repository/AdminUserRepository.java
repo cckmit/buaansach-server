@@ -36,7 +36,7 @@ public interface AdminUserRepository extends JpaRepository<UserEntity, Long> {
 
     Page<UserEntity> findAllByLoginNot(Pageable pageable, String login);
 
-    @Query("SELECT u FROM UserEntity u WHERE u.login LIKE %:search% OR u.firstName LIKE %:search% OR u.lastName LIKE %:search%")
+    @Query("SELECT u FROM UserEntity u WHERE u.login LIKE %:search% OR u.firstName LIKE %:search% OR u.lastName LIKE %:search% OR u.code LIKE %:search%")
     Page<UserEntity> findPageUserWithKeyword(Pageable pageable, @Param("search") String search);
 
     @Query(value = "SELECT u.code FROM bas_user u WHERE u.code IS NOT NULL ORDER BY u.id DESC LIMIT 1", nativeQuery = true)
