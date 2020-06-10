@@ -23,8 +23,8 @@ public class VoucherCodeEntity extends AbstractAuditingEntity implements Seriali
     @JsonIgnore
     private Long id;
 
-    @Size(max = 20)
-    @Column(name = "voucher_code", length = 20, unique = true)
+    @Size(max = 30)
+    @Column(name = "voucher_code", length = 30, unique = true)
     private String voucherCode;
 
     @Column(name = "voucher_code_usable")

@@ -2,6 +2,7 @@ package vn.com.buaansach.web.admin.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.entity.enumeration.VoucherInventoryType;
 import vn.com.buaansach.entity.voucher.VoucherInventoryEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.util.VoucherUtil;
@@ -24,7 +25,7 @@ public class AdminVoucherInventoryService {
     public void generateVoucherInventory(AdminVoucherInventoryGenerateDTO payload) {
         int length = payload.getVoucherCodeLength();
         int total = payload.getNumberOfVoucherCode();
-        if (length > 20 || length < 5)
+        if (length > 30 || length < 5)
             throw new BadRequestException("Voucher code length must be in range 5-20");
         if (total > 1000000)
             throw new BadRequestException("Number of voucher is too large");
@@ -39,7 +40,9 @@ public class AdminVoucherInventoryService {
                 setNewCodes.add(code);
             }
         }
-        List<VoucherInventoryEntity> inventoryEntities = setNewCodes.stream().map(code -> new VoucherInventoryEntity(code, false)).collect(Collectors.toList());
+        List<VoucherInventoryEntity> inventoryEntities = setNewCodes.stream()
+                .map(code -> new VoucherInventoryEntity(code, payload.getVoucherCodeLength(), VoucherInventoryType.AUTO_GENERATED, false))
+                .collect(Collectors.toList());
         adminVoucherInventoryRepository.saveAll(inventoryEntities);
     }
 
