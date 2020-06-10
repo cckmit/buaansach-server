@@ -13,6 +13,7 @@ import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.Constants;
+import vn.com.buaansach.util.sequence.UserCodeGenerator;
 import vn.com.buaansach.web.admin.repository.AdminStoreRepository;
 import vn.com.buaansach.web.admin.repository.AdminStoreUserRepository;
 import vn.com.buaansach.web.admin.repository.AdminUserRepository;
@@ -127,7 +128,7 @@ public class AdminStoreUserService {
             throw new LoginAlreadyUsedException();
         }
         userEntity.setGuid(UUID.randomUUID());
-        userEntity.setCode(adminCodeService.generateCodeForUser());
+        userEntity.setCode(UserCodeGenerator.generate());
         userEntity.setLogin(request.getUserLogin());
         userEntity.setPassword(passwordEncoder.encode(request.getPassword()));
         userEntity.setFirstName(request.getFirstName());
