@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.*;
 import vn.com.buaansach.entity.order.OrderEntity;
+import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.entity.store.StoreProductEntity;
+import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
 import vn.com.buaansach.web.guest.exception.GuestBadRequestException;
 import vn.com.buaansach.web.guest.exception.GuestResourceNotFoundException;
@@ -40,6 +42,7 @@ public class GuestOrderService {
     private final GuestOrderFeedbackRepository guestOrderFeedbackRepository;
     private final GuestCustomerService guestCustomerService;
     private final GuestStoreProductRepository guestStoreProductRepository;
+    private final GuestAreaRepository guestAreaRepository;
 
     public GuestOrderDTO getOrder(String orderGuid) {
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
@@ -63,22 +66,36 @@ public class GuestOrderService {
         SeatEntity seatEntity = guestSeatRepository.findOneByGuid(payload.getSeatGuid())
                 .orElseThrow(() -> new GuestResourceNotFoundException("guest@seatNotFound@" + payload.getSeatGuid()));
 
+        AreaEntity areaEntity = guestAreaRepository.findOneByGuid(seatEntity.getAreaGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("guest@areaNotFound@ " + seatEntity.getAreaGuid()));
+
         if (seatEntity.isSeatLocked())
             throw new GuestBadRequestException("guest@seatLocked@" + payload.getSeatGuid());
 
         if (seatEntity.getSeatStatus().equals(SeatStatus.NON_EMPTY))
             throw new GuestBadRequestException("guest@seatNonEmpty@" + payload.getSeatGuid());
 
-//        if (payload.getCustomerPhone() != null) {
-//            guestCustomerService.guestCreateCustomerIfNotExist(payload.getCustomerName(), payload.getCustomerPhone());
-//        }
-
         OrderEntity orderEntity = new OrderEntity();
         UUID orderGuid = UUID.randomUUID();
         orderEntity.setGuid(orderGuid);
         orderEntity.setOrderCode(OrderCodeGenerator.generate());
         orderEntity.setOrderStatus(OrderStatus.CREATED);
-        orderEntity.setOrderType(OrderType.IN_STORE);
+
+        switch (areaEntity.getAreaType()) {
+            case IN_STORE:
+                orderEntity.setOrderType(OrderType.IN_STORE);
+                break;
+            case TAKE_AWAY:
+                orderEntity.setOrderType(OrderType.TAKE_AWAY);
+                break;
+            case ONLINE:
+                orderEntity.setOrderType(OrderType.ONLINE);
+                break;
+            case TEST:
+                orderEntity.setOrderType(OrderType.TEST);
+                break;
+        }
+
         orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderStatus.CREATED, currentUser));
         orderEntity.setOrderCheckinTime(Instant.now());
         orderEntity.setOrderDiscount(0);

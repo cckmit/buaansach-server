@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
 import vn.com.buaansach.entity.order.OrderProductEntity;
+import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.web.guest.exception.GuestResourceNotFoundException;
 import vn.com.buaansach.web.guest.repository.GuestOrderProductRepository;
 import vn.com.buaansach.web.guest.repository.GuestProductRepository;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderProductDTO;
@@ -35,6 +37,9 @@ public class GuestOrderProductService {
             entity.setOrderGuid(orderGuid);
 
             ProductEntity product = mapProduct.get(entity.getProductGuid());
+
+            if (product == null) throw new GuestResourceNotFoundException("guest@productNotFound@" + entity.getProductGuid());
+
             entity.setOrderProductRootPrice(product.getProductRootPrice());
             entity.setOrderProductPrice(product.getProductPrice());
             entity.setOrderProductDiscount(product.getProductDiscount());

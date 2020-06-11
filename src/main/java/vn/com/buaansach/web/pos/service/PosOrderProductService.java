@@ -57,6 +57,9 @@ public class PosOrderProductService {
                     entity.setOrderGuid(orderGuid);
 
                     ProductEntity product = mapProduct.get(entity.getProductGuid());
+
+                    if (product == null) throw new ResourceNotFoundException("pos@productNotFound@" + entity.getProductGuid());
+
                     entity.setOrderProductRootPrice(product.getProductRootPrice());
                     entity.setOrderProductPrice(product.getProductPrice());
                     entity.setOrderProductDiscount(product.getProductDiscount());
