@@ -8,8 +8,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import vn.com.buaansach.entity.customer.CustomerEntity;
 import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
+import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.web.customer_care.service.dto.CustomerCareCustomerVoucherCodeDTO;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,4 +37,10 @@ public interface CustomerCareCustomerRepository extends JpaRepository<CustomerEn
             "ORDER BY customer.createdDate ASC")
     List<CustomerCareCustomerVoucherCodeDTO> findUnsetVoucherCodeForCustomer(@Param("voucherGuid") UUID voucherGuid,
                                                                              @Param("voucherCodeClaimStatus") VoucherCodeClaimStatus voucherCodeClaimStatus);
+
+    @Query("SELECT customer FROM CustomerEntity customer " +
+            "WHERE customer.createdDate >= :startDate " +
+            "AND customer.createdDate <= :endDate")
+    List<CustomerEntity> findByDateRange(Instant startDate, Instant endDate);
+
 }

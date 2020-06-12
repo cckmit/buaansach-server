@@ -5,13 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.customer_care.service.CustomerCareCustomerService;
+import vn.com.buaansach.web.customer_care.service.dto.CustomerCareStatisticDTO;
 import vn.com.buaansach.web.customer_care.service.dto.CustomerCareUpdateCustomerDTO;
 
 @Secured(AuthoritiesConstants.CUSTOMER_CARE)
@@ -28,5 +26,11 @@ public class CustomerCareCustomerResource {
         log.debug("REST request from user [{}] to update [{}]  : [{}] ", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         customerCareCustomerService.updateCustomer(payload);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/statistic")
+    public ResponseEntity<CustomerCareStatisticDTO> getStatistic(@RequestBody CustomerCareStatisticDTO payload){
+        log.debug("REST request from user [{}] to get [{}] statistic  : [{}] ", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        return ResponseEntity.ok(customerCareCustomerService.getStatistic(payload));
     }
 }
