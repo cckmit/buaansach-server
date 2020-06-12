@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
-import vn.com.buaansach.entity.enumeration.VoucherCodeSentStatus;
+import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -34,8 +34,8 @@ public class VoucherCodeEntity extends AbstractAuditingEntity implements Seriali
     private int voucherCodeUsageCount;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "voucher_code_sent_status")
-    private VoucherCodeSentStatus voucherCodeSentStatus;
+    @Column(name = "voucher_code_claim_status")
+    private VoucherCodeClaimStatus voucherCodeClaimStatus;
 
     @Size(max = 20)
     @Column(name = "customer_phone", length = 20)

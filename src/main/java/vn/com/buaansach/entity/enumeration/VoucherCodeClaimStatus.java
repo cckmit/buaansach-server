@@ -1,7 +1,7 @@
 package vn.com.buaansach.entity.enumeration;
 
-public enum VoucherCodeSentStatus {
+public enum VoucherCodeClaimStatus {
     UNSET,
-    SENT,
+    CLAIMED,
     ARCHIVED
 }

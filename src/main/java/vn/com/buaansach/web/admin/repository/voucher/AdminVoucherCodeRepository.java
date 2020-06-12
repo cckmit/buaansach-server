@@ -5,9 +5,12 @@ import org.springframework.stereotype.Repository;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface AdminVoucherCodeRepository extends JpaRepository<VoucherCodeEntity, Long> {
     List<VoucherCodeEntity> findByVoucherGuid(UUID voucherGuid);
+
+    Optional<VoucherCodeEntity> findOneByVoucherCode(String voucherCode);
 }

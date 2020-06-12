@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.enumeration.VoucherCodeSentStatus;
+import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
@@ -151,7 +151,7 @@ public class PosVoucherCodeService {
 
         /* Bộ phân CSKH sẽ kiểm tra SĐT đã đăng ký Zalo hay chưa và đổi trạng thái usable sang true */
         voucherCodeEntity.setVoucherCodeUsable(false);
-        voucherCodeEntity.setVoucherCodeSentStatus(VoucherCodeSentStatus.UNSET);
+        voucherCodeEntity.setVoucherCodeClaimStatus(VoucherCodeClaimStatus.UNSET);
         voucherCodeEntity.setVoucherGuid(voucherEntity.getGuid());
         voucherCodeEntity.setVoucherCode(posVoucherInventoryService.getOneVoucherCode());
         posVoucherCodeRepository.save(voucherCodeEntity);

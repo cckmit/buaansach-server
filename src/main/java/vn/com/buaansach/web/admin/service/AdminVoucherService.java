@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.entity.voucher.VoucherInventoryEntity;
@@ -59,9 +60,11 @@ public class AdminVoucherService {
         List<VoucherCodeEntity> listVoucherCode = page.stream().map(entity -> {
             VoucherCodeEntity voucherCodeEntity = new VoucherCodeEntity();
             voucherCodeEntity.setVoucherCode(entity.getCode());
-            voucherCodeEntity.setVoucherGuid(voucherGuid);
-            voucherCodeEntity.setVoucherCodeUsable(true);
+            voucherCodeEntity.setVoucherCodeUsable(false);
             voucherCodeEntity.setVoucherCodeUsageCount(0);
+            voucherCodeEntity.setVoucherCodeClaimStatus(VoucherCodeClaimStatus.UNSET);
+            voucherCodeEntity.setCustomerPhone(null);
+            voucherCodeEntity.setVoucherGuid(voucherGuid);
             return voucherCodeEntity;
         }).collect(Collectors.toList());
 

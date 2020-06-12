@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import vn.com.buaansach.entity.customer.CustomerEntity;
-import vn.com.buaansach.entity.enumeration.VoucherCodeSentStatus;
+import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
 import vn.com.buaansach.web.customer_care.service.dto.CustomerCareCustomerVoucherCodeDTO;
 
 import java.util.List;
@@ -31,8 +31,8 @@ public interface CustomerCareCustomerRepository extends JpaRepository<CustomerEn
             "LEFT JOIN vn.com.buaansach.entity.voucher.VoucherCodeEntity voucherCode " +
             "ON customer.customerPhone = voucherCode.customerPhone " +
             "WHERE voucherCode.voucherGuid = :voucherGuid " +
-            "AND voucherCode.voucherCodeSentStatus = :voucherCodeSentStatus " +
+            "AND voucherCode.voucherCodeClaimStatus = :voucherCodeClaimStatus " +
             "ORDER BY customer.createdDate ASC")
-    List<CustomerCareCustomerVoucherCodeDTO> findUnsentVoucher(@Param("voucherGuid") UUID voucherGuid,
-                                                               @Param("voucherCodeSentStatus") VoucherCodeSentStatus voucherCodeSentStatus);
+    List<CustomerCareCustomerVoucherCodeDTO> findUnsetVoucherCodeForCustomer(@Param("voucherGuid") UUID voucherGuid,
+                                                                             @Param("voucherCodeClaimStatus") VoucherCodeClaimStatus voucherCodeClaimStatus);
 }

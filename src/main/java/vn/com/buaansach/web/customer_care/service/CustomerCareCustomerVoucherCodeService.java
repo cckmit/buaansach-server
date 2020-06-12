@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.enumeration.VoucherCodeSentStatus;
+import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.customer_care.repository.CustomerCareCustomerRepository;
@@ -26,6 +26,6 @@ public class CustomerCareCustomerVoucherCodeService {
 
     public List<CustomerCareCustomerVoucherCodeDTO> getListUnsentVoucher() {
         VoucherEntity voucherEntity = customerCareVoucherRepository.findById(Constants.DEFAULT_FIRST_REG_VOUCHER_ID).orElseThrow();
-        return customerCareCustomerRepository.findUnsentVoucher(voucherEntity.getGuid(), VoucherCodeSentStatus.UNSET);
+        return customerCareCustomerRepository.findUnsetVoucherCodeForCustomer(voucherEntity.getGuid(), VoucherCodeClaimStatus.UNSET);
     }
 }

@@ -2,7 +2,7 @@ package vn.com.buaansach.web.guest.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.enumeration.VoucherCodeSentStatus;
+import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.util.Constants;
@@ -35,7 +35,7 @@ public class GuestVoucherCodeService {
         voucherCodeEntity.setVoucherCodeUsageCount(0);
         /* will be set to true later if customer has zalo id */
         voucherCodeEntity.setVoucherCodeUsable(false);
-        voucherCodeEntity.setVoucherCodeSentStatus(VoucherCodeSentStatus.UNSET);
+        voucherCodeEntity.setVoucherCodeClaimStatus(VoucherCodeClaimStatus.UNSET);
         voucherCodeEntity.setVoucherGuid(voucherEntity.getGuid());
         voucherCodeEntity.setVoucherCode(guestVoucherInventoryService.getOneVoucherCode());
         guestVoucherCodeRepository.save(voucherCodeEntity);

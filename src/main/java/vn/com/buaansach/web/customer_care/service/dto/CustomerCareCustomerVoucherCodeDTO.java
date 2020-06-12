@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.customer.CustomerEntity;
 import vn.com.buaansach.entity.enumeration.CustomerZaloStatus;
 import vn.com.buaansach.entity.enumeration.Gender;
-import vn.com.buaansach.entity.enumeration.VoucherCodeSentStatus;
+import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
 import vn.com.buaansach.web.user.service.dto.AuditDTO;
 
@@ -32,7 +32,7 @@ public class CustomerCareCustomerVoucherCodeDTO extends AuditDTO {
 
     private String voucherCode;
     private boolean voucherCodeUsable;
-    private VoucherCodeSentStatus voucherCodeSentStatus;
+    private VoucherCodeClaimStatus voucherCodeClaimStatus;
     private int voucherCodeUsageCount;
 
     public CustomerCareCustomerVoucherCodeDTO() {
@@ -61,7 +61,7 @@ public class CustomerCareCustomerVoucherCodeDTO extends AuditDTO {
         this.customerRankGuid = customerEntity.getCustomerRankGuid();
         this.voucherCode = voucherCodeEntity.getVoucherCode();
         this.voucherCodeUsable = voucherCodeEntity.isVoucherCodeUsable();
-        this.voucherCodeSentStatus = voucherCodeEntity.getVoucherCodeSentStatus();
+        this.voucherCodeClaimStatus = voucherCodeEntity.getVoucherCodeClaimStatus();
         this.voucherCodeUsageCount = voucherCodeEntity.getVoucherCodeUsageCount();
     }
 
