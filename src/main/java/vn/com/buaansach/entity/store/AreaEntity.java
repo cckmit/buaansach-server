@@ -38,6 +38,9 @@ public class AreaEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "area_color", length = 50)
     private String areaColor = "#ffffff";
 
+    @Column(name = "area_activated", length = 50)
+    private boolean areaActivated;
+
     @Column(name = "store_guid")
     private UUID storeGuid;
 }

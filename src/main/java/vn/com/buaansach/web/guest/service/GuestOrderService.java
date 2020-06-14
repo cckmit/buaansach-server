@@ -69,6 +69,10 @@ public class GuestOrderService {
         AreaEntity areaEntity = guestAreaRepository.findOneByGuid(seatEntity.getAreaGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("guest@areaNotFound@ " + seatEntity.getAreaGuid()));
 
+        if (!areaEntity.isAreaActivated()){
+            throw new GuestBadRequestException("guest@areaDisabled@" + areaEntity.getGuid());
+        }
+
         if (seatEntity.isSeatLocked())
             throw new GuestBadRequestException("guest@seatLocked@" + payload.getSeatGuid());
 
@@ -118,6 +122,7 @@ public class GuestOrderService {
         return result;
     }
 
+    @Transactional
     public GuestOrderDTO updateOrder(GuestOrderUpdateDTO payload, String currentUser) {
         /* check order product size */
         if (payload.getListOrderProduct().size() == 0)
@@ -141,6 +146,13 @@ public class GuestOrderService {
         /* check seat locked */
         SeatEntity seatEntity = guestSeatRepository.findOneByGuid(orderEntity.getSeatGuid())
                 .orElseThrow(() -> new GuestResourceNotFoundException("guest@seatNotFound@" + orderEntity.getSeatGuid()));
+
+        AreaEntity areaEntity = guestAreaRepository.findOneByGuid(seatEntity.getAreaGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("guest@areaNotFound@ " + seatEntity.getAreaGuid()));
+
+        if (!areaEntity.isAreaActivated()){
+            throw new GuestBadRequestException("guest@areaDisabled@" + areaEntity.getGuid());
+        }
 
         if (seatEntity.isSeatLocked())
             throw new GuestBadRequestException("guest@seatLocked@" + seatEntity.getGuid());

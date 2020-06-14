@@ -61,6 +61,14 @@ public class PosOrderService {
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
+        if (seatEntity.isSeatLocked()){
+            throw new BadRequestException("pos@seatLocked@" + seatEntity.getGuid());
+        }
+
+        if (!areaEntity.isAreaActivated()){
+            throw new BadRequestException("pos@areaDisabled@" + areaEntity.getGuid());
+        }
+
         /* Tạo khách hàng nếu nhập SĐT chưa có trong hệ thống */
         if (payload.getCustomerPhone() != null) {
             posCustomerService.createCustomerByPhone(payload.getCustomerPhone());

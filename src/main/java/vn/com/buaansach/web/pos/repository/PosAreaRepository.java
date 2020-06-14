@@ -10,6 +10,8 @@ import java.util.UUID;
 
 @Repository
 public interface PosAreaRepository extends JpaRepository<AreaEntity, Long> {
+    List<AreaEntity> findByStoreGuidAndAreaActivated(UUID storeGuid, boolean areaActivated);
+
     List<AreaEntity> findByStoreGuid(UUID storeGuid);
 
     Optional<AreaEntity> findOneByGuid(UUID areaGuid);

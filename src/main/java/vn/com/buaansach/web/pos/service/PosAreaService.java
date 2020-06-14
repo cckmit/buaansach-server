@@ -31,7 +31,7 @@ public class PosAreaService {
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFound@" + storeGuid));
 
-        List<AreaEntity> listArea = posAreaRepository.findByStoreGuid(storeEntity.getGuid());
+        List<AreaEntity> listArea = posAreaRepository.findByStoreGuidAndAreaActivated(storeEntity.getGuid(), true);
         List<PosSeatDTO> listSeat = posSeatRepository.findListPosSeatDTOByStoreGuid(storeEntity.getGuid());
         List<PosAreaDTO> result = new ArrayList<>();
         listArea.forEach(area -> {
@@ -49,7 +49,7 @@ public class PosAreaService {
 
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFound@" + storeGuid));
-        return posAreaRepository.findByStoreGuid(storeEntity.getGuid())
+        return posAreaRepository.findByStoreGuidAndAreaActivated(storeEntity.getGuid(), true)
                 .stream()
                 .map(PosAreaDTO::new)
                 .collect(Collectors.toList());

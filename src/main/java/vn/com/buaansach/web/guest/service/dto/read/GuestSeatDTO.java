@@ -20,6 +20,7 @@ public class GuestSeatDTO {
 
     private UUID areaGuid;
     private String areaName;
+    private boolean areaActivated;
 
     private UUID storeGuid;
     private String storeName;
@@ -37,6 +38,7 @@ public class GuestSeatDTO {
 
         this.areaGuid = areaEntity.getGuid();
         this.areaName = areaEntity.getAreaName();
+        this.areaActivated = areaEntity.isAreaActivated();
 
         this.storeGuid = storeEntity.getGuid();
         this.storeName = storeEntity.getStoreName();
