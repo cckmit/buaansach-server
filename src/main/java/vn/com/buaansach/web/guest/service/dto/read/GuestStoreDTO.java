@@ -17,8 +17,7 @@ public class GuestStoreDTO {
     private String storeOwnerPhone;
     private String storeOwnerEmail;
     private String storeTaxCode;
-    private String storeOpenHour;
-    private String storeCloseHour;
+    private String storeBusinessHours;
 
     public GuestStoreDTO() {
     }
@@ -33,7 +32,6 @@ public class GuestStoreDTO {
         this.storeOwnerPhone = storeEntity.getStoreOwnerPhone();
         this.storeOwnerEmail = storeEntity.getStoreOwnerEmail();
         this.storeTaxCode = storeEntity.getStoreTaxCode();
-        this.storeOpenHour = storeEntity.getStoreOpenHour();
-        this.storeCloseHour = storeEntity.getStoreCloseHour();
+        this.storeBusinessHours = storeEntity.getStoreBusinessHours();
     }
 }

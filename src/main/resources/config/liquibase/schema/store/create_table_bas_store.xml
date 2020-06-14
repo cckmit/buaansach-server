@@ -33,8 +33,7 @@
             </column>
             <column name="store_owner_email" type="varchar(100)"/>
             <column name="store_tax_code" type="varchar(50)"/>
-            <column name="store_open_hour" type="varchar(10)"/>
-            <column name="store_close_hour" type="varchar(10)"/>
+            <column name="store_business_hours" type="varchar(255)"/>
             <column name="store_activated" type="boolean">
                 <constraints nullable="false"/>
             </column>

@@ -20,8 +20,7 @@ public class StoreUserDTO extends AuditDTO {
     private String storeImageUrl;
     private String storeOwnerName;
     private String storeOwnerPhone;
-    private String storeOpenHour;
-    private String storeCloseHour;
+    private String storeBusinessHours;
     private StoreStatus storeStatus;
     private String firstName;
     private String lastName;
@@ -37,8 +36,7 @@ public class StoreUserDTO extends AuditDTO {
         this.storeName = storeEntity.getStoreName();
         this.storeOwnerName = storeEntity.getStoreOwnerName();
         this.storeOwnerPhone = storeEntity.getStoreOwnerPhone();
-        this.storeOpenHour = storeEntity.getStoreOpenHour();
-        this.storeCloseHour = storeEntity.getStoreCloseHour();
+        this.storeBusinessHours = storeEntity.getStoreBusinessHours();
         this.storeImageUrl = storeEntity.getStoreImageUrl();
         this.storeStatus = storeEntity.getStoreStatus();
         this.firstName = userEntity.getFirstName();
