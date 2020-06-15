@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
+import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
@@ -17,6 +18,7 @@ import vn.com.buaansach.web.pos.service.dto.write.PosOrderProductStatusChangeDTO
 import vn.com.buaansach.web.pos.service.mapper.PosOrderProductMapper;
 import vn.com.buaansach.web.pos.util.TimelineUtil;
 
+import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -115,6 +117,7 @@ public class PosOrderProductService {
         checkSeatServiceStatus(payload.getOrderGuid());
     }
 
+    @Transactional
     public void cancelOrderProduct(PosOrderProductStatusChangeDTO payload, String currentUser) {
         if (payload.getOrderProductCancelReason().isEmpty())
             throw new BadRequestException("pos@orderProductCancelReasonRequired@" + payload.getOrderProductGuid());
@@ -132,8 +135,23 @@ public class PosOrderProductService {
                     currentUser);
             orderProductEntity.setOrderProductStatusTimeline(timeline);
             posOrderProductRepository.save(orderProductEntity);
+
+            /* Tính lại giá trị đơn hàng */
+            OrderEntity orderEntity = posOrderRepository.findOneByGuid((orderProductEntity.getOrderGuid()))
+                    .orElseThrow(() -> new ResourceNotFoundException("pos@orderNotFound@" + orderProductEntity.getOrderGuid()));
+            List<PosOrderProductDTO> listPosOrderProductDTO = posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(orderProductEntity.getOrderGuid());
+            long totalAmount = calculateTotalAmount(listPosOrderProductDTO);
+            orderEntity.setTotalAmount(totalAmount);
+            posOrderRepository.save(orderEntity);
+
             checkSeatServiceStatus(orderProductEntity.getOrderGuid());
         }
+    }
+
+    private long calculateTotalAmount(List<PosOrderProductDTO> listPosOrderProductDTO) {
+        return listPosOrderProductDTO.stream()
+                .filter(dto -> !dto.getOrderProductStatus().toString().contains("CANCELLED"))
+                .mapToLong(dto -> dto.getOrderProductQuantity() * (dto.getOrderProductPrice() - dto.getOrderProductDiscount())).sum();
     }
 
     /* Thực hiện kiểm tra trạng thái phục vụ của chỗ ngồi

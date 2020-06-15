@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.service.PosOrderService;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
@@ -12,6 +14,7 @@ import vn.com.buaansach.web.pos.service.dto.write.*;
 
 import javax.validation.Valid;
 
+@Secured(AuthoritiesConstants.USER)
 @RestController
 @RequestMapping("/api/v1/pos/order")
 @RequiredArgsConstructor

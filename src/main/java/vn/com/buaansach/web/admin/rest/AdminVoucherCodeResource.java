@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminVoucherCodeService;
+import vn.com.buaansach.web.admin.service.dto.write.AdminUpdateVoucherCodeDTO;
 
 @Secured(AuthoritiesConstants.ADMIN)
 @RestController
@@ -26,6 +27,13 @@ public class AdminVoucherCodeResource {
     public ResponseEntity<Void> toggleVoucherCode(@RequestBody String voucherCode) {
         log.debug("REST request from user [{}] to toggle [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, voucherCode);
         adminVoucherCodeService.toggleVoucherCode(voucherCode);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<Void> updateVoucherCode(@RequestBody AdminUpdateVoucherCodeDTO payload) {
+        log.debug("REST request from user [{}] to update [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        adminVoucherCodeService.updateVoucherCode(payload);
         return ResponseEntity.ok().build();
     }
 
