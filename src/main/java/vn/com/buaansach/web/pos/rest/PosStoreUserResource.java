@@ -31,7 +31,7 @@ public class PosStoreUserResource {
     @GetMapping("/get/{storeGuid}")
     public ResponseEntity<List<PosStoreUserDTO>> getListStoreUser(@PathVariable String storeGuid) {
         log.debug("REST request from user [{}] to get [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
-        return ResponseEntity.ok(posStoreUserService.getListStoreUser(storeGuid));
+        return ResponseEntity.ok(posStoreUserService.getListStoreUserWithUserInfo(storeGuid));
     }
 
     /**

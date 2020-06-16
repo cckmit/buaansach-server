@@ -22,6 +22,10 @@ public class PosStoreUserService {
         return listStoreUser.stream().map(PosStoreUserDTO::new).collect(Collectors.toList());
     }
 
+    public List<PosStoreUserDTO> getListStoreUserWithUserInfo(String storeGuid) {
+        return posStoreUserRepository.findListDTOByStoreGuid(UUID.fromString(storeGuid));
+    }
+
     public String getCurrentStoreUserRole(String storeGuid) {
         StoreUserEntity storeUserEntity = posStoreUserRepository.findOneByUserLoginAndStoreGuid(SecurityUtils.getCurrentUserLogin(), UUID.fromString(storeGuid))
                 .orElseThrow(() -> new ResourceNotFoundException("pos@storeUserNotFound@" + storeGuid + ";" + SecurityUtils.getCurrentUserLogin()));

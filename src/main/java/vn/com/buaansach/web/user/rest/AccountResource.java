@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.security.jwt.TokenProvider;
+import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.user.repository.UserRepository;
 import vn.com.buaansach.web.user.service.AccountService;
@@ -24,6 +26,7 @@ import vn.com.buaansach.web.user.service.dto.auth.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
+@Secured(AuthoritiesConstants.USER)
 @RestController
 @RequestMapping("/api/v1/account")
 public class AccountResource {
@@ -67,6 +70,14 @@ public class AccountResource {
         return userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin())
                 .map(userEntity -> ResponseEntity.ok(new UserDTO(userEntity)))
                 .orElseThrow(() -> new ResourceNotFoundException("user@userNotFound@" + SecurityUtils.getCurrentUserLogin()));
+    }
+
+    @GetMapping("/info/{userLogin}")
+    public ResponseEntity<UserDTO> getAccountInfoByLogin(@PathVariable String userLogin) {
+        log.debug("REST request from user [{}] to get account info by login [{}]", SecurityUtils.getCurrentUserLogin(), userLogin);
+        return userRepository.findOneByLogin(userLogin)
+                .map(userEntity -> ResponseEntity.ok(new UserDTO(userEntity)))
+                .orElseThrow(() -> new ResourceNotFoundException("user@userNotFound@" + userLogin));
     }
 
     @PutMapping("/update")
