@@ -20,8 +20,14 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          HttpServletResponse httpServletResponse,
                          AuthenticationException e) throws IOException {
         String uri = httpServletRequest.getRequestURI();
-        String remoteHost = httpServletRequest.getRemoteAddr();
-        log.error("Responding with unauthorized error. URI = [{}], Remote host = [{}]. Message - {}", uri, remoteHost, e.getMessage());
+        String remoteAddr;
+
+        remoteAddr = httpServletRequest.getHeader("X-FORWARDED-FOR");
+        if (remoteAddr == null || "".equals(remoteAddr)) {
+            remoteAddr = httpServletRequest.getRemoteAddr();
+        }
+
+        log.error("Responding with unauthorized error. URI = [{}], Remote host = [{}]. Message - {}", uri, remoteAddr, e.getMessage());
         httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
     }
 }
