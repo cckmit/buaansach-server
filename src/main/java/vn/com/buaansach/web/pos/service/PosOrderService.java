@@ -81,7 +81,7 @@ public class PosOrderService {
         OrderEntity orderEntity = new OrderEntity();
         UUID orderGuid = UUID.randomUUID();
         orderEntity.setGuid(orderGuid);
-        orderEntity.setOrderCode(OrderCodeGenerator.generate());
+        orderEntity.setOrderCode(OrderCodeGenerator.generate(storeEntity.getStoreCode()));
 
         /* Đơn tạo bởi nhân viên sẽ mặc định ở trạng thái RECEIVED */
         orderEntity.setOrderStatus(OrderStatus.RECEIVED);

@@ -9,8 +9,8 @@ import vn.com.buaansach.web.admin.repository.AdminStoreRepository;
 @Service
 @RequiredArgsConstructor
 public class AdminCodeService {
-    private static final String STORE_CODE_PREFIX = "BAS";
-    private static final String PRODUCT_CODE_PREFIX = "SP";
+    public static final String STORE_CODE_PREFIX = "BAS";
+    public static final String PRODUCT_CODE_PREFIX = "SP";
     private static final int STORE_CODE_NUMBER_LENGTH = 3;
     private static final int PRODUCT_CODE_NUMBER_LENGTH = 4;
     private final AdminStoreRepository adminStoreRepository;

@@ -83,7 +83,7 @@ public class GuestOrderService {
         OrderEntity orderEntity = new OrderEntity();
         UUID orderGuid = UUID.randomUUID();
         orderEntity.setGuid(orderGuid);
-        orderEntity.setOrderCode(OrderCodeGenerator.generate());
+        orderEntity.setOrderCode(OrderCodeGenerator.generate(storeEntity.getStoreCode()));
         orderEntity.setOrderStatus(OrderStatus.CREATED);
 
         switch (areaEntity.getAreaType()) {
