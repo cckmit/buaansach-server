@@ -9,6 +9,7 @@ import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
 import vn.com.buaansach.web.guest.exception.GuestBadRequestException;
 import vn.com.buaansach.web.guest.exception.GuestResourceNotFoundException;
@@ -117,8 +118,8 @@ public class GuestOrderService {
 
         GuestOrderDTO result = new GuestOrderDTO(guestOrderRepository.save(orderEntity));
 
-        GuestSocketDTO socketDTO = new GuestSocketDTO("GUEST_CREATE_ORDER", result.getSeatGuid());
-        guestSocketService.sendMessage("/topic/pos/" + payload.getStoreGuid(), socketDTO);
+        GuestSocketDTO socketDTO = new GuestSocketDTO(WebSocketConstants.GUEST_CREATE_ORDER, result.getSeatGuid());
+        guestSocketService.sendMessage(WebSocketConstants.TOPIC_POS_PREFIX + payload.getStoreGuid(), socketDTO);
         return result;
     }
 
@@ -187,8 +188,8 @@ public class GuestOrderService {
         result.setListOrderProduct(listOrderProductDTO);
 
         /* Gửi thông báo tới nhân viên */
-        GuestSocketDTO socketDTO = new GuestSocketDTO("GUEST_UPDATE_ORDER", result.getSeatGuid());
-        guestSocketService.sendMessage("/topic/pos/" + payload.getStoreGuid(), socketDTO);
+        GuestSocketDTO socketDTO = new GuestSocketDTO(WebSocketConstants.GUEST_UPDATE_ORDER, result.getSeatGuid());
+        guestSocketService.sendMessage(WebSocketConstants.TOPIC_POS_PREFIX + payload.getStoreGuid(), socketDTO);
         return result;
     }
 

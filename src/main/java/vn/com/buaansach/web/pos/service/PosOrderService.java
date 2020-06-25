@@ -14,6 +14,7 @@ import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
 import vn.com.buaansach.web.pos.repository.*;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
@@ -22,6 +23,8 @@ import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
 import vn.com.buaansach.web.pos.service.dto.write.*;
 import vn.com.buaansach.web.pos.util.TimelineUtil;
+import vn.com.buaansach.web.pos.websocket.PosSocketService;
+import vn.com.buaansach.web.pos.websocket.dto.PosSocketDTO;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
@@ -43,6 +46,7 @@ public class PosOrderService {
     private final PosVoucherCodeRepository posVoucherCodeRepository;
     private final PosVoucherCodeService posVoucherCodeService;
     private final PosAreaRepository posAreaRepository;
+    private final PosSocketService posSocketService;
 
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
@@ -230,6 +234,11 @@ public class PosOrderService {
                 posSeatService.makeSeatServiceUnfinished(orderEntity.getSeatGuid());
             }
             posOrderRepository.save(orderEntity);
+            /* Gửi thông báo tới bộ phận CSKH */
+            PosSocketDTO dto = new PosSocketDTO();
+            dto.setMessage(WebSocketConstants.POS_RECEIVE_ORDER);
+            dto.setPayload(null);
+            posSocketService.sendMessage(WebSocketConstants.TOPIC_GUEST_PREFIX + orderGuid, dto);
         }
     }
 
@@ -294,6 +303,11 @@ public class PosOrderService {
             default:
                 break;
         }
+
+        PosSocketDTO dto = new PosSocketDTO();
+        dto.setMessage(WebSocketConstants.POS_PURCHASE_ORDER);
+        dto.setPayload(null);
+        posSocketService.sendMessage(WebSocketConstants.TOPIC_GUEST_PREFIX + payload.getOrderGuid(), dto);
     }
 
     /**
@@ -321,6 +335,11 @@ public class PosOrderService {
 
         posSeatService.resetSeat(orderEntity.getSeatGuid());
         posOrderRepository.save(orderEntity);
+
+        PosSocketDTO dto = new PosSocketDTO();
+        dto.setMessage(WebSocketConstants.POS_CANCEL_ORDER);
+        dto.setPayload(null);
+        posSocketService.sendMessage(WebSocketConstants.TOPIC_GUEST_PREFIX + payload.getOrderGuid(), dto);
     }
 
     /**
@@ -374,6 +393,11 @@ public class PosOrderService {
         posSeatService.resetSeat(currentSeat);
 
         posOrderRepository.save(orderEntity);
+
+        PosSocketDTO dto = new PosSocketDTO();
+        dto.setMessage(WebSocketConstants.POS_CHANGE_SEAT);
+        dto.setPayload(newSeat.getGuid());
+        posSocketService.sendMessage(WebSocketConstants.TOPIC_GUEST_PREFIX + payload.getOrderGuid(), dto);
     }
 
     /**

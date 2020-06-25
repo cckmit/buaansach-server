@@ -6,6 +6,7 @@ import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.util.Constants;
+import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.web.guest.repository.GuestVoucherCodeRepository;
 import vn.com.buaansach.web.guest.repository.GuestVoucherRepository;
 import vn.com.buaansach.web.guest.websocket.GuestSocketService;
@@ -42,8 +43,8 @@ public class GuestVoucherCodeService {
 
         /* Gửi thông báo tới bộ phận CSKH */
         GuestSocketDTO dto = new GuestSocketDTO();
-        dto.setMessage("GUEST_CREATE_CUSTOMER");
+        dto.setMessage(WebSocketConstants.GUEST_CREATE_CUSTOMER);
         dto.setPayload(customerPhone);
-        guestSocketService.sendMessage("/topic/customer-care", dto);
+        guestSocketService.sendMessage(WebSocketConstants.TOPIC_CUSTOMER_CARE_TRACKER, dto);
     }
 }

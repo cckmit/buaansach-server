@@ -13,6 +13,7 @@ import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.Constants;
+import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.web.pos.repository.PosOrderRepository;
 import vn.com.buaansach.web.pos.repository.PosStoreRepository;
 import vn.com.buaansach.web.pos.repository.PosVoucherCodeRepository;
@@ -158,8 +159,8 @@ public class PosVoucherCodeService {
 
         /* Gửi thông báo tới bộ phận CSKH */
         PosSocketDTO dto = new PosSocketDTO();
-        dto.setMessage("POS_CREATE_CUSTOMER");
+        dto.setMessage(WebSocketConstants.POS_CREATE_CUSTOMER);
         dto.setPayload(customerPhone);
-        posSocketService.sendMessage("/topic/customer-care", dto);
+        posSocketService.sendMessage(WebSocketConstants.TOPIC_CUSTOMER_CARE_TRACKER, dto);
     }
 }
