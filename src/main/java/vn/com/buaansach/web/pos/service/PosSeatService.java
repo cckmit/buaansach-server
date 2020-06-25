@@ -7,10 +7,13 @@ import vn.com.buaansach.entity.enumeration.SeatStatus;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.web.pos.repository.PosSeatRepository;
 import vn.com.buaansach.web.pos.repository.PosStoreRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosSeatDTO;
+import vn.com.buaansach.web.pos.websocket.PosSocketService;
+import vn.com.buaansach.web.pos.websocket.dto.PosSocketDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +24,7 @@ public class PosSeatService {
     private final PosStoreRepository posStoreRepository;
     private final PosSeatRepository posSeatRepository;
     private final PosStoreSecurity posStoreSecurity;
+    private final PosSocketService posSocketService;
 
     public List<PosSeatDTO> getListSeatByStoreGuid(String storeGuid) {
         posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
@@ -74,5 +78,10 @@ public class PosSeatService {
                 .orElseThrow(() -> new ResourceNotFoundException("pos@seatNotFound@" + seatGuid));
         seatEntity.setSeatLocked(!seatEntity.isSeatLocked());
         posSeatRepository.save(seatEntity);
+
+        PosSocketDTO dto = new PosSocketDTO();
+        dto.setMessage(WebSocketConstants.POS_LOCK_SEAT);
+        dto.setPayload(seatEntity);
+        posSocketService.sendMessage(WebSocketConstants.TOPIC_GUEST_PREFIX + seatEntity.getGuid(), dto);
     }
 }
