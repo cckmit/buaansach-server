@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
+import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
@@ -61,6 +62,7 @@ public class PosOrderProductService {
                     ProductEntity product = mapProduct.get(entity.getProductGuid());
 
                     if (product == null) throw new ResourceNotFoundException("pos@productNotFound@" + entity.getProductGuid());
+                    if (product.getProductStatus().equals(ProductStatus.STOP_TRADING)) throw new BadRequestException("pos@productStopTrading@" + product.getGuid());
 
                     entity.setOrderProductRootPrice(product.getProductRootPrice());
                     entity.setOrderProductPrice(product.getProductPrice());

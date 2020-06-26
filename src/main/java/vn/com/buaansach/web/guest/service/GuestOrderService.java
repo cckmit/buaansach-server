@@ -164,6 +164,10 @@ public class GuestOrderService {
         /* check product availability */
         List<UUID> listProductGuid = payload.getListOrderProduct().stream().map(GuestOrderProductDTO::getProductGuid).collect(Collectors.toList());
         List<StoreProductEntity> listStoreProduct = guestStoreProductRepository.findByStoreGuidAndProductGuidIn(payload.getStoreGuid(), listProductGuid);
+        List<StoreProductEntity> listStopTrading = listStoreProduct.stream().filter(item -> item.getStoreProductStatus().equals(StoreProductStatus.STOP_TRADING)).collect(Collectors.toList());
+        if (listStopTrading.size() > 0) {
+            throw new GuestBadRequestException("guest@storeProductStopTrading@");
+        }
         List<StoreProductEntity> listUnavailable = listStoreProduct.stream().filter(item -> item.getStoreProductStatus().equals(StoreProductStatus.UNAVAILABLE)).collect(Collectors.toList());
         if (listUnavailable.size() > 0) {
             throw new GuestBadRequestException("guest@storeProductUnavailable@");
