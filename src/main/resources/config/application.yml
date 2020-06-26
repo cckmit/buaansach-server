@@ -12,7 +12,17 @@ spring:
       file-size-threshold: 2KB
       max-file-size: 200MB
       max-request-size: 215MB
+  resources:
+    cache:
+      cachecontrol:
+        max-age: 120
+        must-revalidate: true
 audit-events:
   retention-period: 30
 websocket:
   allowed-origin: '*'
+server:
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
