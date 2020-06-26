@@ -102,13 +102,15 @@ public class AdminProductService {
         /* do not allow change product code */
         updateEntity.setProductCode(currentEntity.getProductCode());
 
-        /* if product is stop trading => stop trading for all store product too */
+        /* if product is stop trading => delete all store product */
         if (updateEntity.getProductStatus().equals(ProductStatus.STOP_TRADING)) {
             List<StoreProductEntity> listStoreProduct = adminStoreProductRepository.findByProductGuid(updateEntity.getGuid());
-            listStoreProduct = listStoreProduct.stream()
-                    .peek(storeProductEntity -> storeProductEntity.setStoreProductStatus(StoreProductStatus.STOP_TRADING))
-                    .collect(Collectors.toList());
-            adminStoreProductRepository.saveAll(listStoreProduct);
+            adminStoreProductRepository.deleteInBatch(listStoreProduct);
+
+//            listStoreProduct = listStoreProduct.stream()
+//                    .peek(storeProductEntity -> storeProductEntity.setStoreProductStatus(StoreProductStatus.STOP_TRADING))
+//                    .collect(Collectors.toList());
+//            adminStoreProductRepository.saveAll(listStoreProduct);
         }
 
         if (image != null) {
