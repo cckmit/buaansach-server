@@ -396,7 +396,7 @@ public class PosOrderService {
 
         PosSocketDTO dto = new PosSocketDTO();
         dto.setMessage(WebSocketConstants.POS_CHANGE_SEAT);
-        dto.setPayload(newSeat.getGuid());
+        dto.setPayload(newSeat);
         posSocketService.sendMessage(WebSocketConstants.TOPIC_GUEST_PREFIX + payload.getOrderGuid(), dto);
     }
 
