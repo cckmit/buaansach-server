@@ -6,7 +6,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://db:3306/bas_prod?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+    url: jdbc:mysql://buaansach-prod-mysql:3306/bas_prod?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
     username: buaansach_user
     password: Plain$ecuredText4bas_prod@2020!
   jackson:
@@ -42,10 +42,10 @@ app:
     token-time: 86400
     # Token valid for 7 days with remember me
     token-time-for-remember: 604800
-  upload-dir: '/bas/storage/'
-  server-domain: 'https://api.buaansach.com.vn'
+  upload-dir: "/bas/storage/"
+  server-domain: "https://api.buaansach.com.vn"
   mail:
     enable: true
     from: noreply.buaansach@gmail.com
     send-creation-mail: false
-    cms-ui-url: 'https://pos.buaansach.com.vn'
+    cms-ui-url: "https://pos.buaansach.com.vn"
