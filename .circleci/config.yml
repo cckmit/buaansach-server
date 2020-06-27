@@ -8,23 +8,10 @@ jobs:
       - run:
           name: Build docker
           command: |
-            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin $DOCKER_REGISTRY
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             TAG=staging
-            docker build -t $DOCKER_REGISTRY/backend:$TAG .
-            docker push $DOCKER_REGISTRY/backend:$TAG
-  deploy-staging:
-    machine:
-      image: ubuntu-1604:201903-01
-    steps:
-      - run:
-          name: Setup ssh
-          command: ssh-keyscan $STAGING_DOMAIN >> ~/.ssh/known_hosts
-      - run:
-          name: Deploy
-          command: |
-            TAG=staging
-            # ssh root@$STAGING_DOMAIN
-            ssh root@$DOCKER_REGISTRY "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin $DOCKER_REGISTRY && docker pull $DOCKER_REGISTRY/backend:$TAG && cd /root/app/buaansach-config-ui && docker-compose -f docker-compose-staging.yml up -d --force-recreate --build server"
+            docker build -t $DOCKER_USER/buaansach:server-staging .
+            docker push $DOCKER_USER/buaansach:server-staging
 
   build-production:
     machine:
@@ -34,23 +21,11 @@ jobs:
       - run:
           name: Build docker
           command: |
-            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin $DOCKER_REGISTRY
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             TAG=production
-            docker build -t $DOCKER_REGISTRY/backend:$TAG .
-            docker push $DOCKER_REGISTRY/backend:$TAG
+            docker build -t $DOCKER_USER/buaansach:server-production .
+            docker push $DOCKER_USER/buaansach:server-production
 
-  deploy-production:
-    machine:
-      image: ubuntu-1604:201903-01
-    steps:
-      - run:
-          name: Setup ssh
-          command: ssh-keyscan $PRODUCTION_DOMAIN >> ~/.ssh/known_hosts
-      - run:
-          name: Deploy
-          command: |
-            TAG=production
-            ssh root@$PRODUCTION_DOMAIN "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin $DOCKER_REGISTRY && docker pull $DOCKER_REGISTRY/backend:$TAG && cd /root/app/buaansach-config-ui && docker-compose -f docker-compose-production.yml up -d --force-recreate --build server"
 workflows:
   build-and-deploy:
     jobs:
@@ -60,16 +35,8 @@ workflows:
             branches:
               only:
                 - master
-      - deploy-staging:
-          requires:
-            - build-staging
-      - hold:
-          type: approval
-          requires:
-            - deploy-staging
       - build-production:
-          requires:
-            - hold
-      - deploy-production:
-          requires:
-            - build-production
+          filters:
+            branches:
+              only:
+                - master
