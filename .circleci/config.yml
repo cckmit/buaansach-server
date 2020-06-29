@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  build-server:
+  build-staging:
     machine:
       image: ubuntu-1604:201903-01
     steps:
@@ -10,15 +10,35 @@ jobs:
           command: |
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             TAG=staging
-            docker build -t $DOCKER_USER/buaansach:server .
-            docker push $DOCKER_USER/buaansach:server
+            docker build -t $DOCKER_USER/buaansach:server-staging .
+            docker push $DOCKER_USER/buaansach:server-staging
+
+  build-production:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - run:
+          name: Build docker
+          command: |
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            TAG=production
+            docker build -t $DOCKER_USER/buaansach:server-production .
+            docker push $DOCKER_USER/buaansach:server-production
 
 workflows:
-  build:
+  build-and-deploy:
     jobs:
       # - build
-      - build-server:
+      - build-staging:
           filters:
             branches:
               only:
                 - master
+      - hold:
+          type: approval
+          requires:
+            - build-staging
+      - build-production:
+          requires:
+            - hold
