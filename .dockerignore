@@ -1,0 +1,8 @@
+.git/
+build/
+daily_log/
+bas/
+.idea/
+.settings/
+.project
+.classpath
