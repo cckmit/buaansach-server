@@ -8,7 +8,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://buaansach-staging-mysql:3306/bas_staging?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
     username: buaansach_staging
-    password: Plain$ecuredText4bas_staging@2020!
+    password: ${DB_PASSWORD}
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
