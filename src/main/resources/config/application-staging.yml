@@ -7,7 +7,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://buaansach-staging-mysql:3306/bas_staging?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: buaansach_staging
+    username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   jackson:
     serialization:
@@ -22,8 +22,8 @@ spring:
   mail:
     default-encoding: UTF-8
     host: smtp.gmail.com
-    username: noreply.ductran.tech@gmail.com
-    password: Bingo102
+    username: ${EMAIL_ACCOUNT}
+    password: ${EMAIL_PASSWORD}
     port: 587
     properties:
       mail:
@@ -37,7 +37,7 @@ spring:
 app:
   jwt:
     # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
-    base64-secret: Ka7xdBsrLXVkEeMRYXsfl0b3Z3iSjiUO8H9cIMRmdAiwNCF5R8/eN/11jVlI7sHLgMXG2gTTTKlMhtJq7U6pSg==
+    base64-secret: ${JWT_SECRET}
     # Token is valid 24 hours
     token-time: 86400
     # Token valid for 7 days with remember me
@@ -46,6 +46,6 @@ app:
   server-domain: "https://api.ductran.tech"
   mail:
     enable: true
-    from: noreply.ductran.tech@gmail.com
+    from: ${EMAIL_ACCOUNT}
     send-creation-mail: false
     cms-ui-url: "https://pos.ductran.tech"
