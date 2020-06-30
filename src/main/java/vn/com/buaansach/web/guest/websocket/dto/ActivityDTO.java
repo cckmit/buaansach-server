@@ -4,6 +4,7 @@ import lombok.Data;
 import vn.com.buaansach.web.guest.websocket.enumeration.ActiveStatus;
 
 import java.time.Instant;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -28,6 +29,8 @@ public class ActivityDTO {
     private String deviceOS;
 
     private String browser;
+
+    private Map<String, Object> sessionAttributes;
 
     @Override
     public boolean equals(Object o) {

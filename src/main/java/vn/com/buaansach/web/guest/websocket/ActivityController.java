@@ -37,6 +37,7 @@ public class ActivityController implements ApplicationListener<SessionDisconnect
         activityDTO.setSessionId(stompHeaderAccessor.getSessionId());
         String ipAddress = stompHeaderAccessor.getSessionAttributes() != null ? stompHeaderAccessor.getSessionAttributes().get(IP_ADDRESS).toString() : "";
         activityDTO.setIpAddress(ipAddress);
+        activityDTO.setSessionAttributes(stompHeaderAccessor.getSessionAttributes());
         activityDTO.setTime(Instant.now());
         activeUsers.add(activityDTO);
         return activityDTO;

@@ -27,7 +27,7 @@ jobs:
             docker push $DOCKER_USER/buaansach:server-production
 
 workflows:
-  build-and-deploy:
+  build-image:
     jobs:
       # - build
       - build-staging:
