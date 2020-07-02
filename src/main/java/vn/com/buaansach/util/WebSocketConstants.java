@@ -11,6 +11,7 @@ public final class WebSocketConstants {
     public static final String POS_RECEIVE_ORDER = "POS_RECEIVE_ORDER";
     public static final String POS_CANCEL_ORDER = "POS_CANCEL_ORDER";
     public static final String POS_PURCHASE_ORDER = "POS_PURCHASE_ORDER";
+    public static final String POS_PURCHASE_ORDER_WITH_PHONE = "POS_PURCHASE_ORDER_WITH_PHONE";
 
     public static final String POS_CHANGE_SEAT = "POS_CHANGE_SEAT";
     public static final String POS_LOCK_SEAT = "POS_LOCK_SEAT";

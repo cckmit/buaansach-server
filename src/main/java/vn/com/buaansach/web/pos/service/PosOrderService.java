@@ -269,6 +269,10 @@ public class PosOrderService {
         /* add customer order log if a customer phone has been used */
         if (orderEntity.getCustomerPhone() != null && !orderEntity.getCustomerPhone().isBlank()){
             posCustomerOrderService.addCustomerOrder(orderEntity.getCustomerPhone(), orderEntity.getGuid(), storeEntity.getGuid());
+            PosSocketDTO dto = new PosSocketDTO();
+            dto.setMessage(WebSocketConstants.POS_PURCHASE_ORDER_WITH_PHONE);
+            dto.setPayload(orderEntity.getCustomerPhone());
+            posSocketService.sendMessage(WebSocketConstants.TOPIC_CUSTOMER_CARE_TRACKER, dto);
         }
 
         switch (payload.getPaymentMethod()) {
