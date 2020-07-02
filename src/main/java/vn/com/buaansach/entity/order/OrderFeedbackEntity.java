@@ -31,6 +31,9 @@ public class OrderFeedbackEntity extends AbstractAuditingEntity implements Seria
     @Column(name = "order_guid")
     private UUID orderGuid;
 
+    @Column(name = "store_guid")
+    private UUID storeGuid;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "order_feedback_action")
     private OrderFeedbackAction orderFeedbackAction;
