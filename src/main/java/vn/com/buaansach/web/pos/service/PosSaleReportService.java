@@ -22,9 +22,9 @@ public class PosSaleReportService {
         posStoreSecurity.blockAccessIfNotOwnerOrManager(payload.getStoreGuid());
         List<OrderEntity> listOrder;
         if (payload.getUserLogin() != null && !payload.getUserLogin().isBlank()) {
-            listOrder = posOrderRepository.findListOrderForReportByUser(payload.getUserLogin(), payload.getStartDate(), payload.getEndDate());
+            listOrder = posOrderRepository.findListOrderForReportByUser(payload.getUserLogin(), payload.getStartDate(), payload.getEndDate(), payload.getStoreGuid());
         } else {
-            listOrder = posOrderRepository.findListOrderForReport(payload.getStartDate(), payload.getEndDate());
+            listOrder = posOrderRepository.findListOrderForReport(payload.getStartDate(), payload.getEndDate(), payload.getStoreGuid());
         }
         return listOrder.stream().map(PosOrderDTO::new).collect(Collectors.toList());
     }
@@ -32,7 +32,7 @@ public class PosSaleReportService {
     public List<PosOrderDTO> getCurrentUserSaleReport(PosSaleReportParams payload) {
         posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
         List<OrderEntity> listOrder;
-        listOrder = posOrderRepository.findListOrderForReportByUser(SecurityUtils.getCurrentUserLogin(), payload.getStartDate(), payload.getEndDate());
+        listOrder = posOrderRepository.findListOrderForReportByUser(SecurityUtils.getCurrentUserLogin(), payload.getStartDate(), payload.getEndDate(), payload.getStoreGuid());
         return listOrder.stream().map(PosOrderDTO::new).collect(Collectors.toList());
     }
 }

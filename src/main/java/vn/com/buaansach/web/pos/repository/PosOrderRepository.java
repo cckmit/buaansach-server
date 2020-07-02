@@ -22,16 +22,28 @@ public interface PosOrderRepository extends JpaRepository<OrderEntity, Long> {
     Optional<OrderEntity> findSeatCurrentOrder(@Param("seatGuid") UUID seatGuid);
 
     @Query("SELECT orderEntity FROM OrderEntity orderEntity " +
+            "LEFT JOIN vn.com.buaansach.entity.store.SeatEntity seat " +
+            "ON orderEntity.seatGuid = seat.guid " +
+            "LEFT JOIN vn.com.buaansach.entity.store.AreaEntity area " +
+            "ON seat.areaGuid = area.guid " +
             "WHERE orderEntity.cashierLogin = :userLogin " +
             "AND orderEntity.createdDate >= :startDate " +
-            "AND orderEntity.createdDate <= :endDate")
+            "AND orderEntity.createdDate <= :endDate " +
+            "AND area.storeGuid = :storeGuid")
     List<OrderEntity> findListOrderForReportByUser(@Param("userLogin") String userLogin,
                                                    @Param("startDate") Instant startDate,
-                                                   @Param("endDate") Instant endDate);
+                                                   @Param("endDate") Instant endDate,
+                                                   @Param("storeGuid") UUID storeGuid);
 
     @Query("SELECT orderEntity FROM OrderEntity orderEntity " +
+            "LEFT JOIN vn.com.buaansach.entity.store.SeatEntity seat " +
+            "ON orderEntity.seatGuid = seat.guid " +
+            "LEFT JOIN vn.com.buaansach.entity.store.AreaEntity area " +
+            "ON seat.areaGuid = area.guid " +
             "WHERE orderEntity.createdDate >= :startDate " +
-            "AND orderEntity.createdDate <= :endDate")
+            "AND orderEntity.createdDate <= :endDate " +
+            "AND area.storeGuid = :storeGuid")
     List<OrderEntity> findListOrderForReport(@Param("startDate") Instant startDate,
-                                             @Param("endDate") Instant endDate);
+                                             @Param("endDate") Instant endDate,
+                                             @Param("storeGuid") UUID storeGuid);
 }
