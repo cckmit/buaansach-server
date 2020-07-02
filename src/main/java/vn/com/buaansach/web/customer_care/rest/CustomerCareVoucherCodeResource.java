@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.customer_care.service.CustomerCareVoucherCodeService;
-import vn.com.buaansach.web.customer_care.service.dto.CustomerCareUpdateVoucherCodeDTO;
+import vn.com.buaansach.web.customer_care.service.dto.write.CustomerCareUpdateVoucherCodeDTO;
 
 @Secured(AuthoritiesConstants.CUSTOMER_CARE)
 @RestController

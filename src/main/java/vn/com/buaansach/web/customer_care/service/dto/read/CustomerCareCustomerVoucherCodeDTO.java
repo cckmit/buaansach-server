@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.customer_care.service.dto;
+package vn.com.buaansach.web.customer_care.service.dto.read;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

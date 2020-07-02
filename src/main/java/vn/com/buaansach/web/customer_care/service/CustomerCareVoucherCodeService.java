@@ -6,7 +6,7 @@ import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.web.customer_care.repository.CustomerCareVoucherCodeRepository;
-import vn.com.buaansach.web.customer_care.service.dto.CustomerCareUpdateVoucherCodeDTO;
+import vn.com.buaansach.web.customer_care.service.dto.write.CustomerCareUpdateVoucherCodeDTO;
 
 @Service
 @RequiredArgsConstructor

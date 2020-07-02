@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.customer_care.service.CustomerCareCustomerVoucherCodeService;
-import vn.com.buaansach.web.customer_care.service.dto.CustomerCareCustomerVoucherCodeDTO;
+import vn.com.buaansach.web.customer_care.service.dto.read.CustomerCareCustomerVoucherCodeDTO;
 
 import java.util.List;
 

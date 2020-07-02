@@ -26,7 +26,7 @@ public class SwaggerConfig {
 
     @Bean
     public Docket api() {
-        final String swaggerToken = tokenProvider.generateTokenFromUsername("admin");
+        final String swaggerToken = tokenProvider.generateTokenFromUsername("adminbas");
         return new Docket(DocumentationType.SWAGGER_2)
                 .globalOperationParameters(singletonList(
                         new ParameterBuilder()

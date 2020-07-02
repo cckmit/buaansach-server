@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.customer_care.service.CustomerCareCustomerService;
-import vn.com.buaansach.web.customer_care.service.dto.CustomerCareStatisticDTO;
-import vn.com.buaansach.web.customer_care.service.dto.CustomerCareUpdateCustomerDTO;
+import vn.com.buaansach.web.customer_care.service.dto.readwrite.CustomerCareStatisticDTO;
+import vn.com.buaansach.web.customer_care.service.dto.write.CustomerCareUpdateCustomerDTO;
 
 @Secured(AuthoritiesConstants.CUSTOMER_CARE)
 @RestController

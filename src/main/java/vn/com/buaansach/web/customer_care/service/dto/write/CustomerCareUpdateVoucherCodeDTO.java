@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.customer_care.service.dto;
+package vn.com.buaansach.web.customer_care.service.dto.write;
 
 import lombok.Data;
 import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;

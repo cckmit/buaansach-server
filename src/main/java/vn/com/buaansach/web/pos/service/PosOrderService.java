@@ -2,6 +2,7 @@ package vn.com.buaansach.web.pos.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.entity.customer.CustomerOrderEntity;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.OrderType;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
@@ -47,6 +48,8 @@ public class PosOrderService {
     private final PosVoucherCodeService posVoucherCodeService;
     private final PosAreaRepository posAreaRepository;
     private final PosSocketService posSocketService;
+    private final PosVoucherUsageService posVoucherUsageService;
+    private final PosCustomerOrderService posCustomerOrderService;
 
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
@@ -257,6 +260,16 @@ public class PosOrderService {
             throw new BadRequestException("pos@orderStatusNotValid@" + payload.getOrderGuid());
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
+
+        /* add voucher code usage record if a voucher code has been applied */
+        if (orderEntity.getOrderVoucherCode() != null && !orderEntity.getOrderVoucherCode().isBlank()){
+            posVoucherUsageService.addVoucherUsage(orderEntity.getOrderVoucherCode(), orderEntity.getGuid(), orderEntity.getCustomerPhone());
+        }
+
+        /* add customer order log if a customer phone has been used */
+        if (orderEntity.getCustomerPhone() != null && !orderEntity.getCustomerPhone().isBlank()){
+            posCustomerOrderService.addCustomerOrder(orderEntity.getCustomerPhone(), orderEntity.getGuid(), storeEntity.getGuid());
+        }
 
         switch (payload.getPaymentMethod()) {
             case CASH:

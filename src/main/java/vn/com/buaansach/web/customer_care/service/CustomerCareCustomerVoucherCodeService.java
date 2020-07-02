@@ -9,7 +9,7 @@ import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.customer_care.repository.CustomerCareCustomerRepository;
 import vn.com.buaansach.web.customer_care.repository.CustomerCareVoucherRepository;
-import vn.com.buaansach.web.customer_care.service.dto.CustomerCareCustomerVoucherCodeDTO;
+import vn.com.buaansach.web.customer_care.service.dto.read.CustomerCareCustomerVoucherCodeDTO;
 
 import java.util.List;
 

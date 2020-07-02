@@ -1,6 +1,7 @@
-package vn.com.buaansach.web.customer_care.service.dto;
+package vn.com.buaansach.web.customer_care.service.dto.readwrite;
 
 import lombok.Data;
+import vn.com.buaansach.web.customer_care.service.dto.read.CustomerCareCustomerDTO;
 
 import java.time.Instant;
 import java.util.List;

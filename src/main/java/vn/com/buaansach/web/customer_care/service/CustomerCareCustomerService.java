@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.customer.CustomerEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.web.customer_care.repository.CustomerCareCustomerRepository;
-import vn.com.buaansach.web.customer_care.service.dto.CustomerCareCustomerDTO;
-import vn.com.buaansach.web.customer_care.service.dto.CustomerCareStatisticDTO;
-import vn.com.buaansach.web.customer_care.service.dto.CustomerCareUpdateCustomerDTO;
+import vn.com.buaansach.web.customer_care.service.dto.read.CustomerCareCustomerDTO;
+import vn.com.buaansach.web.customer_care.service.dto.readwrite.CustomerCareStatisticDTO;
+import vn.com.buaansach.web.customer_care.service.dto.write.CustomerCareUpdateCustomerDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -8,8 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import vn.com.buaansach.entity.customer.CustomerEntity;
 import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
-import vn.com.buaansach.entity.order.OrderEntity;
-import vn.com.buaansach.web.customer_care.service.dto.CustomerCareCustomerVoucherCodeDTO;
+import vn.com.buaansach.web.customer_care.service.dto.read.CustomerCareCustomerVoucherCodeDTO;
 
 import java.time.Instant;
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.UUID;
 public interface CustomerCareCustomerRepository extends JpaRepository<CustomerEntity, Long> {
     Optional<CustomerEntity> findOneByCustomerPhone(String customerPhone);
 
-    @Query("SELECT new vn.com.buaansach.web.customer_care.service.dto.CustomerCareCustomerVoucherCodeDTO(customer, voucherCode) " +
+    @Query("SELECT new vn.com.buaansach.web.customer_care.service.dto.read.CustomerCareCustomerVoucherCodeDTO(customer, voucherCode) " +
             "FROM CustomerEntity customer " +
             "LEFT JOIN vn.com.buaansach.entity.voucher.VoucherCodeEntity voucherCode " +
             "ON customer.customerPhone = voucherCode.customerPhone " +
@@ -28,7 +27,7 @@ public interface CustomerCareCustomerRepository extends JpaRepository<CustomerEn
             "AND customer.customerPhone LIKE %:search%")
     Page<CustomerCareCustomerVoucherCodeDTO> findPageManagerCustomerCodeDTO(@Param("voucherGuid") UUID voucherGuid, @Param("search") String search, Pageable pageable);
 
-    @Query("SELECT new vn.com.buaansach.web.customer_care.service.dto.CustomerCareCustomerVoucherCodeDTO(customer, voucherCode) " +
+    @Query("SELECT new vn.com.buaansach.web.customer_care.service.dto.read.CustomerCareCustomerVoucherCodeDTO(customer, voucherCode) " +
             "FROM CustomerEntity customer " +
             "LEFT JOIN vn.com.buaansach.entity.voucher.VoucherCodeEntity voucherCode " +
             "ON customer.customerPhone = voucherCode.customerPhone " +
