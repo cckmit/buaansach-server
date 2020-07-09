@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
@@ -22,6 +23,7 @@ import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherApplySuccessDTO;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderVoucherCodeDTO;
+import vn.com.buaansach.web.pos.util.TimelineUtil;
 import vn.com.buaansach.web.pos.websocket.PosSocketService;
 import vn.com.buaansach.web.pos.websocket.dto.PosSocketDTO;
 
@@ -100,6 +102,14 @@ public class PosVoucherCodeService {
             orderEntity.setOrderVoucherCode(payload.getVoucherCode());
             orderEntity.setOrderDiscountType(voucherCodeDTO.getVoucherDiscountType());
             orderEntity.setOrderDiscount(voucherCodeDTO.getVoucherDiscount());
+
+            String newTimeline = TimelineUtil.appendCustomOrderStatus(
+                    orderEntity.getOrderStatusTimeline(),
+                    "APPLY_VOUCHER",
+                    SecurityUtils.getCurrentUserLogin(),
+                    payload.getVoucherCode());
+            orderEntity.setOrderStatusTimeline(newTimeline);
+
             posOrderRepository.save(orderEntity);
 
             return new PosVoucherApplySuccessDTO(voucherCodeDTO);
@@ -130,6 +140,11 @@ public class PosVoucherCodeService {
         orderEntity.setOrderVoucherCode(null);
         orderEntity.setOrderDiscountType(null);
         orderEntity.setOrderDiscount(0);
+        String newTimeline = TimelineUtil.appendCustomOrderStatus(
+                orderEntity.getOrderStatusTimeline(),
+                "CANCEL_VOUCHER",
+                SecurityUtils.getCurrentUserLogin());
+        orderEntity.setOrderStatusTimeline(newTimeline);
         posOrderRepository.save(orderEntity);
     }
 
