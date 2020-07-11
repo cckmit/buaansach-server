@@ -16,6 +16,7 @@ import vn.com.buaansach.web.admin.service.AdminUserService;
 import vn.com.buaansach.web.admin.service.dto.read.AdminUserDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateUserDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminPasswordChangeDTO;
+import vn.com.buaansach.web.admin.service.dto.write.AdminUpdateUserDTO;
 
 import javax.validation.Valid;
 
@@ -36,6 +37,12 @@ public class AdminUserResource {
     public ResponseEntity<AdminUserDTO> createUser(@Valid @RequestBody AdminCreateUserDTO payload) {
         log.debug("REST request from user [{}] to create [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(new AdminUserDTO(adminUserService.createUser(payload)));
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<AdminUserDTO> updateUser(@Valid @RequestBody AdminUpdateUserDTO payload) {
+        log.debug("REST request from user [{}] to update [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        return ResponseEntity.ok(new AdminUserDTO(adminUserService.updateUser(payload)));
     }
 
     /**

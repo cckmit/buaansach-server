@@ -74,7 +74,6 @@ public class UserEntity extends AbstractAuditingEntity implements Serializable {
     private String email;
 
     @Pattern(regexp = Constants.PHONE_REGEX)
-    @Size(min = 10, max = 20)
     @Column(unique = true)
     private String phone;
 

@@ -18,6 +18,7 @@ import vn.com.buaansach.web.admin.repository.AdminAuthorityRepository;
 import vn.com.buaansach.web.admin.repository.AdminUserRepository;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateUserDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminPasswordChangeDTO;
+import vn.com.buaansach.web.admin.service.dto.write.AdminUpdateUserDTO;
 import vn.com.buaansach.web.user.service.MailService;
 
 import java.time.Instant;
@@ -87,9 +88,38 @@ public class AdminUserService {
             } else {
                 newUserEntity.setPassword(passwordEncoder.encode(dto.getPassword()));
             }
-            adminUserRepository.save(newUserEntity);
-            return newUserEntity;
+            return adminUserRepository.save(newUserEntity);
         }
+    }
+
+    public UserEntity updateUser(AdminUpdateUserDTO dto){
+        UserEntity currentUser = adminUserRepository.findOneByLogin(dto.getLogin())
+                .orElseThrow(()-> new ResourceNotFoundException("admin@userNotFound@" + dto.getLogin()));
+        adminUserRepository.findOneByEmailIgnoreCase(dto.getEmail()).ifPresent(userEntity -> {
+            if (userEntity.getEmail().equals(currentUser.getEmail()) && !userEntity.getLogin().equals(currentUser.getLogin()))
+                throw new EmailAlreadyUsedException();
+        });
+        if (dto.getPhone() != null){
+            adminUserRepository.findOneByPhone(dto.getPhone()).ifPresent(userEntity -> {
+                if (userEntity.getPhone().equals(currentUser.getPhone()) && !userEntity.getLogin().equals(currentUser.getLogin()))
+                    throw new EmailAlreadyUsedException();
+            });
+        }
+        currentUser.setFirstName(dto.getFirstName());
+        currentUser.setLastName(dto.getLastName());
+        currentUser.setEmail(dto.getEmail());
+        currentUser.setPhone(dto.getPhone());
+        currentUser.setLangKey(dto.getLangKey());
+
+        if (dto.getAuthorities() != null){
+            Set<AuthorityEntity> authorities = dto.getAuthorities().stream()
+                    .map(adminAuthorityRepository::findByName)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toSet());
+            currentUser.setAuthorities(authorities);
+        }
+        return adminUserRepository.save(currentUser);
     }
 
     public Page<UserEntity> getPageUser(PageRequest request, String search) {

@@ -12,9 +12,7 @@ import java.util.Set;
  * for admin only
  */
 @Data
-public class AdminCreateUserDTO {
-    @Size(max = 20)
-    private String code;
+public class AdminUpdateUserDTO {
 
     @Size(min = 1, max = 50)
     private String firstName;
@@ -32,16 +30,11 @@ public class AdminCreateUserDTO {
     @Pattern(regexp = Constants.PHONE_REGEX)
     private String phone;
 
-    @Size(min = 4, max = 100)
-    private String password;
-
-    private boolean activated = true;
-
     @Size(max = 10)
     private String langKey;
 
     private Set<String> authorities;
 
-    public AdminCreateUserDTO() {
+    public AdminUpdateUserDTO() {
     }
 }

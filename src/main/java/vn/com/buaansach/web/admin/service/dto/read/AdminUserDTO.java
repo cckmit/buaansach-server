@@ -44,7 +44,6 @@ public class AdminUserDTO extends AuditDTO {
     @Size(min = 5, max = 255)
     private String email;
 
-    @Size(min = 10, max = 12)
     private String phone;
 
     @Enumerated(EnumType.STRING)
