@@ -2,7 +2,6 @@ package vn.com.buaansach.web.pos.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.customer.CustomerOrderEntity;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.OrderType;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
@@ -13,10 +12,12 @@ import vn.com.buaansach.entity.order.PaymentEntity;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
+import vn.com.buaansach.entity.store.StoreOrderEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
+import vn.com.buaansach.web.guest.websocket.dto.GuestSocketDTO;
 import vn.com.buaansach.web.pos.repository.*;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
@@ -50,6 +51,7 @@ public class PosOrderService {
     private final PosSocketService posSocketService;
     private final PosVoucherUsageService posVoucherUsageService;
     private final PosCustomerOrderService posCustomerOrderService;
+    private final PosStoreOrderService posStoreOrderService;
 
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
@@ -68,11 +70,11 @@ public class PosOrderService {
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
-        if (seatEntity.isSeatLocked()){
+        if (seatEntity.isSeatLocked()) {
             throw new BadRequestException("pos@seatLocked@" + seatEntity.getGuid());
         }
 
-        if (!areaEntity.isAreaActivated()){
+        if (!areaEntity.isAreaActivated()) {
             throw new BadRequestException("pos@areaDisabled@" + areaEntity.getGuid());
         }
 
@@ -141,6 +143,22 @@ public class PosOrderService {
         UUID orderProductGroup = UUID.randomUUID();
         posOrderProductService.saveListOrderProduct(orderProductGroup, payload.getOrderGuid(), payload.getListOrderProduct(), currentUser);
 
+        /* Tạo thông báo */
+        SeatEntity seatEntity = posSeatRepository.findOneByGuid(orderEntity.getSeatGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("pos@seatNotFound@: " + orderEntity.getSeatGuid()));
+
+        StoreOrderEntity storeOrderEntity = posStoreOrderService.createStoreOrder(
+                storeEntity.getGuid(),
+                seatEntity.getAreaGuid(),
+                seatEntity.getGuid(),
+                orderEntity.getGuid(),
+                orderProductGroup,
+                payload.getListOrderProduct().size());
+
+        /* Gửi thông báo tới trang bán hàng */
+        GuestSocketDTO socketDTO = new GuestSocketDTO(WebSocketConstants.POS_UPDATE_ORDER, storeOrderEntity);
+        posSocketService.sendMessage(WebSocketConstants.TOPIC_POS_PREFIX + storeEntity.getGuid(), socketDTO);
+
         /* Thông thường validate trên ui thì size sẽ phải lớn hơn 0 mới gọi được, kiểm tra lần nữa cho chắc cốp.
          Khi size > 0 thì trạng thái phục vụ của chỗ sẽ đổi thành UNFINISHED */
         if (payload.getListOrderProduct().size() > 0) {
@@ -156,8 +174,8 @@ public class PosOrderService {
         List<PosOrderProductDTO> listPosOrderProductDTO = posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(payload.getOrderGuid());
         long totalAmount = calculateTotalAmount(listPosOrderProductDTO);
         orderEntity.setTotalAmount(totalAmount);
-        PosOrderDTO result = new PosOrderDTO(posOrderRepository.save(orderEntity));
 
+        PosOrderDTO result = new PosOrderDTO(posOrderRepository.save(orderEntity));
         if (orderEntity.getOrderVoucherCode() != null && !orderEntity.getOrderVoucherCode().isBlank()) {
             PosVoucherCodeDTO voucherCodeDTO = posVoucherCodeRepository.getPosVoucherCodeDTO(orderEntity.getOrderVoucherCode())
                     .orElse(null);
@@ -262,12 +280,12 @@ public class PosOrderService {
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         /* add voucher code usage record if a voucher code has been applied */
-        if (orderEntity.getOrderVoucherCode() != null && !orderEntity.getOrderVoucherCode().isBlank()){
+        if (orderEntity.getOrderVoucherCode() != null && !orderEntity.getOrderVoucherCode().isBlank()) {
             posVoucherUsageService.addVoucherUsage(orderEntity.getOrderVoucherCode(), orderEntity.getGuid(), orderEntity.getCustomerPhone());
         }
 
         /* add customer order log if a customer phone has been used */
-        if (orderEntity.getCustomerPhone() != null && !orderEntity.getCustomerPhone().isBlank()){
+        if (orderEntity.getCustomerPhone() != null && !orderEntity.getCustomerPhone().isBlank()) {
             posCustomerOrderService.addCustomerOrder(orderEntity.getCustomerPhone(), orderEntity.getGuid(), storeEntity.getGuid());
             PosSocketDTO dto = new PosSocketDTO();
             dto.setMessage(WebSocketConstants.POS_PURCHASE_ORDER_WITH_PHONE);

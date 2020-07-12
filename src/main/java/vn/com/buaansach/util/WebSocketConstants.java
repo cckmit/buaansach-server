@@ -8,6 +8,7 @@ public final class WebSocketConstants {
     public static final String TOPIC_GUEST_PREFIX = "/topic/guest/";
 
     public static final String POS_CREATE_CUSTOMER = "POS_CREATE_CUSTOMER";
+    public static final String POS_UPDATE_ORDER = "POS_UPDATE_ORDER";
     public static final String POS_RECEIVE_ORDER = "POS_RECEIVE_ORDER";
     public static final String POS_CANCEL_ORDER = "POS_CANCEL_ORDER";
     public static final String POS_PURCHASE_ORDER = "POS_PURCHASE_ORDER";
