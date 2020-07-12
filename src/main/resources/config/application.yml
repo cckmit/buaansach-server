@@ -18,7 +18,7 @@ spring:
         max-age: 120
         must-revalidate: true
 audit-events:
-  retention-period: 30
+  retention-period: 15
 websocket:
   allowed-origin: '*'
 server:

@@ -1,6 +1,9 @@
 package vn.com.buaansach.web.pos.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.StoreOrderStatus;
 import vn.com.buaansach.entity.enumeration.StoreOrderType;
@@ -15,6 +18,7 @@ import vn.com.buaansach.web.pos.service.dto.write.PosStoreOrderVisibilityUpdateD
 
 import javax.transaction.Transactional;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -22,6 +26,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PosStoreOrderService {
+    private final Logger log = LoggerFactory.getLogger(PosStoreOrderService.class);
     private final PosStoreOrderRepository posStoreOrderRepository;
     private final PosStoreSecurity posStoreSecurity;
 
@@ -79,5 +84,19 @@ public class PosStoreOrderService {
         }).collect(Collectors.toList());
 
         posStoreOrderRepository.saveAll(list);
+    }
+
+    /**
+     * Old store orders should be automatically deleted after 7 days.
+     * <p>
+     * This is scheduled to get fired at 1:00 (am).
+     */
+    @Scheduled(cron = "0 0 1 * * ?")
+    public void removeOldStoreOrder() {
+        Instant deletePoint = Instant.now().minus(7, ChronoUnit.DAYS);
+        List<StoreOrderEntity> list = posStoreOrderRepository
+                .findByCreatedDateBefore(deletePoint);
+        log.debug("[Scheduling] Deleting old store order data [{}]", list);
+        posStoreOrderRepository.deleteAll(list);
     }
 }

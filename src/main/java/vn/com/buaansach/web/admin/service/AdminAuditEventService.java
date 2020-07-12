@@ -10,10 +10,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.com.buaansach.config.audit.AuditEventConverter;
+import vn.com.buaansach.entity.user.PersistentAuditEvent;
 import vn.com.buaansach.web.admin.repository.AdminPersistenceAuditEventRepository;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -43,18 +45,17 @@ public class AdminAuditEventService {
     }
 
     /**
-     * Old audit events should be automatically deleted after 30 days.
+     * Old audit events should be automatically deleted after 15 days.
      * <p>
-     * This is scheduled to get fired at 12:00 (am).
+     * This is scheduled to get fired at 1:00 (am).
      */
-    @Scheduled(cron = "0 0 12 * * ?")
+    @Scheduled(cron = "0 0 1 * * ?")
     public void removeOldAuditEvents() {
-        adminPersistenceAuditEventRepository
-                .findByAuditEventDateBefore(Instant.now().minus(retentionPeriod, ChronoUnit.DAYS))
-                .forEach(auditEvent -> {
-                    log.debug("Deleting audit data {}", auditEvent);
-                    adminPersistenceAuditEventRepository.delete(auditEvent);
-                });
+        Instant deletePoint = Instant.now().minus(retentionPeriod, ChronoUnit.DAYS);
+        List<PersistentAuditEvent> list = adminPersistenceAuditEventRepository
+                .findByAuditEventDateBefore(deletePoint);
+        log.debug("[Scheduling] Deleting audit data [{}]", list);
+        adminPersistenceAuditEventRepository.deleteAll(list);
     }
 
     public Page<AuditEvent> findAll(Pageable pageable) {
