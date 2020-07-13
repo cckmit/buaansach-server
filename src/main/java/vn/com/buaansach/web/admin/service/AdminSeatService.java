@@ -10,6 +10,7 @@ import vn.com.buaansach.entity.order.PaymentEntity;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
+import vn.com.buaansach.entity.store.StoreOrderEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.web.admin.repository.*;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateSeatDTO;
@@ -27,6 +28,7 @@ public class AdminSeatService {
     private final AdminOrderRepository adminOrderRepository;
     private final AdminOrderProductRepository adminOrderProductRepository;
     private final AdminPaymentRepository adminPaymentRepository;
+    private final AdminStoreOrderRepository adminStoreOrderRepository;
 
     public SeatEntity createSeat(AdminCreateSeatDTO request) {
         adminAreaRepository.findOneByGuid(request.getAreaGuid())
@@ -73,11 +75,13 @@ public class AdminSeatService {
         List<UUID> listOrderGuid = listOrder.stream().map(OrderEntity::getGuid).collect(Collectors.toList());
         List<PaymentEntity> listPayment = adminPaymentRepository.findByOrderGuidIn(listOrderGuid);
         List<OrderProductEntity> listOrderProduct = adminOrderProductRepository.findByOrderGuidIn(listOrderGuid);
+        List<StoreOrderEntity> listStoreOrder = adminStoreOrderRepository.findBySeatGuid(UUID.fromString(seatGuid));
 
-        /* delete all orders, order products, payments related to this seat */
+        /* delete all orders, order products, payments, store orders related to this seat */
         adminPaymentRepository.deleteInBatch(listPayment);
         adminOrderProductRepository.deleteInBatch(listOrderProduct);
         adminOrderRepository.deleteInBatch(listOrder);
+        adminStoreOrderRepository.deleteInBatch(listStoreOrder);
 
         /* finally, delete seat */
         adminSeatRepository.delete(seatEntity);
