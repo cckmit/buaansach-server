@@ -115,7 +115,10 @@ public class GuestOrderService {
 
         GuestOrderDTO result = new GuestOrderDTO(guestOrderRepository.save(orderEntity));
 
-        GuestSocketDTO socketDTO = new GuestSocketDTO(WebSocketConstants.GUEST_CREATE_ORDER, result.getSeatGuid());
+        /* just set seat guid for same payload received as update order */
+        StoreOrderEntity storeOrderEntity = new StoreOrderEntity();
+        storeOrderEntity.setSeatGuid(result.getSeatGuid());
+        GuestSocketDTO socketDTO = new GuestSocketDTO(WebSocketConstants.GUEST_CREATE_ORDER, storeOrderEntity);
         guestSocketService.sendMessage(WebSocketConstants.TOPIC_POS_PREFIX + payload.getStoreGuid(), socketDTO);
         return result;
     }
