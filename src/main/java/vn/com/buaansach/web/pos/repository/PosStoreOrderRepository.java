@@ -20,4 +20,6 @@ public interface PosStoreOrderRepository extends JpaRepository<StoreOrderEntity,
     List<StoreOrderEntity> findByGuidIn(List<UUID> listGuid);
 
     List<StoreOrderEntity> findByCreatedDateBefore(Instant before);
+
+    List<StoreOrderEntity> findByOrderGuid(UUID orderGuid);
 }

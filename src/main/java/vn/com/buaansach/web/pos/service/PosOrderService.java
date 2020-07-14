@@ -32,6 +32,7 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +53,7 @@ public class PosOrderService {
     private final PosVoucherUsageService posVoucherUsageService;
     private final PosCustomerOrderService posCustomerOrderService;
     private final PosStoreOrderService posStoreOrderService;
+    private final PosStoreOrderRepository posStoreOrderRepository;
 
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
@@ -385,14 +387,15 @@ public class PosOrderService {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(payload.getCurrentSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + payload.getCurrentSeatGuid()));
 
+        /* Không phận sự, miễn vào */
+        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
+
         StoreEntity storeNewSeat = posStoreRepository.findOneBySeatGuid(payload.getNewSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + payload.getNewSeatGuid()));
 
         /* Nếu 2 vị trí không cùng trong một cửa hàng => không hợp lệ */
         if (!storeEntity.getGuid().equals(storeNewSeat.getGuid()))
             throw new BadRequestException("pos@seatsNotInTheSameStore@" + payload.getCurrentSeatGuid() + ";" + payload.getNewSeatGuid());
-
-        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
@@ -411,12 +414,22 @@ public class PosOrderService {
         if (newSeat.getSeatStatus().equals(SeatStatus.NON_EMPTY))
             throw new BadRequestException("pos@newSeatNotEmpty@" + payload.getNewSeatGuid());
 
+        /* Cập nhật vị trí mới vào order */
         String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(),
                 "CHANGE_SEAT",
                 currentUser,
                 currentSeat.getGuid() + "*" + newSeat.getGuid());
         orderEntity.setOrderStatusTimeline(newTimeline);
         orderEntity.setSeatGuid(newSeat.getGuid());
+        posOrderRepository.save(orderEntity);
+
+        /* Cập nhật lại vị trí cho các thông báo gọi món */
+        List<StoreOrderEntity> listStoreOrder = posStoreOrderRepository.findByOrderGuid(orderEntity.getGuid());
+        listStoreOrder = listStoreOrder.stream().peek(item -> {
+            item.setSeatGuid(newSeat.getGuid());
+            item.setAreaGuid(newSeat.getAreaGuid());
+        }).collect(Collectors.toList());
+        posStoreOrderRepository.saveAll(listStoreOrder);
 
         /* Cập nhật trạng thái cho vị trí mới */
         newSeat.setSeatStatus(SeatStatus.NON_EMPTY);
@@ -427,8 +440,7 @@ public class PosOrderService {
         /* Giải phóng vị trí hiện tại */
         posSeatService.resetSeat(currentSeat);
 
-        posOrderRepository.save(orderEntity);
-
+        /* Gửi thông báo tới khách */
         PosSocketDTO dto = new PosSocketDTO();
         dto.setMessage(WebSocketConstants.POS_CHANGE_SEAT);
         dto.setPayload(newSeat);

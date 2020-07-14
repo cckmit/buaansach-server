@@ -10,6 +10,6 @@ import java.util.UUID;
 @Repository
 public interface AdminStoreOrderRepository extends JpaRepository<StoreOrderEntity, Long> {
     List<StoreOrderEntity> findByStoreGuid(UUID storeGuid);
-    List<StoreOrderEntity> findByAreaGuid(UUID storeGuid);
-    List<StoreOrderEntity> findBySeatGuid(UUID storeGuid);
+    List<StoreOrderEntity> findByAreaGuid(UUID areaGuid);
+    List<StoreOrderEntity> findBySeatGuid(UUID seatGuid);
 }
