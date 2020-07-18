@@ -29,6 +29,8 @@ public class ActivityDTO {
 
     private String browser;
 
+    private CloudFlareTraceDTO cloudFlareTrace;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
