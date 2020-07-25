@@ -20,9 +20,9 @@ public class GuestCustomerResource {
     private final Logger log = LoggerFactory.getLogger(GuestCustomerResource.class);
     private final GuestCustomerService guestCustomerService;
 
-    @PostMapping("/create")
-    public ResponseEntity<GuestCustomerDTO> getCustomerByPhone(@RequestBody GuestCustomerDTO payload) {
-        log.debug("REST request from user [{}] to create [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
-        return ResponseEntity.ok(guestCustomerService.guestCreateCustomer(payload));
-    }
+//    @PostMapping("/create")
+//    public ResponseEntity<GuestCustomerDTO> guestCreateCustomer(@RequestBody GuestCustomerDTO payload) {
+//        log.debug("REST request from user [{}] to create [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+//        return ResponseEntity.ok(guestCustomerService.guestCreateCustomer(payload));
+//    }
 }
