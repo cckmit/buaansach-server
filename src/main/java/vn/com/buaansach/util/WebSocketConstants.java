@@ -23,4 +23,5 @@ public final class WebSocketConstants {
     public static final String GUEST_CREATE_CUSTOMER = "GUEST_CREATE_CUSTOMER";
     public static final String GUEST_UPDATE_ORDER = "GUEST_UPDATE_ORDER";
     public static final String GUEST_CREATE_ORDER = "GUEST_CREATE_ORDER";
+    public static final String GUEST_CALL_SERVANT = "GUEST_CALL_SERVANT";
 }

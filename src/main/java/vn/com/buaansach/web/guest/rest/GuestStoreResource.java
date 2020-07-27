@@ -4,13 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.guest.service.GuestStoreService;
 import vn.com.buaansach.web.guest.service.dto.read.GuestStoreDTO;
+import vn.com.buaansach.web.guest.websocket.dto.GuestCallServantDTO;
 
 @RestController
 @RequestMapping("/api/v1/guest/store")
@@ -24,5 +22,12 @@ public class GuestStoreResource {
     public ResponseEntity<GuestStoreDTO> getStoreBySeat(@PathVariable String seatGuid) {
         log.debug("REST request from user [{}] to get [{}] by seat : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, seatGuid);
         return ResponseEntity.ok(guestStoreService.getStoreBySeat(seatGuid));
+    }
+
+    @PostMapping("/call-servant")
+    public ResponseEntity<Void> callServant(@RequestBody GuestCallServantDTO payload){
+        log.debug("REST request from user [{}] to call servant of [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        guestStoreService.callServant(payload);
+        return ResponseEntity.ok().build();
     }
 }

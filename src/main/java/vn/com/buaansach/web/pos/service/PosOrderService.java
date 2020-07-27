@@ -153,7 +153,7 @@ public class PosOrderService {
                 payload.getListOrderProduct().size());
 
         /* Gửi thông báo tới trang bán hàng */
-        GuestSocketDTO socketDTO = new GuestSocketDTO(WebSocketConstants.POS_UPDATE_ORDER, storeOrderEntity);
+        PosSocketDTO socketDTO = new PosSocketDTO(WebSocketConstants.POS_UPDATE_ORDER, storeOrderEntity);
         posSocketService.sendMessage(WebSocketConstants.TOPIC_POS_PREFIX + storeEntity.getGuid(), socketDTO);
 
         /* Thông thường validate trên ui thì size sẽ phải lớn hơn 0 mới gọi được, kiểm tra lần nữa cho chắc cốp.
