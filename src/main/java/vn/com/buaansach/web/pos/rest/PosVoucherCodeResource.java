@@ -14,6 +14,7 @@ import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.service.PosVoucherCodeService;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherApplySuccessDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderVoucherCodeDTO;
+import vn.com.buaansach.web.pos.service.dto.write.PosUpdateVoucherCodeDTO;
 
 @Secured(AuthoritiesConstants.USER)
 @RestController
@@ -40,6 +41,13 @@ public class PosVoucherCodeResource {
     public ResponseEntity<Void> cancelVoucher(@RequestBody PosOrderVoucherCodeDTO payload) {
         log.debug("REST request from user [{}] to cancel [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         posVoucherCodeService.cancelVoucherCode(payload);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/update-voucher-code")
+    public ResponseEntity<Void> updateFirstRegVoucherCode(@RequestBody PosUpdateVoucherCodeDTO payload) {
+        log.debug("REST request from user [{}] to update [{}]  : [{}] ", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        posVoucherCodeService.updateFirstRegVoucherCode(payload);
         return ResponseEntity.ok().build();
     }
 }

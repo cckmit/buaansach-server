@@ -87,4 +87,7 @@ public class CustomerEntity extends AbstractAuditingEntity implements Serializab
 
     @Column(name = "customer_rank_guid")
     private UUID customerRankGuid;
+
+    @Column(name = "store_guid")
+    private UUID storeGuid;
 }

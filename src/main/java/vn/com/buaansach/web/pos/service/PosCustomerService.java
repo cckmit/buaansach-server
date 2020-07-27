@@ -5,12 +5,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.customer.CustomerEntity;
 import vn.com.buaansach.entity.enumeration.CustomerZaloStatus;
+import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.util.sequence.CustomerCodeGenerator;
 import vn.com.buaansach.util.RandomUtil;
 import vn.com.buaansach.web.pos.repository.PosCustomerRepository;
+import vn.com.buaansach.web.pos.repository.PosStoreRepository;
+import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosCustomerDTO;
 
 import javax.transaction.Transactional;
@@ -20,27 +23,27 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PosCustomerService {
     private final PosCustomerRepository posCustomerRepository;
+    private final PosStoreRepository posStoreRepository;
     private final PasswordEncoder passwordEncoder;
     private final PosVoucherCodeService posVoucherCodeService;
-
-    @Transactional
-    public void createCustomerByPhone(String customerPhone) {
-        if (posCustomerRepository.findOneByCustomerPhone(customerPhone).isEmpty()) {
-            CustomerEntity customerEntity = new CustomerEntity();
-            customerEntity.setCustomerPhone(customerPhone);
-            createCustomer(customerEntity);
-        }
-    }
+    private final PosStoreSecurity posStoreSecurity;
 
     @Transactional
     public PosCustomerDTO posCreateCustomer(PosCustomerDTO payload) {
+        StoreEntity storeEntity = posStoreRepository.findOneByGuid(payload.getStoreGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFound@" + payload.getStoreGuid()));
+
+        posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
+
         if (posCustomerRepository.findOneByCustomerPhone(payload.getCustomerPhone()).isEmpty()) {
             CustomerEntity customerEntity = new CustomerEntity();
+            customerEntity.setStoreGuid(payload.getStoreGuid());
             customerEntity.setCustomerPhone(payload.getCustomerPhone());
             customerEntity.setCustomerGender(payload.getCustomerGender());
             customerEntity.setCustomerName(payload.getCustomerName());
-            return new PosCustomerDTO(createCustomer(customerEntity));
+            return new PosCustomerDTO(createCustomer(customerEntity, storeEntity));
         }
+
         throw new BadRequestException("pos@customerPhoneExist@" + payload.getCustomerPhone());
     }
 
@@ -50,16 +53,19 @@ public class PosCustomerService {
     }
 
     @Transactional
-    public CustomerEntity createCustomer(CustomerEntity customerEntity) {
+    public CustomerEntity createCustomer(CustomerEntity customerEntity, StoreEntity storeEntity) {
+        int customerCount = posCustomerRepository.countByStoreGuid(storeEntity.getGuid());
+        String customerCode = CustomerCodeGenerator.generate(storeEntity.getStoreCode(), customerCount);
         customerEntity.setGuid(UUID.randomUUID());
-        customerEntity.setCustomerCode(CustomerCodeGenerator.generate());
+        customerEntity.setCustomerCode(customerCode);
         customerEntity.setCustomerPassword(passwordEncoder.encode(RandomUtil.generatePassword()));
         customerEntity.setCustomerActivated(true);
-        customerEntity.setCustomerZaloStatus(CustomerZaloStatus.UNKNOWN);
+        /* mặc định nhân viên tạo cho khách thì khách đã có zalo */
+        customerEntity.setCustomerZaloStatus(CustomerZaloStatus.EXIST);
         customerEntity.setCustomerLangKey(Constants.DEFAULT_LANGUAGE);
         CustomerEntity result = posCustomerRepository.save(customerEntity);
         // to make sure save customer successfully then create voucher for customer
-        posVoucherCodeService.createVoucherForCustomerRegistration(customerEntity.getCustomerPhone());
+        posVoucherCodeService.createVoucherForCustomerRegistration(customerEntity.getCustomerPhone(), customerCode);
         return result;
     }
 }

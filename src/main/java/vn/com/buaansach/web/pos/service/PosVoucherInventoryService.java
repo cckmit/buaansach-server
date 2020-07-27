@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.entity.enumeration.VoucherInventoryType;
 import vn.com.buaansach.entity.voucher.VoucherInventoryEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.web.pos.repository.PosVoucherInventoryRepository;
@@ -45,5 +46,17 @@ public class PosVoucherInventoryService {
         });
         posVoucherInventoryRepository.saveAll(page);
         return page.getContent().stream().map(VoucherInventoryEntity::getCode).collect(Collectors.toList());
+    }
+
+    public void insertCode(String code) {
+        posVoucherInventoryRepository.findOneByCode(code).ifPresent(item -> {
+            throw new BadRequestException("pos@voucherInventoryCodeExists@" + code);
+        });
+        VoucherInventoryEntity vie = new VoucherInventoryEntity();
+        vie.setCode(code);
+        vie.setLength(code.length());
+        vie.setType(VoucherInventoryType.CUSTOM);
+        vie.setExported(true);
+        posVoucherInventoryRepository.save(vie);
     }
 }

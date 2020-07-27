@@ -80,11 +80,6 @@ public class PosOrderService {
             throw new BadRequestException("pos@areaDisabled@" + areaEntity.getGuid());
         }
 
-        /* Tạo khách hàng nếu nhập SĐT chưa có trong hệ thống */
-        if (payload.getCustomerPhone() != null) {
-            posCustomerService.createCustomerByPhone(payload.getCustomerPhone());
-        }
-
         OrderEntity orderEntity = new OrderEntity();
         UUID orderGuid = UUID.randomUUID();
         orderEntity.setGuid(orderGuid);

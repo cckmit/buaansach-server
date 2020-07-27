@@ -6,6 +6,7 @@ import vn.com.buaansach.entity.enumeration.VoucherInventoryType;
 import vn.com.buaansach.entity.voucher.VoucherInventoryEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.util.VoucherUtil;
+import vn.com.buaansach.util.sequence.CustomerCodeGenerator;
 import vn.com.buaansach.web.admin.repository.voucher.AdminVoucherInventoryRepository;
 import vn.com.buaansach.web.admin.service.dto.read.AdminVoucherInventoryStatusDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminVoucherInventoryGenerateDTO;
@@ -36,7 +37,7 @@ public class AdminVoucherInventoryService {
         Set<String> setNewCodes = new HashSet<>();
         while (setNewCodes.size() < payload.getNumberOfVoucherCode()) {
             String code = VoucherUtil.generateVoucherCode(length).toLowerCase();
-            if (!existedCodes.contains(code)) {
+            if (!existedCodes.contains(code) && !code.startsWith(CustomerCodeGenerator.CUSTOMER_CODE_PREFIX.toLowerCase())) {
                 setNewCodes.add(code);
             }
         }

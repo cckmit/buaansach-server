@@ -10,6 +10,7 @@ import vn.com.buaansach.entity.customer.CustomerEntity;
 
 import javax.persistence.LockModeType;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface PosCustomerRepository extends JpaRepository<CustomerEntity, Long> {
@@ -19,4 +20,6 @@ public interface PosCustomerRepository extends JpaRepository<CustomerEntity, Lon
     Page<CustomerEntity> findPageCustomer(Pageable pageable);
 
     Optional<CustomerEntity> findOneByCustomerPhone(String customerPhone);
+
+    int countByStoreGuid(UUID storeGuid);
 }

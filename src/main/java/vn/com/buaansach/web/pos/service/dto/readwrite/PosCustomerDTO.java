@@ -6,9 +6,14 @@ import vn.com.buaansach.entity.enumeration.Gender;
 import vn.com.buaansach.util.Constants;
 
 import javax.validation.constraints.Pattern;
+import java.util.UUID;
 
 @Data
 public class PosCustomerDTO {
+    private UUID storeGuid;
+
+    private String customerCode;
+
     private String customerName;
 
     private Gender customerGender;
@@ -20,6 +25,8 @@ public class PosCustomerDTO {
     }
 
     public PosCustomerDTO(CustomerEntity customerEntity) {
+        this.storeGuid = customerEntity.getStoreGuid();
+        this.customerCode = customerEntity.getCustomerCode();
         this.customerPhone = customerEntity.getCustomerPhone();
         this.customerName = customerEntity.getCustomerName();
         this.customerGender = customerEntity.getCustomerGender();

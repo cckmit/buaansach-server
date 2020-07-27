@@ -10,6 +10,7 @@ import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.entity.voucher.VoucherInventoryEntity;
 
 import javax.persistence.LockModeType;
+import java.util.Optional;
 
 @Repository
 public interface PosVoucherInventoryRepository extends JpaRepository<VoucherInventoryEntity, Long> {
@@ -18,4 +19,6 @@ public interface PosVoucherInventoryRepository extends JpaRepository<VoucherInve
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT vie FROM VoucherInventoryEntity vie WHERE vie.exported = FALSE")
     Page<VoucherInventoryEntity> getListUnExportedVoucherInventory(Pageable pageable);
+
+    Optional<VoucherInventoryEntity> findOneByCode(String code);
 }
