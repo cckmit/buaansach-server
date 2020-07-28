@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class GuestCallServantDTO {
+public class GuestCallWaiterDTO {
     UUID storeGuid;
     UUID seatGuid;
 }
