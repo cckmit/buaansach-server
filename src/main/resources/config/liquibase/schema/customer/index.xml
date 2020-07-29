@@ -9,8 +9,10 @@
     <include file="config/liquibase/schema/customer/create_table_bas_customer_rank.xml"/>
     <include file="config/liquibase/schema/customer/create_table_bas_customer_wallet.xml"/>
     <include file="config/liquibase/schema/customer/create_table_bas_customer_order.xml"/>
+    <include file="config/liquibase/schema/customer/create_table_bas_customer_point_log.xml"/>
 
     <!--Modification-->
     <include file="config/liquibase/schema/customer/update/update_table_bas_customer_1.0.xml"/>
+    <include file="config/liquibase/schema/customer/update/update_table_bas_customer_1.1.xml"/>
 
 </databaseChangeLog>

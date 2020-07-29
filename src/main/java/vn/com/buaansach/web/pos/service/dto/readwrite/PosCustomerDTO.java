@@ -21,6 +21,8 @@ public class PosCustomerDTO {
     @Pattern(regexp = Constants.PHONE_REGEX)
     private String customerPhone;
 
+    private int customerPoint;
+
     public PosCustomerDTO() {
     }
 
@@ -30,5 +32,6 @@ public class PosCustomerDTO {
         this.customerPhone = customerEntity.getCustomerPhone();
         this.customerName = customerEntity.getCustomerName();
         this.customerGender = customerEntity.getCustomerGender();
+        this.customerPoint = customerEntity.getCustomerPoint();
     }
 }

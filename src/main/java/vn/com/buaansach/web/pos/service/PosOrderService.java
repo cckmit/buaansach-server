@@ -2,6 +2,7 @@ package vn.com.buaansach.web.pos.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.entity.customer.CustomerPointLogEntity;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.OrderType;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
@@ -17,7 +18,6 @@ import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
-import vn.com.buaansach.web.guest.websocket.dto.GuestSocketDTO;
 import vn.com.buaansach.web.pos.repository.*;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
@@ -54,6 +54,8 @@ public class PosOrderService {
     private final PosCustomerOrderService posCustomerOrderService;
     private final PosStoreOrderService posStoreOrderService;
     private final PosStoreOrderRepository posStoreOrderRepository;
+    private final PosCustomerPointLogRepository posCustomerPointLogRepository;
+    private final PosCustomerRepository posCustomerRepository;
 
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
@@ -307,6 +309,23 @@ public class PosOrderService {
                 /* Nếu payAmount < 0 thì vẫn set về 0 */
                 payAmount = payAmount > 0 ? payAmount : 0L;
 
+                /* Tích điểm nếu nhập SĐT: tỉ lệ 1000đ = 1 điểm */
+                if (orderEntity.getCustomerPhone() != null && !orderEntity.getCustomerPhone().isBlank()) {
+                    int earnedPoint = (int) (payAmount / 1000);
+                    posCustomerRepository.findOneByCustomerPhone(orderEntity.getCustomerPhone()).ifPresent(customerEntity -> {
+                                customerEntity.setCustomerPoint(customerEntity.getCustomerPoint() + earnedPoint);
+                                posCustomerRepository.save(customerEntity);
+                                /* add log */
+                                CustomerPointLogEntity customerPointLogEntity = new CustomerPointLogEntity();
+                                customerPointLogEntity.setCustomerPhone(orderEntity.getCustomerPhone());
+                                customerPointLogEntity.setOrderGuid(orderEntity.getGuid());
+                                customerPointLogEntity.setEarnedPoint(earnedPoint);
+                                posCustomerPointLogRepository.save(customerPointLogEntity);
+                            }
+                    );
+                }
+
+                /* Thanh toán tiền mặt */
                 PaymentEntity paymentEntity = posPaymentService.makeCashPayment(
                         payload.getOrderGuid(),
                         payload.getPaymentNote(),
