@@ -2,19 +2,23 @@ package vn.com.buaansach.web.guest.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.web.guest.exception.GuestResourceNotFoundException;
+import vn.com.buaansach.web.guest.repository.GuestOrderRepository;
 import vn.com.buaansach.web.guest.repository.GuestSeatRepository;
 import vn.com.buaansach.web.guest.service.dto.read.GuestSeatDTO;
+import vn.com.buaansach.web.guest.service.dto.readwrite.GuestCheckOrderSeatDTO;
 
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class GuestSeatService {
     private final GuestSeatRepository guestSeatRepository;
+    private final GuestOrderRepository guestOrderRepository;
 
     public GuestSeatDTO getSeat(String seatGuid) {
         return guestSeatRepository.findGuestSeatDTO(UUID.fromString(seatGuid))
@@ -38,5 +42,35 @@ public class GuestSeatService {
             return seatEntity.getCurrentOrderGuid().toString().equals(orderGuid);
         }
         return false;
+    }
+
+    public GuestCheckOrderSeatDTO checkOrderSeat(GuestCheckOrderSeatDTO payload) {
+        SeatEntity seatEntity = guestSeatRepository.findOneByGuid(payload.getSeatGuid())
+                .orElseThrow(() -> new GuestResourceNotFoundException("guest@seatNotFound@" + payload.getSeatGuid()));
+
+        payload.setHasValidOrderGuid(false);
+        payload.setActiveOrderGuid(null);
+
+        Map<UUID, OrderStatus> mapOrder = new HashMap<>();
+        guestOrderRepository.findByGuidIn(payload.getListOrderGuid()).forEach(item -> {
+            mapOrder.put(item.getGuid(), item.getOrderStatus());
+        });
+
+        /* Gán lại list mã đơn hợp lệ trên máy khách */
+        List<UUID> listValidOrderGuid = new ArrayList<>();
+        payload.getListOrderGuid().forEach(orderGuid -> {
+            OrderStatus status = mapOrder.get(orderGuid);
+            if (OrderStatus.CREATED.equals(status) || OrderStatus.RECEIVED.equals(status)) {
+                listValidOrderGuid.add(orderGuid);
+
+                /* Tìm xem có mã đơn hợp lệ trong đống được lưu trên máy khách hay không */
+                if (orderGuid.equals(seatEntity.getCurrentOrderGuid())) {
+                    payload.setHasValidOrderGuid(true);
+                    payload.setActiveOrderGuid(orderGuid);
+                }
+            }
+        });
+        payload.setListOrderGuid(listValidOrderGuid);
+        return payload;
     }
 }

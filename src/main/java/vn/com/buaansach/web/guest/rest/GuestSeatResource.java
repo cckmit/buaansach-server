@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.guest.service.GuestSeatService;
 import vn.com.buaansach.web.guest.service.dto.read.GuestSeatDTO;
+import vn.com.buaansach.web.guest.service.dto.readwrite.GuestCheckOrderSeatDTO;
 
 @RestController
 @RequestMapping("/api/v1/guest/seat")
@@ -28,6 +29,12 @@ public class GuestSeatResource {
                                                       @RequestParam("seatGuid") String seatGuid) {
         log.debug("REST request from user [{}] to check [{}] : [{}] matches order : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, seatGuid, orderGuid);
         return ResponseEntity.ok(guestSeatService.isOrderMatchesSeat(orderGuid, seatGuid));
+    }
+
+    @PostMapping("/check-order-seat")
+    public ResponseEntity<GuestCheckOrderSeatDTO> checkOrderSeat(@RequestBody GuestCheckOrderSeatDTO payload){
+        log.debug("REST request from user [{}] to check [{}] with list order guid: [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        return ResponseEntity.ok(guestSeatService.checkOrderSeat(payload));
     }
 //
 //    @PutMapping("/change-seat")
