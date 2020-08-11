@@ -26,6 +26,7 @@ public class StoreOrderEntity  extends AbstractAuditingEntity implements Seriali
     private UUID guid;
     @Enumerated(EnumType.STRING)
     private StoreOrderStatus storeOrderStatus;
+    @Enumerated(EnumType.STRING)
     private StoreOrderType storeOrderType;
     private String firstSeenBy;
     private String firstHideBy;
