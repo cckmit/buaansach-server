@@ -11,6 +11,7 @@
     <include file="config/liquibase/schema/store/create_table_bas_area.xml"/>
     <include file="config/liquibase/schema/store/create_table_bas_seat.xml"/>
     <include file="config/liquibase/schema/store/create_table_bas_store_order.xml"/>
+    <include file="config/liquibase/schema/store/create_table_bas_store_pay_request.xml"/>
 <!--    <include file="config/liquibase/schema/store/create_table_bas_work_shift.xml"/>-->
 <!--    <include file="config/liquibase/schema/store/create_table_bas_store_user_work_shift.xml"/>-->
 

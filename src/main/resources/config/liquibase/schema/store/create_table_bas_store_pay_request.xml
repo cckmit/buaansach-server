@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="create_table_bas_store_pay_request" author="ductv">
+        <createTable tableName="bas_store_pay_request">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="guid" type="binary(16)">
+                <constraints unique="true" nullable="false" uniqueConstraintName="ux_store_pay_request_guid"/>
+            </column>
+            <column name="store_pay_request_status" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="seen_at" type="timestamp"/>
+            <column name="first_seen_by" type="varchar(50)"/>
+            <column name="first_hide_by" type="varchar(50)"/>
+            <column name="hidden" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="store_guid" type="binary(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="area_guid" type="binary(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="seat_guid" type="binary(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_guid" type="binary(16)">
+                <constraints unique="true" nullable="false" uniqueConstraintName="ux_store_pay_request_order_guid"/>
+            </column>
+            <column name="pay_amount" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pay_note" type="varchar(500)"/>
+
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp"/>
+            <column name="last_modified_by" type="varchar(50)"/>
+            <column name="last_modified_date" type="timestamp"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
+

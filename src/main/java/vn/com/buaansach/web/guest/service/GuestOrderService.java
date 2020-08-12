@@ -6,6 +6,7 @@ import vn.com.buaansach.entity.enumeration.*;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.store.*;
 import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
 import vn.com.buaansach.web.guest.exception.GuestBadRequestException;
@@ -41,6 +42,7 @@ public class GuestOrderService {
     private final GuestStoreProductRepository guestStoreProductRepository;
     private final GuestAreaRepository guestAreaRepository;
     private final GuestStoreOrderService guestStoreOrderService;
+    private final GuestCustomerRepository guestCustomerRepository;
 
     public GuestOrderDTO getOrder(String orderGuid) {
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
@@ -214,6 +216,29 @@ public class GuestOrderService {
         return listPosOrderProductDTO.stream()
                 .filter(dto -> !dto.getOrderProductStatus().toString().contains("CANCELLED"))
                 .mapToLong(dto -> dto.getOrderProductQuantity() * (dto.getOrderProductPrice() - dto.getOrderProductDiscount())).sum();
+    }
+
+    @Transactional
+    public OrderEntity updateCustomerPhone(UUID orderGuid, String customerPhone) {
+        OrderEntity orderEntity = guestOrderRepository.findOneByGuid(orderGuid)
+                .orElseThrow(() -> new GuestResourceNotFoundException("guest@orderNotFound@" + orderGuid));
+
+        /* Không cho phép khách thay đổi SDT nếu đơn đã có SDT */
+        if (orderEntity.getCustomerPhone() != null)
+            throw new GuestBadRequestException("guest@orderCustomerPhoneExist@" + orderEntity.getGuid());
+
+        /* Nếu SDT chưa tồn tại trên hệ thống */
+        if (guestCustomerRepository.findOneByCustomerPhone(customerPhone).isEmpty())
+            throw new GuestBadRequestException("guest@customerPhoneNotFound@" + customerPhone);
+
+        String newTimeline = TimelineUtil.appendCustomOrderStatus(
+                orderEntity.getOrderStatusTimeline(),
+                "CHANGE_PHONE",
+                SecurityUtils.getCurrentUserLogin(),
+                customerPhone);
+        orderEntity.setOrderStatusTimeline(newTimeline);
+        orderEntity.setCustomerPhone(customerPhone);
+        return guestOrderRepository.save(orderEntity);
     }
 
 //    public void cancelOrder(GuestCancelOrderDTO payload) {

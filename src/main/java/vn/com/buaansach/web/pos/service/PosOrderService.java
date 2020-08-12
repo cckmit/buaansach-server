@@ -44,7 +44,6 @@ public class PosOrderService {
     private final PosStoreSecurity posStoreSecurity;
     private final PosOrderProductService posOrderProductService;
     private final PosOrderProductRepository posOrderProductRepository;
-    private final PosCustomerService posCustomerService;
     private final PosSeatService posSeatService;
     private final PosVoucherCodeRepository posVoucherCodeRepository;
     private final PosVoucherCodeService posVoucherCodeService;
@@ -56,6 +55,7 @@ public class PosOrderService {
     private final PosStoreOrderRepository posStoreOrderRepository;
     private final PosCustomerPointLogRepository posCustomerPointLogRepository;
     private final PosCustomerRepository posCustomerRepository;
+    private final PosStorePayRequestRepository posStorePayRequestRepository;
 
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
@@ -294,20 +294,7 @@ public class PosOrderService {
 
         switch (payload.getPaymentMethod()) {
             case CASH:
-                long payAmount = orderEntity.getTotalAmount();
-                if (orderEntity.getOrderDiscount() > 0) {
-                    switch (orderEntity.getOrderDiscountType()) {
-                        case VALUE:
-                            payAmount = payAmount - orderEntity.getOrderDiscount();
-                            break;
-                        case PERCENT:
-                            payAmount = payAmount - (payAmount * orderEntity.getOrderDiscount() / 100L);
-                            break;
-                    }
-                }
-
-                /* Nếu payAmount < 0 thì vẫn set về 0 */
-                payAmount = payAmount > 0 ? payAmount : 0L;
+                long payAmount = posPaymentService.calculatePayAmount(orderEntity);
 
                 /* Tích điểm nếu nhập SĐT: tỉ lệ 1000đ = 1 điểm */
                 if (orderEntity.getCustomerPhone() != null && !orderEntity.getCustomerPhone().isBlank()) {
@@ -444,6 +431,14 @@ public class PosOrderService {
             item.setAreaGuid(newSeat.getAreaGuid());
         }).collect(Collectors.toList());
         posStoreOrderRepository.saveAll(listStoreOrder);
+
+        /* Cập nhật lại vị trí cho yêu cầu thanh toán (nếu có) */
+        posStorePayRequestRepository.findOneByOrderGuid(orderEntity.getGuid())
+                .ifPresent(item -> {
+                    item.setSeatGuid(newSeat.getGuid());
+                    item.setAreaGuid(newSeat.getAreaGuid());
+                    posStorePayRequestRepository.save(item);
+                });
 
         /* Cập nhật trạng thái cho vị trí mới */
         newSeat.setSeatStatus(SeatStatus.NON_EMPTY);
