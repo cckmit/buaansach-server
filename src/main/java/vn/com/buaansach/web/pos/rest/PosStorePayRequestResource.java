@@ -26,18 +26,18 @@ public class PosStorePayRequestResource {
     private final PosStorePayRequestService posStorePayRequestService;
 
     @GetMapping("/list-by-store")
-    public ResponseEntity<List<PosStorePayRequestDTO>> getListStoreOrder(@RequestParam("storeGuid") String storeGuid,
+    public ResponseEntity<List<PosStorePayRequestDTO>> getListStorePayRequest(@RequestParam("storeGuid") String storeGuid,
                                                                     @RequestParam("startDate") Instant startDate,
                                                                     @RequestParam(value = "hidden", required = false) Boolean hidden) {
         log.debug("REST request from user [{}] to list [{}] by store: [{}] - from [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid, startDate);
-        return ResponseEntity.ok(posStorePayRequestService.getListStoreOrder(storeGuid, startDate, hidden));
+        return ResponseEntity.ok(posStorePayRequestService.getListStorePayRequest(storeGuid, startDate, hidden));
     }
 
     @PutMapping("/update-status")
     public ResponseEntity<PosStorePayRequestDTO> updateStorePayRequest(@RequestBody PosStorePayRequestStatusUpdateDTO payload) {
         String currentUser = SecurityUtils.getCurrentUserLogin();
         log.debug("REST request from user [{}] to update [{}] : [{}]", currentUser, ENTITY_NAME, payload);
-        return ResponseEntity.ok(posStorePayRequestService.updateStoreOrder(payload, currentUser));
+        return ResponseEntity.ok(posStorePayRequestService.updateStorePayRequest(payload, currentUser));
     }
 
     @PutMapping("/toggle-visibility")

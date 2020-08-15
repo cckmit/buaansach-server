@@ -31,7 +31,7 @@ public class PosStorePayRequestService {
     private final PosStoreSecurity posStoreSecurity;
     private final PosStorePayRequestRepository posStorePayRequestRepository;
 
-    public List<PosStorePayRequestDTO> getListStoreOrder(String storeGuid, Instant startDate, Boolean hidden) {
+    public List<PosStorePayRequestDTO> getListStorePayRequest(String storeGuid, Instant startDate, Boolean hidden) {
         posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
         List<StorePayRequestEntity> list;
         if (hidden != null) {
@@ -44,7 +44,7 @@ public class PosStorePayRequestService {
         return list.stream().map(PosStorePayRequestDTO::new).collect(Collectors.toList());
     }
 
-    public PosStorePayRequestDTO updateStoreOrder(PosStorePayRequestStatusUpdateDTO payload, String currentUser) {
+    public PosStorePayRequestDTO updateStorePayRequest(PosStorePayRequestStatusUpdateDTO payload, String currentUser) {
         StorePayRequestEntity entity = posStorePayRequestRepository.findOneByGuid(payload.getGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("pos@storePayRequestNotFound@" + payload.getGuid()));
         posStoreSecurity.blockAccessIfNotInStore(entity.getStoreGuid());

@@ -28,7 +28,6 @@ public class GuestStorePayRequestService {
     private final GuestSeatRepository guestSeatRepository;
     private final GuestSocketService guestSocketService;
     private final PosPaymentService posPaymentService;
-    private final GuestCustomerRepository guestCustomerRepository;
     private final GuestOrderService guestOrderService;
 
     @Transactional
@@ -50,9 +49,14 @@ public class GuestStorePayRequestService {
         if (!seatEntity.getCurrentOrderGuid().equals(orderEntity.getGuid()))
             throw new GuestBadRequestException("guest@orderNotMatchSeat@orderGuid=" + orderEntity.getGuid() + ";seatOrderGuid=" + seatEntity.getCurrentOrderGuid());
 
-        /* Cập nhật SDT cho khách nếu có */
-        if (payload.getCustomerPhone() != null && orderEntity.getCustomerPhone() == null)
-            guestOrderService.updateCustomerPhone(payload.getOrderGuid(), payload.getCustomerPhone());
+        /* Cập nhật SDT cho khách nếu có và đơn phải chưa có SĐT */
+        if (payload.getCustomerPhone() != null){
+            if (orderEntity.getCustomerPhone() == null){
+                guestOrderService.updateCustomerPhone(payload.getOrderGuid(), payload.getCustomerPhone());
+            } else {
+                throw new GuestBadRequestException("guest@orderCustomerPhoneExist@" + orderEntity.getGuid());
+            }
+        }
 
         StorePayRequestEntity storePayRequestEntity = new StorePayRequestEntity();
         storePayRequestEntity.setGuid(UUID.randomUUID());
