@@ -5,11 +5,12 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderFeedbackEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
+import vn.com.buaansach.web.guest.exception.GuestBadRequestException;
 import vn.com.buaansach.web.guest.exception.GuestResourceNotFoundException;
 import vn.com.buaansach.web.guest.repository.GuestOrderFeedbackRepository;
 import vn.com.buaansach.web.guest.repository.GuestOrderRepository;
 import vn.com.buaansach.web.guest.repository.GuestStoreRepository;
-import vn.com.buaansach.web.guest.service.dto.write.GuestOrderFeedbackDTO;
+import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderFeedbackDTO;
 
 import java.util.UUID;
 
@@ -27,6 +28,9 @@ public class GuestOrderFeedbackService {
         StoreEntity storeEntity = guestStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
                 .orElseThrow(()-> new GuestResourceNotFoundException("guest@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
 
+        if (guestOrderFeedbackRepository.findOneByOrderGuid(payload.getOrderGuid()).isPresent())
+            throw new GuestBadRequestException("guest@orderFeedbackExistWithOrderGuid@" + payload.getOrderGuid());
+
         OrderFeedbackEntity orderFeedbackEntity = new OrderFeedbackEntity();
         orderFeedbackEntity.setGuid(UUID.randomUUID());
         orderFeedbackEntity.setOrderGuid(payload.getOrderGuid());
@@ -36,5 +40,11 @@ public class GuestOrderFeedbackService {
         orderFeedbackEntity.setServiceQualityRating(payload.getServiceQualityRating());
         orderFeedbackEntity.setFeedbackContent(payload.getFeedbackContent());
         guestOrderFeedbackRepository.save(orderFeedbackEntity);
+    }
+
+    public GuestOrderFeedbackDTO getFeedback(String orderGuid) {
+        OrderFeedbackEntity orderFeedbackEntity = guestOrderFeedbackRepository.findOneByOrderGuid(UUID.fromString(orderGuid))
+                .orElseThrow(() -> new GuestResourceNotFoundException("guest@orderFeedbackNotFoundWithOrder@" + orderGuid));
+        return new GuestOrderFeedbackDTO(orderFeedbackEntity);
     }
 }

@@ -4,13 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.guest.service.GuestOrderFeedbackService;
-import vn.com.buaansach.web.guest.service.dto.write.GuestOrderFeedbackDTO;
+import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderFeedbackDTO;
 
 import javax.validation.Valid;
 
@@ -27,5 +24,11 @@ public class GuestOrderFeedbackResource {
         log.debug("REST request from user [{}] to send [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         guestOrderFeedbackService.sendFeedback(payload);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/get-feedback/{orderGuid}")
+    public ResponseEntity<GuestOrderFeedbackDTO> getFeedback(@PathVariable  String orderGuid) {
+        log.debug("REST request from user [{}] to get [{}] by order : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, orderGuid);
+        return ResponseEntity.ok(guestOrderFeedbackService.getFeedback(orderGuid));
     }
 }
