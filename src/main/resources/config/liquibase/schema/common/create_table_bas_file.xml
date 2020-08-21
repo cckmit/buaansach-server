@@ -6,15 +6,12 @@
 
     <changeSet id="create_table_bas_file" author="ductv">
         <createTable tableName="bas_file">
-            <!--INTERNAL-->
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <!--EXTERNAL-->
             <column name="guid" type="binary(16)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_file_guid"/>
             </column>
-            <!--ATTR-->
             <column name="original_name" type="varchar(255)"/>
             <column name="content_type" type="varchar(50)"/>
             <column name="extension" type="varchar(10)"/>
@@ -25,7 +22,6 @@
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_file_url"/>
             </column>
             <column name="size" type="int"/>
-            <!--AUDIT-->
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>

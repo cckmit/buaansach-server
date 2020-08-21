@@ -21,7 +21,7 @@
             <column name="customer_email" type="varchar(100)">
                 <constraints unique="true" uniqueConstraintName="ux_customer_email"/>
             </column>
-            <column name="customer_password_hash" type="varchar(60)">
+            <column name="customer_password" type="varchar(60)">
                 <constraints nullable="false"/>
             </column>
             <column name="customer_activated" type="boolean">
@@ -38,8 +38,9 @@
             <column name="customer_zalo_status" type="varchar(30)">
                 <constraints nullable="false"/>
             </column>
-            <column name="customer_zalo_id" type="varchar(255)"/>
             <column name="customer_rank_guid" type="binary(16)"/>
+            <column name="customer_store_guid" type="binary(16)"/>
+            <column name="customer_point" type="int" defaultValue="0"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

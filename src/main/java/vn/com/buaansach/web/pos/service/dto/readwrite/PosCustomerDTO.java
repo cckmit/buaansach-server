@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Data
 public class PosCustomerDTO {
-    private UUID storeGuid;
+    private UUID customerStoreGuid;
 
     private String customerCode;
 
@@ -27,7 +27,7 @@ public class PosCustomerDTO {
     }
 
     public PosCustomerDTO(CustomerEntity customerEntity) {
-        this.storeGuid = customerEntity.getStoreGuid();
+        this.customerStoreGuid = customerEntity.getCustomerStoreGuid();
         this.customerCode = customerEntity.getCustomerCode();
         this.customerPhone = customerEntity.getCustomerPhone();
         this.customerName = customerEntity.getCustomerName();

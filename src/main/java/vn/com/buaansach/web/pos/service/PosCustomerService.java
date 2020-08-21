@@ -30,14 +30,14 @@ public class PosCustomerService {
 
     @Transactional
     public PosCustomerDTO posCreateCustomer(PosCustomerDTO payload) {
-        StoreEntity storeEntity = posStoreRepository.findOneByGuid(payload.getStoreGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFound@" + payload.getStoreGuid()));
+        StoreEntity storeEntity = posStoreRepository.findOneByGuid(payload.getCustomerStoreGuid())
+                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFound@" + payload.getCustomerStoreGuid()));
 
-        posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
+        posStoreSecurity.blockAccessIfNotInStore(payload.getCustomerStoreGuid());
 
         if (posCustomerRepository.findOneByCustomerPhone(payload.getCustomerPhone()).isEmpty()) {
             CustomerEntity customerEntity = new CustomerEntity();
-            customerEntity.setStoreGuid(payload.getStoreGuid());
+            customerEntity.setCustomerStoreGuid(payload.getCustomerStoreGuid());
             customerEntity.setCustomerPhone(payload.getCustomerPhone());
             customerEntity.setCustomerGender(payload.getCustomerGender());
             customerEntity.setCustomerName(payload.getCustomerName());

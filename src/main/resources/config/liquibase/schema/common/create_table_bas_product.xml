@@ -15,11 +15,14 @@
             <column name="product_code" type="varchar(20)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_product_code"/>
             </column>
-            <column name="product_name" type="varchar(100)">
+            <column name="product_name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="product_name_en" type="varchar(255)"/>
             <column name="product_unit" type="varchar(50)"/>
+            <column name="product_unit_en" type="varchar(50)"/>
             <column name="product_description" type="varchar(2000)"/>
+            <column name="product_description_en" type="varchar(2000)"/>
             <column name="product_image_url" type="varchar(255)"/>
             <column name="product_thumbnail_url" type="varchar(255)"/>
             <column name="product_status" type="varchar(30)">
@@ -34,8 +37,10 @@
             <column name="product_root_price" type="int"/>
             <column name="product_price" type="int"/>
             <column name="product_discount" type="int"/>
+            <column name="product_discount_type" type="varchar(30)"/>
             <column name="product_position" type="int"/>
             <column name="product_sale_guid" type="binary(16)"/>
+            <column name="hide_product" type="boolean" defaultValue="false"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

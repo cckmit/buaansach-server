@@ -12,7 +12,5 @@
     <include file="config/liquibase/schema/customer/create_table_bas_customer_point_log.xml"/>
 
     <!--Modification-->
-    <include file="config/liquibase/schema/customer/update/update_table_bas_customer_1.0.xml"/>
-    <include file="config/liquibase/schema/customer/update/update_table_bas_customer_1.1.xml"/>
 
 </databaseChangeLog>

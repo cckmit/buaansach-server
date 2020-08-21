@@ -25,18 +25,33 @@ public class CategoryEntity extends AbstractAuditingEntity implements Serializab
     @Column(unique = true)
     private UUID guid;
 
-    @Size(min = 1, max = 50)
-    @Column(name = "category_name", unique = true, length = 50)
+    @Size(max = 100)
+    @Column(name = "category_name", unique = true, length = 100)
     private String categoryName;
+
+    @Size(max = 100)
+    @Column(name = "category_name_en", unique = true, length = 100)
+    private String categoryNameEn;
 
     @Size(max = 255)
     @Column(name = "category_description")
     private String categoryDescription;
 
     @Size(max = 255)
+    @Column(name = "category_description_en")
+    private String categoryDescriptionEn;
+
+    @Size(max = 255)
     @Column(name = "category_image_url")
     private String categoryImageUrl;
 
+    @Size(max = 255)
+    @Column(name = "category_thumbnail_url")
+    private String categoryThumbnailUrl;
+
     @Column(name = "category_position")
     private int categoryPosition;
+
+    @Column(name = "hide_category")
+    private boolean hideCategory;
 }

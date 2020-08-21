@@ -41,7 +41,7 @@ public class CustomerEntity extends AbstractAuditingEntity implements Serializab
     private String customerEmail;
 
     @Size(max = 60)
-    @Column(name = "customer_password_hash", length = 60)
+    @Column(name = "customer_password", length = 60)
     private String customerPassword;
 
     @Column(name = "customer_activated")
@@ -81,16 +81,12 @@ public class CustomerEntity extends AbstractAuditingEntity implements Serializab
     @Column(name = "customer_zalo_status")
     private CustomerZaloStatus customerZaloStatus = CustomerZaloStatus.UNKNOWN;
 
-    @Size(max = 255)
-    @Column(name = "customer_zalo_id")
-    private String customerZaloId;
-
     @Column(name = "customer_rank_guid")
     private UUID customerRankGuid;
 
+    @Column(name = "customer_store_guid")
+    private UUID customerStoreGuid;
+
     @Column(name = "customer_point")
     private int customerPoint;
-
-    @Column(name = "store_guid")
-    private UUID storeGuid;
 }

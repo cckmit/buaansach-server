@@ -27,7 +27,6 @@ public class CustomerCareCustomerVoucherCodeDTO extends AuditDTO {
     private String customerImageUrl;
     private String customerLangKey;
     private CustomerZaloStatus customerZaloStatus;
-    private String customerZaloId;
     private UUID customerRankGuid;
 
     private String voucherCode;
@@ -51,7 +50,6 @@ public class CustomerCareCustomerVoucherCodeDTO extends AuditDTO {
         this.customerImageUrl = customerEntity.getCustomerImageUrl();
         this.customerLangKey = customerEntity.getCustomerLangKey();
         this.customerZaloStatus = customerEntity.getCustomerZaloStatus();
-        this.customerZaloId = customerEntity.getCustomerZaloId();
 
         this.createdDate = customerEntity.getCreatedDate();
         this.lastModifiedBy = customerEntity.getLastModifiedBy();

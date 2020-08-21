@@ -28,23 +28,4 @@
             <column name="user_id" type="numeric"/>
         </loadData>
     </changeSet>
-    <changeSet id="init_voucher_data" author="ductv">
-        <loadData
-                file="config/liquibase/data/csv/voucher.csv"
-                separator=";"
-                tableName="bas_voucher">
-            <column name="voucher_discount" type="numeric"/>
-            <column name="voucher_enable" type="boolean"/>
-            <column name="created_date" type="timestamp"/>
-        </loadData>
-    </changeSet>
-    <changeSet id="init_voucher_usage_condition_data" author="ductv">
-        <loadData
-                file="config/liquibase/data/csv/voucher_usage_condition.csv"
-                separator=";"
-                tableName="bas_voucher_usage_condition">
-            <column name="max_usage" type="numeric"/>
-            <column name="created_date" type="timestamp"/>
-        </loadData>
-    </changeSet>
 </databaseChangeLog>

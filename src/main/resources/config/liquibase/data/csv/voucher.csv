@@ -1,2 +1,0 @@
-guid;voucher_name;voucher_description;voucher_image_url;voucher_discount;voucher_discount_type;voucher_conditions;voucher_enable;number_voucher_code;created_by;created_date;last_modified_by
-1;Lần đầu đăng ký;Tặng mã giảm giá 30k cho SĐT lần đầu đăng ký trên hệ thống của chuỗi Bữa Ăn Sạch;;30000;VALUE;USAGE_LIMIT;true;0;system;NOW;system
