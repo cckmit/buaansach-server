@@ -15,20 +15,20 @@ import java.util.UUID;
 public class PosPaymentService {
     private final PosPaymentRepository posPaymentRepository;
 
-    public long calculatePayAmount(OrderEntity orderEntity){
-        long payAmount = orderEntity.getTotalAmount();
+    public int calculatePayAmount(OrderEntity orderEntity){
+        int payAmount = orderEntity.getOrderTotalAmount();
         if (orderEntity.getOrderDiscount() > 0) {
             switch (orderEntity.getOrderDiscountType()) {
                 case VALUE:
                     payAmount = payAmount - orderEntity.getOrderDiscount();
                     break;
                 case PERCENT:
-                    payAmount = payAmount - (payAmount * orderEntity.getOrderDiscount() / 100L);
+                    payAmount = payAmount - (payAmount * orderEntity.getOrderDiscount() / 100);
                     break;
             }
         }
         /* Nếu payAmount < 0 thì vẫn set về 0 */
-        payAmount = payAmount > 0 ? payAmount : 0L;
+        payAmount = Math.max(payAmount, 0);
         return payAmount;
     }
 

@@ -41,18 +41,8 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
     @Column(name = "order_type")
     private OrderType orderType;
 
-    @Size(max = 255)
-    @Column(name = "order_note")
-    private String orderNote;
-
-    @Column(name = "order_status_timeline")
+    @Column(name = "order_status_timeline", length = 3000)
     private String orderStatusTimeline;
-
-    @Column(name = "order_checkin_time")
-    private Instant orderCheckinTime;
-
-    @Column(name = "order_checkout_time")
-    private Instant orderCheckoutTime;
 
     @Size(max = 255)
     @Column(name = "order_cancel_reason")
@@ -65,27 +55,50 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
     @Column(name = "order_discount_type")
     private DiscountType orderDiscountType;
 
-    @Column(name = "order_sale_guid")
-    private UUID orderSaleGuid;
-
-    @Column(name = "order_voucher_code")
-    private String orderVoucherCode;
-
-    @Column(name = "total_amount")
-    private long totalAmount;
-
-    @Size(max = 50)
-    @Column(name = "cashier_login", length = 50)
-    private String cashierLogin;
+    @Column(name = "order_total_amount")
+    private int orderTotalAmount;
 
     @Size(max = 20)
-    @Column(name = "customer_phone", length = 20)
-    private String customerPhone;
+    @Column(name = "order_customer_phone", length = 20)
+    private String orderCustomerPhone;
+
+    @Size(max = 50)
+    @Column(name = "order_received_by", length = 50)
+    private String orderReceivedBy;
+
+    @Column(name = "order_received_date")
+    private Instant orderReceivedDate;
+
+    @Size(max = 50)
+    @Column(name = "order_purchased_by", length = 50)
+    private String orderPurchasedBy;
+
+    @Column(name = "order_purchased_date")
+    private Instant orderPurchasedDate;
+
+    @Size(max = 50)
+    @Column(name = "order_cancelled_by", length = 50)
+    private String orderCancelledBy;
+
+    @Column(name = "order_cancelled_date")
+    private Instant orderCancelledDate;
+
+    /**
+     * FK
+     * */
+
+    @Column(name = "sale_guid")
+    private UUID saleGuid;
+
+    @Column(name = "voucher_guid")
+    private UUID voucherGuid;
+
+    @Column(name = "voucher_code", length = 30)
+    private String voucherCode;
 
     @Column(name = "seat_guid")
     private UUID seatGuid;
 
     @Column(name = "payment_guid")
     private UUID paymentGuid;
-
 }

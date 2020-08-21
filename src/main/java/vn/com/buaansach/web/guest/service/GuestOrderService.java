@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.*;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.store.*;
+import vn.com.buaansach.exception.GuestErrorCode;
 import vn.com.buaansach.exception.ResourceNotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.WebSocketConstants;
@@ -48,10 +49,6 @@ public class GuestOrderService {
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
                 .orElseThrow(() -> new GuestResourceNotFoundException("guest@orderNotFound@" + orderGuid));
         GuestOrderDTO result = new GuestOrderDTO(orderEntity);
-        result.setHasFeedback(false);
-        guestOrderFeedbackRepository.findOneByOrderGuid(orderEntity.getGuid()).ifPresent(orderFeedbackEntity -> {
-            result.setHasFeedback(true);
-        });
         result.setListOrderProduct(guestOrderProductRepository.findListGuestOrderProductDTOByOrderGuid(orderEntity.getGuid()));
         return result;
     }
@@ -101,13 +98,12 @@ public class GuestOrderService {
         }
 
         orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderStatus.CREATED, currentUser));
-        orderEntity.setOrderCheckinTime(Instant.now());
         orderEntity.setOrderDiscount(0);
         orderEntity.setOrderDiscountType(null);
-        orderEntity.setOrderSaleGuid(null);
-        orderEntity.setOrderVoucherCode(null);
-        orderEntity.setTotalAmount(0L);
-        orderEntity.setCustomerPhone(null);
+        orderEntity.setSaleGuid(null);
+        orderEntity.setVoucherCode(null);
+        orderEntity.setOrderTotalAmount(0);
+        orderEntity.setOrderCustomerPhone(null);
         orderEntity.setSeatGuid(payload.getSeatGuid());
 
         seatEntity.setSeatStatus(SeatStatus.NON_EMPTY);
@@ -148,10 +144,10 @@ public class GuestOrderService {
 
         /* check seat, area locked or not */
         SeatEntity seatEntity = guestSeatRepository.findOneByGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new GuestResourceNotFoundException("guest@seatNotFound@" + orderEntity.getSeatGuid()));
+                .orElseThrow(() -> new GuestResourceNotFoundException(GuestErrorCode.SEAT_NOT_FOUND));
 
         AreaEntity areaEntity = guestAreaRepository.findOneByGuid(seatEntity.getAreaGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("guest@areaNotFound@ " + seatEntity.getAreaGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException(GuestErrorCode.AREA_NOT_FOUND));
 
         if (!areaEntity.isAreaActivated()) {
             throw new GuestBadRequestException("guest@areaDisabled@" + areaEntity.getGuid());
@@ -204,18 +200,18 @@ public class GuestOrderService {
         orderEntity.setOrderStatusTimeline(newTimeline);
 
         List<GuestOrderProductDTO> listOrderProductDTO = guestOrderProductRepository.findListGuestOrderProductDTOByOrderGuid(orderEntity.getGuid());
-        long totalAmount = calculateTotalAmount(listOrderProductDTO);
-        orderEntity.setTotalAmount(totalAmount);
+        int totalAmount = calculateTotalAmount(listOrderProductDTO);
+        orderEntity.setOrderTotalAmount(totalAmount);
 
         GuestOrderDTO result = new GuestOrderDTO(guestOrderRepository.save(orderEntity));
         result.setListOrderProduct(listOrderProductDTO);
         return result;
     }
 
-    private long calculateTotalAmount(List<GuestOrderProductDTO> listPosOrderProductDTO) {
+    private int calculateTotalAmount(List<GuestOrderProductDTO> listPosOrderProductDTO) {
         return listPosOrderProductDTO.stream()
                 .filter(dto -> !dto.getOrderProductStatus().toString().contains("CANCELLED"))
-                .mapToLong(dto -> dto.getOrderProductQuantity() * (dto.getOrderProductPrice() - dto.getOrderProductDiscount())).sum();
+                .mapToInt(dto -> dto.getOrderProductQuantity() * (dto.getOrderProductPrice() - dto.getOrderProductDiscount())).sum();
     }
 
     @Transactional
@@ -224,7 +220,7 @@ public class GuestOrderService {
                 .orElseThrow(() -> new GuestResourceNotFoundException("guest@orderNotFound@" + orderGuid));
 
         /* Không cho phép khách thay đổi SDT nếu đơn đã có SDT */
-        if (orderEntity.getCustomerPhone() != null)
+        if (orderEntity.getOrderCustomerPhone() != null)
             throw new GuestBadRequestException("guest@orderCustomerPhoneExist@" + orderEntity.getGuid());
 
         /* Nếu SDT chưa tồn tại trên hệ thống */
@@ -237,7 +233,7 @@ public class GuestOrderService {
                 SecurityUtils.getCurrentUserLogin(),
                 customerPhone);
         orderEntity.setOrderStatusTimeline(newTimeline);
-        orderEntity.setCustomerPhone(customerPhone);
+        orderEntity.setOrderCustomerPhone(customerPhone);
         return guestOrderRepository.save(orderEntity);
     }
 

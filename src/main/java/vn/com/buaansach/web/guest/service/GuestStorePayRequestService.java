@@ -51,7 +51,7 @@ public class GuestStorePayRequestService {
 
         /* Cập nhật SDT cho khách nếu có và đơn phải chưa có SĐT */
         if (payload.getCustomerPhone() != null){
-            if (orderEntity.getCustomerPhone() == null){
+            if (orderEntity.getOrderCustomerPhone() == null){
                 guestOrderService.updateCustomerPhone(payload.getOrderGuid(), payload.getCustomerPhone());
             } else {
                 throw new GuestBadRequestException("guest@orderCustomerPhoneExist@" + orderEntity.getGuid());

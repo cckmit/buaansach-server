@@ -142,18 +142,18 @@ public class PosOrderProductService {
             OrderEntity orderEntity = posOrderRepository.findOneByGuid((orderProductEntity.getOrderGuid()))
                     .orElseThrow(() -> new ResourceNotFoundException("pos@orderNotFound@" + orderProductEntity.getOrderGuid()));
             List<PosOrderProductDTO> listPosOrderProductDTO = posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(orderProductEntity.getOrderGuid());
-            long totalAmount = calculateTotalAmount(listPosOrderProductDTO);
-            orderEntity.setTotalAmount(totalAmount);
+            int totalAmount = calculateTotalAmount(listPosOrderProductDTO);
+            orderEntity.setOrderTotalAmount(totalAmount);
             posOrderRepository.save(orderEntity);
 
             checkSeatServiceStatus(orderProductEntity.getOrderGuid());
         }
     }
 
-    private long calculateTotalAmount(List<PosOrderProductDTO> listPosOrderProductDTO) {
+    private int calculateTotalAmount(List<PosOrderProductDTO> listPosOrderProductDTO) {
         return listPosOrderProductDTO.stream()
                 .filter(dto -> !dto.getOrderProductStatus().toString().contains("CANCELLED"))
-                .mapToLong(dto -> dto.getOrderProductQuantity() * (dto.getOrderProductPrice() - dto.getOrderProductDiscount())).sum();
+                .mapToInt(dto -> dto.getOrderProductQuantity() * (dto.getOrderProductPrice() - dto.getOrderProductDiscount())).sum();
     }
 
     /* Thực hiện kiểm tra trạng thái phục vụ của chỗ ngồi

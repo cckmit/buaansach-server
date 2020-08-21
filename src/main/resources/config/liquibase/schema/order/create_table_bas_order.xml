@@ -17,25 +17,27 @@
             </column>
             <column name="order_status" type="varchar(30)"/>
             <column name="order_type" type="varchar(30)"/>
-            <column name="order_note" type="varchar(255)"/>
-            <column name="order_status_timeline" type="varchar(5000)"/>
-            <column name="order_checkin_time" type="timestamp"/>
-            <column name="order_checkout_time" type="timestamp"/>
+            <column name="order_status_timeline" type="varchar(3000)"/>
             <column name="order_cancel_reason" type="varchar(255)"/>
-
-            <column name="order_discount_type" type="varchar(30)"/>
             <column name="order_discount" type="int"/>
-            <column name="order_sale_guid" type="binary(16)"/>
-            <column name="order_voucher_code" type="varchar(20)"/>
-            <column name="total_amount" type="bigint">
+            <column name="order_discount_type" type="varchar(30)"/>
+            <column name="order_total_amount" type="int">
                 <constraints nullable="false"/>
             </column>
-            <column name="cashier_login" type="varchar(50)"/>
-            <column name="customer_phone" type="varchar(20)"/>
+            <column name="order_customer_phone" type="varchar(20)"/>
 
+            <column name="order_received_by" type="varchar(50)"/>
+            <column name="order_received_date" type="timestamp"/>
+            <column name="order_purchased_by" type="varchar(50)"/>
+            <column name="order_purchased_date" type="timestamp"/>
+            <column name="order_cancelled_by" type="varchar(50)"/>
+            <column name="order_cancelled_date" type="timestamp"/>
+
+            <column name="sale_guid" type="binary(16)"/>
+            <column name="voucher_guid" type="binary(16)"/>
+            <column name="voucher_code" type="varchar(30)"/>
             <column name="seat_guid" type="binary(16)"/>
             <column name="payment_guid" type="binary(16)"/>
-
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderFeedbackEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
+import vn.com.buaansach.exception.GuestErrorCode;
 import vn.com.buaansach.web.guest.exception.GuestBadRequestException;
 import vn.com.buaansach.web.guest.exception.GuestResourceNotFoundException;
 import vn.com.buaansach.web.guest.repository.GuestOrderFeedbackRepository;
@@ -23,13 +24,13 @@ public class GuestOrderFeedbackService {
 
     public void sendFeedback(GuestOrderFeedbackDTO payload) {
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(payload.getOrderGuid())
-                .orElseThrow(()-> new GuestResourceNotFoundException("guest@orderNotFound@" + payload.getOrderGuid()));
+                .orElseThrow(()-> new GuestResourceNotFoundException(GuestErrorCode.ORDER_NOT_FOUND));
 
         StoreEntity storeEntity = guestStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
-                .orElseThrow(()-> new GuestResourceNotFoundException("guest@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
+                .orElseThrow(()-> new GuestResourceNotFoundException(GuestErrorCode.STORE_NOT_FOUND));
 
         if (guestOrderFeedbackRepository.findOneByOrderGuid(payload.getOrderGuid()).isPresent())
-            throw new GuestBadRequestException("guest@orderFeedbackExistWithOrderGuid@" + payload.getOrderGuid());
+            throw new GuestBadRequestException(GuestErrorCode.ORDER_FEEDBACK_EXIST);
 
         OrderFeedbackEntity orderFeedbackEntity = new OrderFeedbackEntity();
         orderFeedbackEntity.setGuid(UUID.randomUUID());
@@ -44,7 +45,7 @@ public class GuestOrderFeedbackService {
 
     public GuestOrderFeedbackDTO getFeedback(String orderGuid) {
         OrderFeedbackEntity orderFeedbackEntity = guestOrderFeedbackRepository.findOneByOrderGuid(UUID.fromString(orderGuid))
-                .orElseThrow(() -> new GuestResourceNotFoundException("guest@orderFeedbackNotFoundWithOrder@" + orderGuid));
+                .orElseThrow(() -> new GuestResourceNotFoundException(GuestErrorCode.ORDER_FEEDBACK_NOT_FOUND));
         return new GuestOrderFeedbackDTO(orderFeedbackEntity);
     }
 }

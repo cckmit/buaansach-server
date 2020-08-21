@@ -25,12 +25,6 @@ public class CustomerCareOrderService {
         CustomerCareOrderDTO result = new CustomerCareOrderDTO(orderEntity);
 
         result.setListOrderProduct(customerCareOrderProductRepository.findListOrderProductDTOByOrderGuid(orderEntity.getGuid()));
-
-        if (orderEntity.getOrderVoucherCode() != null && !orderEntity.getOrderVoucherCode().isBlank()) {
-            CustomerCareVoucherCodeDTO voucherCodeDTO = customerCareVoucherCodeRepository.getCustomerCareVoucherCodeDTO(orderEntity.getOrderVoucherCode())
-                    .orElse(null);
-            result.updateVoucherAttribute(voucherCodeDTO);
-        }
         return result;
     }
 }

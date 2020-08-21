@@ -99,7 +99,7 @@ public class PosVoucherCodeService {
             posVoucherCodeRepository.save(voucherCodeEntity);
 
             /* Áp dụng khuyến mãi cho hóa đơn */
-            orderEntity.setOrderVoucherCode(payload.getVoucherCode());
+            orderEntity.setVoucherCode(payload.getVoucherCode());
             orderEntity.setOrderDiscountType(voucherCodeDTO.getVoucherDiscountType());
             orderEntity.setOrderDiscount(voucherCodeDTO.getVoucherDiscount());
 
@@ -127,8 +127,8 @@ public class PosVoucherCodeService {
                 .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
-        VoucherCodeEntity voucherCodeEntity = posVoucherCodeRepository.findOneByVoucherCodeForUpdate(orderEntity.getOrderVoucherCode())
-                .orElseThrow(() -> new BadRequestException("pos@voucherCodeNotExist@" + orderEntity.getOrderVoucherCode()));
+        VoucherCodeEntity voucherCodeEntity = posVoucherCodeRepository.findOneByVoucherCodeForUpdate(orderEntity.getVoucherCode())
+                .orElseThrow(() -> new BadRequestException("pos@voucherCodeNotExist@" + orderEntity.getVoucherCode()));
 
         /* Nếu lượt sử dụng > 0 mới thực hiện trừ số lượt đã sử dụng */
         if (voucherCodeEntity.getVoucherCodeUsageCount() > 0) {
@@ -137,7 +137,7 @@ public class PosVoucherCodeService {
         }
 
         /* Hủy các khuyến mãi đã áp dụng trên đơn */
-        orderEntity.setOrderVoucherCode(null);
+        orderEntity.setVoucherCode(null);
         orderEntity.setOrderDiscountType(null);
         orderEntity.setOrderDiscount(0);
         String newTimeline = TimelineUtil.appendCustomOrderStatus(

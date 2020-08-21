@@ -107,15 +107,15 @@ public class PosOrderService {
         }
 
         orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderStatus.RECEIVED, currentUser));
-        orderEntity.setOrderCheckinTime(Instant.now());
         orderEntity.setOrderDiscount(0);
         orderEntity.setOrderDiscountType(null);
-        orderEntity.setOrderSaleGuid(null);
-        orderEntity.setOrderVoucherCode(null);
-        orderEntity.setTotalAmount(0L);
-        orderEntity.setCustomerPhone(payload.getCustomerPhone());
+        orderEntity.setSaleGuid(null);
+        orderEntity.setVoucherCode(null);
+        orderEntity.setOrderTotalAmount(0);
+        orderEntity.setOrderCustomerPhone(payload.getCustomerPhone());
         orderEntity.setSeatGuid(payload.getSeatGuid());
-        orderEntity.setCashierLogin(currentUser);
+        orderEntity.setOrderReceivedBy(currentUser);
+        orderEntity.setOrderReceivedDate(Instant.now());
 
         seatEntity.setSeatStatus(SeatStatus.NON_EMPTY);
         seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
@@ -134,7 +134,7 @@ public class PosOrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
 
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
+                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getOrderCustomerPhone()));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
@@ -171,15 +171,10 @@ public class PosOrderService {
         orderEntity.setOrderStatusTimeline(newTimeline);
 
         List<PosOrderProductDTO> listPosOrderProductDTO = posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(payload.getOrderGuid());
-        long totalAmount = calculateTotalAmount(listPosOrderProductDTO);
-        orderEntity.setTotalAmount(totalAmount);
+        int totalAmount = calculateTotalAmount(listPosOrderProductDTO);
+        orderEntity.setOrderTotalAmount(totalAmount);
 
         PosOrderDTO result = new PosOrderDTO(posOrderRepository.save(orderEntity));
-        if (orderEntity.getOrderVoucherCode() != null && !orderEntity.getOrderVoucherCode().isBlank()) {
-            PosVoucherCodeDTO voucherCodeDTO = posVoucherCodeRepository.getPosVoucherCodeDTO(orderEntity.getOrderVoucherCode())
-                    .orElse(null);
-            result.updateVoucherAttribute(voucherCodeDTO);
-        }
         result.setListOrderProduct(listPosOrderProductDTO);
         return result;
     }
@@ -189,10 +184,10 @@ public class PosOrderService {
      * Giá tiền sẽ tính tất cả sản phẩm (kể cả chưa phục vụ), trừ sản phẩm đã bị hủy
      * Giá 1 Sản phẩm = Số lượng x (Giá bán - Giảm giá)
      */
-    private long calculateTotalAmount(List<PosOrderProductDTO> listPosOrderProductDTO) {
+    private int calculateTotalAmount(List<PosOrderProductDTO> listPosOrderProductDTO) {
         return listPosOrderProductDTO.stream()
                 .filter(dto -> !dto.getOrderProductStatus().toString().contains("CANCELLED"))
-                .mapToLong(dto -> dto.getOrderProductQuantity() * (dto.getOrderProductPrice() - dto.getOrderProductDiscount())).sum();
+                .mapToInt(dto -> dto.getOrderProductQuantity() * (dto.getOrderProductPrice() - dto.getOrderProductDiscount())).sum();
     }
 
     public PosOrderDTO getSeatCurrentOrder(String seatGuid) {
@@ -206,11 +201,6 @@ public class PosOrderService {
         PosOrderDTO result = new PosOrderDTO(orderEntity);
         if (orderEntity.getGuid() != null) {
             result.setListOrderProduct(posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(orderEntity.getGuid()));
-        }
-        if (orderEntity.getOrderVoucherCode() != null && !orderEntity.getOrderVoucherCode().isBlank()) {
-            PosVoucherCodeDTO voucherCodeDTO = posVoucherCodeRepository.getPosVoucherCodeDTO(orderEntity.getOrderVoucherCode())
-                    .orElse(null);
-            result.updateVoucherAttribute(voucherCodeDTO);
         }
         return result;
     }
@@ -240,7 +230,8 @@ public class PosOrderService {
         /* receive only when order status is created */
         if (orderEntity.getOrderStatus().equals(OrderStatus.CREATED)) {
             /* Đặt thuộc tính này để phục vụ việc thống kê theo nhân viên */
-            orderEntity.setCashierLogin(currentUser);
+            orderEntity.setOrderReceivedBy(currentUser);
+            orderEntity.setOrderReceivedDate(Instant.now());
             orderEntity.setOrderStatus(OrderStatus.RECEIVED);
             String newTimeline = TimelineUtil.appendOrderStatus(orderEntity.getOrderStatusTimeline(), OrderStatus.RECEIVED, currentUser);
             orderEntity.setOrderStatusTimeline(newTimeline);
@@ -279,16 +270,16 @@ public class PosOrderService {
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         /* add voucher code usage record if a voucher code has been applied */
-        if (orderEntity.getOrderVoucherCode() != null && !orderEntity.getOrderVoucherCode().isBlank()) {
-            posVoucherUsageService.addVoucherUsage(orderEntity.getOrderVoucherCode(), orderEntity.getGuid(), orderEntity.getCustomerPhone());
+        if (orderEntity.getVoucherCode() != null && !orderEntity.getVoucherCode().isBlank()) {
+            posVoucherUsageService.addVoucherUsage(orderEntity.getVoucherCode(), orderEntity.getGuid(), orderEntity.getOrderCustomerPhone());
         }
 
         /* add customer order log if a customer phone has been used */
-        if (orderEntity.getCustomerPhone() != null && !orderEntity.getCustomerPhone().isBlank()) {
-            posCustomerOrderService.addCustomerOrder(orderEntity.getCustomerPhone(), orderEntity.getGuid(), storeEntity.getGuid());
+        if (orderEntity.getOrderCustomerPhone() != null && !orderEntity.getOrderCustomerPhone().isBlank()) {
+            posCustomerOrderService.addCustomerOrder(orderEntity.getOrderCustomerPhone(), orderEntity.getGuid(), storeEntity.getGuid());
             PosSocketDTO dto = new PosSocketDTO();
             dto.setMessage(WebSocketConstants.POS_PURCHASE_ORDER_WITH_PHONE);
-            dto.setPayload(orderEntity.getCustomerPhone());
+            dto.setPayload(orderEntity.getOrderCustomerPhone());
             posSocketService.sendMessage(WebSocketConstants.TOPIC_CUSTOMER_CARE_TRACKER, dto);
         }
 
@@ -297,14 +288,14 @@ public class PosOrderService {
                 long payAmount = posPaymentService.calculatePayAmount(orderEntity);
 
                 /* Tích điểm nếu nhập SĐT: tỉ lệ 1000đ = 1 điểm */
-                if (orderEntity.getCustomerPhone() != null && !orderEntity.getCustomerPhone().isBlank()) {
+                if (orderEntity.getOrderCustomerPhone() != null && !orderEntity.getOrderCustomerPhone().isBlank()) {
                     int earnedPoint = (int) (payAmount / 1000);
-                    posCustomerRepository.findOneByCustomerPhone(orderEntity.getCustomerPhone()).ifPresent(customerEntity -> {
+                    posCustomerRepository.findOneByCustomerPhone(orderEntity.getOrderCustomerPhone()).ifPresent(customerEntity -> {
                                 customerEntity.setCustomerPoint(customerEntity.getCustomerPoint() + earnedPoint);
                                 posCustomerRepository.save(customerEntity);
                                 /* add log */
                                 CustomerPointLogEntity customerPointLogEntity = new CustomerPointLogEntity();
-                                customerPointLogEntity.setCustomerPhone(orderEntity.getCustomerPhone());
+                                customerPointLogEntity.setCustomerPhone(orderEntity.getOrderCustomerPhone());
                                 customerPointLogEntity.setOrderGuid(orderEntity.getGuid());
                                 customerPointLogEntity.setEarnedPoint(earnedPoint);
                                 posCustomerPointLogRepository.save(customerPointLogEntity);
@@ -319,8 +310,8 @@ public class PosOrderService {
                         payAmount);
                 orderEntity.setPaymentGuid(paymentEntity.getGuid());
                 orderEntity.setOrderStatus(OrderStatus.PURCHASED);
-                orderEntity.setOrderCheckoutTime(Instant.now());
-                orderEntity.setCashierLogin(currentUser);
+                orderEntity.setOrderPurchasedBy(currentUser);
+                orderEntity.setOrderPurchasedDate(Instant.now());
 
                 String newTimeline = TimelineUtil.appendOrderStatus(
                         orderEntity.getOrderStatusTimeline(),
@@ -363,7 +354,8 @@ public class PosOrderService {
 
         orderEntity.setOrderStatus(OrderStatus.CANCELLED_BY_EMPLOYEE);
         orderEntity.setOrderCancelReason(payload.getCancelReason());
-        orderEntity.setCashierLogin(currentUser);
+        orderEntity.setOrderCancelledBy(currentUser);
+        orderEntity.setOrderCancelledDate(Instant.now());
 
         String newTimeline = TimelineUtil.appendOrderStatus(
                 orderEntity.getOrderStatusTimeline(),
@@ -476,18 +468,18 @@ public class PosOrderService {
             throw new BadRequestException("pos@orderNotMatchSeat@orderGuid=" + orderEntity.getGuid() + ";seatOrderGuid=" + seatEntity.getCurrentOrderGuid());
 
         /* if customer phone number not change, just return */
-        if (payload.getNewCustomerPhone() == null && orderEntity.getCustomerPhone() == null) return;
-        if (payload.getNewCustomerPhone() != null && payload.getNewCustomerPhone().equals(orderEntity.getCustomerPhone()))
+        if (payload.getNewCustomerPhone() == null && orderEntity.getOrderCustomerPhone() == null) return;
+        if (payload.getNewCustomerPhone() != null && payload.getNewCustomerPhone().equals(orderEntity.getOrderCustomerPhone()))
             return;
 
-        if (orderEntity.getOrderVoucherCode() != null) {
+        if (orderEntity.getVoucherCode() != null) {
             /* if current order has apply voucher code that use for specific phone number => auto cancel voucher for that order */
-            posVoucherCodeRepository.findOneByVoucherCode(orderEntity.getOrderVoucherCode()).ifPresent(voucherCodeEntity -> {
+            posVoucherCodeRepository.findOneByVoucherCode(orderEntity.getVoucherCode()).ifPresent(voucherCodeEntity -> {
                 if (voucherCodeEntity.getCustomerPhone() != null) {
                     PosOrderVoucherCodeDTO dto = new PosOrderVoucherCodeDTO();
-                    dto.setCustomerPhone(orderEntity.getCustomerPhone());
+                    dto.setCustomerPhone(orderEntity.getOrderCustomerPhone());
                     dto.setOrderGuid(orderEntity.getGuid());
-                    dto.setVoucherCode(orderEntity.getOrderVoucherCode());
+                    dto.setVoucherCode(orderEntity.getVoucherCode());
                     posVoucherCodeService.cancelVoucherCode(dto);
                 }
             });
@@ -495,7 +487,7 @@ public class PosOrderService {
 
         String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(), "CHANGE_PHONE", currentUser, payload.getNewCustomerPhone());
         orderEntity.setOrderStatusTimeline(newTimeline);
-        orderEntity.setCustomerPhone(payload.getNewCustomerPhone());
+        orderEntity.setOrderCustomerPhone(payload.getNewCustomerPhone());
         posOrderRepository.save(orderEntity);
     }
 }
