@@ -30,7 +30,8 @@ public class AdminStoreProductDTO extends AuditDTO {
     private int productPrice;
     private int productDiscount;
     private int productPosition;
-    private UUID productSaleGuid;
+    private boolean hideProduct;
+    private UUID saleGuid;
 
     public AdminStoreProductDTO() {
     }
@@ -56,7 +57,8 @@ public class AdminStoreProductDTO extends AuditDTO {
         this.productPrice = productEntity.getProductPrice();
         this.productDiscount = productEntity.getProductDiscount();
         this.productPosition = productEntity.getProductPosition();
-        this.productSaleGuid = productEntity.getProductSaleGuid();
+        this.hideProduct = productEntity.isHideProduct();
+        this.saleGuid = productEntity.getSaleGuid();
     }
 
     public void updateAudit(StoreProductEntity storeProductEntity) {

@@ -30,16 +30,16 @@ public class CategoryEntity extends AbstractAuditingEntity implements Serializab
     private String categoryName;
 
     @Size(max = 100)
-    @Column(name = "category_name_en", unique = true, length = 100)
-    private String categoryNameEn;
+    @Column(name = "category_name_eng", unique = true, length = 100)
+    private String categoryNameEng;
 
     @Size(max = 255)
     @Column(name = "category_description")
     private String categoryDescription;
 
     @Size(max = 255)
-    @Column(name = "category_description_en")
-    private String categoryDescriptionEn;
+    @Column(name = "category_description_eng")
+    private String categoryDescriptionEng;
 
     @Size(max = 255)
     @Column(name = "category_image_url")

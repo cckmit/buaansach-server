@@ -18,12 +18,12 @@ public class AdminProductMapper {
         entity.setProductThumbnailUrl(dto.getProductThumbnailUrl());
         entity.setProductStatus(dto.getProductStatus());
         entity.setProductType(dto.getProductType());
-        entity.setProductDisplay(dto.getProductDisplay());
         entity.setProductRootPrice(dto.getProductRootPrice());
         entity.setProductPrice(dto.getProductPrice());
         entity.setProductDiscount(dto.getProductDiscount());
         entity.setProductPosition(dto.getProductPosition());
-        entity.setProductSaleGuid(dto.getProductSaleGuid());
+        entity.setHideProduct(dto.isHideProduct());
+        entity.setSaleGuid(dto.getSaleGuid());
         return entity;
     }
 }

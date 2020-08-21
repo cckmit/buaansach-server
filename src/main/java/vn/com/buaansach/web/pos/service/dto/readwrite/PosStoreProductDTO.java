@@ -25,7 +25,7 @@ public class PosStoreProductDTO {
     private int productPrice;
     private int productDiscount;
     private int productPosition;
-    private UUID productSaleGuid;
+    private UUID saleGuid;
 
     public PosStoreProductDTO() {
     }
@@ -46,7 +46,7 @@ public class PosStoreProductDTO {
         this.productPrice = productEntity.getProductPrice();
         this.productDiscount = productEntity.getProductDiscount();
         this.productPosition = productEntity.getProductPosition();
-        this.productSaleGuid = productEntity.getProductSaleGuid();
+        this.saleGuid = productEntity.getSaleGuid();
     }
 
 }

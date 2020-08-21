@@ -25,7 +25,7 @@ public class GuestStoreProductDTO {
     private int productPrice;
     private int productDiscount;
     private int productPosition;
-    private UUID productSaleGuid;
+    private UUID saleGuid;
 
     public GuestStoreProductDTO() {
     }
@@ -46,6 +46,6 @@ public class GuestStoreProductDTO {
         this.productPrice = productEntity.getProductPrice();
         this.productDiscount = productEntity.getProductDiscount();
         this.productPosition = productEntity.getProductPosition();
-        this.productSaleGuid = productEntity.getProductSaleGuid();
+        this.saleGuid = productEntity.getSaleGuid();
     }
 }

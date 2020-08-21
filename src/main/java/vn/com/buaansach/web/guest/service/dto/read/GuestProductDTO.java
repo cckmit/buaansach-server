@@ -19,11 +19,10 @@ public class GuestProductDTO {
     private String productThumbnailUrl;
     private ProductStatus productStatus;
     private ProductType productType;
-    private ProductDisplay productDisplay;
     private int productPrice;
     private int productDiscount = 0;
     private int productPosition;
-    private UUID productSaleGuid;
+    private UUID saleGuid;
 
     public GuestProductDTO() {
     }
@@ -38,10 +37,9 @@ public class GuestProductDTO {
         this.productThumbnailUrl = productEntity.getProductThumbnailUrl();
         this.productStatus = productEntity.getProductStatus();
         this.productType = productEntity.getProductType();
-        this.productDisplay = productEntity.getProductDisplay();
         this.productPrice = productEntity.getProductPrice();
         this.productDiscount = productEntity.getProductDiscount();
         this.productPosition = productEntity.getProductPosition();
-        this.productSaleGuid = productEntity.getProductSaleGuid();
+        this.saleGuid = productEntity.getSaleGuid();
     }
 }

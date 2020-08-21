@@ -38,12 +38,9 @@ public class AdminProductDTO extends AuditDTO {
     @Size(max = 255)
     private String productThumbnailUrl;
 
-    @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;
 
     private ProductType productType;
-
-    private ProductDisplay productDisplay;
 
     private int productRootPrice;
 
@@ -53,7 +50,9 @@ public class AdminProductDTO extends AuditDTO {
 
     private int productPosition;
 
-    private UUID productSaleGuid;
+    private boolean hideProduct;
+
+    private UUID saleGuid;
 
     private List<CategoryEntity> categories;
 
@@ -79,12 +78,12 @@ public class AdminProductDTO extends AuditDTO {
         this.productThumbnailUrl = productEntity.getProductThumbnailUrl();
         this.productStatus = productEntity.getProductStatus();
         this.productType = productEntity.getProductType();
-        this.productDisplay = productEntity.getProductDisplay();
         this.productRootPrice = productEntity.getProductRootPrice();
         this.productPrice = productEntity.getProductPrice();
         this.productDiscount = productEntity.getProductDiscount();
         this.productPosition = productEntity.getProductPosition();
-        this.productSaleGuid = productEntity.getProductSaleGuid();
+        this.hideProduct = productEntity.isHideProduct();
+        this.saleGuid = productEntity.getSaleGuid();
 
         this.createdBy = productEntity.getCreatedBy();
         this.createdDate = productEntity.getCreatedDate();

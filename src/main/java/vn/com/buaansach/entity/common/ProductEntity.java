@@ -38,22 +38,22 @@ public class ProductEntity extends AbstractAuditingEntity implements Serializabl
     private String productName;
 
     @Size(max = 255)
-    @Column(name = "product_name_en")
-    private String productNameEn;
+    @Column(name = "product_name_eng")
+    private String productNameEng;
 
     @Column(name = "product_unit", length = 50)
     private String productUnit;
 
-    @Column(name = "product_unit_en", length = 50)
-    private String productUnitEn;
+    @Column(name = "product_unit_eng", length = 50)
+    private String productUnitEng;
 
     @Size(max = 2000)
     @Column(name = "product_description", length = 2000)
     private String productDescription;
 
     @Size(max = 2000)
-    @Column(name = "product_description_en", length = 2000)
-    private String productDescriptionEn;
+    @Column(name = "product_description_eng", length = 2000)
+    private String productDescriptionEng;
 
     @Size(max = 255)
     @Column(name = "product_image_url")
@@ -71,11 +71,6 @@ public class ProductEntity extends AbstractAuditingEntity implements Serializabl
     @Column(name = "product_type")
     private ProductType productType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "product_display")
-    private ProductDisplay productDisplay;
-
-    @JsonIgnore
     @Column(name = "product_root_price")
     private int productRootPrice;
 
@@ -89,12 +84,16 @@ public class ProductEntity extends AbstractAuditingEntity implements Serializabl
     @Column(name = "product_discount_type")
     private DiscountType productDiscountType;
 
-    @Column(name = "product_sale_guid")
-    private UUID productSaleGuid;
-
     @Column(name = "product_position")
     private int productPosition;
 
     @Column(name = "hide_product")
     private boolean hideProduct;
+
+    /**
+     * FK
+     * */
+
+    @Column(name = "sale_guid")
+    private UUID saleGuid;
 }
