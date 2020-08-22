@@ -108,7 +108,7 @@ public class GuestOrderService {
 
         seatEntity.setSeatStatus(SeatStatus.NON_EMPTY);
         seatEntity.setSeatServiceStatus(SeatServiceStatus.UNFINISHED);
-        seatEntity.setCurrentOrderGuid(orderGuid);
+        seatEntity.setOrderGuid(orderGuid);
         guestSeatRepository.save(seatEntity);
 
         GuestOrderDTO result = new GuestOrderDTO(guestOrderRepository.save(orderEntity));
@@ -157,8 +157,8 @@ public class GuestOrderService {
             throw new GuestBadRequestException("guest@seatLocked@" + seatEntity.getGuid());
 
         /* current order not match with seat order */
-        if (!orderEntity.getGuid().equals(seatEntity.getCurrentOrderGuid()))
-            throw new GuestBadRequestException("guest@orderNotMatchSeat@orderGuid=" + orderEntity.getGuid() + ";seatOrderGuid=" + seatEntity.getCurrentOrderGuid());
+        if (!orderEntity.getGuid().equals(seatEntity.getOrderGuid()))
+            throw new GuestBadRequestException("guest@orderNotMatchSeat@orderGuid=" + orderEntity.getGuid() + ";seatOrderGuid=" + seatEntity.getOrderGuid());
 
         /* check product availability */
         List<UUID> listProductGuid = payload.getListOrderProduct().stream().map(GuestOrderProductDTO::getProductGuid).collect(Collectors.toList());

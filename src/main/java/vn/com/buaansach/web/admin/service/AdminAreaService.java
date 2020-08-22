@@ -46,7 +46,7 @@ public class AdminAreaService {
             seatEntity.setSeatStatus(SeatStatus.EMPTY);
             seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
             seatEntity.setSeatLocked(false);
-            seatEntity.setCurrentOrderGuid(null);
+            seatEntity.setOrderGuid(null);
             seatEntity.setAreaGuid(areaEntity.getGuid());
             listSeat.add(seatEntity);
         }

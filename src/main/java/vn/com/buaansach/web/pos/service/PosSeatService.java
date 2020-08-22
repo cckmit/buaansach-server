@@ -41,7 +41,7 @@ public class PosSeatService {
     public void resetSeat(SeatEntity seatEntity) {
         seatEntity.setSeatStatus(SeatStatus.EMPTY);
         seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
-        seatEntity.setCurrentOrderGuid(null);
+        seatEntity.setOrderGuid(null);
         posSeatRepository.save(seatEntity);
     }
 
@@ -50,7 +50,7 @@ public class PosSeatService {
                 .orElseThrow(() -> new ResourceNotFoundException("pos@seatNotFound@" + seatGuid));
         seatEntity.setSeatStatus(SeatStatus.EMPTY);
         seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
-        seatEntity.setCurrentOrderGuid(null);
+        seatEntity.setOrderGuid(null);
         posSeatRepository.save(seatEntity);
     }
 

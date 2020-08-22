@@ -44,8 +44,12 @@ public class SeatEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "seat_locked")
     private boolean seatLocked;
 
-    @Column(name = "current_order_guid")
-    private UUID currentOrderGuid;
+    /**
+     * FK
+     */
+
+    @Column(name = "order_guid")
+    private UUID orderGuid;
 
     @Column(name = "area_guid")
     private UUID areaGuid;

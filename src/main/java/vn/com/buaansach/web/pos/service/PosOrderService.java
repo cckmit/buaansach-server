@@ -117,7 +117,7 @@ public class PosOrderService {
 
         seatEntity.setSeatStatus(SeatStatus.NON_EMPTY);
         seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
-        seatEntity.setCurrentOrderGuid(orderGuid);
+        seatEntity.setOrderGuid(orderGuid);
         posSeatRepository.save(seatEntity);
 
         return new PosOrderDTO(posOrderRepository.save(orderEntity));
@@ -375,8 +375,8 @@ public class PosOrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("pos@seatNotFound@" + payload.getNewSeatGuid()));
 
         /* Nếu mã đơn được lưu ở vị trí hiện tại khác với mã đơn gửi từ client (payload) => không hợp lệ */
-        if (currentSeat.getCurrentOrderGuid() == null || !currentSeat.getCurrentOrderGuid().equals(orderEntity.getGuid()))
-            throw new BadRequestException("pos@orderNotMatchSeat@orderGuid=" + orderEntity.getGuid() + ";seatOrderGuid=" + currentSeat.getCurrentOrderGuid());
+        if (currentSeat.getOrderGuid() == null || !currentSeat.getOrderGuid().equals(orderEntity.getGuid()))
+            throw new BadRequestException("pos@orderNotMatchSeat@orderGuid=" + orderEntity.getGuid() + ";seatOrderGuid=" + currentSeat.getOrderGuid());
 
         /* Nếu vị trí chuyển tới không trống => không hợp lệ */
         if (newSeat.getSeatStatus().equals(SeatStatus.NON_EMPTY))
@@ -410,7 +410,7 @@ public class PosOrderService {
         /* Cập nhật trạng thái cho vị trí mới */
         newSeat.setSeatStatus(SeatStatus.NON_EMPTY);
         newSeat.setSeatServiceStatus(currentSeat.getSeatServiceStatus());
-        newSeat.setCurrentOrderGuid(orderEntity.getGuid());
+        newSeat.setOrderGuid(orderEntity.getGuid());
         posSeatRepository.save(newSeat);
 
         /* Giải phóng vị trí hiện tại */
@@ -439,8 +439,8 @@ public class PosOrderService {
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(payload.getSeatGuid())
                 .orElseThrow(() -> new ResourceNotFoundException("pos@seatNotFound@" + payload.getSeatGuid()));
 
-        if (seatEntity.getCurrentOrderGuid() == null || !seatEntity.getCurrentOrderGuid().equals(orderEntity.getGuid()))
-            throw new BadRequestException("pos@orderNotMatchSeat@orderGuid=" + orderEntity.getGuid() + ";seatOrderGuid=" + seatEntity.getCurrentOrderGuid());
+        if (seatEntity.getOrderGuid() == null || !seatEntity.getOrderGuid().equals(orderEntity.getGuid()))
+            throw new BadRequestException("pos@orderNotMatchSeat@orderGuid=" + orderEntity.getGuid() + ";seatOrderGuid=" + seatEntity.getOrderGuid());
 
         /* if customer phone number not change, just return */
         if (payload.getNewCustomerPhone() == null && orderEntity.getOrderCustomerPhone() == null) return;

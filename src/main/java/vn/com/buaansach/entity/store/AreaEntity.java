@@ -41,6 +41,10 @@ public class AreaEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "area_activated", length = 50)
     private boolean areaActivated;
 
+    /**
+     * FK
+     */
+
     @Column(name = "store_guid")
     private UUID storeGuid;
 }

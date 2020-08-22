@@ -35,11 +35,11 @@ public class GuestSeatService {
     public boolean isOrderMatchesSeat(String orderGuid, String seatGuid) {
         SeatEntity seatEntity = guestSeatRepository.findOneByGuid(UUID.fromString(seatGuid))
                 .orElseThrow(() -> new GuestResourceNotFoundException("guest@seatNotFound@" + seatGuid));
-        if (seatEntity.getCurrentOrderGuid() == null && orderGuid == null) return true;
-        if (seatEntity.getCurrentOrderGuid() == null && orderGuid != null) return false;
-        if (seatEntity.getCurrentOrderGuid() != null && orderGuid == null) return false;
-        if (seatEntity.getCurrentOrderGuid() != null && orderGuid != null) {
-            return seatEntity.getCurrentOrderGuid().toString().equals(orderGuid);
+        if (seatEntity.getOrderGuid() == null && orderGuid == null) return true;
+        if (seatEntity.getOrderGuid() == null && orderGuid != null) return false;
+        if (seatEntity.getOrderGuid() != null && orderGuid == null) return false;
+        if (seatEntity.getOrderGuid() != null && orderGuid != null) {
+            return seatEntity.getOrderGuid().toString().equals(orderGuid);
         }
         return false;
     }
@@ -64,7 +64,7 @@ public class GuestSeatService {
                 listValidOrderGuid.add(orderGuid);
 
                 /* Tìm xem có mã đơn hợp lệ trong đống được lưu trên máy khách hay không */
-                if (orderGuid.equals(seatEntity.getCurrentOrderGuid())) {
+                if (orderGuid.equals(seatEntity.getOrderGuid())) {
                     payload.setHasValidOrderGuid(true);
                     payload.setActiveOrderGuid(orderGuid);
                 }

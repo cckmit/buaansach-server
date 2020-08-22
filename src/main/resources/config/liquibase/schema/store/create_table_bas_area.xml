@@ -21,9 +21,8 @@
             <column name="area_color" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="area_activated" type="boolean" defaultValue="false">
-                <constraints nullable="false"/>
-            </column>
+            <column name="area_activated" type="boolean"/>
+
             <column name="store_guid" type="binary(16)">
                 <constraints nullable="false"/>
             </column>

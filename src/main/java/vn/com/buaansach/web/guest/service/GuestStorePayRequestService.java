@@ -46,8 +46,8 @@ public class GuestStorePayRequestService {
         if (payAmount > payload.getPayAmount())
             throw new GuestBadRequestException("guest@payAmountNotEnough@" + payAmount);
 
-        if (!seatEntity.getCurrentOrderGuid().equals(orderEntity.getGuid()))
-            throw new GuestBadRequestException("guest@orderNotMatchSeat@orderGuid=" + orderEntity.getGuid() + ";seatOrderGuid=" + seatEntity.getCurrentOrderGuid());
+        if (!seatEntity.getOrderGuid().equals(orderEntity.getGuid()))
+            throw new GuestBadRequestException("guest@orderNotMatchSeat@orderGuid=" + orderEntity.getGuid() + ";seatOrderGuid=" + seatEntity.getOrderGuid());
 
         /* Cập nhật SDT cho khách nếu có và đơn phải chưa có SĐT */
         if (payload.getCustomerPhone() != null){
