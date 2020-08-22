@@ -13,18 +13,13 @@
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_payment_guid"/>
             </column>
 
-            <column name="payment_method" type="varchar(30)"/>
-            <column name="payment_note" type="varchar(255)"/>
-            <column name="payment_status" type="varchar(30)"/>
-            <column name="payment_discount" type="int"/>
-            <column name="payment_discount_type" type="varchar(30)"/>
-            <column name="bank_name" type="varchar(100)"/>
-            <column name="credit_number" type="varchar(50)"/>
-            <column name="total_amount" type="bigint"/>
-
-            <column name="order_guid" type="binary(16)">
+            <column name="payment_method" type="varchar(30)">
                 <constraints nullable="false"/>
             </column>
+            <column name="payment_note" type="varchar(255)"/>
+            <column name="payment_status" type="varchar(30)"/>
+            <column name="payment_amount" type="int"/>
+            <column name="number_of_order" type="int"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

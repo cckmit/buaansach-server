@@ -40,23 +40,10 @@ public class PaymentEntity extends AbstractAuditingEntity implements Serializabl
     @Column(name = "payment_status")
     private PaymentStatus paymentStatus = PaymentStatus.PENDING;
 
-    @Column(name = "payment_discount")
-    private int paymentDiscount;
+    @Column(name = "payment_amount")
+    private int paymentAmount;
 
-    @Column(name = "payment_discount_type")
-    private DiscountType paymentDiscountType;
+    @Column(name = "number_of_order")
+    private int numberOfOrder;
 
-    @Size(max = 100)
-    @Column(name = "bank_name", length = 100)
-    private String bankName;
-
-    @Size(max = 50)
-    @Column(name = "credit_number", length = 50)
-    private String creditNumber;
-
-    @Column(name = "total_amount")
-    private long totalAmount;
-
-    @Column(name = "order_guid")
-    private UUID orderGuid;
 }

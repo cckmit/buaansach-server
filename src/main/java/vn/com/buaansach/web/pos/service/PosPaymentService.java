@@ -8,6 +8,7 @@ import vn.com.buaansach.entity.enumeration.PaymentMethod;
 import vn.com.buaansach.entity.enumeration.PaymentStatus;
 import vn.com.buaansach.web.pos.repository.PosPaymentRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -32,22 +33,29 @@ public class PosPaymentService {
         return payAmount;
     }
 
-    public PaymentEntity makeCashPayment(UUID orderGuid, String note, long totalAmount) {
+    public PaymentEntity makeCashPayment(String note, OrderEntity orderEntity) {
+        int paymentAmount = calculatePayAmount(orderEntity);
+        return saveCashPayment(note, paymentAmount, 1);
+    }
+
+    public PaymentEntity makeCashPayment(String note, List<OrderEntity> listOrder) {
+        int paymentAmount = 0;
+        for (OrderEntity orderEntity: listOrder) {
+            paymentAmount += calculatePayAmount(orderEntity);
+        }
+        return saveCashPayment(note, paymentAmount, listOrder.size());
+    }
+
+    public PaymentEntity saveCashPayment(String note, int paymentAmount, int numberOfOrder){
         PaymentEntity paymentEntity = new PaymentEntity();
         paymentEntity.setGuid(UUID.randomUUID());
-        paymentEntity.setOrderGuid(orderGuid);
         paymentEntity.setPaymentNote(note);
-        paymentEntity.setTotalAmount(totalAmount);
+        paymentEntity.setPaymentAmount(paymentAmount);
+        paymentEntity.setNumberOfOrder(numberOfOrder);
         paymentEntity.setPaymentMethod(PaymentMethod.CASH);
         paymentEntity.setPaymentStatus(PaymentStatus.SUCCESSFUL);
         return posPaymentRepository.save(paymentEntity);
     }
 
-    public void proceedPayment() {
 
-    }
-
-    public void cancelPayment() {
-
-    }
 }

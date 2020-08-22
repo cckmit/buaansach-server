@@ -2,7 +2,6 @@ package vn.com.buaansach.web.pos.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.customer.CustomerPointLogEntity;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.OrderType;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
@@ -20,7 +19,6 @@ import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
 import vn.com.buaansach.web.pos.repository.*;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
-import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
 import vn.com.buaansach.web.pos.service.dto.write.*;
@@ -285,29 +283,9 @@ public class PosOrderService {
 
         switch (payload.getPaymentMethod()) {
             case CASH:
-                long payAmount = posPaymentService.calculatePayAmount(orderEntity);
-
-                /* Tích điểm nếu nhập SĐT: tỉ lệ 1000đ = 1 điểm */
-                if (orderEntity.getOrderCustomerPhone() != null && !orderEntity.getOrderCustomerPhone().isBlank()) {
-                    int earnedPoint = (int) (payAmount / 1000);
-                    posCustomerRepository.findOneByCustomerPhone(orderEntity.getOrderCustomerPhone()).ifPresent(customerEntity -> {
-                                customerEntity.setCustomerPoint(customerEntity.getCustomerPoint() + earnedPoint);
-                                posCustomerRepository.save(customerEntity);
-                                /* add log */
-                                CustomerPointLogEntity customerPointLogEntity = new CustomerPointLogEntity();
-                                customerPointLogEntity.setCustomerPhone(orderEntity.getOrderCustomerPhone());
-                                customerPointLogEntity.setOrderGuid(orderEntity.getGuid());
-                                customerPointLogEntity.setEarnedPoint(earnedPoint);
-                                posCustomerPointLogRepository.save(customerPointLogEntity);
-                            }
-                    );
-                }
-
                 /* Thanh toán tiền mặt */
-                PaymentEntity paymentEntity = posPaymentService.makeCashPayment(
-                        payload.getOrderGuid(),
-                        payload.getPaymentNote(),
-                        payAmount);
+                PaymentEntity paymentEntity = posPaymentService.makeCashPayment(payload.getPaymentNote(), orderEntity);
+
                 orderEntity.setPaymentGuid(paymentEntity.getGuid());
                 orderEntity.setOrderStatus(OrderStatus.PURCHASED);
                 orderEntity.setOrderPurchasedBy(currentUser);
@@ -325,10 +303,7 @@ public class PosOrderService {
                 posOrderRepository.save(orderEntity);
                 break;
             case VN_PAY:
-            case VIETTEL_PAY:
-            case CREDIT_CARD:
-            case ZALO_PAY:
-            case MOMO_APP:
+                break;
             default:
                 break;
         }
