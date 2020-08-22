@@ -35,6 +35,13 @@ public class StoreUserEntity extends AbstractAuditingEntity implements Serializa
     @Column(name = "store_user_status")
     private StoreUserStatus storeUserStatus = StoreUserStatus.WORKING;
 
+    @Column(name = "store_user_activated")
+    private boolean storeUserActivated;
+
+    /**
+     * FK
+     * */
+
     @Column(name = "store_guid")
     private UUID storeGuid;
 

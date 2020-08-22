@@ -15,12 +15,16 @@
             <column name="store_pay_request_status" type="varchar(30)">
                 <constraints nullable="false"/>
             </column>
-            <column name="seen_at" type="timestamp"/>
-            <column name="first_seen_by" type="varchar(50)"/>
-            <column name="first_hide_by" type="varchar(50)"/>
-            <column name="hidden" type="boolean">
+            <column name="store_pay_request_hidden" type="boolean"/>
+            <column name="store_pay_request_amount" type="int">
                 <constraints nullable="false"/>
             </column>
+            <column name="store_pay_request_note" type="varchar(500)"/>
+
+            <column name="first_seen_by" type="varchar(50)"/>
+            <column name="first_seen_date" type="timestamp"/>
+            <column name="first_hidden_by" type="varchar(50)"/>
+            <column name="first_hidden_date" type="timestamp"/>
 
             <column name="store_guid" type="binary(16)">
                 <constraints nullable="false"/>
@@ -34,10 +38,6 @@
             <column name="order_guid" type="binary(16)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_store_pay_request_order_guid"/>
             </column>
-            <column name="pay_amount" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="pay_note" type="varchar(500)"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
-import vn.com.buaansach.entity.enumeration.StoreOrderStatus;
-import vn.com.buaansach.entity.enumeration.StoreOrderType;
 import vn.com.buaansach.entity.enumeration.StorePayRequestStatus;
 
 import javax.persistence.*;
@@ -24,18 +22,49 @@ public class StorePayRequestEntity extends AbstractAuditingEntity implements Ser
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private Long id;
+
     @Column(unique = true)
     private UUID guid;
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "store_pay_request_status")
     private StorePayRequestStatus storePayRequestStatus;
-    private Instant seenAt;
+
+    @Column(name = "store_pay_request_hidden")
+    private boolean storePayRequestHidden;
+
+    @Column(name = "store_pay_request_amount")
+    private int storePayRequestAmount;
+
+    @Column(name = "store_pay_request_note")
+    private String storePayRequestNote;
+
+    @Column(name = "first_seen_by")
     private String firstSeenBy;
-    private String firstHideBy;
-    private boolean hidden;
+
+    @Column(name = "first_seen_date")
+    private Instant firstSeenDate;
+
+    @Column(name = "first_hidden_by")
+    private String firstHiddenBy;
+
+    @Column(name = "first_hidden_date")
+    private Instant firstHiddenDate;
+
+    /**
+     * FK
+     */
+
+    @Column(name = "store_guid")
     private UUID storeGuid;
+
+    @Column(name = "area_guid")
     private UUID areaGuid;
+
+    @Column(name = "seat_guid")
     private UUID seatGuid;
+
+    @Column(name = "order_guid")
     private UUID orderGuid;
-    private String payNote;
-    private int payAmount;
+
 }

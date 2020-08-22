@@ -5,8 +5,8 @@
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
     <!--Schema-->
     <include file="config/liquibase/schema/order/create_table_bas_order.xml"/>
-    <include file="config/liquibase/schema/order/create_table_bas_order_product.xml"/>
     <include file="config/liquibase/schema/order/create_table_bas_order_feedback.xml"/>
+    <include file="config/liquibase/schema/order/create_table_bas_order_product.xml"/>
     <include file="config/liquibase/schema/order/create_table_bas_payment.xml"/>
 
 </databaseChangeLog>

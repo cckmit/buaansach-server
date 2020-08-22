@@ -19,7 +19,7 @@ public class GuestStoreOrderService {
         storeOrderEntity.setGuid(UUID.randomUUID());
         storeOrderEntity.setStoreOrderStatus(StoreOrderStatus.UNSEEN);
         storeOrderEntity.setStoreOrderType(StoreOrderType.GUEST);
-        storeOrderEntity.setHidden(false);
+        storeOrderEntity.setHideStoreOrder(false);
         storeOrderEntity.setStoreGuid(storeGuid);
         storeOrderEntity.setAreaGuid(areaGuid);
         storeOrderEntity.setSeatGuid(seatGuid);

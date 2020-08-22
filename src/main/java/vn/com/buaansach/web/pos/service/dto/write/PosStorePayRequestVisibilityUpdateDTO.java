@@ -9,5 +9,5 @@ import java.util.UUID;
 public class PosStorePayRequestVisibilityUpdateDTO {
     private UUID storeGuid;
     private List<UUID> listGuid;
-    private boolean hidden;
+    private boolean storePayRequestHidden;
 }

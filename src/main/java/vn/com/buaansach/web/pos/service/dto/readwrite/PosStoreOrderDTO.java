@@ -17,7 +17,7 @@ public class PosStoreOrderDTO extends AuditDTO {
     private StoreOrderType storeOrderType;
     private String firstSeenBy;
     private String firstHideBy;
-    private boolean hidden;
+    private boolean hideStoreOrder;
     private UUID storeGuid;
     private UUID areaGuid;
     private UUID seatGuid;
@@ -34,7 +34,7 @@ public class PosStoreOrderDTO extends AuditDTO {
         this.storeOrderType = entity.getStoreOrderType();
         this.firstSeenBy = entity.getFirstSeenBy();
         this.firstHideBy = entity.getFirstHideBy();
-        this.hidden = entity.isHidden();
+        this.hideStoreOrder = entity.isHideStoreOrder();
         this.storeGuid = entity.getStoreGuid();
         this.areaGuid = entity.getAreaGuid();
         this.seatGuid = entity.getSeatGuid();

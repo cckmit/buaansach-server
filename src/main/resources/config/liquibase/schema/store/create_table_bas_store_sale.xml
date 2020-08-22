@@ -4,28 +4,21 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet id="create_table_bas_store_user" author="ductv">
-        <createTable tableName="bas_store_user">
+    <changeSet id="create_table_bas_store_sale" author="ductv">
+        <createTable tableName="bas_store_sale">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="guid" type="binary(16)">
-                <constraints unique="true" nullable="false" uniqueConstraintName="ux_store_user_guid"/>
+                <constraints unique="true" nullable="false" uniqueConstraintName="ux_store_sale_guid"/>
             </column>
-            <column name="store_user_role" type="varchar(30)">
+            <column name="store_sale_type" type="varchar(30)">
                 <constraints nullable="false"/>
             </column>
-            <column name="store_user_status" type="varchar(30)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="store_user_activated" type="boolean" />
+            <column name="store_sale_activated" type="boolean"/>
 
-            <column name="store_guid" type="binary(16)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="user_login" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="store_guid" type="binary(16)"/>
+            <column name="sale_guid" type="binary(16)"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

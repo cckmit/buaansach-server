@@ -51,7 +51,7 @@ public class PosStorePayRequestService {
         entity.setStorePayRequestStatus(payload.getStorePayRequestStatus());
         if (entity.getFirstSeenBy() == null && payload.getStorePayRequestStatus().equals(StorePayRequestStatus.SEEN)){
             entity.setFirstSeenBy(currentUser);
-            entity.setSeenAt(Instant.now());
+            entity.setFirstSeenDate(Instant.now());
         }
         return new PosStorePayRequestDTO(posStorePayRequestRepository.save(entity));
     }
@@ -66,8 +66,11 @@ public class PosStorePayRequestService {
         });
 
         list = list.stream().peek(item -> {
-            item.setHidden(payload.isHidden());
-            if (item.getFirstHideBy() == null && payload.isHidden()) item.setFirstHideBy(currentUser);
+            item.setStorePayRequestHidden(payload.isStorePayRequestHidden());
+            if (item.getFirstHiddenBy() == null && payload.isStorePayRequestHidden()) {
+                item.setFirstHiddenBy(currentUser);
+                item.setFirstHiddenDate(Instant.now());
+            }
         }).collect(Collectors.toList());
 
         posStorePayRequestRepository.saveAll(list);

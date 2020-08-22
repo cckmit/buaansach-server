@@ -10,7 +10,10 @@ import vn.com.buaansach.entity.store.StorePayRequestEntity;
 import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.web.guest.exception.GuestBadRequestException;
 import vn.com.buaansach.web.guest.exception.GuestResourceNotFoundException;
-import vn.com.buaansach.web.guest.repository.*;
+import vn.com.buaansach.web.guest.repository.GuestOrderRepository;
+import vn.com.buaansach.web.guest.repository.GuestSeatRepository;
+import vn.com.buaansach.web.guest.repository.GuestStorePayRequestRepository;
+import vn.com.buaansach.web.guest.repository.GuestStoreRepository;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestStorePayRequestDTO;
 import vn.com.buaansach.web.guest.websocket.GuestSocketService;
 import vn.com.buaansach.web.guest.websocket.dto.GuestSocketDTO;
@@ -28,7 +31,6 @@ public class GuestStorePayRequestService {
     private final GuestSeatRepository guestSeatRepository;
     private final GuestSocketService guestSocketService;
     private final PosPaymentService posPaymentService;
-    private final GuestOrderService guestOrderService;
 
     @Transactional
     public GuestStorePayRequestDTO sendRequest(GuestStorePayRequestDTO payload) {
@@ -43,28 +45,20 @@ public class GuestStorePayRequestService {
             throw new GuestBadRequestException("guest@storePayRequestExistWithOrderGuid@" + orderEntity.getGuid());
 
         long payAmount = posPaymentService.calculatePayAmount(orderEntity);
-        if (payAmount > payload.getPayAmount())
+        if (payAmount > payload.getStorePayRequestAmount())
             throw new GuestBadRequestException("guest@payAmountNotEnough@" + payAmount);
 
         if (!seatEntity.getOrderGuid().equals(orderEntity.getGuid()))
             throw new GuestBadRequestException("guest@orderNotMatchSeat@orderGuid=" + orderEntity.getGuid() + ";seatOrderGuid=" + seatEntity.getOrderGuid());
 
-        /* Cập nhật SDT cho khách nếu có và đơn phải chưa có SĐT */
-        if (payload.getCustomerPhone() != null){
-            if (orderEntity.getOrderCustomerPhone() == null){
-                guestOrderService.updateCustomerPhone(payload.getOrderGuid(), payload.getCustomerPhone());
-            } else {
-                throw new GuestBadRequestException("guest@orderCustomerPhoneExist@" + orderEntity.getGuid());
-            }
-        }
-
         StorePayRequestEntity storePayRequestEntity = new StorePayRequestEntity();
         storePayRequestEntity.setGuid(UUID.randomUUID());
-        storePayRequestEntity.setAreaGuid(seatEntity.getAreaGuid());
-        storePayRequestEntity.setStoreGuid(storeEntity.getGuid());
-        storePayRequestEntity.setPayAmount(payload.getPayAmount());
-        storePayRequestEntity.setPayNote(payload.getPayNote());
         storePayRequestEntity.setStorePayRequestStatus(StorePayRequestStatus.UNSEEN);
+        storePayRequestEntity.setStorePayRequestAmount(payload.getStorePayRequestAmount());
+        storePayRequestEntity.setStorePayRequestNote(payload.getStorePayRequestNote());
+
+        storePayRequestEntity.setStoreGuid(storeEntity.getGuid());
+        storePayRequestEntity.setAreaGuid(seatEntity.getAreaGuid());
         storePayRequestEntity.setSeatGuid(seatEntity.getGuid());
         storePayRequestEntity.setOrderGuid(orderEntity.getGuid());
         StorePayRequestEntity result = guestStorePayRequestRepository.save(storePayRequestEntity);

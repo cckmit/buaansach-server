@@ -48,7 +48,7 @@ public class PosStoreOrderService {
         storeOrderEntity.setGuid(UUID.randomUUID());
         storeOrderEntity.setStoreOrderStatus(StoreOrderStatus.UNSEEN);
         storeOrderEntity.setStoreOrderType(StoreOrderType.POS);
-        storeOrderEntity.setHidden(false);
+        storeOrderEntity.setHideStoreOrder(false);
         storeOrderEntity.setStoreGuid(storeGuid);
         storeOrderEntity.setAreaGuid(areaGuid);
         storeOrderEntity.setSeatGuid(seatGuid);
@@ -79,7 +79,7 @@ public class PosStoreOrderService {
         });
 
         list = list.stream().peek(item -> {
-            item.setHidden(payload.isHidden());
+            item.setHideStoreOrder(payload.isHidden());
             if (item.getFirstHideBy() == null && payload.isHidden()) item.setFirstHideBy(currentUser);
         }).collect(Collectors.toList());
 
