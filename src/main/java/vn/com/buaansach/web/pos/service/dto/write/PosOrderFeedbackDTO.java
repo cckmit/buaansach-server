@@ -2,8 +2,7 @@ package vn.com.buaansach.web.pos.service.dto.write;
 
 import lombok.Data;
 import vn.com.buaansach.entity.enumeration.OrderFeedbackAction;
-import vn.com.buaansach.entity.enumeration.ProductQualityRating;
-import vn.com.buaansach.entity.enumeration.ServiceQualityRating;
+import vn.com.buaansach.entity.enumeration.Rating;
 import vn.com.buaansach.entity.order.OrderFeedbackEntity;
 
 import javax.validation.constraints.NotNull;
@@ -17,10 +16,10 @@ public class PosOrderFeedbackDTO {
     private UUID orderGuid;
     @NotNull
     private OrderFeedbackAction orderFeedbackAction;
-    private ServiceQualityRating serviceQualityRating;
-    private ProductQualityRating productQualityRating;
+    private Rating serviceQualityRating;
+    private Rating productQualityRating;
     @Size(max = 500)
-    private String feedbackContent;
+    private String orderFeedbackContent;
 
     public PosOrderFeedbackDTO() {
     }
@@ -32,6 +31,6 @@ public class PosOrderFeedbackDTO {
         this.orderFeedbackAction = entity.getOrderFeedbackAction();
         this.serviceQualityRating = entity.getServiceQualityRating();
         this.productQualityRating = entity.getProductQualityRating();
-        this.feedbackContent = entity.getFeedbackContent();
+        this.orderFeedbackContent = entity.getOrderFeedbackContent();
     }
 }

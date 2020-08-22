@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.DiscountType;
-import vn.com.buaansach.entity.enumeration.ProductDisplay;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.enumeration.ProductType;
 
@@ -92,7 +91,7 @@ public class ProductEntity extends AbstractAuditingEntity implements Serializabl
 
     /**
      * FK
-     * */
+     */
 
     @Column(name = "sale_guid")
     private UUID saleGuid;

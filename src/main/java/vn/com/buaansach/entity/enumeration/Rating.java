@@ -1,6 +1,6 @@
 package vn.com.buaansach.entity.enumeration;
 
-public enum ProductQualityRating {
+public enum Rating {
     VERY_BAD,
     BAD,
     NORMAL,

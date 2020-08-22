@@ -5,8 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.OrderFeedbackAction;
-import vn.com.buaansach.entity.enumeration.ProductQualityRating;
-import vn.com.buaansach.entity.enumeration.ServiceQualityRating;
+import vn.com.buaansach.entity.enumeration.Rating;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -28,26 +27,29 @@ public class OrderFeedbackEntity extends AbstractAuditingEntity implements Seria
     @Column(unique = true)
     private UUID guid;
 
-    @Column(name = "order_guid")
-    private UUID orderGuid;
-
-    @Column(name = "store_guid")
-    private UUID storeGuid;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "order_feedback_action")
     private OrderFeedbackAction orderFeedbackAction;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "service_quality_rating")
-    private ServiceQualityRating serviceQualityRating;
+    private Rating serviceQualityRating;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "product_quality_rating")
-    private ProductQualityRating productQualityRating;
+    private Rating productQualityRating;
 
     @Size(max = 500)
-    @Column(name = "feedback_content", length = 500)
-    private String feedbackContent;
+    @Column(name = "order_feedback_content", length = 500)
+    private String orderFeedbackContent;
 
+    /**
+     * FK
+     */
+
+    @Column(name = "order_guid")
+    private UUID orderGuid;
+
+    @Column(name = "store_guid")
+    private UUID storeGuid;
 }

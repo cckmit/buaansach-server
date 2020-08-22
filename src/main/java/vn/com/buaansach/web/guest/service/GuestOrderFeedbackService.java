@@ -39,7 +39,7 @@ public class GuestOrderFeedbackService {
         orderFeedbackEntity.setOrderFeedbackAction(payload.getOrderFeedbackAction());
         orderFeedbackEntity.setProductQualityRating(payload.getProductQualityRating());
         orderFeedbackEntity.setServiceQualityRating(payload.getServiceQualityRating());
-        orderFeedbackEntity.setFeedbackContent(payload.getFeedbackContent());
+        orderFeedbackEntity.setOrderFeedbackContent(payload.getOrderFeedbackContent());
         guestOrderFeedbackRepository.save(orderFeedbackEntity);
     }
 

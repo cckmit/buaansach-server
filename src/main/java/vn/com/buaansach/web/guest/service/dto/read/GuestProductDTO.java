@@ -2,7 +2,6 @@ package vn.com.buaansach.web.guest.service.dto.read;
 
 import lombok.Data;
 import vn.com.buaansach.entity.common.ProductEntity;
-import vn.com.buaansach.entity.enumeration.ProductDisplay;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.enumeration.ProductType;
 
