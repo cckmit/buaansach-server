@@ -1,52 +1,41 @@
 package vn.com.buaansach.web.customer_care.service.dto.read;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import vn.com.buaansach.entity.common.ProductEntity;
+import vn.com.buaansach.entity.enumeration.DiscountType;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.web.user.service.dto.AuditDTO;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.validation.constraints.Size;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
 public class CustomerCareOrderProductDTO extends AuditDTO {
     private UUID guid;
-    private UUID orderGuid;
-    private UUID productGuid;
-
     private UUID orderProductGroup;
     private int orderProductQuantity;
-    @JsonIgnore
-    private int orderProductRootPrice;
-    private int orderProductPrice;
-    @Size(max = 255)
     private String orderProductNote;
-    @Enumerated(EnumType.STRING)
     private OrderProductStatus orderProductStatus;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String orderProductStatusTimeline;
-    @Size(max = 255)
     private String orderProductCancelReason;
+    private int orderProductPrice;
     private int orderProductDiscount;
-    private UUID orderProductSaleGuid;
-    @Size(max = 20)
-    private String orderProductVoucherCode;
+    private DiscountType orderProductDiscountType;
 
+    private UUID orderGuid;
+    private UUID productGuid;
+    private UUID saleGuid;
+
+    /* Additional Info */
     private String productCode;
     private String productName;
     private String productUnit;
     private String productImageUrl;
     private String productThumbnailUrl;
-
-    public CustomerCareOrderProductDTO() {
-    }
 
     public CustomerCareOrderProductDTO(OrderProductEntity orderProductEntity) {
         assignProperty(orderProductEntity);
@@ -63,19 +52,19 @@ public class CustomerCareOrderProductDTO extends AuditDTO {
 
     private void assignProperty(OrderProductEntity orderProductEntity) {
         this.guid = orderProductEntity.getGuid();
-        this.orderGuid = orderProductEntity.getOrderGuid();
-        this.productGuid = orderProductEntity.getProductGuid();
         this.orderProductGroup = orderProductEntity.getOrderProductGroup();
         this.orderProductQuantity = orderProductEntity.getOrderProductQuantity();
-        this.orderProductRootPrice = orderProductEntity.getOrderProductRootPrice();
-        this.orderProductPrice = orderProductEntity.getOrderProductPrice();
         this.orderProductNote = orderProductEntity.getOrderProductNote();
         this.orderProductStatus = orderProductEntity.getOrderProductStatus();
         this.orderProductStatusTimeline = orderProductEntity.getOrderProductStatusTimeline();
         this.orderProductCancelReason = orderProductEntity.getOrderProductCancelReason();
+
+        this.orderProductPrice = orderProductEntity.getOrderProductPrice();
         this.orderProductDiscount = orderProductEntity.getOrderProductDiscount();
-        this.orderProductSaleGuid = orderProductEntity.getOrderProductSaleGuid();
-        this.orderProductVoucherCode = orderProductEntity.getOrderProductVoucherCode();
+
+        this.orderGuid = orderProductEntity.getOrderGuid();
+        this.productGuid = orderProductEntity.getProductGuid();
+        this.saleGuid = orderProductEntity.getSaleGuid();
 
         this.createdBy = orderProductEntity.getCreatedBy();
         this.createdDate = orderProductEntity.getCreatedDate();

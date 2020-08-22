@@ -3,50 +3,41 @@ package vn.com.buaansach.web.guest.service.dto.readwrite;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import vn.com.buaansach.entity.enumeration.OrderProductStatus;
-import vn.com.buaansach.entity.enumeration.ProductStatus;
-import vn.com.buaansach.entity.order.OrderProductEntity;
+import lombok.NoArgsConstructor;
 import vn.com.buaansach.entity.common.ProductEntity;
-import vn.com.buaansach.web.guest.service.dto.read.GuestStoreProductDTO;
+import vn.com.buaansach.entity.enumeration.DiscountType;
+import vn.com.buaansach.entity.enumeration.OrderProductStatus;
+import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.web.user.service.dto.AuditDTO;
 
-import javax.validation.constraints.Size;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
 public class GuestOrderProductDTO extends AuditDTO {
     private UUID guid;
-    private UUID orderGuid;
-    private UUID productGuid;
-
     private UUID orderProductGroup;
     private int orderProductQuantity;
-    @JsonIgnore
-    private int orderProductRootPrice;
-    private int orderProductPrice;
-    @Size(max = 255)
     private String orderProductNote;
     private OrderProductStatus orderProductStatus;
     @JsonIgnore
     private String orderProductStatusTimeline;
-    @Size(max = 255)
     private String orderProductCancelReason;
+    private int orderProductPrice;
     private int orderProductDiscount;
-    @JsonIgnore
-    private UUID orderProductSaleGuid;
-    @Size(max = 20)
-    @JsonIgnore
-    private String orderProductVoucherCode;
+    private DiscountType orderProductDiscountType;
 
+    private UUID orderGuid;
+    private UUID productGuid;
+    private UUID saleGuid;
+
+    /* Additional Info */
     private String productCode;
     private String productName;
     private String productUnit;
     private String productImageUrl;
     private String productThumbnailUrl;
-
-    public GuestOrderProductDTO() {
-    }
 
     public GuestOrderProductDTO(OrderProductEntity orderProductEntity) {
         assignProperty(orderProductEntity);
@@ -63,21 +54,24 @@ public class GuestOrderProductDTO extends AuditDTO {
 
     private void assignProperty(OrderProductEntity orderProductEntity) {
         this.guid = orderProductEntity.getGuid();
-        this.orderGuid = orderProductEntity.getOrderGuid();
-        this.productGuid = orderProductEntity.getProductGuid();
         this.orderProductGroup = orderProductEntity.getOrderProductGroup();
         this.orderProductQuantity = orderProductEntity.getOrderProductQuantity();
-        this.orderProductRootPrice = orderProductEntity.getOrderProductRootPrice();
-        this.orderProductPrice = orderProductEntity.getOrderProductPrice();
         this.orderProductNote = orderProductEntity.getOrderProductNote();
         this.orderProductStatus = orderProductEntity.getOrderProductStatus();
         this.orderProductStatusTimeline = orderProductEntity.getOrderProductStatusTimeline();
         this.orderProductCancelReason = orderProductEntity.getOrderProductCancelReason();
-        this.orderProductDiscount = orderProductEntity.getOrderProductDiscount();
-        this.orderProductSaleGuid = orderProductEntity.getOrderProductSaleGuid();
-        this.orderProductVoucherCode = orderProductEntity.getOrderProductVoucherCode();
 
+        this.orderProductPrice = orderProductEntity.getOrderProductPrice();
+        this.orderProductDiscount = orderProductEntity.getOrderProductDiscount();
+
+        this.orderGuid = orderProductEntity.getOrderGuid();
+        this.productGuid = orderProductEntity.getProductGuid();
+        this.saleGuid = orderProductEntity.getSaleGuid();
+
+//        this.createdBy = orderProductEntity.getCreatedBy();
         this.createdDate = orderProductEntity.getCreatedDate();
+//        this.lastModifiedBy = orderProductEntity.getLastModifiedBy();
+//        this.lastModifiedDate = orderProductEntity.getLastModifiedDate();
     }
 
 }

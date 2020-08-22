@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
+import vn.com.buaansach.entity.enumeration.DiscountType;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
 
 import javax.persistence.*;
@@ -32,12 +33,6 @@ public class OrderProductEntity extends AbstractAuditingEntity implements Serial
     @Column(name = "order_product_quantity")
     private int orderProductQuantity;
 
-    @Column(name = "order_product_root_price")
-    private int orderProductRootPrice;
-
-    @Column(name = "order_product_price")
-    private int orderProductPrice;
-
     @Size(max = 255)
     @Column(name = "order_product_note")
     private String orderProductNote;
@@ -54,18 +49,29 @@ public class OrderProductEntity extends AbstractAuditingEntity implements Serial
     @Column(name = "order_product_cancel_reason")
     private String orderProductCancelReason;
 
+    @Column(name = "order_product_root_price")
+    private int orderProductRootPrice;
+
+    @Column(name = "order_product_price")
+    private int orderProductPrice;
+
     @Column(name = "order_product_discount")
     private int orderProductDiscount;
 
-    @Column(name = "order_product_sale_guid")
-    private UUID orderProductSaleGuid;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_product_discount_type")
+    private DiscountType orderProductDiscountType;
 
-    @Column(name = "order_product_voucher_code")
-    private String orderProductVoucherCode;
+    /**
+     * FK
+     * */
 
     @Column(name = "order_guid")
     private UUID orderGuid;
 
     @Column(name = "product_guid")
     private UUID productGuid;
+
+    @Column(name = "sale_guid")
+    private UUID saleGuid;
 }

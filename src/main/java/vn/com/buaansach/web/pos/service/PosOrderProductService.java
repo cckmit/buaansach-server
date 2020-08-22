@@ -67,8 +67,7 @@ public class PosOrderProductService {
                     entity.setOrderProductRootPrice(product.getProductRootPrice());
                     entity.setOrderProductPrice(product.getProductPrice());
                     entity.setOrderProductDiscount(product.getProductDiscount());
-                    entity.setOrderProductSaleGuid(product.getSaleGuid());
-                    entity.setOrderProductVoucherCode(null);
+                    entity.setSaleGuid(product.getSaleGuid());
                 })
                 .collect(Collectors.toList());
 
