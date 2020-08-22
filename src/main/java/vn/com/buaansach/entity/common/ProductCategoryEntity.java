@@ -18,6 +18,13 @@ public class ProductCategoryEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "product_category_activated")
+    private boolean productCategoryActivated;
+
+    /**
+     * FK
+     * */
+
     @Column(name = "product_guid")
     private UUID productGuid;
 

@@ -86,8 +86,8 @@ public class ProductEntity extends AbstractAuditingEntity implements Serializabl
     @Column(name = "product_position")
     private int productPosition;
 
-    @Column(name = "hide_product")
-    private boolean hideProduct;
+    @Column(name = "product_activated")
+    private boolean productActivated;
 
     /**
      * FK

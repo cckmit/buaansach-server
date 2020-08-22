@@ -22,7 +22,7 @@ public class AdminProductMapper {
         entity.setProductPrice(dto.getProductPrice());
         entity.setProductDiscount(dto.getProductDiscount());
         entity.setProductPosition(dto.getProductPosition());
-        entity.setHideProduct(dto.isHideProduct());
+        entity.setProductActivated(dto.isProductActivated());
         entity.setSaleGuid(dto.getSaleGuid());
         return entity;
     }
