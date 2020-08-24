@@ -6,11 +6,11 @@ import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.entity.common.CategoryEntity;
 import vn.com.buaansach.entity.common.FileEntity;
 import vn.com.buaansach.exception.BadRequestException;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.admin.repository.AdminCategoryRepository;
 import vn.com.buaansach.web.admin.repository.AdminProductCategoryRepository;
-import vn.com.buaansach.web.user.service.FileService;
+import vn.com.buaansach.web.common.service.FileService;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -41,13 +41,13 @@ public class AdminCategoryService {
 
     public CategoryEntity getCategory(String categoryGuid) {
         return adminCategoryRepository.findOneByGuid(UUID.fromString(categoryGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("admin@categoryNotFound@" + categoryGuid));
+                .orElseThrow(() -> new NotFoundException("admin@categoryNotFound@" + categoryGuid));
     }
 
     @Transactional
     public CategoryEntity updateCategory(CategoryEntity updateEntity, MultipartFile image) {
         CategoryEntity currentEntity = adminCategoryRepository.findOneByGuid(updateEntity.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("admin@categoryNotFound@" + updateEntity.getGuid()));
+                .orElseThrow(() -> new NotFoundException("admin@categoryNotFound@" + updateEntity.getGuid()));
 
         /* if change category name, check if name has been used or not */
         if (!updateEntity.getCategoryName().equals(currentEntity.getCategoryName())) {
@@ -83,7 +83,7 @@ public class AdminCategoryService {
     @Transactional
     public void deleteCategory(String categoryGuid) {
         CategoryEntity categoryEntity = adminCategoryRepository.findOneByGuid(UUID.fromString(categoryGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("admin@categoryNotFound@" + categoryGuid));
+                .orElseThrow(() -> new NotFoundException("admin@categoryNotFound@" + categoryGuid));
         fileService.deleteByUrl(categoryEntity.getCategoryImageUrl());
         adminProductCategoryRepository.deleteByCategoryGuid(categoryEntity.getGuid());
         adminCategoryRepository.delete(categoryEntity);
@@ -92,7 +92,7 @@ public class AdminCategoryService {
     @Transactional
     public void updateCategoryPosition(CategoryEntity payload) {
         CategoryEntity currentEntity = adminCategoryRepository.findOneByGuid(payload.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("admin@categoryNotFound@" + payload.getGuid()));
+                .orElseThrow(() -> new NotFoundException("admin@categoryNotFound@" + payload.getGuid()));
         adminCategoryRepository.updatePosition(payload.getGuid(), payload.getCategoryPosition());
 //        currentEntity.setCategoryPosition(payload.getCategoryPosition());
 //        adminCategoryRepository.save(currentEntity);

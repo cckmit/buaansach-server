@@ -36,7 +36,7 @@
             <column name="product_discount" type="int"/>
             <column name="product_discount_type" type="varchar(30)"/>
             <column name="product_position" type="int"/>
-            <column name="hide_product" type="boolean" defaultValue="false"/>
+            <column name="product_activated" type="boolean"/>
             <column name="sale_guid" type="binary(16)"/>
 
 

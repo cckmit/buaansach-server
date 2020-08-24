@@ -1,46 +1,50 @@
 package vn.com.buaansach.security;
 
-import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
+import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.web.admin.repository.AdminUserRepository;
+import vn.com.buaansach.exception.ErrorCode;
+import vn.com.buaansach.core.repository.UserRepository;
+import vn.com.buaansach.util.Constants;
 
 import javax.transaction.Transactional;
-import java.util.Locale;
+import java.util.regex.Pattern;
 
 @Service
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final Logger log = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
-    AdminUserRepository adminUserRepository;
-
-    public CustomUserDetailsService(AdminUserRepository adminUserRepository) {
-        this.adminUserRepository = adminUserRepository;
-    }
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
     // add transactional annotation to avoid LazyInitializationException,
     // because transaction will be closed before get we can get authorities
-    public UserDetails loadUserByUsername(final String login) {
-        log.debug("Authenticating {}", login);
+    public UserDetails loadUserByUsername(final String principal) {
+        log.debug("Authenticating {}", principal);
 
-        if (new EmailValidator().isValid(login, null)) {
-            return adminUserRepository.findOneWithAuthoritiesByEmailIgnoreCase(login)
-                    .map(user -> UserPrincipal.create(login, user))
-                    .orElseThrow(() -> new UsernameNotFoundException("User with email " + login + " was not found in the database"));
+        if (new EmailValidator().isValid(principal, null)) {
+            return userRepository.findOneWithAuthoritiesByUserEmailIgnoreCase(principal)
+                    .map(UserPrincipal::create)
+                    .orElseThrow(() -> new UsernameNotFoundException(ErrorCode.USER_NOT_FOUND));
         }
 
-        String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
-        return adminUserRepository.findOneWithAuthoritiesByLogin(lowercaseLogin)
-                .map(user -> UserPrincipal.create(lowercaseLogin, user))
-                .orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the database"));
+        if (Pattern.matches(Constants.PHONE_REGEX, principal)){
+            return userRepository.findOneWithAuthoritiesByUserPhone(principal)
+                    .map(UserPrincipal::create)
+                    .orElseThrow(() -> new UsernameNotFoundException(ErrorCode.USER_NOT_FOUND));
+        }
 
+        return userRepository.findOneWithAuthoritiesByUserLoginIgnoreCase(principal)
+                .map(UserPrincipal::create)
+                .orElseThrow(() -> new UsernameNotFoundException(ErrorCode.USER_NOT_FOUND));
     }
 
 }

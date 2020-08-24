@@ -7,11 +7,9 @@ import vn.com.buaansach.entity.enumeration.SeatStatus;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.order.PaymentEntity;
-import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
-import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.entity.store.StoreOrderEntity;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.admin.repository.*;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateSeatDTO;
 
@@ -32,7 +30,7 @@ public class AdminSeatService {
 
     public SeatEntity createSeat(AdminCreateSeatDTO request) {
         adminAreaRepository.findOneByGuid(request.getAreaGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("admin@areaNotFound@" + request.getAreaGuid()));
+                .orElseThrow(() -> new NotFoundException("admin@areaNotFound@" + request.getAreaGuid()));
 
         SeatEntity seatEntity = new SeatEntity();
         UUID guid = UUID.randomUUID();
@@ -48,7 +46,7 @@ public class AdminSeatService {
 
     public SeatEntity updateSeat(SeatEntity updateEntity) {
         SeatEntity currentEntity = adminSeatRepository.findOneByGuid(updateEntity.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("admin@seatNotFound@" + updateEntity.getGuid()));
+                .orElseThrow(() -> new NotFoundException("admin@seatNotFound@" + updateEntity.getGuid()));
         currentEntity.setSeatName(updateEntity.getSeatName());
         return adminSeatRepository.save(currentEntity);
     }
@@ -68,7 +66,7 @@ public class AdminSeatService {
     @Transactional
     public void deleteSeat(String seatGuid) {
         SeatEntity seatEntity = adminSeatRepository.findOneByGuid(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("admin@seatNotFound@" + seatGuid));
+                .orElseThrow(() -> new NotFoundException("admin@seatNotFound@" + seatGuid));
 
         List<OrderEntity> listOrder = adminOrderRepository.findBySeatGuid(seatEntity.getGuid());
 

@@ -19,7 +19,7 @@ public interface AdminStoreUserRepository extends JpaRepository<StoreUserEntity,
 
     @Query("SELECT new vn.com.buaansach.web.admin.service.dto.read.AdminStoreUserDTO(storeUser, user) " +
             "FROM vn.com.buaansach.entity.store.StoreUserEntity storeUser " +
-            "LEFT JOIN vn.com.buaansach.entity.user.UserEntity user " +
+            "LEFT JOIN vn.com.buaansach.entity.user.UserProfileEntity user " +
             "ON storeUser.userLogin = user.login " +
             "WHERE storeUser.storeGuid = :storeGuid")
     List<AdminStoreUserDTO> findByStoreGuid(@Param("storeGuid") UUID storeGuid);

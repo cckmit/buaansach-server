@@ -9,12 +9,8 @@ import vn.com.buaansach.entity.enumeration.DiscountType;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.OrderType;
 import vn.com.buaansach.entity.order.OrderEntity;
-import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
-import vn.com.buaansach.web.user.service.dto.AuditDTO;
+import vn.com.buaansach.core.service.dto.AuditDTO;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.validation.constraints.Size;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;

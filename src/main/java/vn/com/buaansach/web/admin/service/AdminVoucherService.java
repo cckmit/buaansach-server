@@ -13,7 +13,7 @@ import vn.com.buaansach.entity.voucher.condition.VoucherStoreConditionEntity;
 import vn.com.buaansach.entity.voucher.condition.VoucherTimeConditionEntity;
 import vn.com.buaansach.entity.voucher.condition.VoucherUsageConditionEntity;
 import vn.com.buaansach.exception.BadRequestException;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.admin.repository.voucher.*;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminVoucherDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminUpdateVoucherDTO;
@@ -93,7 +93,7 @@ public class AdminVoucherService {
 
     public AdminVoucherDTO updateVoucherBasic(AdminUpdateVoucherDTO payload) {
         VoucherEntity voucherEntity = adminVoucherRepository.findOneByGuid(payload.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("admin@voucherNotFound@" + payload.getGuid()));
+                .orElseThrow(() -> new NotFoundException("admin@voucherNotFound@" + payload.getGuid()));
         voucherEntity.setVoucherName(payload.getVoucherName());
         voucherEntity.setVoucherDescription(payload.getVoucherDescription());
         voucherEntity.setVoucherDiscount(payload.getVoucherDiscount());
@@ -102,7 +102,7 @@ public class AdminVoucherService {
     }
 
     public void toggleVoucher(String voucherGuid) {
-        VoucherEntity voucherEntity = adminVoucherRepository.findOneByGuid(UUID.fromString(voucherGuid)).orElseThrow(() -> new ResourceNotFoundException("admin@voucherNotFound@" + voucherGuid));
+        VoucherEntity voucherEntity = adminVoucherRepository.findOneByGuid(UUID.fromString(voucherGuid)).orElseThrow(() -> new NotFoundException("admin@voucherNotFound@" + voucherGuid));
         voucherEntity.setVoucherEnable(!voucherEntity.isVoucherEnable());
         adminVoucherRepository.save(voucherEntity);
     }

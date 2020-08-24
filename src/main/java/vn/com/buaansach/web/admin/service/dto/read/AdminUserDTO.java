@@ -1,21 +1,12 @@
 package vn.com.buaansach.web.admin.service.dto.read;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import vn.com.buaansach.entity.enumeration.Gender;
 import vn.com.buaansach.entity.user.AuthorityEntity;
 import vn.com.buaansach.entity.user.UserEntity;
-import vn.com.buaansach.util.Constants;
-import vn.com.buaansach.web.user.service.dto.AuditDTO;
+import vn.com.buaansach.core.service.dto.AuditDTO;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -23,64 +14,20 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class AdminUserDTO extends AuditDTO {
     private UUID guid;
-
-    @Size(max = 20)
-    private String code;
-
-    @Pattern(regexp = Constants.LOGIN_REGEX)
-    @Size(min = 1, max = 50)
-    private String login;
-
-    @Size(max = 50)
-    private String firstName;
-
-    @Size(max = 50)
-    private String lastName;
-
-    @Email
-    @Size(min = 5, max = 255)
-    private String email;
-
-    private String phone;
-
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-    private Instant birthday;
-
-    @Size(max = 255)
-    private String address;
-
-    private boolean activated;
-
-    private boolean disabledByAdmin;
-
-    @Size(min = 2, max = 10)
-    private String langKey;
-
-    @Size(max = 255)
-    private String imageUrl;
-
+    private String userLogin;
+    private String userEmail;
+    private String userPhone;
+    private boolean userActivated;
     private Set<String> authorities;
 
     public AdminUserDTO(UserEntity userEntity) {
         this.guid = userEntity.getGuid();
-        this.code = userEntity.getCode();
-        this.login = userEntity.getLogin();
-        this.firstName = userEntity.getFirstName();
-        this.lastName = userEntity.getLastName();
-        this.email = userEntity.getEmail();
-        this.phone = userEntity.getPhone();
-        this.gender = userEntity.getGender();
-        this.birthday = userEntity.getBirthday();
-        this.address = userEntity.getAddress();
-        this.activated = userEntity.isActivated();
-        this.disabledByAdmin = userEntity.isDisabledByAdmin();
-        this.langKey = userEntity.getLangKey();
-        this.imageUrl = userEntity.getImageUrl();
+        this.userLogin = userEntity.getUserLogin();
+        this.userEmail = userEntity.getUserEmail();
+        this.userPhone = userEntity.getUserPhone();
+        this.userActivated = userEntity.isUserActivated();
         this.authorities = userEntity.getAuthorities().stream()
                 .map(AuthorityEntity::getName)
                 .collect(Collectors.toSet());

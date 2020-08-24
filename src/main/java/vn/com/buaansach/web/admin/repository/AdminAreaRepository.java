@@ -14,5 +14,5 @@ public interface AdminAreaRepository extends JpaRepository<AreaEntity, Long> {
 
     List<AreaEntity> findByStoreGuid(UUID storeGuid);
 
-    long deleteByStoreGuid(UUID storeGuid);
+    void deleteByStoreGuid(UUID storeGuid);
 }

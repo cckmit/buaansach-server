@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.customer.CustomerEntity;
 import vn.com.buaansach.entity.enumeration.CustomerZaloStatus;
 import vn.com.buaansach.entity.enumeration.Gender;
-import vn.com.buaansach.web.user.service.dto.AuditDTO;
+import vn.com.buaansach.core.service.dto.AuditDTO;
 
 import java.util.UUID;
 

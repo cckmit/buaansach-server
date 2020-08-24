@@ -16,7 +16,7 @@ import vn.com.buaansach.web.pos.service.dto.read.PosVoucherApplySuccessDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderVoucherCodeDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosUpdateVoucherCodeDTO;
 
-@Secured(AuthoritiesConstants.USER)
+@Secured(AuthoritiesConstants.INTERNAL_USER)
 @RestController
 @RequestMapping("/api/v1/pos/voucher-code")
 @RequiredArgsConstructor

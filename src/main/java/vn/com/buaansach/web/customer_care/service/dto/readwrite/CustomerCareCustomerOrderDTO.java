@@ -7,7 +7,7 @@ import vn.com.buaansach.entity.customer.CustomerOrderEntity;
 import vn.com.buaansach.entity.enumeration.CustomerCareStatus;
 import vn.com.buaansach.entity.enumeration.Gender;
 import vn.com.buaansach.entity.store.StoreEntity;
-import vn.com.buaansach.web.user.service.dto.AuditDTO;
+import vn.com.buaansach.core.service.dto.AuditDTO;
 
 import java.util.UUID;
 

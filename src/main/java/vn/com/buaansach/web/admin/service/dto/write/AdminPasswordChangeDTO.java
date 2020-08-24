@@ -6,8 +6,8 @@ import javax.validation.constraints.Size;
 
 @Data
 public class AdminPasswordChangeDTO {
-    @Size(max = 50)
-    private String login;
+    @Size(min = 1, max = 50)
+    private String userLogin;
 
     @Size(min = 4, max = 100)
     private String newPassword;

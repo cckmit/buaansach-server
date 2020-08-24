@@ -14,7 +14,7 @@ import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.service.PosStoreProductService;
 import vn.com.buaansach.web.pos.service.dto.write.PosStoreProductStatusChangeDTO;
 
-@Secured(AuthoritiesConstants.USER)
+@Secured(AuthoritiesConstants.INTERNAL_USER)
 @RestController
 @RequestMapping("/api/v1/pos/store-product")
 @RequiredArgsConstructor

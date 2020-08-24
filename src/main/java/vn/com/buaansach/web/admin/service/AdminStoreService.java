@@ -13,10 +13,10 @@ import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.entity.store.StoreOrderEntity;
 import vn.com.buaansach.exception.BadRequestException;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.admin.repository.*;
-import vn.com.buaansach.web.user.service.FileService;
+import vn.com.buaansach.web.common.service.FileService;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -55,7 +55,7 @@ public class AdminStoreService {
     @Transactional
     public StoreEntity updateStore(StoreEntity updateEntity, MultipartFile image) {
         StoreEntity currentEntity = adminStoreRepository.findOneByGuid(updateEntity.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + updateEntity.getGuid()));
+                .orElseThrow(() -> new NotFoundException("admin@storeNotFound@" + updateEntity.getGuid()));
 
         /* allow change store code */
 //        String updateStoreCode = updateEntity.getStoreCode().toLowerCase();
@@ -91,14 +91,14 @@ public class AdminStoreService {
 
     public StoreEntity getOneStore(String storeGuid) {
         return adminStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + storeGuid));
+                .orElseThrow(() -> new NotFoundException("admin@storeNotFound@" + storeGuid));
     }
 
     @Transactional
     public void deleteStore(String storeGuid) {
         /* be careful when delete store - must test more cases to catch all possible errors */
         StoreEntity storeEntity = adminStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + storeGuid));
+                .orElseThrow(() -> new NotFoundException("admin@storeNotFound@" + storeGuid));
 
         List<SeatEntity> listSeat = adminSeatRepository.findListSeatByStoreGuid(storeEntity.getGuid());
         List<UUID> listSeatGuid = listSeat.stream().map(SeatEntity::getGuid).collect(Collectors.toList());

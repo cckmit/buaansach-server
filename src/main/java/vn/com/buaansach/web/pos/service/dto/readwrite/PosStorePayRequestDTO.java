@@ -3,12 +3,9 @@ package vn.com.buaansach.web.pos.service.dto.readwrite;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import vn.com.buaansach.entity.enumeration.StoreOrderStatus;
-import vn.com.buaansach.entity.enumeration.StoreOrderType;
 import vn.com.buaansach.entity.enumeration.StorePayRequestStatus;
-import vn.com.buaansach.entity.store.StoreOrderEntity;
 import vn.com.buaansach.entity.store.StorePayRequestEntity;
-import vn.com.buaansach.web.user.service.dto.AuditDTO;
+import vn.com.buaansach.core.service.dto.AuditDTO;
 
 import java.time.Instant;
 import java.util.UUID;

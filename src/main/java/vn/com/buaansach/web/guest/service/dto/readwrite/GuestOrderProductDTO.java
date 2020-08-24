@@ -8,7 +8,7 @@ import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.DiscountType;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
 import vn.com.buaansach.entity.order.OrderProductEntity;
-import vn.com.buaansach.web.user.service.dto.AuditDTO;
+import vn.com.buaansach.core.service.dto.AuditDTO;
 
 import java.util.UUID;
 

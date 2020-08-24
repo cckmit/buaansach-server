@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.*;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.store.*;
-import vn.com.buaansach.exception.GuestErrorCode;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.ErrorCode;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
@@ -23,7 +23,6 @@ import vn.com.buaansach.web.guest.websocket.dto.GuestSocketDTO;
 import vn.com.buaansach.web.pos.util.TimelineUtil;
 
 import javax.transaction.Transactional;
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -64,7 +63,7 @@ public class GuestOrderService {
                 .orElseThrow(() -> new GuestResourceNotFoundException("guest@seatNotFound@" + payload.getSeatGuid()));
 
         AreaEntity areaEntity = guestAreaRepository.findOneByGuid(seatEntity.getAreaGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("guest@areaNotFound@ " + seatEntity.getAreaGuid()));
+                .orElseThrow(() -> new NotFoundException("guest@areaNotFound@ " + seatEntity.getAreaGuid()));
 
         if (!areaEntity.isAreaActivated()) {
             throw new GuestBadRequestException("guest@areaDisabled@" + areaEntity.getGuid());
@@ -144,10 +143,10 @@ public class GuestOrderService {
 
         /* check seat, area locked or not */
         SeatEntity seatEntity = guestSeatRepository.findOneByGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new GuestResourceNotFoundException(GuestErrorCode.SEAT_NOT_FOUND));
+                .orElseThrow(() -> new GuestResourceNotFoundException(ErrorCode.SEAT_NOT_FOUND));
 
         AreaEntity areaEntity = guestAreaRepository.findOneByGuid(seatEntity.getAreaGuid())
-                .orElseThrow(() -> new ResourceNotFoundException(GuestErrorCode.AREA_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.AREA_NOT_FOUND));
 
         if (!areaEntity.isAreaActivated()) {
             throw new GuestBadRequestException("guest@areaDisabled@" + areaEntity.getGuid());

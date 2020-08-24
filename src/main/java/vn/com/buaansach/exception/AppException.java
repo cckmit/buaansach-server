@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class AppException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
+    public AppException() {
+        super(ErrorCode.APP_ERROR);
+    }
+
     public AppException(String message) {
         super(message);
     }

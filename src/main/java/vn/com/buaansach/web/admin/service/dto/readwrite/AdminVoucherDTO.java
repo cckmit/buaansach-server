@@ -7,7 +7,7 @@ import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.entity.voucher.condition.VoucherStoreConditionEntity;
 import vn.com.buaansach.entity.voucher.condition.VoucherTimeConditionEntity;
 import vn.com.buaansach.entity.voucher.condition.VoucherUsageConditionEntity;
-import vn.com.buaansach.web.user.service.dto.AuditDTO;
+import vn.com.buaansach.core.service.dto.AuditDTO;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;

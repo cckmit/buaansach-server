@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.enumeration.StoreOrderStatus;
 import vn.com.buaansach.entity.enumeration.StoreOrderType;
 import vn.com.buaansach.entity.store.StoreOrderEntity;
-import vn.com.buaansach.web.user.service.dto.AuditDTO;
+import vn.com.buaansach.core.service.dto.AuditDTO;
 
 import java.util.UUID;
 

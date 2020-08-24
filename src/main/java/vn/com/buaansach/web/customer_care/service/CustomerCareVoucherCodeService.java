@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.customer_care.repository.CustomerCareVoucherCodeRepository;
 import vn.com.buaansach.web.customer_care.service.dto.write.CustomerCareUpdateVoucherCodeDTO;
 
@@ -15,7 +15,7 @@ public class CustomerCareVoucherCodeService {
 
     public void updateFirstRegVoucherCode(CustomerCareUpdateVoucherCodeDTO payload) {
         VoucherCodeEntity voucherCodeEntity = customerCareVoucherCodeRepository.findOneByVoucherCode(payload.getVoucherCode())
-                .orElseThrow(() -> new ResourceNotFoundException("customerCare@voucherCodeNotFound@" + payload.getVoucherCode()));
+                .orElseThrow(() -> new NotFoundException("customerCare@voucherCodeNotFound@" + payload.getVoucherCode()));
         voucherCodeEntity.setVoucherCodeClaimStatus(payload.getVoucherCodeClaimStatus());
         if (payload.getVoucherCodeClaimStatus().equals(VoucherCodeClaimStatus.CLAIMED)) {
             voucherCodeEntity.setVoucherCodeUsable(true);

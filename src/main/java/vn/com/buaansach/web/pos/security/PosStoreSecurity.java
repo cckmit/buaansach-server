@@ -6,7 +6,7 @@ import vn.com.buaansach.entity.enumeration.StoreStatus;
 import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 import vn.com.buaansach.entity.store.StoreEntity;
-import vn.com.buaansach.exception.AccessDeniedException;
+import vn.com.buaansach.exception.ForbiddenException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.repository.PosStoreRepository;
 import vn.com.buaansach.web.pos.repository.PosStoreUserRepository;
@@ -72,17 +72,17 @@ public class PosStoreSecurity {
 
     public void blockAccessIfNotOwnerOrManager(UUID storeGuid) {
         if (!hasOwnerOrManagerPermission(storeGuid))
-            throw new AccessDeniedException();
+            throw new ForbiddenException();
     }
 
     public void blockAccessIfNotOwner(UUID storeGuid) {
         if (!hasOwnerPermission(storeGuid))
-            throw new AccessDeniedException();
+            throw new ForbiddenException();
     }
 
     public void blockAccessIfNotInStore(UUID storeGuid) {
         if (!hasPermission(storeGuid))
-            throw new AccessDeniedException("pos@notMemberOfStore@" + storeGuid);
+            throw new ForbiddenException("pos@notMemberOfStore@" + storeGuid);
     }
 
     private boolean isClosedOrDeactivated(UUID storeGuid) {
@@ -91,7 +91,7 @@ public class PosStoreSecurity {
     }
 
     public void blockAccessIfStoreIsNotOpenOrDeactivated(UUID storeGuid) {
-        if (isClosedOrDeactivated(storeGuid)) throw new AccessDeniedException("pos@storeHasBeenClosed@" + storeGuid);
+        if (isClosedOrDeactivated(storeGuid)) throw new ForbiddenException("pos@storeHasBeenClosed@" + storeGuid);
     }
 
 }

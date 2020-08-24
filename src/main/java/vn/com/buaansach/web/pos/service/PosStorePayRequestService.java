@@ -5,15 +5,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.enumeration.StoreOrderStatus;
 import vn.com.buaansach.entity.enumeration.StorePayRequestStatus;
-import vn.com.buaansach.entity.store.StoreOrderEntity;
 import vn.com.buaansach.entity.store.StorePayRequestEntity;
 import vn.com.buaansach.exception.BadRequestException;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.pos.repository.PosStorePayRequestRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
-import vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreOrderDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosStorePayRequestDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosStorePayRequestStatusUpdateDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosStorePayRequestVisibilityUpdateDTO;
@@ -46,7 +43,7 @@ public class PosStorePayRequestService {
 
     public PosStorePayRequestDTO updateStorePayRequest(PosStorePayRequestStatusUpdateDTO payload, String currentUser) {
         StorePayRequestEntity entity = posStorePayRequestRepository.findOneByGuid(payload.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storePayRequestNotFound@" + payload.getGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@storePayRequestNotFound@" + payload.getGuid()));
         posStoreSecurity.blockAccessIfNotInStore(entity.getStoreGuid());
         entity.setStorePayRequestStatus(payload.getStorePayRequestStatus());
         if (entity.getFirstSeenBy() == null && payload.getStorePayRequestStatus().equals(StorePayRequestStatus.SEEN)){

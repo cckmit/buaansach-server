@@ -15,7 +15,7 @@ import vn.com.buaansach.web.pos.service.dto.write.PosStoreStatusChangeDTO;
 
 import java.util.UUID;
 
-@Secured(AuthoritiesConstants.USER)
+@Secured(AuthoritiesConstants.INTERNAL_USER)
 @RestController
 @RequestMapping("/api/v1/pos/store")
 @RequiredArgsConstructor

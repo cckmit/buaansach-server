@@ -16,7 +16,7 @@ import vn.com.buaansach.web.pos.service.dto.read.PosStoreUserDTO;
 
 import java.util.List;
 
-@Secured(AuthoritiesConstants.USER)
+@Secured(AuthoritiesConstants.INTERNAL_USER)
 @RestController
 @RequestMapping("/api/v1/pos/store-user")
 @RequiredArgsConstructor

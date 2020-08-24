@@ -13,7 +13,7 @@ public class AdminAddStoreUserDTO {
     private UUID storeGuid;
     @NotBlank
     @Size(max = 255)
-    private String userLoginOrEmail;
+    private String userPrincipal;
     private StoreUserRole storeUserRole;
     private StoreUserStatus storeUserStatus;
 }

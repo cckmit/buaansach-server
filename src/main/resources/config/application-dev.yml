@@ -47,5 +47,4 @@ app:
   mail:
     enable: true
     from: noreply.ductran.tech@gmail.com
-    send-creation-mail: false
     cms-ui-url: 'http://192.168.2.2:8081'

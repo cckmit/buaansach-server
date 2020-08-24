@@ -11,7 +11,7 @@ import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.service.PosCustomerService;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosCustomerDTO;
 
-@Secured(AuthoritiesConstants.USER)
+@Secured(AuthoritiesConstants.INTERNAL_USER)
 @RestController
 @RequestMapping("/api/v1/pos/customer")
 @RequiredArgsConstructor

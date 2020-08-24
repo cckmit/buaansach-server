@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Iterator;
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -22,14 +21,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          AuthenticationException e) throws IOException {
         String uri = httpServletRequest.getRequestURI();
 
-        String headers = "";
-        Iterator<String> iter = httpServletRequest.getHeaderNames().asIterator();
-        while (iter.hasNext()) {
-            String item = iter.next();
-            headers += item + ": " + httpServletRequest.getHeader(item) + ";";
-        }
-
-        log.error("Responding with unauthorized error. URI = [{}], Headers = [{}]. Message - {}", uri, headers, e.getMessage());
+        log.error("Responding with unauthorized error. URI = [{}]. Message - {}", uri, e.getMessage());
         httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
     }
 }

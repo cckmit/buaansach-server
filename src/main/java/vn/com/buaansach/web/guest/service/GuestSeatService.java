@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.store.SeatEntity;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.guest.exception.GuestResourceNotFoundException;
 import vn.com.buaansach.web.guest.repository.GuestOrderRepository;
 import vn.com.buaansach.web.guest.repository.GuestSeatRepository;
@@ -22,12 +22,12 @@ public class GuestSeatService {
 
     public GuestSeatDTO getSeat(String seatGuid) {
         return guestSeatRepository.findGuestSeatDTO(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("guest@seatNotFound@" + seatGuid));
+                .orElseThrow(() -> new NotFoundException("guest@seatNotFound@" + seatGuid));
     }
 
     public void makeSeatServiceUnfinished(UUID seatGuid) {
         SeatEntity seatEntity = guestSeatRepository.findOneByGuid(seatGuid)
-                .orElseThrow(() -> new ResourceNotFoundException("guest@seatNotFound@" + seatGuid));
+                .orElseThrow(() -> new NotFoundException("guest@seatNotFound@" + seatGuid));
         seatEntity.setSeatServiceStatus(SeatServiceStatus.UNFINISHED);
         guestSeatRepository.save(seatEntity);
     }

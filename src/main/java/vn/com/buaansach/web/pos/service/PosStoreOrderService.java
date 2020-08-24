@@ -9,7 +9,7 @@ import vn.com.buaansach.entity.enumeration.StoreOrderStatus;
 import vn.com.buaansach.entity.enumeration.StoreOrderType;
 import vn.com.buaansach.entity.store.StoreOrderEntity;
 import vn.com.buaansach.exception.BadRequestException;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.pos.repository.PosStoreOrderRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreOrderDTO;
@@ -60,7 +60,7 @@ public class PosStoreOrderService {
 
     public PosStoreOrderDTO updateStoreOrder(PosStoreOrderStatusUpdateDTO payload, String currentUser) {
         StoreOrderEntity entity = posStoreOrderRepository.findOneByGuid(payload.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storeOrderNotFound@" + payload.getGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@storeOrderNotFound@" + payload.getGuid()));
         posStoreSecurity.blockAccessIfNotInStore(entity.getStoreGuid());
         entity.setStoreOrderStatus(payload.getStoreOrderStatus());
         if (entity.getFirstSeenBy() == null && payload.getStoreOrderStatus().equals(StoreOrderStatus.SEEN))

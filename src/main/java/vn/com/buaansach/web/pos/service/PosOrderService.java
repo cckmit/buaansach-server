@@ -14,7 +14,7 @@ import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.entity.store.StoreOrderEntity;
 import vn.com.buaansach.exception.BadRequestException;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
 import vn.com.buaansach.web.pos.repository.*;
@@ -58,17 +58,17 @@ public class PosOrderService {
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(payload.getSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@seatNotFound@: " + payload.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@seatNotFound@: " + payload.getSeatGuid()));
 
         /* Chỗ ngồi chưa được giải phóng */
         if (seatEntity.getSeatStatus().equals(SeatStatus.NON_EMPTY))
             throw new BadRequestException("pos@seatNonEmpty@" + payload.getSeatGuid());
 
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(payload.getSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@seatNotInAnyStore@ " + payload.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@seatNotInAnyStore@ " + payload.getSeatGuid()));
 
         AreaEntity areaEntity = posAreaRepository.findOneByGuid(seatEntity.getAreaGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@areaNotFound@ " + seatEntity.getAreaGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@areaNotFound@ " + seatEntity.getAreaGuid()));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
@@ -129,10 +129,10 @@ public class PosOrderService {
     @Transactional
     public PosOrderDTO updateOrder(PosOrderUpdateDTO payload, String currentUser) {
         OrderEntity orderEntity = posOrderRepository.findOneByGuid((payload.getOrderGuid()))
-                .orElseThrow(() -> new ResourceNotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
 
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getOrderCustomerPhone()));
+                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getOrderCustomerPhone()));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
@@ -142,7 +142,7 @@ public class PosOrderService {
 
         /* Tạo thông báo */
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@seatNotFound@: " + orderEntity.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@seatNotFound@: " + orderEntity.getSeatGuid()));
 
         StoreOrderEntity storeOrderEntity = posStoreOrderService.createStoreOrder(
                 storeEntity.getGuid(),
@@ -190,7 +190,7 @@ public class PosOrderService {
 
     public PosOrderDTO getSeatCurrentOrder(String seatGuid) {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + seatGuid));
+                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + seatGuid));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
@@ -218,10 +218,10 @@ public class PosOrderService {
     @Transactional
     public void receiveOrder(String orderGuid, String currentUser) {
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("pos@orderNotFound@" + orderGuid));
+                .orElseThrow(() -> new NotFoundException("pos@orderNotFound@" + orderGuid));
 
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
@@ -254,13 +254,13 @@ public class PosOrderService {
     @Transactional
     public void purchaseOrder(PosOrderPurchaseDTO payload, String currentUser) {
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
 
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@seatNotFound@" + orderEntity.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@seatNotFound@" + orderEntity.getSeatGuid()));
 
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
 
         if (!orderEntity.getOrderStatus().equals(OrderStatus.RECEIVED))
             throw new BadRequestException("pos@orderStatusNotValid@" + payload.getOrderGuid());
@@ -320,10 +320,10 @@ public class PosOrderService {
     @Transactional
     public void cancelOrder(PosOrderCancelDTO payload, String currentUser) {
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
 
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
@@ -353,26 +353,26 @@ public class PosOrderService {
     @Transactional
     public void changeSeat(PosOrderSeatChangeDTO payload, String currentUser) {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(payload.getCurrentSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + payload.getCurrentSeatGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + payload.getCurrentSeatGuid()));
 
         /* Không phận sự, miễn vào */
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         StoreEntity storeNewSeat = posStoreRepository.findOneBySeatGuid(payload.getNewSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + payload.getNewSeatGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + payload.getNewSeatGuid()));
 
         /* Nếu 2 vị trí không cùng trong một cửa hàng => không hợp lệ */
         if (!storeEntity.getGuid().equals(storeNewSeat.getGuid()))
             throw new BadRequestException("pos@seatsNotInTheSameStore@" + payload.getCurrentSeatGuid() + ";" + payload.getNewSeatGuid());
 
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
 
         SeatEntity currentSeat = posSeatRepository.findOneByGuid(payload.getCurrentSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@seatNotFound@" + payload.getCurrentSeatGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@seatNotFound@" + payload.getCurrentSeatGuid()));
 
         SeatEntity newSeat = posSeatRepository.findOneByGuid(payload.getNewSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@seatNotFound@" + payload.getNewSeatGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@seatNotFound@" + payload.getNewSeatGuid()));
 
         /* Nếu mã đơn được lưu ở vị trí hiện tại khác với mã đơn gửi từ client (payload) => không hợp lệ */
         if (currentSeat.getOrderGuid() == null || !currentSeat.getOrderGuid().equals(orderEntity.getGuid()))
@@ -429,15 +429,15 @@ public class PosOrderService {
     @Transactional
     public void changeCustomerPhone(PosOrderCustomerPhoneChangeDTO payload, String currentUser) {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(payload.getSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + payload.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + payload.getSeatGuid()));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
 
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(payload.getSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@seatNotFound@" + payload.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@seatNotFound@" + payload.getSeatGuid()));
 
         if (seatEntity.getOrderGuid() == null || !seatEntity.getOrderGuid().equals(orderEntity.getGuid()))
             throw new BadRequestException("pos@orderNotMatchSeat@orderGuid=" + orderEntity.getGuid() + ";seatOrderGuid=" + seatEntity.getOrderGuid());

@@ -8,7 +8,7 @@ import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.pos.repository.PosOrderProductRepository;
 import vn.com.buaansach.web.pos.repository.PosOrderRepository;
 import vn.com.buaansach.web.pos.repository.PosProductRepository;
@@ -61,7 +61,7 @@ public class PosOrderProductService {
 
                     ProductEntity product = mapProduct.get(entity.getProductGuid());
 
-                    if (product == null) throw new ResourceNotFoundException("pos@productNotFound@" + entity.getProductGuid());
+                    if (product == null) throw new NotFoundException("pos@productNotFound@" + entity.getProductGuid());
                     if (product.getProductStatus().equals(ProductStatus.STOP_TRADING)) throw new BadRequestException("pos@productStopTrading@" + product.getGuid());
 
                     entity.setOrderProductRootPrice(product.getProductRootPrice());
@@ -81,7 +81,7 @@ public class PosOrderProductService {
         posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
 
         OrderProductEntity orderProductEntity = posOrderProductRepository.findOneByGuid(payload.getOrderProductGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@orderProductNotFound@" + payload.getOrderProductGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@orderProductNotFound@" + payload.getOrderProductGuid()));
 
         if (orderProductEntity.getOrderProductStatus().equals(OrderProductStatus.PREPARING)) {
             orderProductEntity.setOrderProductStatus(OrderProductStatus.SERVED);
@@ -125,7 +125,7 @@ public class PosOrderProductService {
         posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
 
         OrderProductEntity orderProductEntity = posOrderProductRepository.findOneByGuid(payload.getOrderProductGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@orderProductNotFound@" + payload.getOrderProductGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@orderProductNotFound@" + payload.getOrderProductGuid()));
 
         /* chỉ thực hiện hủy orderProduct khi trạng thái khác trạng thái CANCELLED...*/
         if (!orderProductEntity.getOrderProductStatus().toString().contains("CANCELLED")) {
@@ -139,7 +139,7 @@ public class PosOrderProductService {
 
             /* Tính lại giá trị đơn hàng */
             OrderEntity orderEntity = posOrderRepository.findOneByGuid((orderProductEntity.getOrderGuid()))
-                    .orElseThrow(() -> new ResourceNotFoundException("pos@orderNotFound@" + orderProductEntity.getOrderGuid()));
+                    .orElseThrow(() -> new NotFoundException("pos@orderNotFound@" + orderProductEntity.getOrderGuid()));
             List<PosOrderProductDTO> listPosOrderProductDTO = posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(orderProductEntity.getOrderGuid());
             int totalAmount = calculateTotalAmount(listPosOrderProductDTO);
             orderEntity.setOrderTotalAmount(totalAmount);

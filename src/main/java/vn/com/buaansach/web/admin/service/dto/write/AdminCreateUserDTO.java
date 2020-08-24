@@ -1,47 +1,59 @@
 package vn.com.buaansach.web.admin.service.dto.write;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import vn.com.buaansach.entity.enumeration.UserType;
+import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.util.Constants;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
-/**
- * for admin only
- */
 @Data
+@NoArgsConstructor
 public class AdminCreateUserDTO {
-    @Size(max = 20)
-    private String code;
-
+    @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
-    private String firstName;
-
-    @Size(min = 1, max = 50)
-    private String lastName;
-
-    @Size(min = 1, max = 50)
-    private String login;
+    private String userLogin;
 
     @Email
-    @Size(min = 5, max = 255)
-    private String email;
+    @Size(max = 255)
+    private String userEmail;
 
     @Pattern(regexp = Constants.PHONE_REGEX)
-    private String phone;
+    @Size(max = 20)
+    private String userPhone;
 
     @Size(min = 4, max = 100)
-    private String password;
+    private String userPassword;
 
-    private boolean activated = true;
+    private boolean userActivated;
 
-    @Size(max = 10)
-    private String langKey;
+    private UserType userType;
 
     private Set<String> authorities;
 
-    public AdminCreateUserDTO() {
+    /* Profile */
+    @Size(min = 1, max = 50)
+    private String fullName;
+
+    @Size(min = 1, max = 10)
+    private String langKey;
+
+    public AdminCreateUserDTO(AdminCreateOrUpdateStoreUserDTO dto) {
+        this.userLogin = dto.getUserLogin();
+        this.userEmail = dto.getUserEmail();
+        this.userPhone = dto.getUserPhone();
+        this.userPassword = dto.getUserPassword();
+        this.userActivated = true;
+        this.userType = UserType.INTERNAL;
+        Set<String> authorities = new HashSet<>();
+        authorities.add(AuthoritiesConstants.INTERNAL_USER);
+        this.authorities = authorities;
+        this.fullName = dto.getFullName();
+        this.langKey = Constants.DEFAULT_LANGUAGE;
     }
 }

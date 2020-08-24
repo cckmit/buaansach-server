@@ -8,7 +8,7 @@ public class BadRequestException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     public BadRequestException() {
-        super("Bad request!");
+        super(ErrorCode.BAD_REQUEST);
     }
 
     public BadRequestException(String message) {

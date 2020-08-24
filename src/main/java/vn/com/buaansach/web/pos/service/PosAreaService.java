@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.pos.repository.PosAreaRepository;
 import vn.com.buaansach.web.pos.repository.PosSeatRepository;
 import vn.com.buaansach.web.pos.repository.PosStoreRepository;
@@ -29,7 +29,7 @@ public class PosAreaService {
         posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
 
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFound@" + storeGuid));
+                .orElseThrow(() -> new NotFoundException("pos@storeNotFound@" + storeGuid));
 
         List<AreaEntity> listArea = posAreaRepository.findByStoreGuidAndAreaActivated(storeEntity.getGuid(), true);
         List<PosSeatDTO> listSeat = posSeatRepository.findListPosSeatDTOByStoreGuid(storeEntity.getGuid());
@@ -48,7 +48,7 @@ public class PosAreaService {
         posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
 
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFound@" + storeGuid));
+                .orElseThrow(() -> new NotFoundException("pos@storeNotFound@" + storeGuid));
         return posAreaRepository.findByStoreGuidAndAreaActivated(storeEntity.getGuid(), true)
                 .stream()
                 .map(PosAreaDTO::new)

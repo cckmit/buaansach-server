@@ -8,7 +8,7 @@ import vn.com.buaansach.entity.enumeration.DiscountType;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.OrderType;
 import vn.com.buaansach.entity.order.OrderEntity;
-import vn.com.buaansach.web.user.service.dto.AuditDTO;
+import vn.com.buaansach.core.service.dto.AuditDTO;
 
 import java.time.Instant;
 import java.util.ArrayList;

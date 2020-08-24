@@ -17,7 +17,7 @@ import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
 
 import java.util.List;
 
-@Secured(AuthoritiesConstants.USER)
+@Secured(AuthoritiesConstants.INTERNAL_USER)
 @RestController
 @RequestMapping("/api/v1/pos/sale-report")
 @RequiredArgsConstructor

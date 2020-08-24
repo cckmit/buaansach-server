@@ -5,6 +5,7 @@ import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 import vn.com.buaansach.entity.store.StoreUserEntity;
 import vn.com.buaansach.entity.user.UserEntity;
+import vn.com.buaansach.entity.user.UserProfileEntity;
 
 import java.util.UUID;
 
@@ -13,13 +14,13 @@ public class PosStoreUserDTO {
     private UUID guid;
     private StoreUserRole storeUserRole;
     private StoreUserStatus storeUserStatus;
+    private boolean storeUserActivated;
     private UUID storeGuid;
     private String userLogin;
 
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phone;
+    private String userEmail;
+    private String userPhone;
+    private String fullName;
 
     public PosStoreUserDTO() {
 
@@ -29,6 +30,7 @@ public class PosStoreUserDTO {
         this.guid = storeUserEntity.getGuid();
         this.storeUserRole = storeUserEntity.getStoreUserRole();
         this.storeUserStatus = storeUserEntity.getStoreUserStatus();
+        this.storeUserActivated = storeUserEntity.isStoreUserActivated();
         this.storeGuid = storeUserEntity.getStoreGuid();
         this.userLogin = storeUserEntity.getUserLogin();
     }
@@ -40,9 +42,8 @@ public class PosStoreUserDTO {
         this.storeGuid = storeUserEntity.getStoreGuid();
         this.userLogin = storeUserEntity.getUserLogin();
 
-        this.firstName = userEntity.getFirstName();
-        this.lastName = userEntity.getLastName();
-        this.email = userEntity.getEmail();
-        this.phone = userEntity.getPhone();
+        this.userEmail = userEntity.getUserEmail();
+        this.userPhone = userEntity.getUserPhone();
+        this.fullName = userEntity.getUserProfile().getFullName();
     }
 }

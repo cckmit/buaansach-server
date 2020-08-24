@@ -6,7 +6,7 @@ import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.enumeration.StoreProductStatus;
 import vn.com.buaansach.entity.store.StoreProductEntity;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.admin.repository.AdminProductRepository;
 import vn.com.buaansach.web.admin.repository.AdminStoreProductRepository;
 import vn.com.buaansach.web.admin.repository.AdminStoreRepository;
@@ -25,10 +25,10 @@ public class AdminStoreProductService {
 
     public AdminStoreProductDTO addProductToStore(AdminStoreProductDTO payload) {
         adminStoreRepository.findOneByGuid(payload.getStoreGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + payload.getStoreGuid()));
+                .orElseThrow(() -> new NotFoundException("admin@storeNotFound@" + payload.getStoreGuid()));
 
         ProductEntity productEntity = adminProductRepository.findOneByGuid(payload.getProductGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("admin@productNotFound@" + payload.getProductGuid()));
+                .orElseThrow(() -> new NotFoundException("admin@productNotFound@" + payload.getProductGuid()));
 
         StoreProductEntity storeProductEntity = new StoreProductEntity();
         storeProductEntity.setGuid(UUID.randomUUID());
@@ -40,7 +40,7 @@ public class AdminStoreProductService {
 
     public List<AdminStoreProductDTO> addAllProductToStore(String storeGuid) {
         adminStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + storeGuid));
+                .orElseThrow(() -> new NotFoundException("admin@storeNotFound@" + storeGuid));
 
         List<ProductEntity> listProduct = adminProductRepository.findAllProductNotInStoreExcept(UUID.fromString(storeGuid), ProductStatus.STOP_TRADING);
         List<StoreProductEntity> listStoreProduct = new ArrayList<>();
@@ -59,7 +59,7 @@ public class AdminStoreProductService {
     public AdminStoreProductDTO updateStoreProduct(AdminStoreProductDTO payload) {
 
         StoreProductEntity storeProductEntity = adminStoreProductRepository.findOneByGuid(payload.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("admin@storeProductNotFound@" + payload.getGuid()));
+                .orElseThrow(() -> new NotFoundException("admin@storeProductNotFound@" + payload.getGuid()));
 
         storeProductEntity.setStoreProductStatus(payload.getStoreProductStatus());
         payload.updateAudit(adminStoreProductRepository.save(storeProductEntity));
@@ -73,7 +73,7 @@ public class AdminStoreProductService {
     public void deleteStoreProduct(String storeProductGuid) {
         StoreProductEntity storeProductEntity = adminStoreProductRepository
                 .findOneByGuid(UUID.fromString(storeProductGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + storeProductGuid));
+                .orElseThrow(() -> new NotFoundException("admin@storeNotFound@" + storeProductGuid));
         adminStoreProductRepository.delete(storeProductEntity);
     }
 

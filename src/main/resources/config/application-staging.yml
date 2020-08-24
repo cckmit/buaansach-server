@@ -47,5 +47,4 @@ app:
   mail:
     enable: true
     from: ${EMAIL_ACCOUNT}
-    send-creation-mail: false
     cms-ui-url: "https://pos.ductran.tech"

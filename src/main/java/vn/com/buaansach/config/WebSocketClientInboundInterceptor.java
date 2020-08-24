@@ -9,7 +9,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import vn.com.buaansach.exception.AccessDeniedException;
+import vn.com.buaansach.exception.ForbiddenException;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 
 public class WebSocketClientInboundInterceptor implements ChannelInterceptor {
@@ -20,7 +20,7 @@ public class WebSocketClientInboundInterceptor implements ChannelInterceptor {
         if (StompCommand.SUBSCRIBE.equals(headerAccessor.getCommand())) {
             AbstractAuthenticationToken authenticationToken = (AbstractAuthenticationToken) message.getHeaders().get("simpUser");
             if (!validateSubscription(authenticationToken, headerAccessor.getDestination())) {
-                throw new AccessDeniedException("No permission for this topic");
+                throw new ForbiddenException("No permission for this topic");
             }
         }
         return message;

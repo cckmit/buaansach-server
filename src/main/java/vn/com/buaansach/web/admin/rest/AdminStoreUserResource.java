@@ -54,10 +54,10 @@ public class AdminStoreUserResource {
         return ResponseEntity.ok(adminStoreUserService.getListStoreUserByStoreGuid(storeGuid));
     }
 
-    @PutMapping("/toggle-account-activation/{storeUserGuid}")
-    public ResponseEntity<Void> toggleAccountActivation(@PathVariable String storeUserGuid) {
-        log.debug("REST request from user [{}] to toggle account activation for [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeUserGuid);
-        adminStoreUserService.toggleAccountActivation(storeUserGuid);
+    @PutMapping("/toggle-activation/{storeUserGuid}")
+    public ResponseEntity<Void> toggleStoreUserActivation(@PathVariable String storeUserGuid) {
+        log.debug("REST request from user [{}] to toggle activation for [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeUserGuid);
+        adminStoreUserService.toggleStoreUserActivation(storeUserGuid);
         return ResponseEntity.noContent().build();
     }
 

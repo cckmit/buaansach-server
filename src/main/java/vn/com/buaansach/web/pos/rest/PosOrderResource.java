@@ -14,7 +14,7 @@ import vn.com.buaansach.web.pos.service.dto.write.*;
 
 import javax.validation.Valid;
 
-@Secured(AuthoritiesConstants.USER)
+@Secured(AuthoritiesConstants.INTERNAL_USER)
 @RestController
 @RequestMapping("/api/v1/pos/order")
 @RequiredArgsConstructor

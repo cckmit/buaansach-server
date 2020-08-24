@@ -7,7 +7,7 @@ import vn.com.buaansach.entity.enumeration.CustomerZaloStatus;
 import vn.com.buaansach.entity.enumeration.Gender;
 import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
-import vn.com.buaansach.web.user.service.dto.AuditDTO;
+import vn.com.buaansach.core.service.dto.AuditDTO;
 
 import java.time.Instant;
 import java.util.UUID;

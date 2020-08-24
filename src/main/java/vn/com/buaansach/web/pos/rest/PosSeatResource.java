@@ -13,7 +13,7 @@ import vn.com.buaansach.web.pos.service.dto.read.PosSeatDTO;
 
 import java.util.List;
 
-@Secured(AuthoritiesConstants.USER)
+@Secured(AuthoritiesConstants.INTERNAL_USER)
 @RestController
 @RequestMapping("/api/v1/pos/seat")
 @RequiredArgsConstructor

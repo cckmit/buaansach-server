@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.BatchSize;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
-import vn.com.buaansach.entity.enumeration.Gender;
+import vn.com.buaansach.entity.enumeration.UserType;
 import vn.com.buaansach.util.Constants;
 
 import javax.persistence.*;
@@ -33,57 +33,31 @@ public class UserEntity extends AbstractAuditingEntity implements Serializable {
     @Column(unique = true)
     private UUID guid;
 
-    @Column(unique = true)
-    private String code;
-
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
     @Column(length = 50, unique = true, nullable = false)
-    private String login;
-
-    @Size(min = 60, max = 60)
-    @Column(name = "password_hash", length = 60, nullable = false)
-    @JsonIgnore
-    private String password;
-
-    @Column(nullable = false)
-    private boolean activated = false;
-
-    @Column(name = "disabled_by_admin", nullable = false)
-    private boolean disabledByAdmin = false;
-
-    @Size(min = 1, max = 50)
-    @Column(name = "first_name", length = 50)
-    private String firstName;
-
-    @Size(min = 1, max = 50)
-    @Column(name = "last_name", length = 50)
-    private String lastName;
-
-    @Enumerated(EnumType.STRING)
-    private Gender gender = Gender.UNDEFINED;
-
-    private Instant birthday;
-
-    @Size(max = 255)
-    private String address;
+    private String userLogin;
 
     @Email
     @Size(min = 5, max = 100)
     @Column(unique = true)
-    private String email;
+    private String userEmail;
 
     @Pattern(regexp = Constants.PHONE_REGEX)
-    @Column(unique = true)
-    private String phone;
+    @Size(min = 10, max = 20)
+    @Column(length = 20, unique = true)
+    private String userPhone;
 
-    @Size(min = 2, max = 10)
-    @Column(name = "lang_key", length = 10)
-    private String langKey;
+    @Size(min = 60, max = 60)
+    @Column(length = 60, nullable = false)
+    @JsonIgnore
+    private String userPassword;
 
-    @Size(max = 255)
-    @Column(name = "image_url")
-    private String imageUrl;
+    @Column(nullable = false)
+    private boolean userActivated = false;
+
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
 
     @JsonIgnore
     @Size(max = 20)
@@ -107,4 +81,9 @@ public class UserEntity extends AbstractAuditingEntity implements Serializable {
             inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
     @BatchSize(size = 20)
     private Set<AuthorityEntity> authorities = new HashSet<>();
+
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade =  CascadeType.ALL,
+            mappedBy = "userAccount")
+    private UserProfileEntity userProfile;
 }

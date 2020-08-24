@@ -14,7 +14,7 @@ import vn.com.buaansach.web.guest.rest.GuestStoreResource;
 import vn.com.buaansach.web.pos.service.PosVoucherService;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherDTO;
 
-@Secured(AuthoritiesConstants.USER)
+@Secured(AuthoritiesConstants.INTERNAL_USER)
 @RestController
 @RequestMapping("/api/v1/pos/voucher")
 @RequiredArgsConstructor

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.guest.websocket.dto.ActivityDTO;
-import vn.com.buaansach.web.user.rest.AccountResource;
+import vn.com.buaansach.web.common.rest.CommonUserResource;
 
 import java.util.Set;
 
@@ -19,7 +19,7 @@ import java.util.Set;
 @RequestMapping("/api/v1/admin/tracker")
 public class ActivityResource {
     private final String ENTITY_NAME = "tracker";
-    private final Logger log = LoggerFactory.getLogger(AccountResource.class);
+    private final Logger log = LoggerFactory.getLogger(CommonUserResource.class);
 
     @GetMapping("/active-users")
     public ResponseEntity<Set<ActivityDTO>> getActiveUsers() {

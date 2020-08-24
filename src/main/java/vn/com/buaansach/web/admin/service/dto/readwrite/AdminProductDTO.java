@@ -6,7 +6,7 @@ import vn.com.buaansach.entity.common.CategoryEntity;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.enumeration.ProductType;
-import vn.com.buaansach.web.user.service.dto.AuditDTO;
+import vn.com.buaansach.core.service.dto.AuditDTO;
 
 import javax.validation.constraints.Size;
 import java.util.List;

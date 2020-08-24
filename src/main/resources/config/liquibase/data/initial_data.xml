@@ -12,6 +12,13 @@
             <column name="created_date" type="timestamp"/>
         </loadData>
     </changeSet>
+    <changeSet id="init_user_profile_data" author="ductv">
+        <loadData
+                file="config/liquibase/data/csv/user_profile.csv"
+                separator=";"
+                tableName="bas_user_profile">
+        </loadData>
+    </changeSet>
     <changeSet id="init_authority_data" author="ductv">
         <loadData
                 file="config/liquibase/data/csv/authority.csv"
@@ -25,7 +32,7 @@
                 file="config/liquibase/data/csv/user_authority.csv"
                 separator=";"
                 tableName="bas_user_authority">
-            <column name="user_id" type="numeric"/>
+            <column name="user_id" type="bigint"/>
         </loadData>
     </changeSet>
 </databaseChangeLog>

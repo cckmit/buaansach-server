@@ -7,7 +7,7 @@ import vn.com.buaansach.entity.customer.CustomerEntity;
 import vn.com.buaansach.entity.enumeration.CustomerZaloStatus;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.util.sequence.CustomerCodeGenerator;
 import vn.com.buaansach.util.RandomUtil;
@@ -31,7 +31,7 @@ public class PosCustomerService {
     @Transactional
     public PosCustomerDTO posCreateCustomer(PosCustomerDTO payload) {
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(payload.getCustomerStoreGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFound@" + payload.getCustomerStoreGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@storeNotFound@" + payload.getCustomerStoreGuid()));
 
         posStoreSecurity.blockAccessIfNotInStore(payload.getCustomerStoreGuid());
 
@@ -49,7 +49,7 @@ public class PosCustomerService {
 
     public PosCustomerDTO getCustomerByPhone(String customerPhone) {
         return new PosCustomerDTO(posCustomerRepository.findOneByCustomerPhone(customerPhone)
-                .orElseThrow(() -> new ResourceNotFoundException("pos@customerPhoneNotFound@" + customerPhone)));
+                .orElseThrow(() -> new NotFoundException("pos@customerPhoneNotFound@" + customerPhone)));
     }
 
     @Transactional

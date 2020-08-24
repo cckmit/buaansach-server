@@ -10,10 +10,9 @@ import vn.com.buaansach.entity.common.FileEntity;
 import vn.com.buaansach.entity.common.ProductCategoryEntity;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
-import vn.com.buaansach.entity.enumeration.StoreProductStatus;
 import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.admin.repository.AdminCategoryRepository;
 import vn.com.buaansach.web.admin.repository.AdminProductCategoryRepository;
@@ -21,7 +20,7 @@ import vn.com.buaansach.web.admin.repository.AdminProductRepository;
 import vn.com.buaansach.web.admin.repository.AdminStoreProductRepository;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminProductDTO;
 import vn.com.buaansach.web.admin.service.mapper.AdminProductMapper;
-import vn.com.buaansach.web.user.service.FileService;
+import vn.com.buaansach.web.common.service.FileService;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -73,7 +72,7 @@ public class AdminProductService {
     public AdminProductDTO getProduct(String productGuid) {
         List<CategoryEntity> categories = adminCategoryRepository.findListCategoryByProductGuid(UUID.fromString(productGuid));
         ProductEntity productEntity = adminProductRepository.findOneByGuid(UUID.fromString(productGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("admin@productNotFound@" + productGuid));
+                .orElseThrow(() -> new NotFoundException("admin@productNotFound@" + productGuid));
         return new AdminProductDTO(productEntity, categories);
     }
 
@@ -82,7 +81,7 @@ public class AdminProductService {
         ProductEntity updateEntity = adminProductMapper.dtoToEntity(payload);
 
         ProductEntity currentEntity = adminProductRepository.findOneByGuid(updateEntity.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("admin@productNotFound@" + updateEntity.getGuid()));
+                .orElseThrow(() -> new NotFoundException("admin@productNotFound@" + updateEntity.getGuid()));
 
         /* Delete all product category first */
         adminProductCategoryRepository.deleteByProductGuid(updateEntity.getGuid());
@@ -148,7 +147,7 @@ public class AdminProductService {
     @Transactional
     public void deleteProduct(String productGuid) {
         ProductEntity productEntity = adminProductRepository.findOneByGuid(UUID.fromString(productGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("admin@productNotFound@" + productGuid));
+                .orElseThrow(() -> new NotFoundException("admin@productNotFound@" + productGuid));
         fileService.deleteByUrl(productEntity.getProductImageUrl());
         fileService.deleteByUrl(productEntity.getProductThumbnailUrl());
 

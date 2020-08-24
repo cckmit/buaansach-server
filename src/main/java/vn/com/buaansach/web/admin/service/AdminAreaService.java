@@ -10,7 +10,7 @@ import vn.com.buaansach.entity.order.PaymentEntity;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreOrderEntity;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.admin.repository.*;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminAreaDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateAreaDTO;
@@ -56,7 +56,7 @@ public class AdminAreaService {
     @Transactional
     public AdminAreaDTO createArea(AdminCreateAreaDTO request) {
         adminStoreRepository.findOneByGuid(request.getStoreGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + request.getStoreGuid()));
+                .orElseThrow(() -> new NotFoundException("admin@storeNotFound@" + request.getStoreGuid()));
 
         AreaEntity areaEntity = new AreaEntity();
         areaEntity.setGuid(UUID.randomUUID());
@@ -77,7 +77,7 @@ public class AdminAreaService {
 
     public List<AdminAreaDTO> getListAreaByStore(String storeGuid) {
         adminStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("admin@storeNotFound@" + storeGuid));
+                .orElseThrow(() -> new NotFoundException("admin@storeNotFound@" + storeGuid));
 
         List<AreaEntity> listArea = adminAreaRepository.findByStoreGuid(UUID.fromString(storeGuid));
         List<SeatEntity> listSeat = adminSeatRepository.findListSeatByStoreGuid(UUID.fromString(storeGuid));
@@ -94,7 +94,7 @@ public class AdminAreaService {
 
     public AdminAreaDTO updateArea(AdminAreaDTO updateEntity) {
         AreaEntity currentEntity = adminAreaRepository.findOneByGuid(updateEntity.getGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("admin@areaNotFound@" + updateEntity.getGuid()));
+                .orElseThrow(() -> new NotFoundException("admin@areaNotFound@" + updateEntity.getGuid()));
 
         currentEntity.setAreaName(updateEntity.getAreaName());
         currentEntity.setAreaColor(updateEntity.getAreaColor());
@@ -104,7 +104,7 @@ public class AdminAreaService {
     @Transactional
     public void deleteArea(String areaGuid) {
         AreaEntity areaEntity = adminAreaRepository.findOneByGuid(UUID.fromString(areaGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("admin@areaNotFound@" + areaGuid));
+                .orElseThrow(() -> new NotFoundException("admin@areaNotFound@" + areaGuid));
 
         List<SeatEntity> listSeat = adminSeatRepository.findByAreaGuid(areaEntity.getGuid());
 
@@ -131,7 +131,7 @@ public class AdminAreaService {
 
     public void toggleArea(String areaGuid) {
         AreaEntity areaEntity = adminAreaRepository.findOneByGuid(UUID.fromString(areaGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("admin@areaNotFound@" + areaGuid));
+                .orElseThrow(() -> new NotFoundException("admin@areaNotFound@" + areaGuid));
         areaEntity.setAreaActivated(!areaEntity.isAreaActivated());
         adminAreaRepository.save(areaEntity);
     }

@@ -3,7 +3,7 @@ package vn.com.buaansach.web.pos.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.store.StoreUserEntity;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.repository.PosStoreUserRepository;
 import vn.com.buaansach.web.pos.service.dto.read.PosStoreUserDTO;
@@ -28,7 +28,7 @@ public class PosStoreUserService {
 
     public String getCurrentStoreUserRole(String storeGuid) {
         StoreUserEntity storeUserEntity = posStoreUserRepository.findOneByUserLoginAndStoreGuid(SecurityUtils.getCurrentUserLogin(), UUID.fromString(storeGuid))
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storeUserNotFound@" + storeGuid + ";" + SecurityUtils.getCurrentUserLogin()));
+                .orElseThrow(() -> new NotFoundException("pos@storeUserNotFound@" + storeGuid + ";" + SecurityUtils.getCurrentUserLogin()));
         return storeUserEntity.getStoreUserRole().name();
     }
 }

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.StoreProductStatus;
 import vn.com.buaansach.entity.store.StoreProductEntity;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.web.pos.repository.PosStoreProductRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
@@ -30,7 +30,7 @@ public class PosStoreProductService {
     public void changeStoreProductStatus(PosStoreProductStatusChangeDTO payload) {
         posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
         StoreProductEntity storeProductEntity = posStoreProductRepository.findOneByGuid(payload.getStoreProductGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storeProductNotFound@" + payload.getStoreProductGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@storeProductNotFound@" + payload.getStoreProductGuid()));
         storeProductEntity.setStoreProductStatus(payload.getStoreProductStatus());
         posStoreProductRepository.save(storeProductEntity);
 

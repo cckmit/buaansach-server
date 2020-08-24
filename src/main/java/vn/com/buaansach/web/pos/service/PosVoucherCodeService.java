@@ -10,7 +10,7 @@ import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.exception.BadRequestException;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.util.WebSocketConstants;
@@ -46,7 +46,7 @@ public class PosVoucherCodeService {
 
     public PosVoucherCodeDTO getVoucherCodeInfo(String voucherCode) {
         return posVoucherCodeRepository.getPosVoucherCodeDTO(voucherCode)
-                .orElseThrow(() -> new ResourceNotFoundException("pos@voucherCodeNotFound@" + voucherCode));
+                .orElseThrow(() -> new NotFoundException("pos@voucherCodeNotFound@" + voucherCode));
     }
 
     private boolean isVoucherCodeValid(PosVoucherCodeDTO dto, UUID storeGuid) {
@@ -78,7 +78,7 @@ public class PosVoucherCodeService {
         PosVoucherCodeDTO voucherCodeDTO = posVoucherCodeRepository.getPosVoucherCodeDTO(payload.getVoucherCode())
                 .orElseThrow(() -> {
                     log.error("Reject request from user [{}] to apply voucher code : [{}]", SecurityUtils.getCurrentUserLogin(), payload);
-                    throw new ResourceNotFoundException("pos@voucherCodeNotFound@" + payload.getVoucherCode());
+                    throw new NotFoundException("pos@voucherCodeNotFound@" + payload.getVoucherCode());
                 });
         if (voucherCodeDTO.getCustomerPhone() != null && !voucherCodeDTO.getCustomerPhone().equals(payload.getCustomerPhone())) {
             log.error("Reject request from user [{}] to apply voucher code : [{}]", SecurityUtils.getCurrentUserLogin(), payload);
@@ -87,9 +87,9 @@ public class PosVoucherCodeService {
         /* Kiểm tra các điều kiện của voucherCode trước khi thực hiện áp dụng */
         if (isVoucherCodeValid(voucherCodeDTO, null)) {
             OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
-                    .orElseThrow(() -> new ResourceNotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
+                    .orElseThrow(() -> new NotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
             StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
-                    .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
+                    .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
             posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
             /* Tăng lượt sử dụng của mã code */
@@ -122,9 +122,9 @@ public class PosVoucherCodeService {
     @Transactional
     public void cancelVoucherCode(PosOrderVoucherCodeDTO payload) {
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         VoucherCodeEntity voucherCodeEntity = posVoucherCodeRepository.findOneByVoucherCodeForUpdate(orderEntity.getVoucherCode())
@@ -205,7 +205,7 @@ public class PosVoucherCodeService {
 
     public void updateFirstRegVoucherCode(PosUpdateVoucherCodeDTO payload) {
         VoucherCodeEntity voucherCodeEntity = posVoucherCodeRepository.findOneByVoucherCode(payload.getVoucherCode())
-                .orElseThrow(() -> new ResourceNotFoundException("pos@voucherCodeNotFound@" + payload.getVoucherCode()));
+                .orElseThrow(() -> new NotFoundException("pos@voucherCodeNotFound@" + payload.getVoucherCode()));
         voucherCodeEntity.setVoucherCodeClaimStatus(payload.getVoucherCodeClaimStatus());
         if (payload.getVoucherCodeClaimStatus().equals(VoucherCodeClaimStatus.CLAIMED)) {
             voucherCodeEntity.setVoucherCodeUsable(true);

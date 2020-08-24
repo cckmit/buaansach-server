@@ -5,7 +5,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import vn.com.buaansach.entity.user.UserEntity;
-import vn.com.buaansach.exception.UserNotActivatedException;
+import vn.com.buaansach.exception.ErrorCode;
+import vn.com.buaansach.exception.UnauthorizedException;
 
 import java.util.Collection;
 import java.util.List;
@@ -28,9 +29,9 @@ public class UserPrincipal implements UserDetails {
         this.activated = activated;
     }
 
-    public static UserPrincipal create(String lowercaseLogin, UserEntity userEntity) {
-        if (!userEntity.isActivated()) {
-            throw new UserNotActivatedException("User " + lowercaseLogin + " is deactivated");
+    public static UserPrincipal create(UserEntity userEntity) {
+        if (!userEntity.isUserActivated()) {
+            throw new UnauthorizedException(ErrorCode.USER_NOT_ACTIVATED);
         }
 
         List<GrantedAuthority> authorities = userEntity.getAuthorities().stream().map(authority ->
@@ -39,9 +40,9 @@ public class UserPrincipal implements UserDetails {
 
         return new UserPrincipal(
                 userEntity.getId(),
-                userEntity.getLogin(),
-                userEntity.getPassword(),
-                userEntity.isActivated(),
+                userEntity.getUserLogin(),
+                userEntity.getUserPassword(),
+                userEntity.isUserActivated(),
                 authorities
         );
     }

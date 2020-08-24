@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.customer.CustomerOrderEntity;
 import vn.com.buaansach.entity.enumeration.CustomerCareStatus;
-import vn.com.buaansach.exception.ResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.customer_care.repository.CustomerCareCustomerOrderRepository;
 import vn.com.buaansach.web.customer_care.service.dto.readwrite.CustomerCareCustomerOrderDTO;
 import vn.com.buaansach.web.customer_care.service.dto.write.CustomerCareCustomerOrderParamsDTO;
@@ -45,7 +45,7 @@ public class CustomerCareCustomerOrderService {
 
     public void updateCustomerOrder(CustomerCareCustomerOrderDTO payload) {
         CustomerOrderEntity customerOrderEntity = customerCareCustomerOrderRepository.findOneByGuid(payload.getGuid())
-                .orElseThrow(()-> new ResourceNotFoundException("customerCare@customerOrderNotFound@" + payload.getGuid()));
+                .orElseThrow(()-> new NotFoundException("customerCare@customerOrderNotFound@" + payload.getGuid()));
         customerOrderEntity.setCustomerCareStatus(payload.getCustomerCareStatus());
         customerOrderEntity.setCustomerOrderFeedback(payload.getCustomerOrderFeedback());
         customerCareCustomerOrderRepository.save(customerOrderEntity);
