@@ -33,11 +33,11 @@ public class OrderFeedbackEntity extends AbstractAuditingEntity implements Seria
 
     @Enumerated(EnumType.STRING)
     @Column(name = "service_quality_rating")
-    private Rating serviceQualityRating;
+    private int serviceQualityRating;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "product_quality_rating")
-    private Rating productQualityRating;
+    private int productQualityRating;
 
     @Size(max = 500)
     @Column(name = "order_feedback_content", length = 500)

@@ -9,7 +9,7 @@ import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.order.PaymentEntity;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
-import vn.com.buaansach.entity.store.StoreOrderEntity;
+import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.admin.repository.*;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminAreaDTO;
@@ -114,7 +114,7 @@ public class AdminAreaService {
         List<UUID> listOrderGuid = listOrder.stream().map(OrderEntity::getGuid).collect(Collectors.toList());
         List<PaymentEntity> listPayment = adminPaymentRepository.findByOrderGuidIn(listOrderGuid);
         List<OrderProductEntity> listOrderProduct = adminOrderProductRepository.findByOrderGuidIn(listOrderGuid);
-        List<StoreOrderEntity> listStoreOrder = adminStoreOrderRepository.findByAreaGuid(UUID.fromString(areaGuid));
+        List<StoreOrderNotificationEntity> listStoreOrder = adminStoreOrderRepository.findByAreaGuid(UUID.fromString(areaGuid));
 
         /* delete all orders, order products, payments related to all seat of area */
         adminPaymentRepository.deleteInBatch(listPayment);

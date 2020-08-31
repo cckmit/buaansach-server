@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.enumeration.StoreOrderStatus;
 import vn.com.buaansach.entity.enumeration.StoreOrderType;
-import vn.com.buaansach.entity.store.StoreOrderEntity;
+import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
 import vn.com.buaansach.core.service.dto.AuditDTO;
 
 import java.util.UUID;
@@ -28,23 +28,23 @@ public class PosStoreOrderDTO extends AuditDTO {
     public PosStoreOrderDTO() {
     }
 
-    public PosStoreOrderDTO(StoreOrderEntity entity) {
-        this.guid = entity.getGuid();
-        this.storeOrderStatus = entity.getStoreOrderStatus();
-        this.storeOrderType = entity.getStoreOrderType();
-        this.firstSeenBy = entity.getFirstSeenBy();
-        this.firstHideBy = entity.getFirstHideBy();
-        this.hideStoreOrder = entity.isHideStoreOrder();
-        this.storeGuid = entity.getStoreGuid();
-        this.areaGuid = entity.getAreaGuid();
-        this.seatGuid = entity.getSeatGuid();
-        this.orderGuid = entity.getOrderGuid();
-        this.orderProductGroup = entity.getOrderProductGroup();
-        this.numberOfProduct = entity.getNumberOfProduct();
-
-        this.createdBy = entity.getCreatedBy();
-        this.createdDate = entity.getCreatedDate();
-        this.lastModifiedBy = entity.getLastModifiedBy();
-        this.lastModifiedDate = entity.getLastModifiedDate();
+    public PosStoreOrderDTO(StoreOrderNotificationEntity entity) {
+//        this.guid = entity.getGuid();
+//        this.storeOrderStatus = entity.getStoreOrderStatus();
+//        this.storeOrderType = entity.getStoreOrderType();
+//        this.firstSeenBy = entity.getFirstSeenBy();
+//        this.firstHideBy = entity.getFirstHiddenBy();
+//        this.hideStoreOrder = entity.isStoreOrderHidden();
+//        this.storeGuid = entity.getStoreGuid();
+//        this.areaGuid = entity.getAreaGuid();
+//        this.seatGuid = entity.getSeatGuid();
+//        this.orderGuid = entity.getOrderGuid();
+//        this.orderProductGroup = entity.getOrderProductGroup();
+//        this.numberOfProduct = entity.getNumberOfProduct();
+//
+//        this.createdBy = entity.getCreatedBy();
+//        this.createdDate = entity.getCreatedDate();
+//        this.lastModifiedBy = entity.getLastModifiedBy();
+//        this.lastModifiedDate = entity.getLastModifiedDate();
     }
 }

@@ -1,4 +1,4 @@
-package vn.com.buaansach.entity.store;
+package vn.com.buaansach.entity.sale;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

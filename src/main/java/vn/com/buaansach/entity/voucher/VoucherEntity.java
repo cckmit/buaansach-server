@@ -49,8 +49,8 @@ public class VoucherEntity extends AbstractAuditingEntity implements Serializabl
     @Column(name = "voucher_conditions", length = 500)
     private String voucherConditions;
 
-    @Column(name = "voucher_enable")
-    private boolean voucherEnable;
+    @Column(name = "voucher_activated")
+    private boolean voucherActivated;
 
     @Column(name = "number_voucher_code")
     private int numberVoucherCode;

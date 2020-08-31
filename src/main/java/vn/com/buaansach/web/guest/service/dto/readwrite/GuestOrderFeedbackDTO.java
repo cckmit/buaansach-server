@@ -13,8 +13,8 @@ public class GuestOrderFeedbackDTO {
     private UUID guid;
     private UUID orderGuid;
     private OrderFeedbackAction orderFeedbackAction;
-    private Rating serviceQualityRating;
-    private Rating productQualityRating;
+    private int serviceQualityRating;
+    private int productQualityRating;
     @Size(max = 500)
     private String orderFeedbackContent;
 

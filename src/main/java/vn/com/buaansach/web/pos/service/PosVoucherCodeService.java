@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
@@ -38,11 +37,9 @@ public class PosVoucherCodeService {
     private final PosStoreSecurity posStoreSecurity;
     private final PosVoucherCodeRepository posVoucherCodeRepository;
     private final PosVoucherRepository posVoucherRepository;
-    private final PosVoucherInventoryService posVoucherInventoryService;
     private final PosOrderRepository posOrderRepository;
     private final PosStoreRepository posStoreRepository;
     private final PosSocketService posSocketService;
-
 
     public PosVoucherCodeDTO getVoucherCodeInfo(String voucherCode) {
         return posVoucherCodeRepository.getPosVoucherCodeDTO(voucherCode)
@@ -64,10 +61,6 @@ public class PosVoucherCodeService {
         if (dto.getUsageCondition() != null) {
             if (dto.getVoucherCodeUsageCount() >= dto.getUsageCondition().getMaxUsage())
                 throw new BadRequestException("maxUsed");
-        }
-        if (dto.getStoreCondition() != null) {
-            if (!dto.getStoreCondition().getStoreGuid().equals(storeGuid))
-                throw new BadRequestException("invalidStore");
         }
         return true;
     }
@@ -185,14 +178,14 @@ public class PosVoucherCodeService {
         posVoucherRepository.save(voucherEntity);
 
         VoucherCodeEntity voucherCodeEntity = new VoucherCodeEntity();
-        voucherCodeEntity.setCustomerPhone(customerPhone);
-        voucherCodeEntity.setVoucherCodeUsageCount(0);
-        /* Bộ phân CSKH sẽ kiểm tra SĐT đã đăng ký Zalo hay chưa và đổi trạng thái usable sang true */
-        voucherCodeEntity.setVoucherCodeUsable(false);
-        voucherCodeEntity.setVoucherCodeClaimStatus(VoucherCodeClaimStatus.UNSET);
-        voucherCodeEntity.setVoucherGuid(voucherEntity.getGuid());
-
-        posVoucherInventoryService.insertCode(voucherCode);
+//        voucherCodeEntity.setCustomerPhone(customerPhone);
+//        voucherCodeEntity.setVoucherCodeUsageCount(0);
+//        /* Bộ phân CSKH sẽ kiểm tra SĐT đã đăng ký Zalo hay chưa và đổi trạng thái usable sang true */
+//        voucherCodeEntity.setVoucherCodeUsable(false);
+//        voucherCodeEntity.setVoucherCodeClaimStatus(VoucherCodeClaimStatus.UNSET);
+//        voucherCodeEntity.setVoucherGuid(voucherEntity.getGuid());
+//
+//        posVoucherInventoryService.insertCode(voucherCode);
         voucherCodeEntity.setVoucherCode(voucherCode);
         posVoucherCodeRepository.save(voucherCodeEntity);
 
@@ -206,12 +199,12 @@ public class PosVoucherCodeService {
     public void updateFirstRegVoucherCode(PosUpdateVoucherCodeDTO payload) {
         VoucherCodeEntity voucherCodeEntity = posVoucherCodeRepository.findOneByVoucherCode(payload.getVoucherCode())
                 .orElseThrow(() -> new NotFoundException("pos@voucherCodeNotFound@" + payload.getVoucherCode()));
-        voucherCodeEntity.setVoucherCodeClaimStatus(payload.getVoucherCodeClaimStatus());
-        if (payload.getVoucherCodeClaimStatus().equals(VoucherCodeClaimStatus.CLAIMED)) {
-            voucherCodeEntity.setVoucherCodeUsable(true);
-        } else {
-            voucherCodeEntity.setVoucherCodeUsable(false);
-        }
+//        voucherCodeEntity.setVoucherCodeClaimStatus(payload.getVoucherCodeClaimStatus());
+//        if (payload.getVoucherCodeClaimStatus().equals(VoucherCodeClaimStatus.CLAIMED)) {
+//            voucherCodeEntity.setVoucherCodeUsable(true);
+//        } else {
+//            voucherCodeEntity.setVoucherCodeUsable(false);
+//        }
         posVoucherCodeRepository.save(voucherCodeEntity);
     }
 }

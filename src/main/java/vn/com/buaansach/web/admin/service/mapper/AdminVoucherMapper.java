@@ -16,7 +16,7 @@ public class AdminVoucherMapper {
         voucherEntity.setVoucherDiscount(dto.getVoucherDiscount());
         voucherEntity.setVoucherDiscountType(dto.getVoucherDiscountType());
         voucherEntity.setVoucherConditions(dto.getVoucherConditions());
-        voucherEntity.setVoucherEnable(dto.isVoucherEnable());
+//        voucherEntity.setVoucherEnable(dto.isVoucherEnable());
         voucherEntity.setNumberVoucherCode(dto.getNumberVoucherCode());
         return voucherEntity;
     }

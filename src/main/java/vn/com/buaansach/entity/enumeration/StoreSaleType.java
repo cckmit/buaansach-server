@@ -1,6 +1,6 @@
 package vn.com.buaansach.entity.enumeration;
 
 public enum StoreSaleType {
-    PRIMARY,
-    SECONDARY
+    AUTO_APPLY,
+    MANUAL_APPLY
 }

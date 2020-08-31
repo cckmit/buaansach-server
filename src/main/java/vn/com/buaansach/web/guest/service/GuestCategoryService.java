@@ -7,7 +7,7 @@ import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.enumeration.StoreProductStatus;
 import vn.com.buaansach.entity.store.StoreEntity;
-import vn.com.buaansach.web.guest.exception.GuestResourceNotFoundException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.guest.repository.GuestCategoryRepository;
 import vn.com.buaansach.web.guest.repository.GuestProductRepository;
 import vn.com.buaansach.web.guest.repository.GuestStoreProductRepository;
@@ -32,7 +32,7 @@ public class GuestCategoryService {
 
     public List<GuestStoreCategoryDTO> getListGuestStoreCategoryDTO(String seatGuid) {
         StoreEntity storeEntity = guestStoreRepository.findOneBySeatGuid(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new GuestResourceNotFoundException("guest@storeNotFoundWithSeat@" + seatGuid));
+                .orElseThrow(() -> new NotFoundException("guest@storeNotFoundWithSeat@" + seatGuid));
 
         List<CategoryEntity> categories = guestCategoryRepository.findAllCategoryOrderByPositionAsc();
         List<GuestStoreCategoryDTO> result = new ArrayList<>();

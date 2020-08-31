@@ -4,15 +4,23 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet id="create_table_bas_sale_product" author="ductv">
-        <createTable tableName="bas_sale_product">
+    <changeSet id="create_table_bas_store_pay_request_notification" author="ductv">
+        <createTable tableName="bas_store_pay_request_notification">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="sale_guid" type="binary(16)">
+            <column name="store_pay_request_amount" type="int">
                 <constraints nullable="false"/>
             </column>
-            <column name="product_guid" type="binary(16)">
+            <column name="store_pay_request_note" type="varchar(255)"/>
+            <column name="number_of_extra_seat" type="int"/>
+            <column name="list_extra_seat" type="varchar(500)"/>
+            <column name="listExtraOrder" type="varchar(500)"/>
+
+            <column name="order_guid" type="binary(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="store_notification_guid" type="binary(16)">
                 <constraints nullable="false"/>
             </column>
         </createTable>

@@ -26,6 +26,6 @@ public class PosVoucherDTO {
         this.voucherImageUrl = voucherEntity.getVoucherImageUrl();
         this.voucherDiscount = voucherEntity.getVoucherDiscount();
         this.voucherDiscountType = voucherEntity.getVoucherDiscountType();
-        this.voucherEnable = voucherEntity.isVoucherEnable();
+//        this.voucherEnable = voucherEntity.isVoucherEnable();
     }
 }

@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.enumeration.DiscountType;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
-import vn.com.buaansach.entity.voucher.condition.VoucherStoreConditionEntity;
 import vn.com.buaansach.entity.voucher.condition.VoucherTimeConditionEntity;
 import vn.com.buaansach.entity.voucher.condition.VoucherUsageConditionEntity;
 import vn.com.buaansach.core.service.dto.AuditDTO;
@@ -43,7 +42,6 @@ public class AdminVoucherDTO extends AuditDTO {
     /* computed */
     private VoucherTimeConditionEntity timeCondition;
     private VoucherUsageConditionEntity usageCondition;
-    private VoucherStoreConditionEntity storeCondition;
 
     public AdminVoucherDTO() {
     }
@@ -52,11 +50,10 @@ public class AdminVoucherDTO extends AuditDTO {
         assignProperty(entity);
     }
 
-    public AdminVoucherDTO(VoucherEntity entity, VoucherTimeConditionEntity timeCondition, VoucherUsageConditionEntity usageCondition, VoucherStoreConditionEntity storeCondition) {
+    public AdminVoucherDTO(VoucherEntity entity, VoucherTimeConditionEntity timeCondition, VoucherUsageConditionEntity usageCondition) {
         assignProperty(entity);
         this.timeCondition = timeCondition;
         this.usageCondition = usageCondition;
-        this.storeCondition = storeCondition;
     }
 
     private void assignProperty(VoucherEntity entity) {
@@ -67,7 +64,7 @@ public class AdminVoucherDTO extends AuditDTO {
         this.voucherDiscount = entity.getVoucherDiscount();
         this.voucherDiscountType = entity.getVoucherDiscountType();
         this.voucherConditions = entity.getVoucherConditions();
-        this.voucherEnable = entity.isVoucherEnable();
+//        this.voucherEnable = entity.isVoucherEnable();
         this.numberVoucherCode = entity.getNumberVoucherCode();
         this.createdBy = entity.getCreatedBy();
         this.lastModifiedBy = entity.getLastModifiedBy();

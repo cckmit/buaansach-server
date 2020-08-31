@@ -5,9 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.enumeration.StorePayRequestStatus;
-import vn.com.buaansach.entity.store.StorePayRequestEntity;
-import vn.com.buaansach.exception.BadRequestException;
+import vn.com.buaansach.entity.notification.StorePayRequestNotificationEntity;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.pos.repository.PosStorePayRequestRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
@@ -30,7 +28,7 @@ public class PosStorePayRequestService {
 
     public List<PosStorePayRequestDTO> getListStorePayRequest(String storeGuid, Instant startDate, Boolean hidden) {
         posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
-        List<StorePayRequestEntity> list;
+        List<StorePayRequestNotificationEntity> list;
         if (hidden != null) {
             list = posStorePayRequestRepository
                     .findByStoreGuidAndCreatedDateGreaterThanEqualAndHiddenOrderByCreatedDateAsc(UUID.fromString(storeGuid), startDate, hidden);
@@ -42,33 +40,33 @@ public class PosStorePayRequestService {
     }
 
     public PosStorePayRequestDTO updateStorePayRequest(PosStorePayRequestStatusUpdateDTO payload, String currentUser) {
-        StorePayRequestEntity entity = posStorePayRequestRepository.findOneByGuid(payload.getGuid())
+        StorePayRequestNotificationEntity entity = posStorePayRequestRepository.findOneByGuid(payload.getGuid())
                 .orElseThrow(() -> new NotFoundException("pos@storePayRequestNotFound@" + payload.getGuid()));
-        posStoreSecurity.blockAccessIfNotInStore(entity.getStoreGuid());
-        entity.setStorePayRequestStatus(payload.getStorePayRequestStatus());
-        if (entity.getFirstSeenBy() == null && payload.getStorePayRequestStatus().equals(StorePayRequestStatus.SEEN)){
-            entity.setFirstSeenBy(currentUser);
-            entity.setFirstSeenDate(Instant.now());
-        }
+//        posStoreSecurity.blockAccessIfNotInStore(entity.getStoreGuid());
+//        entity.setStorePayRequestStatus(payload.getStorePayRequestStatus());
+//        if (entity.getFirstSeenBy() == null && payload.getStorePayRequestStatus().equals(StorePayRequestStatus.SEEN)){
+//            entity.setFirstSeenBy(currentUser);
+//            entity.setFirstSeenDate(Instant.now());
+//        }
         return new PosStorePayRequestDTO(posStorePayRequestRepository.save(entity));
     }
 
     public void toggleVisibility(PosStorePayRequestVisibilityUpdateDTO payload, String currentUser) {
         posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
-        List<StorePayRequestEntity> list = posStorePayRequestRepository.findByGuidIn(payload.getListGuid());
+        List<StorePayRequestNotificationEntity> list = posStorePayRequestRepository.findByGuidIn(payload.getListGuid());
 
-        list.forEach(item -> {
-            if (!item.getStoreGuid().equals(payload.getStoreGuid()))
-                throw new BadRequestException("pos@storePayRequestNotInStore@" + payload.getStoreGuid());
-        });
-
-        list = list.stream().peek(item -> {
-            item.setStorePayRequestHidden(payload.isStorePayRequestHidden());
-            if (item.getFirstHiddenBy() == null && payload.isStorePayRequestHidden()) {
-                item.setFirstHiddenBy(currentUser);
-                item.setFirstHiddenDate(Instant.now());
-            }
-        }).collect(Collectors.toList());
+//        list.forEach(item -> {
+//            if (!item.getStoreGuid().equals(payload.getStoreGuid()))
+//                throw new BadRequestException("pos@storePayRequestNotInStore@" + payload.getStoreGuid());
+//        });
+//
+//        list = list.stream().peek(item -> {
+//            item.setStorePayRequestHidden(payload.isStorePayRequestHidden());
+//            if (item.getFirstHiddenBy() == null && payload.isStorePayRequestHidden()) {
+//                item.setFirstHiddenBy(currentUser);
+//                item.setFirstHiddenDate(Instant.now());
+//            }
+//        }).collect(Collectors.toList());
 
         posStorePayRequestRepository.saveAll(list);
     }
@@ -81,7 +79,7 @@ public class PosStorePayRequestService {
     @Scheduled(cron = "0 0 2 * * ?")
     public void removeOldStorePayRequest() {
         Instant deletePoint = Instant.now().minus(7, ChronoUnit.DAYS);
-        List<StorePayRequestEntity> list = posStorePayRequestRepository
+        List<StorePayRequestNotificationEntity> list = posStorePayRequestRepository
                 .findByCreatedDateBefore(deletePoint);
         log.debug("[Scheduling] Deleting old store pay request data [{}]", list);
         posStorePayRequestRepository.deleteAll(list);

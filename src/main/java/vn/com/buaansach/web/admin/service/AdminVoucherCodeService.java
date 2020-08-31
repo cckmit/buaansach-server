@@ -15,14 +15,14 @@ public class AdminVoucherCodeService {
     public void toggleVoucherCode(String voucherCode) {
         VoucherCodeEntity voucherCodeEntity = adminVoucherCodeRepository.findOneByVoucherCode(voucherCode)
                 .orElseThrow(() -> new NotFoundException("admin@voucherCodeNotFound@" + voucherCode));
-        voucherCodeEntity.setVoucherCodeUsable(!voucherCodeEntity.isVoucherCodeUsable());
+//        voucherCodeEntity.setVoucherCodeUsable(!voucherCodeEntity.isVoucherCodeUsable());
         adminVoucherCodeRepository.save(voucherCodeEntity);
     }
 
     public void updateVoucherCode(AdminUpdateVoucherCodeDTO payload){
         VoucherCodeEntity voucherCodeEntity = adminVoucherCodeRepository.findOneByVoucherCode(payload.getVoucherCode())
                 .orElseThrow(() -> new NotFoundException("admin@voucherCodeNotFound@" + payload.getVoucherCode()));
-        voucherCodeEntity.setVoucherCodeClaimStatus(payload.getVoucherCodeClaimStatus());
+//        voucherCodeEntity.setVoucherCodeClaimStatus(payload.getVoucherCodeClaimStatus());
         adminVoucherCodeRepository.save(voucherCodeEntity);
     }
 }

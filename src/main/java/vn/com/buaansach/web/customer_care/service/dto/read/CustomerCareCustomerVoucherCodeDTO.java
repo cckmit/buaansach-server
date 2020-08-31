@@ -58,8 +58,8 @@ public class CustomerCareCustomerVoucherCodeDTO extends AuditDTO {
 
         this.customerRankGuid = customerEntity.getCustomerRankGuid();
         this.voucherCode = voucherCodeEntity.getVoucherCode();
-        this.voucherCodeUsable = voucherCodeEntity.isVoucherCodeUsable();
-        this.voucherCodeClaimStatus = voucherCodeEntity.getVoucherCodeClaimStatus();
+//        this.voucherCodeUsable = voucherCodeEntity.isVoucherCodeUsable();
+//        this.voucherCodeClaimStatus = voucherCodeEntity.getVoucherCodeClaimStatus();
         this.voucherCodeUsageCount = voucherCodeEntity.getVoucherCodeUsageCount();
     }
 

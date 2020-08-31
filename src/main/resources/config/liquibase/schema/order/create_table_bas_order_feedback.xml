@@ -15,8 +15,8 @@
             <column name="order_feedback_action" type="varchar(30)">
                 <constraints nullable="false"/>
             </column>
-            <column name="service_quality_rating" type="varchar(30)"/>
-            <column name="product_quality_rating" type="varchar(30)"/>
+            <column name="service_quality_rating" type="int"/>
+            <column name="product_quality_rating" type="int"/>
             <column name="order_feedback_content" type="varchar(500)"/>
 
             <column name="order_guid" type="binary(16)">

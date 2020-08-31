@@ -38,12 +38,15 @@ public class PaymentEntity extends AbstractAuditingEntity implements Serializabl
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")
-    private PaymentStatus paymentStatus = PaymentStatus.PENDING;
+    private PaymentStatus paymentStatus;
 
     @Column(name = "payment_amount")
     private int paymentAmount;
 
     @Column(name = "number_of_order")
     private int numberOfOrder;
+
+    @Column(name = "list_order_guid", length = 1000)
+    private String listOrderGuid;
 
 }

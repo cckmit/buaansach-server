@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
-import vn.com.buaansach.entity.enumeration.SaleType;
+import vn.com.buaansach.entity.enumeration.DiscountType;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -38,17 +38,17 @@ public class SaleEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "sale_image_url")
     private String saleImageUrl;
 
-    @Column(name = "sale_amount")
-    private int saleAmount;
+    @Column(name = "sale_discount")
+    private int saleDiscount;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "sale_type")
-    private SaleType saleType;
+    @Column(name = "sale_discount_type")
+    private DiscountType saleDiscountType;
 
     @Size(max = 500)
     @Column(name = "sale_conditions", length = 500)
     private String saleConditions;
 
-    @Column(name = "sale_enable")
-    private boolean saleEnable;
+    @Column(name = "sale_activated")
+    private boolean saleActivated;
 }

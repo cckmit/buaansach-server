@@ -4,20 +4,24 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet id="create_table_bas_user_activity" author="ductv">
-        <createTable tableName="bas_user_activity">
+    <changeSet id="create_table_bas_store_order_notification" author="ductv">
+        <createTable tableName="bas_store_order_notification">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="guid" type="binary(16)">
-                <constraints unique="true" nullable="false" uniqueConstraintName="ux_user_activity_guid"/>
-            </column>
-            <column name="user_login" type="varchar(50)">
+
+            <column name="store_order_type" type="varchar(30)">
                 <constraints nullable="false"/>
             </column>
-            <column name="activity_title" type="varchar(50)"/>
-            <column name="activity_content" type="varchar(255)"/>
-            <column name="activity_type" type="varchar(30)"/>
+            <column name="order_product_group" type="binary(16)"/>
+            <column name="number_of_product" type="int"/>
+
+            <column name="order_guid" type="binary(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="store_notification_guid" type="binary(16)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 

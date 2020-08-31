@@ -11,7 +11,7 @@ import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.order.PaymentEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
-import vn.com.buaansach.entity.store.StoreOrderEntity;
+import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.Constants;
@@ -106,7 +106,7 @@ public class AdminStoreService {
         List<UUID> listOrderGuid = listOrder.stream().map(OrderEntity::getGuid).collect(Collectors.toList());
         List<PaymentEntity> listPayment = adminPaymentRepository.findByOrderGuidIn(listOrderGuid);
         List<OrderProductEntity> listOrderProduct = adminOrderProductRepository.findByOrderGuidIn(listOrderGuid);
-        List<StoreOrderEntity> listStoreOrder = adminStoreOrderRepository.findByStoreGuid(UUID.fromString(storeGuid));
+        List<StoreOrderNotificationEntity> listStoreOrder = adminStoreOrderRepository.findByStoreGuid(UUID.fromString(storeGuid));
 
 
         /* delete all orders, order products, payments related to all seat of area */

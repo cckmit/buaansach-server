@@ -27,19 +27,19 @@ public class VoucherCodeEntity extends AbstractAuditingEntity implements Seriali
     @Column(name = "voucher_code", length = 30, unique = true)
     private String voucherCode;
 
-    @Column(name = "voucher_code_usable")
-    private boolean voucherCodeUsable;
+    @Column(name = "voucher_code_activated")
+    private boolean voucherCodeActivated;
 
     @Column(name = "voucher_code_usage_count")
     private int voucherCodeUsageCount;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "voucher_code_claim_status")
-    private VoucherCodeClaimStatus voucherCodeClaimStatus;
-
     @Size(max = 20)
-    @Column(name = "customer_phone", length = 20)
-    private String customerPhone;
+    @Column(name = "voucher_code_phone", length = 20)
+    private String voucherCodePhone;
+
+    /**
+     * FK
+     * */
 
     @Column(name = "voucher_guid")
     private UUID voucherGuid;

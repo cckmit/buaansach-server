@@ -6,7 +6,6 @@ import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.exception.NotFoundException;
-import vn.com.buaansach.web.guest.exception.GuestResourceNotFoundException;
 import vn.com.buaansach.web.guest.repository.GuestOrderRepository;
 import vn.com.buaansach.web.guest.repository.GuestSeatRepository;
 import vn.com.buaansach.web.guest.service.dto.read.GuestSeatDTO;
@@ -34,7 +33,7 @@ public class GuestSeatService {
 
     public boolean isOrderMatchesSeat(String orderGuid, String seatGuid) {
         SeatEntity seatEntity = guestSeatRepository.findOneByGuid(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new GuestResourceNotFoundException("guest@seatNotFound@" + seatGuid));
+                .orElseThrow(() -> new NotFoundException("guest@seatNotFound@" + seatGuid));
         if (seatEntity.getOrderGuid() == null && orderGuid == null) return true;
         if (seatEntity.getOrderGuid() == null && orderGuid != null) return false;
         if (seatEntity.getOrderGuid() != null && orderGuid == null) return false;
@@ -46,7 +45,7 @@ public class GuestSeatService {
 
     public GuestCheckOrderSeatDTO checkOrderSeat(GuestCheckOrderSeatDTO payload) {
         SeatEntity seatEntity = guestSeatRepository.findOneByGuid(payload.getSeatGuid())
-                .orElseThrow(() -> new GuestResourceNotFoundException("guest@seatNotFound@" + payload.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException("guest@seatNotFound@" + payload.getSeatGuid()));
 
         payload.setHasValidOrderGuid(false);
         payload.setActiveOrderGuid(null);

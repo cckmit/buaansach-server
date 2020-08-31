@@ -30,7 +30,7 @@ public class SeatEntity extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Size(max = 50)
-    @Column(name = "seat_name")
+    @Column(name = "seat_name", length = 50)
     private String seatName;
 
     @Enumerated(EnumType.STRING)

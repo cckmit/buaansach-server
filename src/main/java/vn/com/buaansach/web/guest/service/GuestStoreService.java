@@ -2,8 +2,8 @@ package vn.com.buaansach.web.guest.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.WebSocketConstants;
-import vn.com.buaansach.web.guest.exception.GuestResourceNotFoundException;
 import vn.com.buaansach.web.guest.repository.GuestStoreRepository;
 import vn.com.buaansach.web.guest.service.dto.read.GuestStoreDTO;
 import vn.com.buaansach.web.guest.websocket.GuestSocketService;
@@ -20,7 +20,7 @@ public class GuestStoreService {
 
     public GuestStoreDTO getStoreBySeat(String seatGuid) {
         return new GuestStoreDTO(guestStoreRepository.findOneBySeatGuid(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new GuestResourceNotFoundException("guest@storeNotFound")));
+                .orElseThrow(() -> new NotFoundException("guest@storeNotFound")));
     }
 
     public void callWaiter(GuestCallWaiterDTO payload) {

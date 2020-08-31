@@ -12,7 +12,7 @@ import vn.com.buaansach.entity.order.PaymentEntity;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
-import vn.com.buaansach.entity.store.StoreOrderEntity;
+import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.WebSocketConstants;
@@ -30,7 +30,6 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -99,9 +98,6 @@ public class PosOrderService {
             case ONLINE:
                 orderEntity.setOrderType(OrderType.ONLINE);
                 break;
-            case TEST:
-                orderEntity.setOrderType(OrderType.TEST);
-                break;
         }
 
         orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderStatus.RECEIVED, currentUser));
@@ -144,7 +140,7 @@ public class PosOrderService {
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(orderEntity.getSeatGuid())
                 .orElseThrow(() -> new NotFoundException("pos@seatNotFound@: " + orderEntity.getSeatGuid()));
 
-        StoreOrderEntity storeOrderEntity = posStoreOrderService.createStoreOrder(
+        StoreOrderNotificationEntity storeOrderNotificationEntity = posStoreOrderService.createStoreOrder(
                 storeEntity.getGuid(),
                 seatEntity.getAreaGuid(),
                 seatEntity.getGuid(),
@@ -153,7 +149,7 @@ public class PosOrderService {
                 payload.getListOrderProduct().size());
 
         /* Gửi thông báo tới trang bán hàng */
-        PosSocketDTO socketDTO = new PosSocketDTO(WebSocketConstants.POS_UPDATE_ORDER, storeOrderEntity);
+        PosSocketDTO socketDTO = new PosSocketDTO(WebSocketConstants.POS_UPDATE_ORDER, storeOrderNotificationEntity);
         posSocketService.sendMessage(WebSocketConstants.TOPIC_POS_PREFIX + storeEntity.getGuid(), socketDTO);
 
         /* Thông thường validate trên ui thì size sẽ phải lớn hơn 0 mới gọi được, kiểm tra lần nữa cho chắc cốp.
@@ -391,21 +387,21 @@ public class PosOrderService {
         orderEntity.setSeatGuid(newSeat.getGuid());
         posOrderRepository.save(orderEntity);
 
-        /* Cập nhật lại vị trí cho các thông báo gọi món */
-        List<StoreOrderEntity> listStoreOrder = posStoreOrderRepository.findByOrderGuid(orderEntity.getGuid());
-        listStoreOrder = listStoreOrder.stream().peek(item -> {
-            item.setSeatGuid(newSeat.getGuid());
-            item.setAreaGuid(newSeat.getAreaGuid());
-        }).collect(Collectors.toList());
-        posStoreOrderRepository.saveAll(listStoreOrder);
-
-        /* Cập nhật lại vị trí cho yêu cầu thanh toán (nếu có) */
-        posStorePayRequestRepository.findOneByOrderGuid(orderEntity.getGuid())
-                .ifPresent(item -> {
-                    item.setSeatGuid(newSeat.getGuid());
-                    item.setAreaGuid(newSeat.getAreaGuid());
-                    posStorePayRequestRepository.save(item);
-                });
+//        /* Cập nhật lại vị trí cho các thông báo gọi món */
+//        List<StoreOrderNotificationEntity> listStoreOrder = posStoreOrderRepository.findByOrderGuid(orderEntity.getGuid());
+//        listStoreOrder = listStoreOrder.stream().peek(item -> {
+//            item.setSeatGuid(newSeat.getGuid());
+//            item.setAreaGuid(newSeat.getAreaGuid());
+//        }).collect(Collectors.toList());
+//        posStoreOrderRepository.saveAll(listStoreOrder);
+//
+//        /* Cập nhật lại vị trí cho yêu cầu thanh toán (nếu có) */
+//        posStorePayRequestRepository.findOneByOrderGuid(orderEntity.getGuid())
+//                .ifPresent(item -> {
+//                    item.setSeatGuid(newSeat.getGuid());
+//                    item.setAreaGuid(newSeat.getAreaGuid());
+//                    posStorePayRequestRepository.save(item);
+//                });
 
         /* Cập nhật trạng thái cho vị trí mới */
         newSeat.setSeatStatus(SeatStatus.NON_EMPTY);
@@ -450,7 +446,7 @@ public class PosOrderService {
         if (orderEntity.getVoucherCode() != null) {
             /* if current order has apply voucher code that use for specific phone number => auto cancel voucher for that order */
             posVoucherCodeRepository.findOneByVoucherCode(orderEntity.getVoucherCode()).ifPresent(voucherCodeEntity -> {
-                if (voucherCodeEntity.getCustomerPhone() != null) {
+                if (voucherCodeEntity.getVoucherCodePhone() != null) {
                     PosOrderVoucherCodeDTO dto = new PosOrderVoucherCodeDTO();
                     dto.setCustomerPhone(orderEntity.getOrderCustomerPhone());
                     dto.setOrderGuid(orderEntity.getGuid());

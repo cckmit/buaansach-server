@@ -3,15 +3,15 @@ package vn.com.buaansach.web.guest.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.*;
+import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.store.*;
+import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
-import vn.com.buaansach.web.guest.exception.GuestBadRequestException;
-import vn.com.buaansach.web.guest.exception.GuestResourceNotFoundException;
 import vn.com.buaansach.web.guest.repository.*;
 import vn.com.buaansach.web.guest.security.GuestStoreSecurity;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderDTO;
@@ -46,7 +46,7 @@ public class GuestOrderService {
 
     public GuestOrderDTO getOrder(String orderGuid) {
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
-                .orElseThrow(() -> new GuestResourceNotFoundException("guest@orderNotFound@" + orderGuid));
+                .orElseThrow(() -> new NotFoundException("guest@orderNotFound@" + orderGuid));
         GuestOrderDTO result = new GuestOrderDTO(orderEntity);
         result.setListOrderProduct(guestOrderProductRepository.findListGuestOrderProductDTOByOrderGuid(orderEntity.getGuid()));
         return result;
@@ -55,25 +55,25 @@ public class GuestOrderService {
     @Transactional
     public GuestOrderDTO createOrder(GuestCreateOrderDTO payload, String currentUser) {
         StoreEntity storeEntity = guestStoreRepository.findOneByGuid(payload.getStoreGuid())
-                .orElseThrow(() -> new GuestResourceNotFoundException("guest@storeNotFound@" + payload.getStoreGuid()));
+                .orElseThrow(() -> new NotFoundException("guest@storeNotFound@" + payload.getStoreGuid()));
 
         guestStoreSecurity.blockAccessIfStoreIsNotOpenOrDeactivated(storeEntity.getGuid());
 
         SeatEntity seatEntity = guestSeatRepository.findOneByGuid(payload.getSeatGuid())
-                .orElseThrow(() -> new GuestResourceNotFoundException("guest@seatNotFound@" + payload.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException("guest@seatNotFound@" + payload.getSeatGuid()));
 
         AreaEntity areaEntity = guestAreaRepository.findOneByGuid(seatEntity.getAreaGuid())
                 .orElseThrow(() -> new NotFoundException("guest@areaNotFound@ " + seatEntity.getAreaGuid()));
 
         if (!areaEntity.isAreaActivated()) {
-            throw new GuestBadRequestException("guest@areaDisabled@" + areaEntity.getGuid());
+            throw new BadRequestException("guest@areaDisabled@" + areaEntity.getGuid());
         }
 
         if (seatEntity.isSeatLocked())
-            throw new GuestBadRequestException("guest@seatLocked@" + payload.getSeatGuid());
+            throw new BadRequestException("guest@seatLocked@" + payload.getSeatGuid());
 
         if (seatEntity.getSeatStatus().equals(SeatStatus.NON_EMPTY))
-            throw new GuestBadRequestException("guest@seatNonEmpty@" + payload.getSeatGuid());
+            throw new BadRequestException("guest@seatNonEmpty@" + payload.getSeatGuid());
 
         OrderEntity orderEntity = new OrderEntity();
         UUID orderGuid = UUID.randomUUID();
@@ -90,9 +90,6 @@ public class GuestOrderService {
                 break;
             case ONLINE:
                 orderEntity.setOrderType(OrderType.ONLINE);
-                break;
-            case TEST:
-                orderEntity.setOrderType(OrderType.TEST);
                 break;
         }
 
@@ -113,9 +110,8 @@ public class GuestOrderService {
         GuestOrderDTO result = new GuestOrderDTO(guestOrderRepository.save(orderEntity));
 
         /* just set seat guid for same payload received as update order */
-        StoreOrderEntity storeOrderEntity = new StoreOrderEntity();
-        storeOrderEntity.setSeatGuid(result.getSeatGuid());
-        GuestSocketDTO socketDTO = new GuestSocketDTO(WebSocketConstants.GUEST_CREATE_ORDER, storeOrderEntity);
+        StoreOrderNotificationEntity storeOrderNotificationEntity = new StoreOrderNotificationEntity();
+        GuestSocketDTO socketDTO = new GuestSocketDTO(WebSocketConstants.GUEST_CREATE_ORDER, storeOrderNotificationEntity);
         guestSocketService.sendMessage(WebSocketConstants.TOPIC_POS_PREFIX + payload.getStoreGuid(), socketDTO);
         return result;
     }
@@ -124,40 +120,40 @@ public class GuestOrderService {
     public GuestOrderDTO updateOrder(GuestOrderUpdateDTO payload, String currentUser) {
         /* check order product size */
         if (payload.getListOrderProduct().size() == 0)
-            throw new GuestBadRequestException("guest@listOrderProductEmpty@" + payload.getOrderGuid());
+            throw new BadRequestException("guest@listOrderProductEmpty@" + payload.getOrderGuid());
 
         /* check store status */
         StoreEntity storeEntity = guestStoreRepository.findOneByGuid(payload.getStoreGuid())
-                .orElseThrow(() -> new GuestResourceNotFoundException("guest@storeNotFound@" + payload.getStoreGuid()));
+                .orElseThrow(() -> new NotFoundException("guest@storeNotFound@" + payload.getStoreGuid()));
         guestStoreSecurity.blockAccessIfStoreIsNotOpenOrDeactivated(storeEntity.getGuid());
 
         /* check order status */
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(payload.getOrderGuid())
-                .orElseThrow(() -> new GuestResourceNotFoundException("guest@orderNotFound@" + payload.getOrderGuid()));
+                .orElseThrow(() -> new NotFoundException("guest@orderNotFound@" + payload.getOrderGuid()));
 
         if (orderEntity.getOrderStatus().equals(OrderStatus.PURCHASED))
-            throw new GuestBadRequestException("guest@orderPurchased@" + payload.getOrderGuid());
+            throw new BadRequestException("guest@orderPurchased@" + payload.getOrderGuid());
 
         if (orderEntity.getOrderStatus().toString().contains("CANCELLED"))
-            throw new GuestBadRequestException("guest@orderCancelled@" + payload.getOrderGuid());
+            throw new BadRequestException("guest@orderCancelled@" + payload.getOrderGuid());
 
         /* check seat, area locked or not */
         SeatEntity seatEntity = guestSeatRepository.findOneByGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new GuestResourceNotFoundException(ErrorCode.SEAT_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
 
         AreaEntity areaEntity = guestAreaRepository.findOneByGuid(seatEntity.getAreaGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.AREA_NOT_FOUND));
 
         if (!areaEntity.isAreaActivated()) {
-            throw new GuestBadRequestException("guest@areaDisabled@" + areaEntity.getGuid());
+            throw new BadRequestException("guest@areaDisabled@" + areaEntity.getGuid());
         }
 
         if (seatEntity.isSeatLocked())
-            throw new GuestBadRequestException("guest@seatLocked@" + seatEntity.getGuid());
+            throw new BadRequestException("guest@seatLocked@" + seatEntity.getGuid());
 
         /* current order not match with seat order */
         if (!orderEntity.getGuid().equals(seatEntity.getOrderGuid()))
-            throw new GuestBadRequestException("guest@orderNotMatchSeat@orderGuid=" + orderEntity.getGuid() + ";seatOrderGuid=" + seatEntity.getOrderGuid());
+            throw new BadRequestException("guest@orderNotMatchSeat@orderGuid=" + orderEntity.getGuid() + ";seatOrderGuid=" + seatEntity.getOrderGuid());
 
         /* check product availability */
         List<UUID> listProductGuid = payload.getListOrderProduct().stream().map(GuestOrderProductDTO::getProductGuid).collect(Collectors.toList());
@@ -165,19 +161,19 @@ public class GuestOrderService {
 
         List<StoreProductEntity> listStopTrading = listStoreProduct.stream().filter(item -> item.getStoreProductStatus().equals(StoreProductStatus.STOP_TRADING)).collect(Collectors.toList());
         if (listStopTrading.size() > 0) {
-            throw new GuestBadRequestException("guest@storeProductStopTrading@");
+            throw new BadRequestException("guest@storeProductStopTrading@");
         }
 
         List<StoreProductEntity> listUnavailable = listStoreProduct.stream().filter(item -> item.getStoreProductStatus().equals(StoreProductStatus.UNAVAILABLE)).collect(Collectors.toList());
         if (listUnavailable.size() > 0) {
-            throw new GuestBadRequestException("guest@storeProductUnavailable@");
+            throw new BadRequestException("guest@storeProductUnavailable@");
         }
 
         UUID orderProductGroup = UUID.randomUUID();
         guestOrderProductService.saveListOrderProduct(orderProductGroup, payload.getOrderGuid(), payload.getListOrderProduct(), currentUser);
 
         /* Tạo thông báo */
-        StoreOrderEntity storeOrderEntity = guestStoreOrderService.createStoreOrder(
+        StoreOrderNotificationEntity storeOrderNotificationEntity = guestStoreOrderService.createStoreOrder(
                 storeEntity.getGuid(),
                 seatEntity.getAreaGuid(),
                 seatEntity.getGuid(),
@@ -186,7 +182,7 @@ public class GuestOrderService {
                 payload.getListOrderProduct().size());
 
         /* Gửi thông báo tới nhân viên */
-        GuestSocketDTO socketDTO = new GuestSocketDTO(WebSocketConstants.GUEST_UPDATE_ORDER, storeOrderEntity);
+        GuestSocketDTO socketDTO = new GuestSocketDTO(WebSocketConstants.GUEST_UPDATE_ORDER, storeOrderNotificationEntity);
         guestSocketService.sendMessage(WebSocketConstants.TOPIC_POS_PREFIX + payload.getStoreGuid(), socketDTO);
 
         /* Đổi trạng thái phục vụ của bàn ăn => chưa xong */
@@ -216,15 +212,15 @@ public class GuestOrderService {
     @Transactional
     public OrderEntity updateCustomerPhone(UUID orderGuid, String customerPhone) {
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(orderGuid)
-                .orElseThrow(() -> new GuestResourceNotFoundException("guest@orderNotFound@" + orderGuid));
+                .orElseThrow(() -> new NotFoundException("guest@orderNotFound@" + orderGuid));
 
         /* Không cho phép khách thay đổi SDT nếu đơn đã có SDT */
         if (orderEntity.getOrderCustomerPhone() != null)
-            throw new GuestBadRequestException("guest@orderCustomerPhoneExist@" + orderEntity.getGuid());
+            throw new BadRequestException("guest@orderCustomerPhoneExist@" + orderEntity.getGuid());
 
         /* Nếu SDT chưa tồn tại trên hệ thống */
         if (guestCustomerRepository.findOneByCustomerPhone(customerPhone).isEmpty())
-            throw new GuestBadRequestException("guest@customerPhoneNotFound@" + customerPhone);
+            throw new BadRequestException("guest@customerPhoneNotFound@" + customerPhone);
 
         String newTimeline = TimelineUtil.appendCustomOrderStatus(
                 orderEntity.getOrderStatusTimeline(),

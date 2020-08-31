@@ -6,11 +6,8 @@
     <!--Schema-->
 
     <include file="config/liquibase/schema/user/create_table_bas_authority.xml"/>
-<!--    <include file="config/liquibase/schema/user/create_table_bas_notification.xml"/>-->
     <include file="config/liquibase/schema/user/create_table_bas_user.xml"/>
-<!--    <include file="config/liquibase/schema/user/create_table_bas_user_activity.xml"/>-->
     <include file="config/liquibase/schema/user/create_table_bas_user_authority.xml"/>
-<!--    <include file="config/liquibase/schema/user/create_table_bas_user_notification.xml"/>-->
     <include file="config/liquibase/schema/user/create_table_bas_user_profile.xml"/>
     <include file="config/liquibase/schema/user/create_table_persistent_audit_event.xml"/>
 

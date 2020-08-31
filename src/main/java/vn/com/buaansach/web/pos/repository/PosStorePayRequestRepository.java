@@ -1,24 +1,23 @@
 package vn.com.buaansach.web.pos.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import vn.com.buaansach.entity.store.StoreOrderEntity;
-import vn.com.buaansach.entity.store.StorePayRequestEntity;
+import vn.com.buaansach.entity.notification.StorePayRequestNotificationEntity;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface PosStorePayRequestRepository extends JpaRepository<StorePayRequestEntity, Long> {
-    List<StorePayRequestEntity> findByStoreGuidAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(UUID storeGuid, Instant from);
+public interface PosStorePayRequestRepository extends JpaRepository<StorePayRequestNotificationEntity, Long> {
+    List<StorePayRequestNotificationEntity> findByStoreGuidAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(UUID storeGuid, Instant from);
 
-    List<StorePayRequestEntity> findByStoreGuidAndCreatedDateGreaterThanEqualAndHiddenOrderByCreatedDateAsc(UUID storeGuid, Instant from, boolean hidden);
+    List<StorePayRequestNotificationEntity> findByStoreGuidAndCreatedDateGreaterThanEqualAndHiddenOrderByCreatedDateAsc(UUID storeGuid, Instant from, boolean hidden);
 
-    Optional<StorePayRequestEntity> findOneByGuid(UUID guid);
+    Optional<StorePayRequestNotificationEntity> findOneByGuid(UUID guid);
 
-    List<StorePayRequestEntity> findByGuidIn(List<UUID> listGuid);
+    List<StorePayRequestNotificationEntity> findByGuidIn(List<UUID> listGuid);
 
-    List<StorePayRequestEntity> findByCreatedDateBefore(Instant before);
+    List<StorePayRequestNotificationEntity> findByCreatedDateBefore(Instant before);
 
-    Optional<StorePayRequestEntity> findOneByOrderGuid(UUID orderGuid);
+    Optional<StorePayRequestNotificationEntity> findOneByOrderGuid(UUID orderGuid);
 }

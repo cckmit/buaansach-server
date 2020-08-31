@@ -9,7 +9,6 @@ import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.Constants;
-import vn.com.buaansach.util.sequence.CustomerCodeGenerator;
 import vn.com.buaansach.util.RandomUtil;
 import vn.com.buaansach.web.pos.repository.PosCustomerRepository;
 import vn.com.buaansach.web.pos.repository.PosStoreRepository;
@@ -55,7 +54,7 @@ public class PosCustomerService {
     @Transactional
     public CustomerEntity createCustomer(CustomerEntity customerEntity, StoreEntity storeEntity) {
         int customerCount = posCustomerRepository.countByStoreGuid(storeEntity.getGuid());
-        String customerCode = CustomerCodeGenerator.generate(storeEntity.getStoreCode(), customerCount);
+        String customerCode = "";
         customerEntity.setGuid(UUID.randomUUID());
         customerEntity.setCustomerCode(customerCode);
         customerEntity.setCustomerPassword(passwordEncoder.encode(RandomUtil.generatePassword()));

@@ -39,7 +39,6 @@
             <column name="product_activated" type="boolean"/>
             <column name="sale_guid" type="binary(16)"/>
 
-
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>

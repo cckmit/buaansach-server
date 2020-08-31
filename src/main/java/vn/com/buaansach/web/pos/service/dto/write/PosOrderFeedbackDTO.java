@@ -16,8 +16,8 @@ public class PosOrderFeedbackDTO {
     private UUID orderGuid;
     @NotNull
     private OrderFeedbackAction orderFeedbackAction;
-    private Rating serviceQualityRating;
-    private Rating productQualityRating;
+    private int serviceQualityRating;
+    private int productQualityRating;
     @Size(max = 500)
     private String orderFeedbackContent;
 

@@ -5,10 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.enumeration.StoreOrderStatus;
-import vn.com.buaansach.entity.enumeration.StoreOrderType;
-import vn.com.buaansach.entity.store.StoreOrderEntity;
-import vn.com.buaansach.exception.BadRequestException;
+import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.pos.repository.PosStoreOrderRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
@@ -32,7 +29,7 @@ public class PosStoreOrderService {
 
     public List<PosStoreOrderDTO> getListStoreOrder(String storeGuid, Instant startDate, Boolean hidden) {
         posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
-        List<StoreOrderEntity> list;
+        List<StoreOrderNotificationEntity> list;
         if (hidden != null) {
             list = posStoreOrderRepository
                     .findByStoreGuidAndCreatedDateGreaterThanEqualAndHiddenOrderByCreatedDateAsc(UUID.fromString(storeGuid), startDate, hidden);
@@ -43,45 +40,45 @@ public class PosStoreOrderService {
         return list.stream().map(PosStoreOrderDTO::new).collect(Collectors.toList());
     }
 
-    public StoreOrderEntity createStoreOrder(UUID storeGuid, UUID areaGuid, UUID seatGuid, UUID orderGuid, UUID orderProductGroup, int numberOfProduct) {
-        StoreOrderEntity storeOrderEntity = new StoreOrderEntity();
-        storeOrderEntity.setGuid(UUID.randomUUID());
-        storeOrderEntity.setStoreOrderStatus(StoreOrderStatus.UNSEEN);
-        storeOrderEntity.setStoreOrderType(StoreOrderType.POS);
-        storeOrderEntity.setHideStoreOrder(false);
-        storeOrderEntity.setStoreGuid(storeGuid);
-        storeOrderEntity.setAreaGuid(areaGuid);
-        storeOrderEntity.setSeatGuid(seatGuid);
-        storeOrderEntity.setOrderGuid(orderGuid);
-        storeOrderEntity.setOrderProductGroup(orderProductGroup);
-        storeOrderEntity.setNumberOfProduct(numberOfProduct);
-        return posStoreOrderRepository.save(storeOrderEntity);
+    public StoreOrderNotificationEntity createStoreOrder(UUID storeGuid, UUID areaGuid, UUID seatGuid, UUID orderGuid, UUID orderProductGroup, int numberOfProduct) {
+        StoreOrderNotificationEntity storeOrderNotificationEntity = new StoreOrderNotificationEntity();
+//        storeOrderNotificationEntity.setGuid(UUID.randomUUID());
+//        storeOrderNotificationEntity.setStoreOrderStatus(StoreOrderStatus.UNSEEN);
+//        storeOrderNotificationEntity.setStoreOrderType(StoreOrderType.POS);
+//        storeOrderNotificationEntity.setStoreOrderHidden(false);
+//        storeOrderNotificationEntity.setStoreGuid(storeGuid);
+//        storeOrderNotificationEntity.setAreaGuid(areaGuid);
+//        storeOrderNotificationEntity.setSeatGuid(seatGuid);
+//        storeOrderNotificationEntity.setOrderGuid(orderGuid);
+        storeOrderNotificationEntity.setOrderProductGroup(orderProductGroup);
+        storeOrderNotificationEntity.setNumberOfProduct(numberOfProduct);
+        return posStoreOrderRepository.save(storeOrderNotificationEntity);
     }
 
     public PosStoreOrderDTO updateStoreOrder(PosStoreOrderStatusUpdateDTO payload, String currentUser) {
-        StoreOrderEntity entity = posStoreOrderRepository.findOneByGuid(payload.getGuid())
+        StoreOrderNotificationEntity entity = posStoreOrderRepository.findOneByGuid(payload.getGuid())
                 .orElseThrow(() -> new NotFoundException("pos@storeOrderNotFound@" + payload.getGuid()));
-        posStoreSecurity.blockAccessIfNotInStore(entity.getStoreGuid());
-        entity.setStoreOrderStatus(payload.getStoreOrderStatus());
-        if (entity.getFirstSeenBy() == null && payload.getStoreOrderStatus().equals(StoreOrderStatus.SEEN))
-            entity.setFirstSeenBy(currentUser);
+//        posStoreSecurity.blockAccessIfNotInStore(entity.getStoreGuid());
+//        entity.setStoreOrderStatus(payload.getStoreOrderStatus());
+//        if (entity.getFirstSeenBy() == null && payload.getStoreOrderStatus().equals(StoreOrderStatus.SEEN))
+//            entity.setFirstSeenBy(currentUser);
         return new PosStoreOrderDTO(posStoreOrderRepository.save(entity));
     }
 
     @Transactional
     public void toggleVisibility(PosStoreOrderVisibilityUpdateDTO payload, String currentUser) {
         posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
-        List<StoreOrderEntity> list = posStoreOrderRepository.findByGuidIn(payload.getListGuid());
+        List<StoreOrderNotificationEntity> list = posStoreOrderRepository.findByGuidIn(payload.getListGuid());
 
-        list.forEach(item -> {
-            if (!item.getStoreGuid().equals(payload.getStoreGuid()))
-                throw new BadRequestException("pos@storeOrderNotInStore@" + payload.getStoreGuid());
-        });
-
-        list = list.stream().peek(item -> {
-            item.setHideStoreOrder(payload.isHidden());
-            if (item.getFirstHideBy() == null && payload.isHidden()) item.setFirstHideBy(currentUser);
-        }).collect(Collectors.toList());
+//        list.forEach(item -> {
+//            if (!item.getStoreGuid().equals(payload.getStoreGuid()))
+//                throw new BadRequestException("pos@storeOrderNotInStore@" + payload.getStoreGuid());
+//        });
+//
+//        list = list.stream().peek(item -> {
+//            item.setHideStoreOrder(payload.isHidden());
+//            if (item.getFirstHideBy() == null && payload.isHidden()) item.setFirstHideBy(currentUser);
+//        }).collect(Collectors.toList());
 
         posStoreOrderRepository.saveAll(list);
     }
@@ -94,7 +91,7 @@ public class PosStoreOrderService {
     @Scheduled(cron = "0 0 1 * * ?")
     public void removeOldStoreOrder() {
         Instant deletePoint = Instant.now().minus(7, ChronoUnit.DAYS);
-        List<StoreOrderEntity> list = posStoreOrderRepository
+        List<StoreOrderNotificationEntity> list = posStoreOrderRepository
                 .findByCreatedDateBefore(deletePoint);
         log.debug("[Scheduling] Deleting old store order data [{}]", list);
         posStoreOrderRepository.deleteAll(list);

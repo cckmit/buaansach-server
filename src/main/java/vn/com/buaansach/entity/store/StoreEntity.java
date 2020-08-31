@@ -69,5 +69,5 @@ public class StoreEntity extends AbstractAuditingEntity implements Serializable 
     private String storeBusinessHours;
 
     @Column(name = "store_activated")
-    private boolean storeActivated = true;
+    private boolean storeActivated;
 }

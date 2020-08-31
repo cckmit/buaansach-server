@@ -8,7 +8,7 @@ import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.order.PaymentEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
-import vn.com.buaansach.entity.store.StoreOrderEntity;
+import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.admin.repository.*;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateSeatDTO;
@@ -73,7 +73,7 @@ public class AdminSeatService {
         List<UUID> listOrderGuid = listOrder.stream().map(OrderEntity::getGuid).collect(Collectors.toList());
         List<PaymentEntity> listPayment = adminPaymentRepository.findByOrderGuidIn(listOrderGuid);
         List<OrderProductEntity> listOrderProduct = adminOrderProductRepository.findByOrderGuidIn(listOrderGuid);
-        List<StoreOrderEntity> listStoreOrder = adminStoreOrderRepository.findBySeatGuid(UUID.fromString(seatGuid));
+        List<StoreOrderNotificationEntity> listStoreOrder = adminStoreOrderRepository.findBySeatGuid(UUID.fromString(seatGuid));
 
         /* delete all orders, order products, payments, store orders related to this seat */
         adminPaymentRepository.deleteInBatch(listPayment);

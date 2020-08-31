@@ -48,15 +48,16 @@ public class UserEntity extends AbstractAuditingEntity implements Serializable {
     @Column(length = 20, unique = true)
     private String userPhone;
 
+    @JsonIgnore
     @Size(min = 60, max = 60)
     @Column(length = 60, nullable = false)
-    @JsonIgnore
     private String userPassword;
 
-    @Column(nullable = false)
+    @Column(name = "user_activated")
     private boolean userActivated = false;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "user_type")
     private UserType userType;
 
     @JsonIgnore

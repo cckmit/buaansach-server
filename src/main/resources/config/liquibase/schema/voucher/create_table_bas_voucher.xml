@@ -22,7 +22,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="voucher_conditions" type="varchar(500)"/>
-            <column name="voucher_enable" type="boolean" defaultValue="false">
+            <column name="voucher_activated" type="boolean" defaultValue="false">
                 <constraints nullable="false"/>
             </column>
             <column name="number_voucher_code" type="int"/>

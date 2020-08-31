@@ -18,7 +18,7 @@ public class PosVoucherUsageService {
         VoucherUsageEntity voucherUsageEntity = new VoucherUsageEntity();
         voucherUsageEntity.setVoucherCode(voucherCode);
         voucherUsageEntity.setOrderGuid(orderGuid);
-        voucherUsageEntity.setUsedDate(Instant.now());
+//        voucherUsageEntity.setUsedDate(Instant.now());
         voucherUsageEntity.setUsedBy(usedBy);
         posVoucherUsageRepository.save(voucherUsageEntity);
     }

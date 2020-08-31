@@ -16,12 +16,12 @@ public class CustomerCareVoucherCodeService {
     public void updateFirstRegVoucherCode(CustomerCareUpdateVoucherCodeDTO payload) {
         VoucherCodeEntity voucherCodeEntity = customerCareVoucherCodeRepository.findOneByVoucherCode(payload.getVoucherCode())
                 .orElseThrow(() -> new NotFoundException("customerCare@voucherCodeNotFound@" + payload.getVoucherCode()));
-        voucherCodeEntity.setVoucherCodeClaimStatus(payload.getVoucherCodeClaimStatus());
-        if (payload.getVoucherCodeClaimStatus().equals(VoucherCodeClaimStatus.CLAIMED)) {
-            voucherCodeEntity.setVoucherCodeUsable(true);
-        } else {
-            voucherCodeEntity.setVoucherCodeUsable(false);
-        }
+//        voucherCodeEntity.setVoucherCodeClaimStatus(payload.getVoucherCodeClaimStatus());
+//        if (payload.getVoucherCodeClaimStatus().equals(VoucherCodeClaimStatus.CLAIMED)) {
+//            voucherCodeEntity.setVoucherCodeUsable(true);
+//        } else {
+//            voucherCodeEntity.setVoucherCodeUsable(false);
+//        }
         customerCareVoucherCodeRepository.save(voucherCodeEntity);
     }
 }

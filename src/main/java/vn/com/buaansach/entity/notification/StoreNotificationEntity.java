@@ -1,10 +1,11 @@
-package vn.com.buaansach.entity.store;
+package vn.com.buaansach.entity.notification;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
-import vn.com.buaansach.entity.enumeration.StorePayRequestStatus;
+import vn.com.buaansach.entity.enumeration.StoreNotificationStatus;
+import vn.com.buaansach.entity.enumeration.StoreNotificationType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,10 +13,10 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "bas_store_pay_request")
+@Table(name = "bas_store_notification")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class StorePayRequestEntity extends AbstractAuditingEntity implements Serializable {
+public class StoreNotificationEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -27,17 +28,15 @@ public class StorePayRequestEntity extends AbstractAuditingEntity implements Ser
     private UUID guid;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "store_pay_request_status")
-    private StorePayRequestStatus storePayRequestStatus;
+    @Column(name = "store_notification_status")
+    private StoreNotificationStatus storeNotificationStatus;
 
-    @Column(name = "store_pay_request_hidden")
-    private boolean storePayRequestHidden;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "store_notification_type")
+    private StoreNotificationType storeNotificationType;
 
-    @Column(name = "store_pay_request_amount")
-    private int storePayRequestAmount;
-
-    @Column(name = "store_pay_request_note")
-    private String storePayRequestNote;
+    @Column(name = "store_notification_hidden")
+    private boolean storeNotificationHidden;
 
     @Column(name = "first_seen_by")
     private String firstSeenBy;
@@ -63,8 +62,4 @@ public class StorePayRequestEntity extends AbstractAuditingEntity implements Ser
 
     @Column(name = "seat_guid")
     private UUID seatGuid;
-
-    @Column(name = "order_guid")
-    private UUID orderGuid;
-
 }

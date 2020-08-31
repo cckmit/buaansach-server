@@ -3,17 +3,7 @@ package vn.com.buaansach.web.guest.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.customer.CustomerEntity;
-import vn.com.buaansach.entity.enumeration.CustomerZaloStatus;
-import vn.com.buaansach.exception.BadRequestException;
-import vn.com.buaansach.util.Constants;
-import vn.com.buaansach.util.sequence.CustomerCodeGenerator;
-import vn.com.buaansach.util.RandomUtil;
 import vn.com.buaansach.web.guest.repository.GuestCustomerRepository;
-import vn.com.buaansach.web.guest.service.dto.readwrite.GuestCustomerDTO;
-
-import javax.transaction.Transactional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

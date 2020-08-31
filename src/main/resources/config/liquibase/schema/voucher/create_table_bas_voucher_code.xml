@@ -12,17 +12,16 @@
             <column name="voucher_code" type="varchar(30)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_voucher_code_code"/>
             </column>
-            <column name="voucher_code_usable" type="boolean" defaultValue="true">
+            <column name="voucher_code_activated" type="boolean" defaultValue="true">
                 <constraints nullable="false"/>
             </column>
             <column name="voucher_code_usage_count" type="int"/>
-            <column name="voucher_code_claim_status" type="varchar(30)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="customer_phone" type="varchar(20)"/>
+            <column name="voucher_code_phone" type="varchar(20)"/>
+
             <column name="voucher_guid" type="binary(16)">
                 <constraints nullable="false"/>
             </column>
+
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
