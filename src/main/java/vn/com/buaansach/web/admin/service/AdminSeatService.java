@@ -6,11 +6,12 @@ import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
-import vn.com.buaansach.entity.order.PaymentEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
-import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
 import vn.com.buaansach.exception.NotFoundException;
-import vn.com.buaansach.web.admin.repository.*;
+import vn.com.buaansach.web.admin.repository.order.AdminOrderProductRepository;
+import vn.com.buaansach.web.admin.repository.order.AdminOrderRepository;
+import vn.com.buaansach.web.admin.repository.store.AdminAreaRepository;
+import vn.com.buaansach.web.admin.repository.store.AdminSeatRepository;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateSeatDTO;
 
 import javax.transaction.Transactional;
@@ -25,8 +26,6 @@ public class AdminSeatService {
     private final AdminAreaRepository adminAreaRepository;
     private final AdminOrderRepository adminOrderRepository;
     private final AdminOrderProductRepository adminOrderProductRepository;
-    private final AdminPaymentRepository adminPaymentRepository;
-    private final AdminStoreOrderRepository adminStoreOrderRepository;
 
     public SeatEntity createSeat(AdminCreateSeatDTO request) {
         adminAreaRepository.findOneByGuid(request.getAreaGuid())
@@ -71,15 +70,11 @@ public class AdminSeatService {
         List<OrderEntity> listOrder = adminOrderRepository.findBySeatGuid(seatEntity.getGuid());
 
         List<UUID> listOrderGuid = listOrder.stream().map(OrderEntity::getGuid).collect(Collectors.toList());
-        List<PaymentEntity> listPayment = adminPaymentRepository.findByOrderGuidIn(listOrderGuid);
         List<OrderProductEntity> listOrderProduct = adminOrderProductRepository.findByOrderGuidIn(listOrderGuid);
-        List<StoreOrderNotificationEntity> listStoreOrder = adminStoreOrderRepository.findBySeatGuid(UUID.fromString(seatGuid));
 
         /* delete all orders, order products, payments, store orders related to this seat */
-        adminPaymentRepository.deleteInBatch(listPayment);
         adminOrderProductRepository.deleteInBatch(listOrderProduct);
         adminOrderRepository.deleteInBatch(listOrder);
-        adminStoreOrderRepository.deleteInBatch(listStoreOrder);
 
         /* finally, delete seat */
         adminSeatRepository.delete(seatEntity);

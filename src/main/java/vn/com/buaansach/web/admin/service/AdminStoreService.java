@@ -8,14 +8,14 @@ import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.entity.common.FileEntity;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
-import vn.com.buaansach.entity.order.PaymentEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
-import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.Constants;
-import vn.com.buaansach.web.admin.repository.*;
+import vn.com.buaansach.web.admin.repository.order.AdminOrderProductRepository;
+import vn.com.buaansach.web.admin.repository.order.AdminOrderRepository;
+import vn.com.buaansach.web.admin.repository.store.*;
 import vn.com.buaansach.web.common.service.FileService;
 
 import javax.transaction.Transactional;
@@ -35,8 +35,6 @@ public class AdminStoreService {
     private final AdminStoreProductRepository adminStoreProductRepository;
     private final AdminOrderRepository adminOrderRepository;
     private final AdminOrderProductRepository adminOrderProductRepository;
-    private final AdminPaymentRepository adminPaymentRepository;
-    private final AdminStoreOrderRepository adminStoreOrderRepository;
 
     @Transactional
     public StoreEntity createStore(StoreEntity payload, MultipartFile image) {
@@ -104,16 +102,12 @@ public class AdminStoreService {
         List<UUID> listSeatGuid = listSeat.stream().map(SeatEntity::getGuid).collect(Collectors.toList());
         List<OrderEntity> listOrder = adminOrderRepository.findBySeatGuidIn(listSeatGuid);
         List<UUID> listOrderGuid = listOrder.stream().map(OrderEntity::getGuid).collect(Collectors.toList());
-        List<PaymentEntity> listPayment = adminPaymentRepository.findByOrderGuidIn(listOrderGuid);
         List<OrderProductEntity> listOrderProduct = adminOrderProductRepository.findByOrderGuidIn(listOrderGuid);
-        List<StoreOrderNotificationEntity> listStoreOrder = adminStoreOrderRepository.findByStoreGuid(UUID.fromString(storeGuid));
 
 
         /* delete all orders, order products, payments related to all seat of area */
-        adminPaymentRepository.deleteInBatch(listPayment);
         adminOrderProductRepository.deleteInBatch(listOrderProduct);
         adminOrderRepository.deleteInBatch(listOrder);
-        adminStoreOrderRepository.deleteInBatch(listStoreOrder);
 
         adminSeatRepository.deleteInBatch(listSeat);
         adminAreaRepository.deleteByStoreGuid(storeEntity.getGuid());

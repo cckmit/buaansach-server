@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.util.sequence.CodeConstants;
-import vn.com.buaansach.web.admin.repository.AdminProductRepository;
-import vn.com.buaansach.web.admin.repository.AdminStoreRepository;
+import vn.com.buaansach.web.admin.repository.common.AdminProductRepository;
+import vn.com.buaansach.web.admin.repository.store.AdminStoreRepository;
 
 @Service
 @RequiredArgsConstructor

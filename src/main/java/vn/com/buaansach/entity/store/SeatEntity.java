@@ -1,8 +1,7 @@
 package vn.com.buaansach.entity.store;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
@@ -17,6 +16,9 @@ import java.util.UUID;
 @Table(name = "bas_seat")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SeatEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 

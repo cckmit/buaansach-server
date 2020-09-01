@@ -8,7 +8,7 @@
                 file="config/liquibase/data/csv/user.csv"
                 separator=";"
                 tableName="bas_user">
-            <column name="activated" type="boolean"/>
+            <column name="user_activated" type="boolean"/>
             <column name="created_date" type="timestamp"/>
         </loadData>
     </changeSet>
@@ -32,7 +32,7 @@
                 file="config/liquibase/data/csv/user_authority.csv"
                 separator=";"
                 tableName="bas_user_authority">
-            <column name="user_id" type="bigint"/>
+            <column name="user_id" type="numeric"/>
         </loadData>
     </changeSet>
 </databaseChangeLog>

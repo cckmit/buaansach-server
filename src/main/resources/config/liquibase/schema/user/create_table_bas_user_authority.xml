@@ -24,7 +24,7 @@
 
         <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="bas_user_authority"
-                                 constraintName="fk_user_id"
+                                 constraintName="fk_user_and_authority"
                                  referencedColumnNames="id"
                                  referencedTableName="bas_user"/>
 

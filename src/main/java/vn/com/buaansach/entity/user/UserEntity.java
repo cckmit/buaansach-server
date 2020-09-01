@@ -1,8 +1,7 @@
 package vn.com.buaansach.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import org.hibernate.annotations.BatchSize;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.UserType;
@@ -22,6 +21,9 @@ import java.util.UUID;
 @Table(name = "bas_user")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -54,7 +56,7 @@ public class UserEntity extends AbstractAuditingEntity implements Serializable {
     private String userPassword;
 
     @Column(name = "user_activated")
-    private boolean userActivated = false;
+    private boolean userActivated;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type")

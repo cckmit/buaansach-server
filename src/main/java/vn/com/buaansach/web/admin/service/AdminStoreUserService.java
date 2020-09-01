@@ -11,9 +11,9 @@ import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.ForbiddenException;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
-import vn.com.buaansach.web.admin.repository.AdminStoreRepository;
-import vn.com.buaansach.web.admin.repository.AdminStoreUserRepository;
-import vn.com.buaansach.web.admin.repository.AdminUserRepository;
+import vn.com.buaansach.web.admin.repository.store.AdminStoreRepository;
+import vn.com.buaansach.web.admin.repository.store.AdminStoreUserRepository;
+import vn.com.buaansach.web.admin.repository.user.AdminUserRepository;
 import vn.com.buaansach.web.admin.service.dto.read.AdminStoreUserDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminAddStoreUserDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateOrUpdateStoreUserDTO;
@@ -105,7 +105,7 @@ public class AdminStoreUserService {
     }
 
     public List<AdminStoreUserDTO> getListStoreUserByStoreGuid(String storeGuid) {
-        return adminStoreUserRepository.findByStoreGuid(UUID.fromString(storeGuid));
+        return adminStoreUserRepository.findDTOByStoreGuid(UUID.fromString(storeGuid));
     }
 
     public void toggleStoreUserActivation(String storeUserGuid) {

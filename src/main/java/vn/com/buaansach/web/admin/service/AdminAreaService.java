@@ -6,12 +6,14 @@ import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
-import vn.com.buaansach.entity.order.PaymentEntity;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
-import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
 import vn.com.buaansach.exception.NotFoundException;
-import vn.com.buaansach.web.admin.repository.*;
+import vn.com.buaansach.web.admin.repository.order.AdminOrderProductRepository;
+import vn.com.buaansach.web.admin.repository.order.AdminOrderRepository;
+import vn.com.buaansach.web.admin.repository.store.AdminAreaRepository;
+import vn.com.buaansach.web.admin.repository.store.AdminSeatRepository;
+import vn.com.buaansach.web.admin.repository.store.AdminStoreRepository;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminAreaDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateAreaDTO;
 
@@ -29,8 +31,6 @@ public class AdminAreaService {
     private final AdminSeatRepository adminSeatRepository;
     private final AdminOrderRepository adminOrderRepository;
     private final AdminOrderProductRepository adminOrderProductRepository;
-    private final AdminPaymentRepository adminPaymentRepository;
-    private final AdminStoreOrderRepository adminStoreOrderRepository;
 
     /* used when create area with init seats */
     private List<SeatEntity> createListSeat(AreaEntity areaEntity, int numberOfSeats, String seatPrefix) {
@@ -112,15 +112,11 @@ public class AdminAreaService {
         List<OrderEntity> listOrder = adminOrderRepository.findBySeatGuidIn(listSeatGuid);
 
         List<UUID> listOrderGuid = listOrder.stream().map(OrderEntity::getGuid).collect(Collectors.toList());
-        List<PaymentEntity> listPayment = adminPaymentRepository.findByOrderGuidIn(listOrderGuid);
         List<OrderProductEntity> listOrderProduct = adminOrderProductRepository.findByOrderGuidIn(listOrderGuid);
-        List<StoreOrderNotificationEntity> listStoreOrder = adminStoreOrderRepository.findByAreaGuid(UUID.fromString(areaGuid));
 
-        /* delete all orders, order products, payments related to all seat of area */
-        adminPaymentRepository.deleteInBatch(listPayment);
+        /* delete all orders, order products related to all seat of area */
         adminOrderProductRepository.deleteInBatch(listOrderProduct);
         adminOrderRepository.deleteInBatch(listOrder);
-        adminStoreOrderRepository.deleteInBatch(listStoreOrder);
 
         /* then delete all seat of area */
         adminSeatRepository.deleteInBatch(listSeat);

@@ -12,7 +12,13 @@ import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
-import vn.com.buaansach.web.guest.repository.*;
+import vn.com.buaansach.web.guest.repository.order.GuestOrderFeedbackRepository;
+import vn.com.buaansach.web.guest.repository.order.GuestOrderProductRepository;
+import vn.com.buaansach.web.guest.repository.order.GuestOrderRepository;
+import vn.com.buaansach.web.guest.repository.store.GuestAreaRepository;
+import vn.com.buaansach.web.guest.repository.store.GuestSeatRepository;
+import vn.com.buaansach.web.guest.repository.store.GuestStoreProductRepository;
+import vn.com.buaansach.web.guest.repository.store.GuestStoreRepository;
 import vn.com.buaansach.web.guest.security.GuestStoreSecurity;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderDTO;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderProductDTO;
@@ -42,7 +48,6 @@ public class GuestOrderService {
     private final GuestStoreProductRepository guestStoreProductRepository;
     private final GuestAreaRepository guestAreaRepository;
     private final GuestStoreOrderService guestStoreOrderService;
-    private final GuestCustomerRepository guestCustomerRepository;
 
     public GuestOrderDTO getOrder(String orderGuid) {
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
@@ -217,10 +222,6 @@ public class GuestOrderService {
         /* Không cho phép khách thay đổi SDT nếu đơn đã có SDT */
         if (orderEntity.getOrderCustomerPhone() != null)
             throw new BadRequestException("guest@orderCustomerPhoneExist@" + orderEntity.getGuid());
-
-        /* Nếu SDT chưa tồn tại trên hệ thống */
-        if (guestCustomerRepository.findOneByCustomerPhone(customerPhone).isEmpty())
-            throw new BadRequestException("guest@customerPhoneNotFound@" + customerPhone);
 
         String newTimeline = TimelineUtil.appendCustomOrderStatus(
                 orderEntity.getOrderStatusTimeline(),

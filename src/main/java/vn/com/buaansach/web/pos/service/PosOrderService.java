@@ -6,18 +6,25 @@ import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.OrderType;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
+import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.order.PaymentEntity;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
-import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
-import vn.com.buaansach.web.pos.repository.*;
+import vn.com.buaansach.web.pos.repository.notification.PosStoreOrderNotificationRepository;
+import vn.com.buaansach.web.pos.repository.notification.PosStorePayRequestNotificationRepository;
+import vn.com.buaansach.web.pos.repository.order.PosOrderProductRepository;
+import vn.com.buaansach.web.pos.repository.order.PosOrderRepository;
+import vn.com.buaansach.web.pos.repository.store.PosAreaRepository;
+import vn.com.buaansach.web.pos.repository.store.PosSeatRepository;
+import vn.com.buaansach.web.pos.repository.store.PosStoreRepository;
+import vn.com.buaansach.web.pos.repository.voucher.PosVoucherCodeRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
@@ -47,12 +54,9 @@ public class PosOrderService {
     private final PosAreaRepository posAreaRepository;
     private final PosSocketService posSocketService;
     private final PosVoucherUsageService posVoucherUsageService;
-    private final PosCustomerOrderService posCustomerOrderService;
     private final PosStoreOrderService posStoreOrderService;
-    private final PosStoreOrderRepository posStoreOrderRepository;
-    private final PosCustomerPointLogRepository posCustomerPointLogRepository;
-    private final PosCustomerRepository posCustomerRepository;
-    private final PosStorePayRequestRepository posStorePayRequestRepository;
+    private final PosStoreOrderNotificationRepository posStoreOrderNotificationRepository;
+    private final PosStorePayRequestNotificationRepository posStorePayRequestNotificationRepository;
 
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
@@ -266,15 +270,6 @@ public class PosOrderService {
         /* add voucher code usage record if a voucher code has been applied */
         if (orderEntity.getVoucherCode() != null && !orderEntity.getVoucherCode().isBlank()) {
             posVoucherUsageService.addVoucherUsage(orderEntity.getVoucherCode(), orderEntity.getGuid(), orderEntity.getOrderCustomerPhone());
-        }
-
-        /* add customer order log if a customer phone has been used */
-        if (orderEntity.getOrderCustomerPhone() != null && !orderEntity.getOrderCustomerPhone().isBlank()) {
-            posCustomerOrderService.addCustomerOrder(orderEntity.getOrderCustomerPhone(), orderEntity.getGuid(), storeEntity.getGuid());
-            PosSocketDTO dto = new PosSocketDTO();
-            dto.setMessage(WebSocketConstants.POS_PURCHASE_ORDER_WITH_PHONE);
-            dto.setPayload(orderEntity.getOrderCustomerPhone());
-            posSocketService.sendMessage(WebSocketConstants.TOPIC_CUSTOMER_CARE_TRACKER, dto);
         }
 
         switch (payload.getPaymentMethod()) {

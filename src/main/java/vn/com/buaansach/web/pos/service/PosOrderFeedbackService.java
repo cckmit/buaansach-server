@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.order.OrderFeedbackEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.NotFoundException;
-import vn.com.buaansach.web.pos.repository.PosOrderFeedbackRepository;
-import vn.com.buaansach.web.pos.repository.PosOrderRepository;
-import vn.com.buaansach.web.pos.repository.PosStoreRepository;
+import vn.com.buaansach.web.pos.repository.order.PosOrderFeedbackRepository;
+import vn.com.buaansach.web.pos.repository.order.PosOrderRepository;
+import vn.com.buaansach.web.pos.repository.store.PosStoreRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderFeedbackDTO;
 

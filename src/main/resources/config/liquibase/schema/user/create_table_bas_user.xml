@@ -27,7 +27,7 @@
             <column name="user_activated" type="boolean" defaultValue="false">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_type" type="varchar(20)">
+            <column name="user_type" type="varchar(30)">
                 <constraints nullable="false"/>
             </column>
             <column name="activation_key" type="varchar(20)"/>

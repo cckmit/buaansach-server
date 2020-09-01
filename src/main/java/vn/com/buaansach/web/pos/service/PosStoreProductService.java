@@ -6,7 +6,7 @@ import vn.com.buaansach.entity.enumeration.StoreProductStatus;
 import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.WebSocketConstants;
-import vn.com.buaansach.web.pos.repository.PosStoreProductRepository;
+import vn.com.buaansach.web.pos.repository.store.PosStoreProductRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreProductDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosStoreProductStatusChangeDTO;

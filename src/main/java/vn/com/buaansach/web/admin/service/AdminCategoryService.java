@@ -8,8 +8,8 @@ import vn.com.buaansach.entity.common.FileEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.Constants;
-import vn.com.buaansach.web.admin.repository.AdminCategoryRepository;
-import vn.com.buaansach.web.admin.repository.AdminProductCategoryRepository;
+import vn.com.buaansach.web.admin.repository.common.AdminCategoryRepository;
+import vn.com.buaansach.web.admin.repository.common.AdminProductCategoryRepository;
 import vn.com.buaansach.web.common.service.FileService;
 
 import javax.transaction.Transactional;

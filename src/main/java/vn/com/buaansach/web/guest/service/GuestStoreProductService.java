@@ -3,7 +3,7 @@ package vn.com.buaansach.web.guest.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
-import vn.com.buaansach.web.guest.repository.GuestStoreProductRepository;
+import vn.com.buaansach.web.guest.repository.store.GuestStoreProductRepository;
 import vn.com.buaansach.web.guest.service.dto.read.GuestStoreProductDTO;
 
 import java.util.List;

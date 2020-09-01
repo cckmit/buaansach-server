@@ -1,4 +1,4 @@
 package vn.com.buaansach.web.common;
 /*
- * All web resources for user in this system
+ * All web resources for common uses
  */

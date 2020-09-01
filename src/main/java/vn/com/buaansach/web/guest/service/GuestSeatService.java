@@ -6,8 +6,8 @@ import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.exception.NotFoundException;
-import vn.com.buaansach.web.guest.repository.GuestOrderRepository;
-import vn.com.buaansach.web.guest.repository.GuestSeatRepository;
+import vn.com.buaansach.web.guest.repository.order.GuestOrderRepository;
+import vn.com.buaansach.web.guest.repository.store.GuestSeatRepository;
 import vn.com.buaansach.web.guest.service.dto.read.GuestSeatDTO;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestCheckOrderSeatDTO;
 

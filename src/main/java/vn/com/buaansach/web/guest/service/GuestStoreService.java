@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.WebSocketConstants;
-import vn.com.buaansach.web.guest.repository.GuestStoreRepository;
+import vn.com.buaansach.web.guest.repository.store.GuestStoreRepository;
 import vn.com.buaansach.web.guest.service.dto.read.GuestStoreDTO;
 import vn.com.buaansach.web.guest.websocket.GuestSocketService;
 import vn.com.buaansach.web.guest.websocket.dto.GuestCallWaiterDTO;

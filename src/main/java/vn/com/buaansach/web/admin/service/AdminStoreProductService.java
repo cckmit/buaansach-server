@@ -7,9 +7,9 @@ import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.enumeration.StoreProductStatus;
 import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.exception.NotFoundException;
-import vn.com.buaansach.web.admin.repository.AdminProductRepository;
-import vn.com.buaansach.web.admin.repository.AdminStoreProductRepository;
-import vn.com.buaansach.web.admin.repository.AdminStoreRepository;
+import vn.com.buaansach.web.admin.repository.common.AdminProductRepository;
+import vn.com.buaansach.web.admin.repository.store.AdminStoreProductRepository;
+import vn.com.buaansach.web.admin.repository.store.AdminStoreRepository;
 import vn.com.buaansach.web.admin.service.dto.read.AdminStoreProductDTO;
 
 import java.util.ArrayList;

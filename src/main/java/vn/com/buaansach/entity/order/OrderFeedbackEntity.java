@@ -1,11 +1,9 @@
 package vn.com.buaansach.entity.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.OrderFeedbackAction;
-import vn.com.buaansach.entity.enumeration.Rating;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -16,6 +14,9 @@ import java.util.UUID;
 @Table(name = "bas_order_feedback")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderFeedbackEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -31,11 +32,9 @@ public class OrderFeedbackEntity extends AbstractAuditingEntity implements Seria
     @Column(name = "order_feedback_action")
     private OrderFeedbackAction orderFeedbackAction;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "service_quality_rating")
     private int serviceQualityRating;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "product_quality_rating")
     private int productQualityRating;
 

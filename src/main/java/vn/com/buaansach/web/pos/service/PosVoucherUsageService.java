@@ -3,9 +3,8 @@ package vn.com.buaansach.web.pos.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.voucher.VoucherUsageEntity;
-import vn.com.buaansach.web.pos.repository.PosVoucherUsageRepository;
+import vn.com.buaansach.web.pos.repository.voucher.PosVoucherUsageRepository;
 
-import java.time.Instant;
 import java.util.UUID;
 
 @Service

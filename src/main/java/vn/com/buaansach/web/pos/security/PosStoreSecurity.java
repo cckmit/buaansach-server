@@ -8,8 +8,8 @@ import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.ForbiddenException;
 import vn.com.buaansach.security.util.SecurityUtils;
-import vn.com.buaansach.web.pos.repository.PosStoreRepository;
-import vn.com.buaansach.web.pos.repository.PosStoreUserRepository;
+import vn.com.buaansach.web.pos.repository.store.PosStoreRepository;
+import vn.com.buaansach.web.pos.repository.store.PosStoreUserRepository;
 
 import java.util.HashSet;
 import java.util.Set;

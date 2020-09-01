@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.common.CategoryEntity;
 import vn.com.buaansach.entity.enumeration.StoreProductStatus;
-import vn.com.buaansach.web.pos.repository.PosCategoryRepository;
-import vn.com.buaansach.web.pos.repository.PosStoreProductRepository;
+import vn.com.buaansach.web.pos.repository.common.PosCategoryRepository;
+import vn.com.buaansach.web.pos.repository.store.PosStoreProductRepository;
 import vn.com.buaansach.web.pos.service.dto.read.PosCategoryDTO;
 
 import java.util.ArrayList;

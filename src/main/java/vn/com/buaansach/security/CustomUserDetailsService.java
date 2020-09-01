@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.exception.ErrorCode;
-import vn.com.buaansach.core.repository.UserRepository;
+import vn.com.buaansach.core.repository.user.UserRepository;
 import vn.com.buaansach.util.Constants;
 
 import javax.transaction.Transactional;

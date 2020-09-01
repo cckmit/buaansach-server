@@ -1,8 +1,7 @@
 package vn.com.buaansach.entity.notification;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.StoreNotificationStatus;
 import vn.com.buaansach.entity.enumeration.StoreNotificationType;
@@ -16,6 +15,9 @@ import java.util.UUID;
 @Table(name = "bas_store_notification")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class StoreNotificationEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 

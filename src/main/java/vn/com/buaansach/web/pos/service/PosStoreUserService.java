@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.store.StoreUserEntity;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
-import vn.com.buaansach.web.pos.repository.PosStoreUserRepository;
+import vn.com.buaansach.web.pos.repository.store.PosStoreUserRepository;
 import vn.com.buaansach.web.pos.service.dto.read.PosStoreUserDTO;
 
 import java.util.List;

@@ -3,7 +3,7 @@ package vn.com.buaansach.web.guest.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
-import vn.com.buaansach.web.guest.repository.GuestStoreOrderRepository;
+import vn.com.buaansach.web.guest.repository.store.GuestStoreOrderRepository;
 
 import java.util.UUID;
 

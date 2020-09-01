@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.com.buaansach.config.audit.AuditEventConverter;
 import vn.com.buaansach.entity.user.PersistentAuditEvent;
-import vn.com.buaansach.web.admin.repository.AdminPersistenceAuditEventRepository;
+import vn.com.buaansach.web.admin.repository.user.AdminPersistenceAuditEventRepository;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

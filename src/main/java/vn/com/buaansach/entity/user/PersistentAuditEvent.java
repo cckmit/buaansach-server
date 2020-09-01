@@ -1,15 +1,23 @@
 package vn.com.buaansach.entity.user;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Entity
 @Table(name = "persistent_audit_event")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PersistentAuditEvent implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -33,72 +41,4 @@ public class PersistentAuditEvent implements Serializable {
     @Column(name = "value")
     @CollectionTable(name = "persistent_audit_event_data", joinColumns = @JoinColumn(name = "event_id"))
     private Map<String, String> data = new HashMap<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getPrincipal() {
-        return principal;
-    }
-
-    public void setPrincipal(String principal) {
-        this.principal = principal;
-    }
-
-    public Instant getAuditEventDate() {
-        return auditEventDate;
-    }
-
-    public void setAuditEventDate(Instant auditEventDate) {
-        this.auditEventDate = auditEventDate;
-    }
-
-    public String getAuditEventType() {
-        return auditEventType;
-    }
-
-    public void setAuditEventType(String auditEventType) {
-        this.auditEventType = auditEventType;
-    }
-
-    public Map<String, String> getData() {
-        return data;
-    }
-
-    public void setData(Map<String, String> data) {
-        this.data = data;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PersistentAuditEvent that = (PersistentAuditEvent) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(principal, that.principal) &&
-                Objects.equals(auditEventDate, that.auditEventDate) &&
-                Objects.equals(auditEventType, that.auditEventType) &&
-                Objects.equals(data, that.data);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, principal, auditEventDate, auditEventType, data);
-    }
-
-    @Override
-    public String toString() {
-        return "PersistentAuditEvent{" +
-                "id=" + id +
-                ", principal='" + principal + '\'' +
-                ", auditEventDate=" + auditEventDate +
-                ", auditEventType='" + auditEventType + '\'' +
-                ", data=" + data +
-                '}';
-    }
 }

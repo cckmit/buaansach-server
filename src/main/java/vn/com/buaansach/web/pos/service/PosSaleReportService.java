@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.security.util.SecurityUtils;
-import vn.com.buaansach.web.pos.repository.PosOrderRepository;
+import vn.com.buaansach.web.pos.repository.order.PosOrderRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosSaleReportParams;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;

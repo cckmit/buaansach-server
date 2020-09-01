@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.util.WebSocketConstants;
-import vn.com.buaansach.web.guest.repository.GuestVoucherCodeRepository;
-import vn.com.buaansach.web.guest.repository.GuestVoucherRepository;
+import vn.com.buaansach.web.guest.repository.voucher.GuestVoucherCodeRepository;
+import vn.com.buaansach.web.guest.repository.voucher.GuestVoucherRepository;
 import vn.com.buaansach.web.guest.websocket.GuestSocketService;
 import vn.com.buaansach.web.guest.websocket.dto.GuestSocketDTO;
 

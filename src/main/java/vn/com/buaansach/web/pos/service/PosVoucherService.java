@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.Constants;
-import vn.com.buaansach.web.pos.repository.PosVoucherRepository;
+import vn.com.buaansach.web.pos.repository.voucher.PosVoucherRepository;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherDTO;
 
 @Service

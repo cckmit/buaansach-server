@@ -1,4 +1,4 @@
-id;guid;login;password;activated;login_modified;created_by;created_date
-1;1;anonymousUser;$2a$10$XiJTnlhYsJ9lZLaGzkWSIuZXVN5.AFpG.vHdZLgTcph6nxuJVqgKK;true;true;system;NOW
-2;2;systembas;$2a$10$qrF/M.UQI/GWhNN8DxNpneee.Y7G94HLM3/vwBxa6n9r6jslmF8Z6;true;true;system;NOW
-3;3;adminbas;$2a$10$gSAhZrxMllrbgj/kkK9UceBPpChGWJA7SYIb1Mqo.n5aNLq1/oRrC;true;true;system;NOW
+id;guid;user_login;user_password;user_activated;user_type;created_by;created_date
+1;1;anonymousUser;$2a$10$XiJTnlhYsJ9lZLaGzkWSIuZXVN5.AFpG.vHdZLgTcph6nxuJVqgKK;true;INTERNAL;system;NOW
+2;2;systembas;$2a$10$qrF/M.UQI/GWhNN8DxNpneee.Y7G94HLM3/vwBxa6n9r6jslmF8Z6;true;INTERNAL;system;NOW
+3;3;adminbas;$2a$10$gSAhZrxMllrbgj/kkK9UceBPpChGWJA7SYIb1Mqo.n5aNLq1/oRrC;true;INTERNAL;system;NOW

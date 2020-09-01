@@ -1,8 +1,7 @@
 package vn.com.buaansach.entity.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.DiscountType;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
@@ -12,10 +11,13 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "bas_order_product")
 @Data
+@EqualsAndHashCode(callSuper = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderProductEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 

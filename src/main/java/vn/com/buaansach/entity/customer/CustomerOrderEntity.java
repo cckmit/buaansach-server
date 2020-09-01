@@ -1,8 +1,7 @@
 package vn.com.buaansach.entity.customer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.CustomerCareStatus;
 
@@ -15,6 +14,9 @@ import java.util.UUID;
 @Table(name = "bas_customer_order")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CustomerOrderEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 

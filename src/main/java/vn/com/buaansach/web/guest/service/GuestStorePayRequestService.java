@@ -9,10 +9,10 @@ import vn.com.buaansach.entity.notification.StorePayRequestNotificationEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.WebSocketConstants;
-import vn.com.buaansach.web.guest.repository.GuestOrderRepository;
-import vn.com.buaansach.web.guest.repository.GuestSeatRepository;
-import vn.com.buaansach.web.guest.repository.GuestStorePayRequestRepository;
-import vn.com.buaansach.web.guest.repository.GuestStoreRepository;
+import vn.com.buaansach.web.guest.repository.order.GuestOrderRepository;
+import vn.com.buaansach.web.guest.repository.store.GuestSeatRepository;
+import vn.com.buaansach.web.guest.repository.notification.GuestStorePayRequestNotificationRepository;
+import vn.com.buaansach.web.guest.repository.store.GuestStoreRepository;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestStorePayRequestDTO;
 import vn.com.buaansach.web.guest.websocket.GuestSocketService;
 import vn.com.buaansach.web.guest.websocket.dto.GuestSocketDTO;
@@ -24,7 +24,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class GuestStorePayRequestService {
-    private final GuestStorePayRequestRepository guestStorePayRequestRepository;
+    private final GuestStorePayRequestNotificationRepository guestStorePayRequestNotificationRepository;
     private final GuestOrderRepository guestOrderRepository;
     private final GuestStoreRepository guestStoreRepository;
     private final GuestSeatRepository guestSeatRepository;
@@ -40,7 +40,7 @@ public class GuestStorePayRequestService {
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(payload.getOrderGuid())
                 .orElseThrow(() -> new NotFoundException("guest@orderNotFound@" + payload.getOrderGuid()));
 
-        if (guestStorePayRequestRepository.findOneByOrderGuid(orderEntity.getGuid()).isPresent())
+        if (guestStorePayRequestNotificationRepository.findOneByOrderGuid(orderEntity.getGuid()).isPresent())
             throw new BadRequestException("guest@storePayRequestExistWithOrderGuid@" + orderEntity.getGuid());
 
         long payAmount = posPaymentService.calculatePayAmount(orderEntity);
@@ -60,7 +60,7 @@ public class GuestStorePayRequestService {
 //        storePayRequestNotificationEntity.setAreaGuid(seatEntity.getAreaGuid());
 //        storePayRequestNotificationEntity.setSeatGuid(seatEntity.getGuid());
 //        storePayRequestNotificationEntity.setOrderGuid(orderEntity.getGuid());
-        StorePayRequestNotificationEntity result = guestStorePayRequestRepository.save(storePayRequestNotificationEntity);
+        StorePayRequestNotificationEntity result = guestStorePayRequestNotificationRepository.save(storePayRequestNotificationEntity);
 
         GuestSocketDTO socketDTO = new GuestSocketDTO(WebSocketConstants.GUEST_STORE_PAY_REQUEST, storePayRequestNotificationEntity);
         guestSocketService.sendMessage(WebSocketConstants.TOPIC_POS_PREFIX + storeEntity.getGuid(), socketDTO);
@@ -68,7 +68,7 @@ public class GuestStorePayRequestService {
     }
 
     public GuestStorePayRequestDTO getByOrderGuid(String orderGuid) {
-        return new GuestStorePayRequestDTO(guestStorePayRequestRepository.findOneByOrderGuid(UUID.fromString(orderGuid))
+        return new GuestStorePayRequestDTO(guestStorePayRequestNotificationRepository.findOneByOrderGuid(UUID.fromString(orderGuid))
                 .orElse(new StorePayRequestNotificationEntity()));
     }
 }
