@@ -2,7 +2,7 @@ package vn.com.buaansach.web.pos.repository.common;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.shared.repository.common.CategoryRepository;
+import vn.com.buaansach.web.shared.repository.common.CategoryRepository;
 import vn.com.buaansach.entity.common.CategoryEntity;
 
 import java.util.List;

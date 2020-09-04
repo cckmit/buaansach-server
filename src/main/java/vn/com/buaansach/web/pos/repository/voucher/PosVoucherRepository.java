@@ -3,7 +3,7 @@ package vn.com.buaansach.web.pos.repository.voucher;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.shared.repository.voucher.VoucherRepository;
+import vn.com.buaansach.web.shared.repository.voucher.VoucherRepository;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
 
 import java.util.Optional;

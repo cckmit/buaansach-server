@@ -3,7 +3,7 @@ package vn.com.buaansach.web.guest.repository.order;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.shared.repository.order.OrderProductRepository;
+import vn.com.buaansach.web.shared.repository.order.OrderProductRepository;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderProductDTO;
 
 import java.util.List;

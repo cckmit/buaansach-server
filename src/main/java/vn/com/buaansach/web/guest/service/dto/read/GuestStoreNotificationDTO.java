@@ -2,7 +2,7 @@ package vn.com.buaansach.web.guest.service.dto.read;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import vn.com.buaansach.shared.service.dto.AuditDTO;
+import vn.com.buaansach.web.shared.service.dto.AuditDTO;
 import vn.com.buaansach.entity.enumeration.StoreNotificationStatus;
 import vn.com.buaansach.entity.enumeration.StoreNotificationType;
 import vn.com.buaansach.entity.notification.StoreNotificationEntity;

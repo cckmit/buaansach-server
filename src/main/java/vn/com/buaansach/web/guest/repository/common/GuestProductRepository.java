@@ -3,7 +3,7 @@ package vn.com.buaansach.web.guest.repository.common;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.shared.repository.common.ProductRepository;
+import vn.com.buaansach.web.shared.repository.common.ProductRepository;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 

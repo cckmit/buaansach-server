@@ -3,7 +3,7 @@ package vn.com.buaansach.web.pos.repository.store;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.shared.repository.store.StoreUserRepository;
+import vn.com.buaansach.web.shared.repository.store.StoreUserRepository;
 import vn.com.buaansach.web.pos.service.dto.read.PosStoreUserDTO;
 
 import java.util.List;

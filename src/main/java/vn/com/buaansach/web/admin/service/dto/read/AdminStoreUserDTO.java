@@ -7,7 +7,7 @@ import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 import vn.com.buaansach.entity.store.StoreUserEntity;
 import vn.com.buaansach.entity.user.UserEntity;
-import vn.com.buaansach.shared.service.dto.AuditDTO;
+import vn.com.buaansach.web.shared.service.dto.AuditDTO;
 
 import java.util.UUID;
 

@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import vn.com.buaansach.entity.notification.StoreNotificationEntity;
-import vn.com.buaansach.shared.repository.notification.StoreNotificationRepository;
+import vn.com.buaansach.web.shared.repository.notification.StoreNotificationRepository;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreNotificationDTO;
 
 import java.time.Instant;

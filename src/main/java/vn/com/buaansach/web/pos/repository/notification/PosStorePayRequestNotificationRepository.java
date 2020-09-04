@@ -2,7 +2,7 @@ package vn.com.buaansach.web.pos.repository.notification;
 
 import org.springframework.stereotype.Repository;
 import vn.com.buaansach.entity.notification.StorePayRequestNotificationEntity;
-import vn.com.buaansach.shared.repository.notification.StorePayRequestNotificationRepository;
+import vn.com.buaansach.web.shared.repository.notification.StorePayRequestNotificationRepository;
 
 import java.util.List;
 import java.util.UUID;

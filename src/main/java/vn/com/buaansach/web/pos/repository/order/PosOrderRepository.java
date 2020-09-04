@@ -3,7 +3,7 @@ package vn.com.buaansach.web.pos.repository.order;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.shared.repository.order.OrderRepository;
+import vn.com.buaansach.web.shared.repository.order.OrderRepository;
 import vn.com.buaansach.entity.order.OrderEntity;
 
 import java.time.Instant;

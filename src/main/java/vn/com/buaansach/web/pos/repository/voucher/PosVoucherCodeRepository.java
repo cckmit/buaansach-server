@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.shared.repository.voucher.VoucherCodeRepository;
+import vn.com.buaansach.web.shared.repository.voucher.VoucherCodeRepository;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
 import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
 

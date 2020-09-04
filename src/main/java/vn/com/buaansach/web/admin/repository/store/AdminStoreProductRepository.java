@@ -3,7 +3,7 @@ package vn.com.buaansach.web.admin.repository.store;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.shared.repository.store.StoreProductRepository;
+import vn.com.buaansach.web.shared.repository.store.StoreProductRepository;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.web.admin.service.dto.read.AdminStoreProductDTO;
 

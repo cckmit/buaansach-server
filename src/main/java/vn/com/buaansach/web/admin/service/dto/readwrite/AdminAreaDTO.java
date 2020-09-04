@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.enumeration.AreaType;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
-import vn.com.buaansach.shared.service.dto.AuditDTO;
+import vn.com.buaansach.web.shared.service.dto.AuditDTO;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;

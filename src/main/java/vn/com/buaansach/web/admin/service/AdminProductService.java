@@ -21,7 +21,7 @@ import vn.com.buaansach.web.admin.repository.common.AdminProductRepository;
 import vn.com.buaansach.web.admin.repository.store.AdminStoreProductRepository;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminProductDTO;
 import vn.com.buaansach.web.admin.service.mapper.AdminProductMapper;
-import vn.com.buaansach.web.general.service.FileService;
+import vn.com.buaansach.web.shared.service.FileService;
 
 import javax.transaction.Transactional;
 import java.util.List;

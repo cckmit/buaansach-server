@@ -2,7 +2,7 @@ package vn.com.buaansach.web.admin.service.dto.readwrite;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import vn.com.buaansach.shared.service.dto.AuditDTO;
+import vn.com.buaansach.web.shared.service.dto.AuditDTO;
 import vn.com.buaansach.entity.common.CategoryEntity;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.DiscountType;

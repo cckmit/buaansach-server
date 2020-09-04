@@ -4,12 +4,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import vn.com.buaansach.entity.notification.StorePayRequestNotificationEntity;
-import vn.com.buaansach.shared.repository.notification.StorePayRequestNotificationRepository;
 import vn.com.buaansach.entity.enumeration.StoreNotificationStatus;
 import vn.com.buaansach.entity.enumeration.StoreNotificationType;
 import vn.com.buaansach.entity.notification.StoreNotificationEntity;
 import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
-import vn.com.buaansach.shared.service.dto.AuditDTO;
+import vn.com.buaansach.web.shared.service.dto.AuditDTO;
 
 import java.time.Instant;
 import java.util.UUID;

@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import vn.com.buaansach.entity.user.AuthorityEntity;
 import vn.com.buaansach.entity.user.UserEntity;
-import vn.com.buaansach.shared.service.dto.AuditDTO;
+import vn.com.buaansach.web.shared.service.dto.AuditDTO;
 
 import java.util.Set;
 import java.util.UUID;

@@ -3,7 +3,7 @@ package vn.com.buaansach.web.guest.repository.store;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.shared.repository.store.SeatRepository;
+import vn.com.buaansach.web.shared.repository.store.SeatRepository;
 import vn.com.buaansach.web.guest.service.dto.read.GuestSeatDTO;
 
 import java.util.Optional;

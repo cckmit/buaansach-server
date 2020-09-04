@@ -16,7 +16,7 @@ import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.admin.repository.order.AdminOrderProductRepository;
 import vn.com.buaansach.web.admin.repository.order.AdminOrderRepository;
 import vn.com.buaansach.web.admin.repository.store.*;
-import vn.com.buaansach.web.general.service.FileService;
+import vn.com.buaansach.web.shared.service.FileService;
 
 import javax.transaction.Transactional;
 import java.util.List;

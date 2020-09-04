@@ -3,7 +3,7 @@ package vn.com.buaansach.web.pos.service.dto.read;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.enumeration.DiscountType;
-import vn.com.buaansach.shared.service.dto.AuditDTO;
+import vn.com.buaansach.web.shared.service.dto.AuditDTO;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

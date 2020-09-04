@@ -12,7 +12,7 @@ import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
-import vn.com.buaansach.shared.service.PaymentService;
+import vn.com.buaansach.web.shared.service.PaymentService;
 import vn.com.buaansach.web.guest.repository.notification.GuestStoreNotificationRepository;
 import vn.com.buaansach.web.guest.repository.notification.GuestStorePayRequestNotificationRepository;
 import vn.com.buaansach.web.guest.repository.order.GuestOrderRepository;

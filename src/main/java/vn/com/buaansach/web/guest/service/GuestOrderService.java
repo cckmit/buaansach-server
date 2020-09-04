@@ -11,7 +11,7 @@ import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
-import vn.com.buaansach.shared.service.PriceService;
+import vn.com.buaansach.web.shared.service.PriceService;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
 import vn.com.buaansach.web.guest.repository.order.GuestOrderProductRepository;
 import vn.com.buaansach.web.guest.repository.order.GuestOrderRepository;
