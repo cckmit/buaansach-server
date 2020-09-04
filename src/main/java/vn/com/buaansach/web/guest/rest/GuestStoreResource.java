@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.guest.service.GuestStoreService;
 import vn.com.buaansach.web.guest.service.dto.read.GuestStoreDTO;
-import vn.com.buaansach.web.guest.websocket.dto.GuestCallWaiterDTO;
+import vn.com.buaansach.web.guest.service.dto.write.GuestCallWaiterDTO;
 
 @RestController
 @RequestMapping("/api/v1/guest/store")
@@ -28,6 +28,6 @@ public class GuestStoreResource {
     public ResponseEntity<Void> callWaiter(@RequestBody GuestCallWaiterDTO payload){
         log.debug("REST request from user [{}] to call waiter of [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         guestStoreService.callWaiter(payload);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

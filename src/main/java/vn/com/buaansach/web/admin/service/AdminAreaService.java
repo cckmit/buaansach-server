@@ -8,6 +8,7 @@ import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
+import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.admin.repository.order.AdminOrderProductRepository;
 import vn.com.buaansach.web.admin.repository.order.AdminOrderRepository;
@@ -33,15 +34,17 @@ public class AdminAreaService {
     private final AdminOrderProductRepository adminOrderProductRepository;
 
     /* used when create area with init seats */
-    private List<SeatEntity> createListSeat(AreaEntity areaEntity, int numberOfSeats, String seatPrefix) {
+    private List<SeatEntity> createListSeat(AreaEntity areaEntity, int numberOfSeats, String seatPrefix, String seatPrefixEng) {
         List<SeatEntity> listSeat = new ArrayList<>();
         for (int i = 1; i <= numberOfSeats; i++) {
             SeatEntity seatEntity = new SeatEntity();
             seatEntity.setGuid(UUID.randomUUID());
             if (seatPrefix != null && !seatPrefix.isEmpty()) {
                 seatEntity.setSeatName(seatPrefix.trim() + " " + i);
+                seatEntity.setSeatNameEng(seatPrefixEng.trim() + " " + i);
             } else {
                 seatEntity.setSeatName(String.valueOf(i));
+                seatEntity.setSeatNameEng(String.valueOf(i));
             }
             seatEntity.setSeatStatus(SeatStatus.EMPTY);
             seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
@@ -56,11 +59,12 @@ public class AdminAreaService {
     @Transactional
     public AdminAreaDTO createArea(AdminCreateAreaDTO request) {
         adminStoreRepository.findOneByGuid(request.getStoreGuid())
-                .orElseThrow(() -> new NotFoundException("admin@storeNotFound@" + request.getStoreGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         AreaEntity areaEntity = new AreaEntity();
         areaEntity.setGuid(UUID.randomUUID());
         areaEntity.setAreaName(request.getAreaName());
+        areaEntity.setAreaNameEng(request.getAreaNameEng());
         areaEntity.setAreaType(request.getAreaType());
         areaEntity.setAreaColor(request.getAreaColor());
         areaEntity.setStoreGuid(request.getStoreGuid());
@@ -69,7 +73,7 @@ public class AdminAreaService {
 
         List<SeatEntity> listSeat = new ArrayList<>();
         if (request.getNumberOfSeats() > 0) {
-            listSeat = createListSeat(areaEntity, request.getNumberOfSeats(), request.getSeatPrefix());
+            listSeat = createListSeat(areaEntity, request.getNumberOfSeats(), request.getSeatPrefix(), request.getSeatPrefixEng());
         }
 
         return new AdminAreaDTO(areaEntity, listSeat);
@@ -77,7 +81,7 @@ public class AdminAreaService {
 
     public List<AdminAreaDTO> getListAreaByStore(String storeGuid) {
         adminStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new NotFoundException("admin@storeNotFound@" + storeGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         List<AreaEntity> listArea = adminAreaRepository.findByStoreGuid(UUID.fromString(storeGuid));
         List<SeatEntity> listSeat = adminSeatRepository.findListSeatByStoreGuid(UUID.fromString(storeGuid));
@@ -92,19 +96,20 @@ public class AdminAreaService {
         return result;
     }
 
-    public AdminAreaDTO updateArea(AdminAreaDTO updateEntity) {
-        AreaEntity currentEntity = adminAreaRepository.findOneByGuid(updateEntity.getGuid())
-                .orElseThrow(() -> new NotFoundException("admin@areaNotFound@" + updateEntity.getGuid()));
+    public AdminAreaDTO updateArea(AdminAreaDTO payload) {
+        AreaEntity currentEntity = adminAreaRepository.findOneByGuid(payload.getGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.AREA_NOT_FOUND));
 
-        currentEntity.setAreaName(updateEntity.getAreaName());
-        currentEntity.setAreaColor(updateEntity.getAreaColor());
-        return new AdminAreaDTO(adminAreaRepository.save(currentEntity), updateEntity.getListSeat());
+        currentEntity.setAreaName(payload.getAreaName());
+        currentEntity.setAreaNameEng(payload.getAreaNameEng());
+        currentEntity.setAreaColor(payload.getAreaColor());
+        return new AdminAreaDTO(adminAreaRepository.save(currentEntity), payload.getListSeat());
     }
 
     @Transactional
     public void deleteArea(String areaGuid) {
         AreaEntity areaEntity = adminAreaRepository.findOneByGuid(UUID.fromString(areaGuid))
-                .orElseThrow(() -> new NotFoundException("admin@areaNotFound@" + areaGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.AREA_NOT_FOUND));
 
         List<SeatEntity> listSeat = adminSeatRepository.findByAreaGuid(areaEntity.getGuid());
 
@@ -127,7 +132,7 @@ public class AdminAreaService {
 
     public void toggleArea(String areaGuid) {
         AreaEntity areaEntity = adminAreaRepository.findOneByGuid(UUID.fromString(areaGuid))
-                .orElseThrow(() -> new NotFoundException("admin@areaNotFound@" + areaGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.AREA_NOT_FOUND));
         areaEntity.setAreaActivated(!areaEntity.isAreaActivated());
         adminAreaRepository.save(areaEntity);
     }

@@ -32,9 +32,17 @@ public class SaleEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "sale_name")
     private String saleName;
 
-    @Size(max = 1000)
-    @Column(name = "sale_description")
+    @Size(max = 255)
+    @Column(name = "sale_name_eng")
+    private String saleNameEng;
+
+    @Size(max = 2000)
+    @Column(name = "sale_description", length = 2000)
     private String saleDescription;
+
+    @Size(max = 2000)
+    @Column(name = "sale_description_eng", length = 2000)
+    private String saleDescriptionEng;
 
     @Size(max = 255)
     @Column(name = "sale_image_url")

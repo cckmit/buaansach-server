@@ -1,19 +1,14 @@
 package vn.com.buaansach.web.pos.repository.notification;
 
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.core.repository.notification.StoreOrderNotificationRepository;
+import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
+import vn.com.buaansach.shared.repository.notification.StoreOrderNotificationRepository;
+
+import java.util.List;
+import java.util.UUID;
 
 @Repository
 public interface PosStoreOrderNotificationRepository extends StoreOrderNotificationRepository {
-//    List<StoreOrderNotificationEntity> findByStoreGuidAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(UUID storeGuid, Instant from);
-//
-//    List<StoreOrderNotificationEntity> findByStoreGuidAndCreatedDateGreaterThanEqualAndHiddenOrderByCreatedDateAsc(UUID storeGuid, Instant from, boolean hidden);
-//
-//    Optional<StoreOrderNotificationEntity> findOneByGuid(UUID guid);
-//
-//    List<StoreOrderNotificationEntity> findByGuidIn(List<UUID> listGuid);
-//
-//    List<StoreOrderNotificationEntity> findByCreatedDateBefore(Instant before);
-//
-//    List<StoreOrderNotificationEntity> findByOrderGuid(UUID orderGuid);
+    List<StoreOrderNotificationEntity> findByStoreNotificationGuidIn(List<UUID> listGuid);
+    void deleteByStoreNotificationGuidIn(List<UUID> listGuid);
 }

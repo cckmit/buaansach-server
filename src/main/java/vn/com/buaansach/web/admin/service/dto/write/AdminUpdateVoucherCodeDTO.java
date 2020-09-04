@@ -6,5 +6,5 @@ import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
 @Data
 public class AdminUpdateVoucherCodeDTO {
     String voucherCode;
-    VoucherCodeClaimStatus voucherCodeClaimStatus;
+    String voucherCodePhone;
 }

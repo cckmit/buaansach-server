@@ -12,11 +12,10 @@ import java.util.UUID;
 @Entity
 @Table(name = "bas_store_pay_request_notification")
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StorePayRequestNotificationEntity extends AbstractAuditingEntity implements Serializable {
+public class StorePayRequestNotificationEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id

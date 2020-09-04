@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 import vn.com.buaansach.entity.store.StoreUserEntity;
-import vn.com.buaansach.entity.user.UserProfileEntity;
-import vn.com.buaansach.core.service.dto.AuditDTO;
+import vn.com.buaansach.entity.user.UserEntity;
+import vn.com.buaansach.shared.service.dto.AuditDTO;
 
 import java.util.UUID;
 
@@ -25,7 +25,7 @@ public class AdminStoreUserDTO extends AuditDTO {
     /* User Profile */
     private String fullName;
 
-    public AdminStoreUserDTO(StoreUserEntity storeUserEntity, UserProfileEntity userProfileEntity) {
+    public AdminStoreUserDTO(StoreUserEntity storeUserEntity, UserEntity userEntity) {
         this.guid = storeUserEntity.getGuid();
         this.storeUserRole = storeUserEntity.getStoreUserRole();
         this.storeUserStatus = storeUserEntity.getStoreUserStatus();
@@ -33,7 +33,7 @@ public class AdminStoreUserDTO extends AuditDTO {
         this.storeGuid = storeUserEntity.getStoreGuid().toString();
         this.userLogin = storeUserEntity.getUserLogin();
 
-        this.fullName = userProfileEntity.getFullName();
+        this.fullName = userEntity.getUserProfile().getFullName();
 
         this.createdBy = storeUserEntity.getCreatedBy();
         this.createdDate = storeUserEntity.getCreatedDate();

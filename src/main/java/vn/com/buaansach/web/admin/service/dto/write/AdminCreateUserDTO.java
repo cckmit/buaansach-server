@@ -43,6 +43,7 @@ public class AdminCreateUserDTO {
     @Size(min = 1, max = 10)
     private String langKey;
 
+    /* Constructor for create user in store */
     public AdminCreateUserDTO(AdminCreateOrUpdateStoreUserDTO dto) {
         this.userLogin = dto.getUserLogin();
         this.userEmail = dto.getUserEmail();

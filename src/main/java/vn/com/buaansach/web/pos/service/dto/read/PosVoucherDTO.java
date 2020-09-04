@@ -14,7 +14,7 @@ public class PosVoucherDTO {
     private String voucherImageUrl;
     private int voucherDiscount;
     private DiscountType voucherDiscountType;
-    private boolean voucherEnable;
+    private boolean voucherActivated;
 
     public PosVoucherDTO() {
     }
@@ -26,6 +26,6 @@ public class PosVoucherDTO {
         this.voucherImageUrl = voucherEntity.getVoucherImageUrl();
         this.voucherDiscount = voucherEntity.getVoucherDiscount();
         this.voucherDiscountType = voucherEntity.getVoucherDiscountType();
-//        this.voucherEnable = voucherEntity.isVoucherEnable();
+        this.voucherActivated = voucherEntity.isVoucherActivated();
     }
 }

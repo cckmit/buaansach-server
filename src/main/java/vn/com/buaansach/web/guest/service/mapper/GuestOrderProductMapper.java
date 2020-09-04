@@ -23,12 +23,19 @@ public class GuestOrderProductMapper {
         if (dto == null) return null;
         OrderProductEntity entity = new OrderProductEntity();
         entity.setGuid(dto.getGuid());
-        entity.setOrderGuid(dto.getOrderGuid());
-        entity.setProductGuid(dto.getProductGuid());
         entity.setOrderProductGroup(dto.getOrderProductGroup());
         entity.setOrderProductQuantity(dto.getOrderProductQuantity());
-        entity.setOrderProductPrice(dto.getOrderProductPrice());
         entity.setOrderProductNote(dto.getOrderProductNote());
+        entity.setOrderProductStatus(dto.getOrderProductStatus());
+        entity.setOrderProductStatusTimeline(dto.getOrderProductStatusTimeline());
+        entity.setOrderProductCancelReason(dto.getOrderProductCancelReason());
+        entity.setOrderProductPrice(dto.getOrderProductPrice());
+        entity.setOrderProductDiscount(dto.getOrderProductDiscount());
+        entity.setOrderProductDiscountType(dto.getOrderProductDiscountType());
+
+        entity.setOrderGuid(dto.getOrderGuid());
+        entity.setProductGuid(dto.getProductGuid());
+        entity.setSaleGuid(dto.getSaleGuid());
         return entity;
     }
 

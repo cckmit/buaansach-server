@@ -12,4 +12,7 @@ public class AdminCreateSeatDTO {
 
     @Size(min = 1, max = 50)
     private String seatName;
+
+    @Size(min = 1, max = 50)
+    private String seatNameEng;
 }

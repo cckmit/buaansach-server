@@ -8,11 +8,15 @@ public class AppException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     public AppException() {
-        super(ErrorCode.APP_ERROR);
+        super(ErrorCode.APP_ERROR.name());
     }
 
     public AppException(String message) {
         super(message);
+    }
+
+    public AppException(ErrorCode message) {
+        super(message.name());
     }
 
     public AppException(String message, Throwable cause) {

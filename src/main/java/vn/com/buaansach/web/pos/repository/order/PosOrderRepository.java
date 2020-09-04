@@ -3,7 +3,7 @@ package vn.com.buaansach.web.pos.repository.order;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.core.repository.order.OrderRepository;
+import vn.com.buaansach.shared.repository.order.OrderRepository;
 import vn.com.buaansach.entity.order.OrderEntity;
 
 import java.time.Instant;
@@ -17,7 +17,7 @@ public interface PosOrderRepository extends OrderRepository {
 
     @Query("SELECT orderEntity FROM OrderEntity orderEntity " +
             "LEFT JOIN vn.com.buaansach.entity.store.SeatEntity seat " +
-            "ON orderEntity.guid = seat.currentOrderGuid " +
+            "ON orderEntity.guid = seat.orderGuid " +
             "WHERE seat.guid = :seatGuid")
     Optional<OrderEntity> findSeatCurrentOrder(@Param("seatGuid") UUID seatGuid);
 
@@ -26,7 +26,7 @@ public interface PosOrderRepository extends OrderRepository {
             "ON orderEntity.seatGuid = seat.guid " +
             "LEFT JOIN vn.com.buaansach.entity.store.AreaEntity area " +
             "ON seat.areaGuid = area.guid " +
-            "WHERE orderEntity.cashierLogin = :userLogin " +
+            "WHERE orderEntity.orderReceivedBy = :userLogin " +
             "AND orderEntity.createdDate >= :startDate " +
             "AND orderEntity.createdDate <= :endDate " +
             "AND area.storeGuid = :storeGuid")

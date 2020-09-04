@@ -6,11 +6,12 @@ import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.entity.common.CategoryEntity;
 import vn.com.buaansach.entity.common.FileEntity;
 import vn.com.buaansach.exception.BadRequestException;
+import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.admin.repository.common.AdminCategoryRepository;
 import vn.com.buaansach.web.admin.repository.common.AdminProductCategoryRepository;
-import vn.com.buaansach.web.common.service.FileService;
+import vn.com.buaansach.web.general.service.FileService;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -26,7 +27,10 @@ public class AdminCategoryService {
     @Transactional
     public CategoryEntity createCategory(CategoryEntity categoryEntity, MultipartFile image) {
         if (adminCategoryRepository.findOneByCategoryName(categoryEntity.getCategoryName()).isPresent()) {
-            throw new BadRequestException("admin@categoryNameExist@" + categoryEntity.getCategoryName());
+            throw new BadRequestException(ErrorCode.CATEGORY_NAME_EXIST);
+        }
+        if (adminCategoryRepository.findOneByCategoryNameEng(categoryEntity.getCategoryNameEng()).isPresent()) {
+            throw new BadRequestException(ErrorCode.CATEGORY_NAME_ENG_EXIST);
         }
         Integer lastPos = adminCategoryRepository.findLastCategoryPosition();
         int pos = lastPos != null ? lastPos + Constants.POSITION_INCREMENT : Constants.POSITION_INCREMENT - 1;
@@ -41,18 +45,23 @@ public class AdminCategoryService {
 
     public CategoryEntity getCategory(String categoryGuid) {
         return adminCategoryRepository.findOneByGuid(UUID.fromString(categoryGuid))
-                .orElseThrow(() -> new NotFoundException("admin@categoryNotFound@" + categoryGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
     @Transactional
     public CategoryEntity updateCategory(CategoryEntity updateEntity, MultipartFile image) {
         CategoryEntity currentEntity = adminCategoryRepository.findOneByGuid(updateEntity.getGuid())
-                .orElseThrow(() -> new NotFoundException("admin@categoryNotFound@" + updateEntity.getGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
 
         /* if change category name, check if name has been used or not */
         if (!updateEntity.getCategoryName().equals(currentEntity.getCategoryName())) {
             if (adminCategoryRepository.findOneByCategoryName(updateEntity.getCategoryName()).isPresent()) {
-                throw new BadRequestException("admin@categoryNameExist@" + updateEntity.getCategoryName());
+                throw new BadRequestException(ErrorCode.CATEGORY_NAME_EXIST);
+            }
+        }
+        if (!updateEntity.getCategoryNameEng().equals(currentEntity.getCategoryNameEng())) {
+            if (adminCategoryRepository.findOneByCategoryNameEng(updateEntity.getCategoryNameEng()).isPresent()) {
+                throw new BadRequestException(ErrorCode.CATEGORY_NAME_ENG_EXIST);
             }
         }
 
@@ -83,7 +92,7 @@ public class AdminCategoryService {
     @Transactional
     public void deleteCategory(String categoryGuid) {
         CategoryEntity categoryEntity = adminCategoryRepository.findOneByGuid(UUID.fromString(categoryGuid))
-                .orElseThrow(() -> new NotFoundException("admin@categoryNotFound@" + categoryGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
         fileService.deleteByUrl(categoryEntity.getCategoryImageUrl());
         adminProductCategoryRepository.deleteByCategoryGuid(categoryEntity.getGuid());
         adminCategoryRepository.delete(categoryEntity);
@@ -91,11 +100,9 @@ public class AdminCategoryService {
 
     @Transactional
     public void updateCategoryPosition(CategoryEntity payload) {
-        CategoryEntity currentEntity = adminCategoryRepository.findOneByGuid(payload.getGuid())
-                .orElseThrow(() -> new NotFoundException("admin@categoryNotFound@" + payload.getGuid()));
+        adminCategoryRepository.findOneByGuid(payload.getGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
         adminCategoryRepository.updatePosition(payload.getGuid(), payload.getCategoryPosition());
-//        currentEntity.setCategoryPosition(payload.getCategoryPosition());
-//        adminCategoryRepository.save(currentEntity);
     }
 
     @Transactional

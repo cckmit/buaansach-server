@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import vn.com.buaansach.entity.enumeration.AreaType;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
-import vn.com.buaansach.core.service.dto.AuditDTO;
+import vn.com.buaansach.shared.service.dto.AuditDTO;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -22,6 +22,9 @@ public class AdminAreaDTO extends AuditDTO {
     @Size(min = 1, max = 50)
     private String areaName;
 
+    @Size(min = 1, max = 50)
+    private String areaNameEng;
+
     @Enumerated(EnumType.STRING)
     private AreaType areaType;
 
@@ -29,6 +32,8 @@ public class AdminAreaDTO extends AuditDTO {
     private String areaColor;
 
     private boolean areaActivated;
+
+    private UUID storeGuid;
 
     private List<SeatEntity> listSeat = new ArrayList<>();
 
@@ -38,9 +43,12 @@ public class AdminAreaDTO extends AuditDTO {
     public AdminAreaDTO(AreaEntity entity, List<SeatEntity> listSeat) {
         this.guid = entity.getGuid();
         this.areaName = entity.getAreaName();
+        this.areaNameEng = entity.getAreaNameEng();
         this.areaType = entity.getAreaType();
         this.areaColor = entity.getAreaColor();
         this.areaActivated = entity.isAreaActivated();
+        this.storeGuid = entity.getStoreGuid();
+
         this.createdBy = entity.getCreatedBy();
         this.createdDate = entity.getCreatedDate();
         this.lastModifiedBy = entity.getLastModifiedBy();

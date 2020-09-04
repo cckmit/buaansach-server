@@ -23,12 +23,6 @@ public class PosStoreProductResource {
     private final Logger log = LoggerFactory.getLogger(PosStoreProductResource.class);
     private final PosStoreProductService posStoreProductService;
 
-//    @GetMapping("/list-by-store/{storeGuid}")
-//    public ResponseEntity<List<PosStoreProductDTO>> getListStoreProductByStoreGuid(@PathVariable String storeGuid) {
-//        log.debug("REST request from user [{}] to list [{}] by store: [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
-//        return ResponseEntity.ok(posStoreProductService.getListStoreProductByStoreGuid(storeGuid));
-//    }
-
     @PutMapping("/change-status")
     public ResponseEntity<Void> changeStoreProductStatus(@RequestBody PosStoreProductStatusChangeDTO payload) {
         log.debug("REST request from user [{}] to change status for [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);

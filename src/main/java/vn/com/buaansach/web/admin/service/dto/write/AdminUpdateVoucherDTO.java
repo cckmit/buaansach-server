@@ -9,9 +9,10 @@ import java.util.UUID;
 @Data
 public class AdminUpdateVoucherDTO {
     private UUID guid;
-    @NotNull
     private String voucherName;
+    private String voucherNameEng;
     private String voucherDescription;
+    private String voucherDescriptionEng;
     private int voucherDiscount;
     private DiscountType voucherDiscountType;
 }

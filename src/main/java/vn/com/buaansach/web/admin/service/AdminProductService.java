@@ -12,6 +12,7 @@ import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
+import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.admin.repository.common.AdminCategoryRepository;
@@ -20,7 +21,7 @@ import vn.com.buaansach.web.admin.repository.common.AdminProductRepository;
 import vn.com.buaansach.web.admin.repository.store.AdminStoreProductRepository;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminProductDTO;
 import vn.com.buaansach.web.admin.service.mapper.AdminProductMapper;
-import vn.com.buaansach.web.common.service.FileService;
+import vn.com.buaansach.web.general.service.FileService;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -53,7 +54,7 @@ public class AdminProductService {
         ProductEntity productEntity = adminProductMapper.dtoToEntity(payload);
 
         if (adminProductRepository.findOneByProductCode(productEntity.getProductCode()).isPresent()) {
-            throw new BadRequestException("admin@productCodeExist@" + productEntity.getProductCode());
+            throw new BadRequestException(ErrorCode.PRODUCT_CODE_EXIST);
         }
         Integer lastPos = adminProductRepository.findLastProductPosition();
         int pos = lastPos != null ? lastPos + Constants.POSITION_INCREMENT : Constants.POSITION_INCREMENT - 1;
@@ -72,7 +73,7 @@ public class AdminProductService {
     public AdminProductDTO getProduct(String productGuid) {
         List<CategoryEntity> categories = adminCategoryRepository.findListCategoryByProductGuid(UUID.fromString(productGuid));
         ProductEntity productEntity = adminProductRepository.findOneByGuid(UUID.fromString(productGuid))
-                .orElseThrow(() -> new NotFoundException("admin@productNotFound@" + productGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
         return new AdminProductDTO(productEntity, categories);
     }
 
@@ -81,22 +82,13 @@ public class AdminProductService {
         ProductEntity updateEntity = adminProductMapper.dtoToEntity(payload);
 
         ProductEntity currentEntity = adminProductRepository.findOneByGuid(updateEntity.getGuid())
-                .orElseThrow(() -> new NotFoundException("admin@productNotFound@" + updateEntity.getGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
 
-        /* Delete all product category first */
+        /* Delete all product's category first */
         adminProductCategoryRepository.deleteByProductGuid(updateEntity.getGuid());
+
         /* Then re-create base on new list */
         saveProductCategory(updateEntity.getGuid(), payload.getCategories());
-
-        /* allow change product code */
-//        String updateProductCode = updateEntity.getProductCode().toLowerCase();
-//        String currentProductCode = currentEntity.getProductCode().toLowerCase();
-//        /* Change product code, check if code has been used or not */
-//        if (!updateProductCode.equals(currentProductCode)) {
-//            if (adminProductRepository.findOneByProductCode(updateEntity.getProductCode()).isPresent()) {
-//                throw new BadRequestException("Product Code already in use");
-//            }
-//        }
 
         /* do not allow change product code */
         updateEntity.setProductCode(currentEntity.getProductCode());
@@ -105,11 +97,6 @@ public class AdminProductService {
         if (updateEntity.getProductStatus().equals(ProductStatus.STOP_TRADING)) {
             List<StoreProductEntity> listStoreProduct = adminStoreProductRepository.findByProductGuid(updateEntity.getGuid());
             adminStoreProductRepository.deleteInBatch(listStoreProduct);
-
-//            listStoreProduct = listStoreProduct.stream()
-//                    .peek(storeProductEntity -> storeProductEntity.setStoreProductStatus(StoreProductStatus.STOP_TRADING))
-//                    .collect(Collectors.toList());
-//            adminStoreProductRepository.saveAll(listStoreProduct);
         }
 
         if (image != null) {
@@ -141,13 +128,13 @@ public class AdminProductService {
     }
 
     public List<ProductEntity> getListProductNotInStore(String storeGuid) {
-        return adminProductRepository.findAllProductNotInStoreExcept(UUID.fromString(storeGuid), ProductStatus.STOP_TRADING);
+        return adminProductRepository.findAllProductNotInStoreExceptStatus(UUID.fromString(storeGuid), ProductStatus.STOP_TRADING);
     }
 
     @Transactional
     public void deleteProduct(String productGuid) {
         ProductEntity productEntity = adminProductRepository.findOneByGuid(UUID.fromString(productGuid))
-                .orElseThrow(() -> new NotFoundException("admin@productNotFound@" + productGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
         fileService.deleteByUrl(productEntity.getProductImageUrl());
         fileService.deleteByUrl(productEntity.getProductThumbnailUrl());
 

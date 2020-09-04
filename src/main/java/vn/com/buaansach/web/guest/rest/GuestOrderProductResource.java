@@ -23,8 +23,8 @@ public class GuestOrderProductResource {
     private final GuestOrderProductService guestOrderProductService;
 
     @GetMapping("/list-by-order/{orderGuid}")
-    public ResponseEntity<List<GuestOrderProductDTO>> getOrderProduct(@PathVariable String orderGuid) {
+    public ResponseEntity<List<GuestOrderProductDTO>> getOrderProductByOrder(@PathVariable String orderGuid) {
         log.debug("REST request from user [{}] to get [{}] by order : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, orderGuid);
-        return ResponseEntity.ok(guestOrderProductService.getOrderProduct(orderGuid));
+        return ResponseEntity.ok(guestOrderProductService.getOrderProductByOrder(orderGuid));
     }
 }

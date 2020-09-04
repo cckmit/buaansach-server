@@ -8,7 +8,7 @@ import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.DiscountType;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
 import vn.com.buaansach.entity.order.OrderProductEntity;
-import vn.com.buaansach.core.service.dto.AuditDTO;
+import vn.com.buaansach.shared.service.dto.AuditDTO;
 
 import java.util.UUID;
 
@@ -68,10 +68,10 @@ public class GuestOrderProductDTO extends AuditDTO {
         this.productGuid = orderProductEntity.getProductGuid();
         this.saleGuid = orderProductEntity.getSaleGuid();
 
-//        this.createdBy = orderProductEntity.getCreatedBy();
+        this.createdBy = orderProductEntity.getCreatedBy();
         this.createdDate = orderProductEntity.getCreatedDate();
-//        this.lastModifiedBy = orderProductEntity.getLastModifiedBy();
-//        this.lastModifiedDate = orderProductEntity.getLastModifiedDate();
+        this.lastModifiedBy = orderProductEntity.getLastModifiedBy();
+        this.lastModifiedDate = orderProductEntity.getLastModifiedDate();
     }
 
 }

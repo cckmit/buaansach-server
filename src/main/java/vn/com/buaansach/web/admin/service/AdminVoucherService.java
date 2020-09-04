@@ -2,17 +2,27 @@ package vn.com.buaansach.web.admin.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
+import vn.com.buaansach.entity.voucher.condition.VoucherTimeConditionEntity;
+import vn.com.buaansach.entity.voucher.condition.VoucherUsageConditionEntity;
+import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
+import vn.com.buaansach.util.VoucherUtil;
+import vn.com.buaansach.util.sequence.CodeConstants;
+import vn.com.buaansach.util.sequence.CustomerCodeGenerator;
 import vn.com.buaansach.web.admin.repository.voucher.*;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminVoucherDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminUpdateVoucherDTO;
 import vn.com.buaansach.web.admin.service.mapper.AdminVoucherMapper;
 
 import javax.transaction.Transactional;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,73 +37,72 @@ public class AdminVoucherService {
         return adminVoucherRepository.findListAdminVoucherDTO();
     }
 
+    private Set<String> generateVoucherCode(int numberOfCode){
+        List<VoucherCodeEntity> existedVoucherCodes = adminVoucherCodeRepository.findAll();
+        Set<String> existedCodes = existedVoucherCodes.stream().map(VoucherCodeEntity::getVoucherCode).collect(Collectors.toSet());
+
+        Set<String> setNewCodes = new HashSet<>();
+        while (setNewCodes.size() < numberOfCode) {
+            String code = VoucherUtil.generateVoucherCode(CodeConstants.VOUCHER_CODE_LENGTH).toLowerCase();
+            if (!code.startsWith(CodeConstants.CUSTOMER_CODE_PREFIX.toLowerCase()) && !existedCodes.contains(code)) {
+                setNewCodes.add(code);
+            }
+        }
+        return setNewCodes;
+    }
+
     @Transactional
     public AdminVoucherDTO createVoucher(AdminVoucherDTO payload) {
-        return null;
-//        int remainCode = adminVoucherInventoryRepository.countByExportedFalse();
-//        if (payload.getNumberVoucherCode() > remainCode)
-//            throw new BadRequestException("admin@remainCodeNotEnough@");
-//
-//        PageRequest request = PageRequest.of(0, payload.getNumberVoucherCode(), Sort.Direction.ASC, "id");
-//        Page<VoucherInventoryEntity> page = adminVoucherInventoryRepository.getListUnExportedVoucherInventory(request);
-//        page = page.map(entity -> {
-//            entity.setExported(true);
-//            return entity;
-//        });
-//        adminVoucherInventoryRepository.saveAll(page);
-//
-//        VoucherEntity voucherEntity = adminVoucherMapper.dtoToEntity(payload);
-//        UUID voucherGuid = UUID.randomUUID();
-//        voucherEntity.setGuid(voucherGuid);
-//
-//        List<VoucherCodeEntity> listVoucherCode = page.stream().map(entity -> {
-//            VoucherCodeEntity voucherCodeEntity = new VoucherCodeEntity();
-//            voucherCodeEntity.setVoucherCode(entity.getCode());
-//            voucherCodeEntity.setVoucherCodeUsable(false);
-//            voucherCodeEntity.setVoucherCodeUsageCount(0);
-//            voucherCodeEntity.setVoucherCodeClaimStatus(VoucherCodeClaimStatus.UNSET);
-//            voucherCodeEntity.setCustomerPhone(null);
-//            voucherCodeEntity.setVoucherGuid(voucherGuid);
-//            return voucherCodeEntity;
-//        }).collect(Collectors.toList());
-//
-//        adminVoucherCodeRepository.saveAll(listVoucherCode);
-//
-//        AdminVoucherDTO result = new AdminVoucherDTO(adminVoucherRepository.save(voucherEntity));
-//
-//        VoucherTimeConditionEntity timeConditionEntity = payload.getTimeCondition();
-//        VoucherUsageConditionEntity usageConditionEntity = payload.getUsageCondition();
-//        VoucherStoreConditionEntity storeConditionEntity = payload.getStoreCondition();
-//
-//        if (timeConditionEntity != null && timeConditionEntity.getValidFrom() != null) {
-//            timeConditionEntity.setVoucherGuid(voucherGuid);
-//            result.setTimeCondition(adminVoucherTimeConditionRepository.save(timeConditionEntity));
-//        }
-//        if (usageConditionEntity != null && usageConditionEntity.getMaxUsage() > 0) {
-//            usageConditionEntity.setVoucherGuid(voucherGuid);
-//            result.setUsageCondition(adminVoucherUsageConditionRepository.save(usageConditionEntity));
-//        }
-//        if (storeConditionEntity != null && storeConditionEntity.getStoreGuid() != null) {
-//            storeConditionEntity.setVoucherGuid(voucherGuid);
-//            result.setStoreCondition(adminVoucherStoreConditionRepository.save(storeConditionEntity));
-//        }
-//        return result;
+        VoucherEntity voucherEntity = adminVoucherMapper.dtoToEntity(payload);
+        UUID voucherGuid = UUID.randomUUID();
+        voucherEntity.setGuid(voucherGuid);
+
+        Set<String> generatedCode = generateVoucherCode(payload.getNumberVoucherCode());
+        List<VoucherCodeEntity> listVoucherCode = generatedCode.stream().map(code -> {
+            VoucherCodeEntity voucherCodeEntity = new VoucherCodeEntity();
+            voucherCodeEntity.setVoucherCode(code);
+            voucherCodeEntity.setVoucherCodeActivated(false);
+            voucherCodeEntity.setVoucherCodeUsageCount(0);
+            voucherCodeEntity.setVoucherCodePhone(null);
+            voucherCodeEntity.setVoucherGuid(voucherGuid);
+            return voucherCodeEntity;
+        }).collect(Collectors.toList());
+
+        adminVoucherCodeRepository.saveAll(listVoucherCode);
+
+        AdminVoucherDTO result = new AdminVoucherDTO(adminVoucherRepository.save(voucherEntity));
+
+        VoucherTimeConditionEntity timeConditionEntity = payload.getTimeCondition();
+        VoucherUsageConditionEntity usageConditionEntity = payload.getUsageCondition();
+
+        if (timeConditionEntity != null && timeConditionEntity.getValidFrom() != null) {
+            timeConditionEntity.setVoucherGuid(voucherGuid);
+            result.setTimeCondition(adminVoucherTimeConditionRepository.save(timeConditionEntity));
+        }
+        if (usageConditionEntity != null && usageConditionEntity.getMaxUsage() > 0) {
+            usageConditionEntity.setVoucherGuid(voucherGuid);
+            result.setUsageCondition(adminVoucherUsageConditionRepository.save(usageConditionEntity));
+        }
+        return result;
     }
 
     public AdminVoucherDTO updateVoucherBasic(AdminUpdateVoucherDTO payload) {
         VoucherEntity voucherEntity = adminVoucherRepository.findOneByGuid(payload.getGuid())
-                .orElseThrow(() -> new NotFoundException("admin@voucherNotFound@" + payload.getGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.VOUCHER_NOT_FOUND));
         voucherEntity.setVoucherName(payload.getVoucherName());
+        voucherEntity.setVoucherNameEng(payload.getVoucherNameEng());
         voucherEntity.setVoucherDescription(payload.getVoucherDescription());
+        voucherEntity.setVoucherDescriptionEng(payload.getVoucherDescriptionEng());
         voucherEntity.setVoucherDiscount(payload.getVoucherDiscount());
         voucherEntity.setVoucherDiscountType(payload.getVoucherDiscountType());
         return new AdminVoucherDTO(adminVoucherRepository.save(voucherEntity));
     }
 
     public void toggleVoucher(String voucherGuid) {
-//        VoucherEntity voucherEntity = adminVoucherRepository.findOneByGuid(UUID.fromString(voucherGuid)).orElseThrow(() -> new NotFoundException("admin@voucherNotFound@" + voucherGuid));
-//        voucherEntity.setVoucherEnable(!voucherEntity.isVoucherEnable());
-//        adminVoucherRepository.save(voucherEntity);
+        VoucherEntity voucherEntity = adminVoucherRepository.findOneByGuid(UUID.fromString(voucherGuid))
+                .orElseThrow(() -> new NotFoundException(ErrorCode.VOUCHER_NOT_FOUND));
+        voucherEntity.setVoucherActivated(!voucherEntity.isVoucherActivated());
+        adminVoucherRepository.save(voucherEntity);
     }
 
     public List<VoucherCodeEntity> getListVoucherCodeByVoucherGuid(String voucherGuid) {

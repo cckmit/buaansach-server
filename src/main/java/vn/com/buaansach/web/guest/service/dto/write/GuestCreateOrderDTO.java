@@ -12,10 +12,4 @@ public class GuestCreateOrderDTO {
     private UUID storeGuid;
     private UUID areaGuid;
     private UUID seatGuid;
-
-//    @Size(max = 100)
-//    private String customerName;
-//
-//    @Pattern(regexp = Constants.PHONE_REGEX)
-//    private String customerPhone;
 }

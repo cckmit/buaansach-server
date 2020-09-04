@@ -41,10 +41,4 @@ public class GuestOrderResource {
         return ResponseEntity.ok(guestOrderService.updateOrder(payload, currentUser));
     }
 
-//    @PutMapping("/cancel")
-//    public ResponseEntity<Void> cancelOrder(@RequestBody GuestCancelOrderDTO payload) {
-//        log.debug("REST request from user [{}] to cancel [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
-//        guestOrderService.cancelOrder(payload);
-//        return ResponseEntity.ok().build();
-//    }
 }

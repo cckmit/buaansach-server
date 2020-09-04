@@ -23,10 +23,6 @@ public class PosStoreProductService {
     private final PosStoreSecurity posStoreSecurity;
     private final PosSocketService posSocketService;
 
-    public List<PosStoreProductDTO> getListStoreProductByStoreGuid(String storeGuid) {
-        return posStoreProductRepository.findListPosStoreProductDTO(UUID.fromString(storeGuid), StoreProductStatus.STOP_TRADING);
-    }
-
     public void changeStoreProductStatus(PosStoreProductStatusChangeDTO payload) {
         posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
         StoreProductEntity storeProductEntity = posStoreProductRepository.findOneByGuid(payload.getStoreProductGuid())

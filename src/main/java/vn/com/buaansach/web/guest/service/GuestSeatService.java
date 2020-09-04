@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.store.SeatEntity;
+import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.guest.repository.order.GuestOrderRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestSeatRepository;
@@ -21,19 +22,19 @@ public class GuestSeatService {
 
     public GuestSeatDTO getSeat(String seatGuid) {
         return guestSeatRepository.findGuestSeatDTO(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new NotFoundException("guest@seatNotFound@" + seatGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
     }
 
     public void makeSeatServiceUnfinished(UUID seatGuid) {
         SeatEntity seatEntity = guestSeatRepository.findOneByGuid(seatGuid)
-                .orElseThrow(() -> new NotFoundException("guest@seatNotFound@" + seatGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
         seatEntity.setSeatServiceStatus(SeatServiceStatus.UNFINISHED);
         guestSeatRepository.save(seatEntity);
     }
 
     public boolean isOrderMatchesSeat(String orderGuid, String seatGuid) {
         SeatEntity seatEntity = guestSeatRepository.findOneByGuid(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new NotFoundException("guest@seatNotFound@" + seatGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
         if (seatEntity.getOrderGuid() == null && orderGuid == null) return true;
         if (seatEntity.getOrderGuid() == null && orderGuid != null) return false;
         if (seatEntity.getOrderGuid() != null && orderGuid == null) return false;
@@ -45,7 +46,7 @@ public class GuestSeatService {
 
     public GuestCheckOrderSeatDTO checkOrderSeat(GuestCheckOrderSeatDTO payload) {
         SeatEntity seatEntity = guestSeatRepository.findOneByGuid(payload.getSeatGuid())
-                .orElseThrow(() -> new NotFoundException("guest@seatNotFound@" + payload.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
 
         payload.setHasValidOrderGuid(false);
         payload.setActiveOrderGuid(null);

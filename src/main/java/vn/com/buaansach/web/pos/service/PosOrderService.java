@@ -6,7 +6,6 @@ import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.OrderType;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
-import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.order.PaymentEntity;
@@ -14,11 +13,12 @@ import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
+import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
+import vn.com.buaansach.shared.service.PaymentService;
+import vn.com.buaansach.shared.service.PriceService;
 import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
-import vn.com.buaansach.web.pos.repository.notification.PosStoreOrderNotificationRepository;
-import vn.com.buaansach.web.pos.repository.notification.PosStorePayRequestNotificationRepository;
 import vn.com.buaansach.web.pos.repository.order.PosOrderProductRepository;
 import vn.com.buaansach.web.pos.repository.order.PosOrderRepository;
 import vn.com.buaansach.web.pos.repository.store.PosAreaRepository;
@@ -28,7 +28,9 @@ import vn.com.buaansach.web.pos.repository.voucher.PosVoucherCodeRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
+import vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreNotificationDTO;
 import vn.com.buaansach.web.pos.service.dto.write.*;
+import vn.com.buaansach.web.pos.service.mapper.PosOrderProductMapper;
 import vn.com.buaansach.web.pos.util.TimelineUtil;
 import vn.com.buaansach.web.pos.websocket.PosSocketService;
 import vn.com.buaansach.web.pos.websocket.dto.PosSocketDTO;
@@ -44,7 +46,6 @@ public class PosOrderService {
     private final PosOrderRepository posOrderRepository;
     private final PosSeatRepository posSeatRepository;
     private final PosStoreRepository posStoreRepository;
-    private final PosPaymentService posPaymentService;
     private final PosStoreSecurity posStoreSecurity;
     private final PosOrderProductService posOrderProductService;
     private final PosOrderProductRepository posOrderProductRepository;
@@ -54,33 +55,34 @@ public class PosOrderService {
     private final PosAreaRepository posAreaRepository;
     private final PosSocketService posSocketService;
     private final PosVoucherUsageService posVoucherUsageService;
-    private final PosStoreOrderService posStoreOrderService;
-    private final PosStoreOrderNotificationRepository posStoreOrderNotificationRepository;
-    private final PosStorePayRequestNotificationRepository posStorePayRequestNotificationRepository;
+    private final PosStoreNotificationService posStoreNotificationService;
+    private final PosOrderProductMapper posOrderProductMapper;
+    private final PriceService priceService;
+    private final PaymentService paymentService;
 
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(payload.getSeatGuid())
-                .orElseThrow(() -> new NotFoundException("pos@seatNotFound@: " + payload.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
 
         /* Chỗ ngồi chưa được giải phóng */
         if (seatEntity.getSeatStatus().equals(SeatStatus.NON_EMPTY))
-            throw new BadRequestException("pos@seatNonEmpty@" + payload.getSeatGuid());
+            throw new BadRequestException(ErrorCode.SEAT_NON_EMPTY);
+
+        if (seatEntity.isSeatLocked()) {
+            throw new BadRequestException(ErrorCode.SEAT_LOCKED);
+        }
 
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(payload.getSeatGuid())
-                .orElseThrow(() -> new NotFoundException("pos@seatNotInAnyStore@ " + payload.getSeatGuid()));
-
-        AreaEntity areaEntity = posAreaRepository.findOneByGuid(seatEntity.getAreaGuid())
-                .orElseThrow(() -> new NotFoundException("pos@areaNotFound@ " + seatEntity.getAreaGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
-        if (seatEntity.isSeatLocked()) {
-            throw new BadRequestException("pos@seatLocked@" + seatEntity.getGuid());
-        }
+        AreaEntity areaEntity = posAreaRepository.findOneByGuid(seatEntity.getAreaGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.AREA_NOT_FOUND));
 
         if (!areaEntity.isAreaActivated()) {
-            throw new BadRequestException("pos@areaDisabled@" + areaEntity.getGuid());
+            throw new BadRequestException(ErrorCode.AREA_DISABLED);
         }
 
         OrderEntity orderEntity = new OrderEntity();
@@ -92,25 +94,9 @@ public class PosOrderService {
         orderEntity.setOrderStatus(OrderStatus.RECEIVED);
 
         /* Dựa theo loại khu vực để xác định loại đơn hàng */
-        switch (areaEntity.getAreaType()) {
-            case IN_STORE:
-                orderEntity.setOrderType(OrderType.IN_STORE);
-                break;
-            case TAKE_AWAY:
-                orderEntity.setOrderType(OrderType.TAKE_AWAY);
-                break;
-            case ONLINE:
-                orderEntity.setOrderType(OrderType.ONLINE);
-                break;
-        }
+        orderEntity.setOrderType(OrderType.valueOf(areaEntity.getAreaType().name()));
 
         orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderStatus.RECEIVED, currentUser));
-        orderEntity.setOrderDiscount(0);
-        orderEntity.setOrderDiscountType(null);
-        orderEntity.setSaleGuid(null);
-        orderEntity.setVoucherCode(null);
-        orderEntity.setOrderTotalAmount(0);
-        orderEntity.setOrderCustomerPhone(payload.getCustomerPhone());
         orderEntity.setSeatGuid(payload.getSeatGuid());
         orderEntity.setOrderReceivedBy(currentUser);
         orderEntity.setOrderReceivedDate(Instant.now());
@@ -128,11 +114,14 @@ public class PosOrderService {
      */
     @Transactional
     public PosOrderDTO updateOrder(PosOrderUpdateDTO payload, String currentUser) {
+        if (payload.getListOrderProduct().size() == 0)
+            throw new BadRequestException(ErrorCode.LIST_ORDER_PRODUCT_EMPTY);
+
         OrderEntity orderEntity = posOrderRepository.findOneByGuid((payload.getOrderGuid()))
-                .orElseThrow(() -> new NotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
 
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getOrderCustomerPhone()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
@@ -140,28 +129,7 @@ public class PosOrderService {
         UUID orderProductGroup = UUID.randomUUID();
         posOrderProductService.saveListOrderProduct(orderProductGroup, payload.getOrderGuid(), payload.getListOrderProduct(), currentUser);
 
-        /* Tạo thông báo */
-        SeatEntity seatEntity = posSeatRepository.findOneByGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new NotFoundException("pos@seatNotFound@: " + orderEntity.getSeatGuid()));
-
-        StoreOrderNotificationEntity storeOrderNotificationEntity = posStoreOrderService.createStoreOrder(
-                storeEntity.getGuid(),
-                seatEntity.getAreaGuid(),
-                seatEntity.getGuid(),
-                orderEntity.getGuid(),
-                orderProductGroup,
-                payload.getListOrderProduct().size());
-
-        /* Gửi thông báo tới trang bán hàng */
-        PosSocketDTO socketDTO = new PosSocketDTO(WebSocketConstants.POS_UPDATE_ORDER, storeOrderNotificationEntity);
-        posSocketService.sendMessage(WebSocketConstants.TOPIC_POS_PREFIX + storeEntity.getGuid(), socketDTO);
-
-        /* Thông thường validate trên ui thì size sẽ phải lớn hơn 0 mới gọi được, kiểm tra lần nữa cho chắc cốp.
-         Khi size > 0 thì trạng thái phục vụ của chỗ sẽ đổi thành UNFINISHED */
-        if (payload.getListOrderProduct().size() > 0) {
-            posSeatService.makeSeatServiceUnfinished(orderEntity.getSeatGuid());
-        }
-
+        /* Cập nhật thông tin đơn */
         String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(),
                 "UPDATE_ORDER",
                 currentUser,
@@ -169,48 +137,43 @@ public class PosOrderService {
         orderEntity.setOrderStatusTimeline(newTimeline);
 
         List<PosOrderProductDTO> listPosOrderProductDTO = posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(payload.getOrderGuid());
-        int totalAmount = calculateTotalAmount(listPosOrderProductDTO);
+        int totalAmount = priceService.calculateTotalAmount(posOrderProductMapper.listDtoToListEntity(listPosOrderProductDTO));
         orderEntity.setOrderTotalAmount(totalAmount);
 
         PosOrderDTO result = new PosOrderDTO(posOrderRepository.save(orderEntity));
         result.setListOrderProduct(listPosOrderProductDTO);
-        return result;
-    }
 
-    /**
-     * Công thức tính giá tiền của hóa đơn. Cần đảm bảo giống với công thức trên UI
-     * Giá tiền sẽ tính tất cả sản phẩm (kể cả chưa phục vụ), trừ sản phẩm đã bị hủy
-     * Giá 1 Sản phẩm = Số lượng x (Giá bán - Giảm giá)
-     */
-    private int calculateTotalAmount(List<PosOrderProductDTO> listPosOrderProductDTO) {
-        return listPosOrderProductDTO.stream()
-                .filter(dto -> !dto.getOrderProductStatus().toString().contains("CANCELLED"))
-                .mapToInt(dto -> dto.getOrderProductQuantity() * (dto.getOrderProductPrice() - dto.getOrderProductDiscount())).sum();
+        /* Cập nhật trang thái ghế */
+        SeatEntity seatEntity = posSeatRepository.findOneByGuid(orderEntity.getSeatGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
+        posSeatService.makeSeatServiceUnfinished(seatEntity);
+
+        /* Tạo thông báo */
+        PosStoreNotificationDTO notificationDTO = posStoreNotificationService.createStoreOrderNotification(
+                storeEntity.getGuid(),
+                seatEntity.getAreaGuid(),
+                seatEntity.getGuid(),
+                orderEntity.getGuid(),
+                orderProductGroup,
+                payload.getListOrderProduct().size());
+
+        posSocketService.sendUpdateOrderNotification(notificationDTO);
+
+        return result;
     }
 
     public PosOrderDTO getSeatCurrentOrder(String seatGuid) {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + seatGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         OrderEntity orderEntity = posOrderRepository.findSeatCurrentOrder(UUID.fromString(seatGuid))
-                .orElse(new OrderEntity());
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
         PosOrderDTO result = new PosOrderDTO(orderEntity);
-        if (orderEntity.getGuid() != null) {
-            result.setListOrderProduct(posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(orderEntity.getGuid()));
-        }
+        result.setListOrderProduct(posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(orderEntity.getGuid()));
         return result;
     }
-
-//    public PosOrderDTO getOrder(String orderGuid) {
-//        OrderEntity orderEntity = posOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
-//                .orElseThrow(() -> new ResourceNotFoundException("Order not found with guid: " + orderGuid));
-//
-//        PosOrderDTO result = new PosOrderDTO(orderEntity);
-//        result.setListOrderProduct(posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(orderEntity.getGuid()));
-//        return new PosOrderDTO(orderEntity);
-//    }
 
     /**
      * Nhận đơn hàng do khách gọi
@@ -218,10 +181,10 @@ public class PosOrderService {
     @Transactional
     public void receiveOrder(String orderGuid, String currentUser) {
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
-                .orElseThrow(() -> new NotFoundException("pos@orderNotFound@" + orderGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
 
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
@@ -237,45 +200,41 @@ public class PosOrderService {
             List<OrderProductEntity> orderProductEntityList = posOrderProductRepository.findByOrderGuid(orderEntity.getGuid());
             if (orderProductEntityList.size() == 0) {
                 posSeatService.makeSeatServiceFinished(orderEntity.getSeatGuid());
-            }
-
-            if (orderProductEntityList.size() > 0) {
+            } else {
                 posSeatService.makeSeatServiceUnfinished(orderEntity.getSeatGuid());
             }
             posOrderRepository.save(orderEntity);
-            /* Gửi thông báo tới bộ phận CSKH */
-            PosSocketDTO dto = new PosSocketDTO();
-            dto.setMessage(WebSocketConstants.POS_RECEIVE_ORDER);
-            dto.setPayload(null);
-            posSocketService.sendMessage(WebSocketConstants.TOPIC_GUEST_PREFIX + orderGuid, dto);
+
+            /* Gửi thông báo tới khách */
+            posSocketService.sendOrderReceivedNotification(orderEntity.getGuid());
         }
     }
 
     @Transactional
     public void purchaseOrder(PosOrderPurchaseDTO payload, String currentUser) {
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
-                .orElseThrow(() -> new NotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
 
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new NotFoundException("pos@seatNotFound@" + orderEntity.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
 
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         if (!orderEntity.getOrderStatus().equals(OrderStatus.RECEIVED))
-            throw new BadRequestException("pos@orderStatusNotValid@" + payload.getOrderGuid());
+            throw new BadRequestException(ErrorCode.INVALID_ORDER_STATUS);
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
-        /* add voucher code usage record if a voucher code has been applied */
+        /* create voucher code usage record if a voucher code has been applied */
         if (orderEntity.getVoucherCode() != null && !orderEntity.getVoucherCode().isBlank()) {
-            posVoucherUsageService.addVoucherUsage(orderEntity.getVoucherCode(), orderEntity.getGuid(), orderEntity.getOrderCustomerPhone());
+            posVoucherUsageService.createVoucherUsage(orderEntity.getVoucherCode(), orderEntity.getGuid(), orderEntity.getOrderCustomerPhone());
         }
 
         switch (payload.getPaymentMethod()) {
             case CASH:
                 /* Thanh toán tiền mặt */
-                PaymentEntity paymentEntity = posPaymentService.makeCashPayment(payload.getPaymentNote(), orderEntity);
+                PaymentEntity paymentEntity = paymentService.makeCashPayment(payload.getPaymentNote(), orderEntity);
 
                 orderEntity.setPaymentGuid(paymentEntity.getGuid());
                 orderEntity.setOrderStatus(OrderStatus.PURCHASED);
@@ -311,31 +270,29 @@ public class PosOrderService {
     @Transactional
     public void cancelOrder(PosOrderCancelDTO payload, String currentUser) {
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
-                .orElseThrow(() -> new NotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
 
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
-                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + orderEntity.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
-        orderEntity.setOrderStatus(OrderStatus.CANCELLED_BY_EMPLOYEE);
+        orderEntity.setOrderStatus(OrderStatus.CANCELLED);
         orderEntity.setOrderCancelReason(payload.getCancelReason());
         orderEntity.setOrderCancelledBy(currentUser);
         orderEntity.setOrderCancelledDate(Instant.now());
 
         String newTimeline = TimelineUtil.appendOrderStatus(
                 orderEntity.getOrderStatusTimeline(),
-                OrderStatus.CANCELLED_BY_EMPLOYEE,
+                OrderStatus.CANCELLED,
                 currentUser);
         orderEntity.setOrderStatusTimeline(newTimeline);
 
         posSeatService.resetSeat(orderEntity.getSeatGuid());
         posOrderRepository.save(orderEntity);
 
-        PosSocketDTO dto = new PosSocketDTO();
-        dto.setMessage(WebSocketConstants.POS_CANCEL_ORDER);
-        dto.setPayload(null);
-        posSocketService.sendMessage(WebSocketConstants.TOPIC_GUEST_PREFIX + payload.getOrderGuid(), dto);
+        /*Gửi thông báo tới khách*/
+        posSocketService.sendOrderCancelledNotification(payload.getOrderGuid());
     }
 
     /**
@@ -344,34 +301,33 @@ public class PosOrderService {
     @Transactional
     public void changeSeat(PosOrderSeatChangeDTO payload, String currentUser) {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(payload.getCurrentSeatGuid())
-                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + payload.getCurrentSeatGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
-        /* Không phận sự, miễn vào */
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         StoreEntity storeNewSeat = posStoreRepository.findOneBySeatGuid(payload.getNewSeatGuid())
-                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + payload.getNewSeatGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         /* Nếu 2 vị trí không cùng trong một cửa hàng => không hợp lệ */
         if (!storeEntity.getGuid().equals(storeNewSeat.getGuid()))
-            throw new BadRequestException("pos@seatsNotInTheSameStore@" + payload.getCurrentSeatGuid() + ";" + payload.getNewSeatGuid());
+            throw new BadRequestException(ErrorCode.SEAT_NOT_IN_SAME_STORE);
 
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
-                .orElseThrow(() -> new NotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
 
         SeatEntity currentSeat = posSeatRepository.findOneByGuid(payload.getCurrentSeatGuid())
-                .orElseThrow(() -> new NotFoundException("pos@seatNotFound@" + payload.getCurrentSeatGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
 
         SeatEntity newSeat = posSeatRepository.findOneByGuid(payload.getNewSeatGuid())
-                .orElseThrow(() -> new NotFoundException("pos@seatNotFound@" + payload.getNewSeatGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
 
         /* Nếu mã đơn được lưu ở vị trí hiện tại khác với mã đơn gửi từ client (payload) => không hợp lệ */
         if (currentSeat.getOrderGuid() == null || !currentSeat.getOrderGuid().equals(orderEntity.getGuid()))
-            throw new BadRequestException("pos@orderNotMatchSeat@orderGuid=" + orderEntity.getGuid() + ";seatOrderGuid=" + currentSeat.getOrderGuid());
+            throw new BadRequestException(ErrorCode.ORDER_AND_SEAT_NOT_MATCH);
 
         /* Nếu vị trí chuyển tới không trống => không hợp lệ */
         if (newSeat.getSeatStatus().equals(SeatStatus.NON_EMPTY))
-            throw new BadRequestException("pos@newSeatNotEmpty@" + payload.getNewSeatGuid());
+            throw new BadRequestException(ErrorCode.SEAT_NON_EMPTY);
 
         /* Cập nhật vị trí mới vào order */
         String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(),
@@ -382,21 +338,7 @@ public class PosOrderService {
         orderEntity.setSeatGuid(newSeat.getGuid());
         posOrderRepository.save(orderEntity);
 
-//        /* Cập nhật lại vị trí cho các thông báo gọi món */
-//        List<StoreOrderNotificationEntity> listStoreOrder = posStoreOrderRepository.findByOrderGuid(orderEntity.getGuid());
-//        listStoreOrder = listStoreOrder.stream().peek(item -> {
-//            item.setSeatGuid(newSeat.getGuid());
-//            item.setAreaGuid(newSeat.getAreaGuid());
-//        }).collect(Collectors.toList());
-//        posStoreOrderRepository.saveAll(listStoreOrder);
-//
-//        /* Cập nhật lại vị trí cho yêu cầu thanh toán (nếu có) */
-//        posStorePayRequestRepository.findOneByOrderGuid(orderEntity.getGuid())
-//                .ifPresent(item -> {
-//                    item.setSeatGuid(newSeat.getGuid());
-//                    item.setAreaGuid(newSeat.getAreaGuid());
-//                    posStorePayRequestRepository.save(item);
-//                });
+        /* Cập nhật lại vị trí cho các thông báo gọi món */
 
         /* Cập nhật trạng thái cho vị trí mới */
         newSeat.setSeatStatus(SeatStatus.NON_EMPTY);
@@ -408,10 +350,7 @@ public class PosOrderService {
         posSeatService.resetSeat(currentSeat);
 
         /* Gửi thông báo tới khách */
-        PosSocketDTO dto = new PosSocketDTO();
-        dto.setMessage(WebSocketConstants.POS_CHANGE_SEAT);
-        dto.setPayload(newSeat);
-        posSocketService.sendMessage(WebSocketConstants.TOPIC_GUEST_PREFIX + payload.getOrderGuid(), dto);
+        posSocketService.sendSeatChangeNotification(payload.getOrderGuid(), newSeat);
     }
 
     /**
@@ -420,18 +359,18 @@ public class PosOrderService {
     @Transactional
     public void changeCustomerPhone(PosOrderCustomerPhoneChangeDTO payload, String currentUser) {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(payload.getSeatGuid())
-                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + payload.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
-                .orElseThrow(() -> new NotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
 
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(payload.getSeatGuid())
-                .orElseThrow(() -> new NotFoundException("pos@seatNotFound@" + payload.getSeatGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
 
         if (seatEntity.getOrderGuid() == null || !seatEntity.getOrderGuid().equals(orderEntity.getGuid()))
-            throw new BadRequestException("pos@orderNotMatchSeat@orderGuid=" + orderEntity.getGuid() + ";seatOrderGuid=" + seatEntity.getOrderGuid());
+            throw new BadRequestException(ErrorCode.ORDER_AND_SEAT_NOT_MATCH);
 
         /* if customer phone number not change, just return */
         if (payload.getNewCustomerPhone() == null && orderEntity.getOrderCustomerPhone() == null) return;
@@ -443,8 +382,8 @@ public class PosOrderService {
             posVoucherCodeRepository.findOneByVoucherCode(orderEntity.getVoucherCode()).ifPresent(voucherCodeEntity -> {
                 if (voucherCodeEntity.getVoucherCodePhone() != null) {
                     PosOrderVoucherCodeDTO dto = new PosOrderVoucherCodeDTO();
-                    dto.setCustomerPhone(orderEntity.getOrderCustomerPhone());
                     dto.setOrderGuid(orderEntity.getGuid());
+                    dto.setCustomerPhone(orderEntity.getOrderCustomerPhone());
                     dto.setVoucherCode(orderEntity.getVoucherCode());
                     posVoucherCodeService.cancelVoucherCode(dto);
                 }

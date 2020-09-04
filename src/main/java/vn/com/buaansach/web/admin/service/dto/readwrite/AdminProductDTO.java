@@ -2,13 +2,15 @@ package vn.com.buaansach.web.admin.service.dto.readwrite;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import vn.com.buaansach.shared.service.dto.AuditDTO;
 import vn.com.buaansach.entity.common.CategoryEntity;
 import vn.com.buaansach.entity.common.ProductEntity;
+import vn.com.buaansach.entity.enumeration.DiscountType;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.enumeration.ProductType;
-import vn.com.buaansach.core.service.dto.AuditDTO;
 
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,17 +19,26 @@ import java.util.UUID;
 public class AdminProductDTO extends AuditDTO {
     private UUID guid;
 
-    @Size(min = 1, max = 16)
+    @Size(min = 1, max = 20)
     private String productCode;
 
-    @Size(min = 1, max = 100)
+    @Size(min = 1, max = 255)
     private String productName;
 
-    @Size(max = 50)
+    @Size(min = 1, max = 255)
+    private String productNameEng;
+
+    @Size(min = 1, max = 50)
     private String productUnit;
+
+    @Size(min = 1, max = 50)
+    private String productUnitEng;
 
     @Size(max = 2000)
     private String productDescription;
+
+    @Size(max = 2000)
+    private String productDescriptionEng;
 
     @Size(max = 255)
     private String productImageUrl;
@@ -45,13 +56,16 @@ public class AdminProductDTO extends AuditDTO {
 
     private int productDiscount;
 
+    private DiscountType productDiscountType;
+
     private int productPosition;
 
     private boolean productActivated;
 
     private UUID saleGuid;
 
-    private List<CategoryEntity> categories;
+    /* Additional */
+    private List<CategoryEntity> categories = new ArrayList<>();
 
     public AdminProductDTO() {
     }
@@ -69,8 +83,11 @@ public class AdminProductDTO extends AuditDTO {
         this.guid = productEntity.getGuid();
         this.productCode = productEntity.getProductCode();
         this.productName = productEntity.getProductName();
+        this.productNameEng = productEntity.getProductNameEng();
         this.productUnit = productEntity.getProductUnit();
+        this.productUnitEng = productEntity.getProductUnitEng();
         this.productDescription = productEntity.getProductDescription();
+        this.productDescriptionEng = productEntity.getProductDescriptionEng();
         this.productImageUrl = productEntity.getProductImageUrl();
         this.productThumbnailUrl = productEntity.getProductThumbnailUrl();
         this.productStatus = productEntity.getProductStatus();
@@ -78,6 +95,7 @@ public class AdminProductDTO extends AuditDTO {
         this.productRootPrice = productEntity.getProductRootPrice();
         this.productPrice = productEntity.getProductPrice();
         this.productDiscount = productEntity.getProductDiscount();
+        this.productDiscountType = productEntity.getProductDiscountType();
         this.productPosition = productEntity.getProductPosition();
         this.productActivated = productEntity.isProductActivated();
         this.saleGuid = productEntity.getSaleGuid();

@@ -6,7 +6,7 @@ import vn.com.buaansach.entity.enumeration.OrderStatus;
 import java.time.Instant;
 
 public final class TimelineUtil {
-    private static final int MAX_ORDER_STATUS_TIMELINE = 5000;
+    private static final int MAX_ORDER_STATUS_TIMELINE = 3000;
     private static final int MAX_ORDER_PRODUCT_STATUS_TIMELINE = 1000;
 
     public static String initOrderStatus(OrderStatus status, String actor) {

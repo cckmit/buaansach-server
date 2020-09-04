@@ -38,6 +38,7 @@ public class PosSeatService {
                 .orElseThrow(() -> new NotFoundException("pos@seatNotFound@" + seatGuid));
     }
 
+    /* Must have an ID */
     public void resetSeat(SeatEntity seatEntity) {
         seatEntity.setSeatStatus(SeatStatus.EMPTY);
         seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
@@ -64,6 +65,11 @@ public class PosSeatService {
     public void makeSeatServiceUnfinished(UUID seatGuid) {
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(seatGuid)
                 .orElseThrow(() -> new NotFoundException("pos@seatNotFound@" + seatGuid));
+        seatEntity.setSeatServiceStatus(SeatServiceStatus.UNFINISHED);
+        posSeatRepository.save(seatEntity);
+    }
+
+    public void makeSeatServiceUnfinished(SeatEntity seatEntity) {
         seatEntity.setSeatServiceStatus(SeatServiceStatus.UNFINISHED);
         posSeatRepository.save(seatEntity);
     }

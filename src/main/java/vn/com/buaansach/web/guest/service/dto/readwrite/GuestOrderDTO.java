@@ -25,6 +25,7 @@ public class GuestOrderDTO {
     private String orderCode;
     private OrderStatus orderStatus;
     private OrderType orderType;
+    @JsonIgnore
     private String orderStatusTimeline;
     private String orderCancelReason;
     private int orderDiscount;

@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.core.repository.common.CategoryRepository;
+import vn.com.buaansach.shared.repository.common.CategoryRepository;
 import vn.com.buaansach.entity.common.CategoryEntity;
 
 import java.util.List;
@@ -24,6 +24,6 @@ public interface AdminCategoryRepository extends CategoryRepository {
     Integer findLastCategoryPosition();
 
     @Modifying
-    @Query(value = "UPDATE bas_category SET category_position = ?2  WHERE guid = ?1", nativeQuery = true)
-    void updatePosition(UUID categoryGuid, int pos);
+    @Query(value = "UPDATE bas_category SET category_position = :pos  WHERE guid = :categoryGuid", nativeQuery = true)
+    void updatePosition(@Param("categoryGuid") UUID categoryGuid, @Param("pos") int pos);
 }

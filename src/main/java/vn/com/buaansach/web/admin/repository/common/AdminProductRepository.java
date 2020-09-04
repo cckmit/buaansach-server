@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.core.repository.common.ProductRepository;
+import vn.com.buaansach.shared.repository.common.ProductRepository;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
 
@@ -24,7 +24,7 @@ public interface AdminProductRepository extends ProductRepository {
             "SELECT DISTINCT storeProduct.productGuid " +
             "FROM vn.com.buaansach.entity.store.StoreProductEntity storeProduct " +
             "WHERE storeProduct.storeGuid = :storeGuid)")
-    List<ProductEntity> findAllProductNotInStoreExcept(@Param("storeGuid") UUID storeGuid, @Param("productStatus") ProductStatus productStatus);
+    List<ProductEntity> findAllProductNotInStoreExceptStatus(@Param("storeGuid") UUID storeGuid, @Param("productStatus") ProductStatus productStatus);
 
     @Query("SELECT MAX(pe.productPosition) FROM ProductEntity pe")
     Integer findLastProductPosition();
@@ -33,8 +33,8 @@ public interface AdminProductRepository extends ProductRepository {
     String findLastProductCode();
 
     @Modifying
-    @Query(value = "UPDATE bas_product SET product_position = ?2  WHERE guid = ?1", nativeQuery = true)
-    void updatePosition(UUID productGuid, int pos);
+    @Query(value = "UPDATE bas_product SET product_position = :pos  WHERE guid = :productGuid", nativeQuery = true)
+    void updatePosition(@Param("productGuid") UUID productGuid, @Param("pos") int pos);
 
     @Query("SELECT p FROM ProductEntity p ORDER BY p.productPosition ASC")
     List<ProductEntity> findListProductOrderByPositionAsc();

@@ -8,11 +8,15 @@ public class ForbiddenException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     public ForbiddenException() {
-        super(ErrorCode.FORBIDDEN);
+        super(ErrorCode.FORBIDDEN.name());
     }
 
     public ForbiddenException(String message) {
         super(message);
+    }
+
+    public ForbiddenException(ErrorCode message) {
+        super(message.name());
     }
 
     public ForbiddenException(String message, Throwable cause) {

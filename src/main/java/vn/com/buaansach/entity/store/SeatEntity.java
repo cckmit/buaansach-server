@@ -30,10 +30,13 @@ public class SeatEntity extends AbstractAuditingEntity implements Serializable {
     @Column(unique = true)
     private UUID guid;
 
-    @NotNull
     @Size(max = 50)
     @Column(name = "seat_name", length = 50)
     private String seatName;
+
+    @Size(max = 50)
+    @Column(name = "seat_name_eng", length = 50)
+    private String seatNameEng;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "seat_status")

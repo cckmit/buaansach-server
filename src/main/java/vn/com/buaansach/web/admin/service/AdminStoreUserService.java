@@ -50,9 +50,10 @@ public class AdminStoreUserService {
         storeUserEntity.setGuid(UUID.randomUUID());
         storeUserEntity.setStoreUserRole(request.getStoreUserRole());
         storeUserEntity.setStoreUserStatus(request.getStoreUserStatus());
+        storeUserEntity.setStoreUserActivated(true);
         storeUserEntity.setStoreGuid(request.getStoreGuid());
         storeUserEntity.setUserLogin(userEntity.getUserLogin());
-        return new AdminStoreUserDTO(adminStoreUserRepository.save(storeUserEntity), userEntity.getUserProfile());
+        return new AdminStoreUserDTO(adminStoreUserRepository.save(storeUserEntity), userEntity);
     }
 
     @Transactional
@@ -69,10 +70,11 @@ public class AdminStoreUserService {
         storeUserEntity.setGuid(UUID.randomUUID());
         storeUserEntity.setStoreUserRole(request.getStoreUserRole());
         storeUserEntity.setStoreUserStatus(request.getStoreUserStatus());
+        storeUserEntity.setStoreUserActivated(true);
         storeUserEntity.setStoreGuid(request.getStoreGuid());
         storeUserEntity.setUserLogin(request.getUserLogin());
 
-        return new AdminStoreUserDTO(adminStoreUserRepository.save(storeUserEntity), userEntity.getUserProfile());
+        return new AdminStoreUserDTO(adminStoreUserRepository.save(storeUserEntity), userEntity);
     }
 
     @Transactional
@@ -101,7 +103,7 @@ public class AdminStoreUserService {
             updateUser = adminUserRepository.save(updateUser);
         }
 
-        return new AdminStoreUserDTO(adminStoreUserRepository.save(storeUserEntity), updateUser.getUserProfile());
+        return new AdminStoreUserDTO(adminStoreUserRepository.save(storeUserEntity), updateUser);
     }
 
     public List<AdminStoreUserDTO> getListStoreUserByStoreGuid(String storeGuid) {

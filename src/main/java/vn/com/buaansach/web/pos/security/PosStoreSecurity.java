@@ -6,6 +6,7 @@ import vn.com.buaansach.entity.enumeration.StoreStatus;
 import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 import vn.com.buaansach.entity.store.StoreEntity;
+import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.ForbiddenException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.repository.store.PosStoreRepository;
@@ -82,16 +83,6 @@ public class PosStoreSecurity {
 
     public void blockAccessIfNotInStore(UUID storeGuid) {
         if (!hasPermission(storeGuid))
-            throw new ForbiddenException("pos@notMemberOfStore@" + storeGuid);
+            throw new ForbiddenException(ErrorCode.USER_NOT_IN_STORE);
     }
-
-    private boolean isClosedOrDeactivated(UUID storeGuid) {
-        StoreEntity storeEntity = posStoreRepository.findOneByGuid(storeGuid).orElse(null);
-        return storeEntity == null || storeEntity.getStoreStatus().equals(StoreStatus.CLOSED) || !storeEntity.isStoreActivated();
-    }
-
-    public void blockAccessIfStoreIsNotOpenOrDeactivated(UUID storeGuid) {
-        if (isClosedOrDeactivated(storeGuid)) throw new ForbiddenException("pos@storeHasBeenClosed@" + storeGuid);
-    }
-
 }

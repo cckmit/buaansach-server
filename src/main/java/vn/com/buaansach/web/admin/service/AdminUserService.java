@@ -61,6 +61,7 @@ public class AdminUserService {
 
         userEntity.setUserPassword(passwordEncoder.encode(dto.getUserPassword()));
         userEntity.setUserActivated(dto.isUserActivated());
+        userEntity.setUserType(dto.getUserType());
 
         if (dto.getAuthorities() != null) {
             Set<AuthorityEntity> authorities = dto.getAuthorities().stream()
@@ -104,6 +105,7 @@ public class AdminUserService {
 
         currentUser.setUserEmail(dto.getUserEmail());
         currentUser.setUserPhone(dto.getUserPhone());
+        currentUser.setUserType(dto.getUserType());
         if (dto.getAuthorities() != null) {
             Set<AuthorityEntity> authorities = dto.getAuthorities().stream()
                     .map(adminAuthorityRepository::findByName)

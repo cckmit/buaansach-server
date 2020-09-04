@@ -15,6 +15,9 @@
             <column name="area_name" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
+            <column name="area_name_eng" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
             <column name="area_type" type="varchar(30)">
                 <constraints nullable="false"/>
             </column>

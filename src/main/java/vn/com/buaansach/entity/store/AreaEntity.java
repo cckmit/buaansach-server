@@ -32,6 +32,10 @@ public class AreaEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "area_name", length = 50)
     private String areaName;
 
+    @Size(min = 1, max = 50)
+    @Column(name = "area_name_eng", length = 50)
+    private String areaNameEng;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "area_type")
     private AreaType areaType;

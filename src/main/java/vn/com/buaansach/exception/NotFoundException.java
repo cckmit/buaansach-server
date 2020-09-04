@@ -10,11 +10,15 @@ public class NotFoundException extends RuntimeException implements Serializable 
     private static final long serialVersionUID = 1L;
 
     public NotFoundException() {
-        super(ErrorCode.NOT_FOUND);
+        super(ErrorCode.NOT_FOUND.name());
     }
 
     public NotFoundException(String message) {
         super(message);
+    }
+
+    public NotFoundException(ErrorCode message) {
+        super(message.name());
     }
 
     public NotFoundException(String message, Throwable cause) {

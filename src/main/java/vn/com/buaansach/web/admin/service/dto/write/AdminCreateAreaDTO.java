@@ -11,13 +11,23 @@ import java.util.UUID;
 @Data
 public class AdminCreateAreaDTO {
     private UUID storeGuid;
+
     @Size(max = 50)
     private String areaName;
-    @Enumerated(EnumType.STRING)
+
+    @Size(max = 50)
+    private String areaNameEng;
+
     private AreaType areaType;
+
     @Size(max = 50)
     private String areaColor;
+
     @Size(max = 40)
     private String seatPrefix;
+
+    @Size(max = 40)
+    private String seatPrefixEng;
+
     private int numberOfSeats;
 }

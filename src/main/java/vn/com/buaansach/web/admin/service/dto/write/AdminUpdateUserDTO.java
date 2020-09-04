@@ -1,6 +1,7 @@
 package vn.com.buaansach.web.admin.service.dto.write;
 
 import lombok.Data;
+import vn.com.buaansach.entity.enumeration.UserType;
 import vn.com.buaansach.util.Constants;
 
 import javax.validation.constraints.Email;
@@ -25,6 +26,8 @@ public class AdminUpdateUserDTO {
     @Pattern(regexp = Constants.PHONE_REGEX)
     @Size(min = 10, max = 20)
     private String userPhone;
+
+    private UserType userType;
 
     private Set<String> authorities;
 

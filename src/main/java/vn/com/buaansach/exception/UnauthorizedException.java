@@ -12,11 +12,15 @@ public class UnauthorizedException extends AuthenticationException {
     private static final long serialVersionUID = 1L;
 
     public UnauthorizedException() {
-        super(ErrorCode.UNAUTHORIZED);
+        super(ErrorCode.UNAUTHORIZED.name());
     }
 
     public UnauthorizedException(String message) {
         super(message);
+    }
+
+    public UnauthorizedException(ErrorCode message) {
+        super(message.name());
     }
 
     public UnauthorizedException(String message, Throwable t) {

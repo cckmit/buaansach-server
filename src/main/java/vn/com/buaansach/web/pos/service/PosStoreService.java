@@ -3,6 +3,7 @@ package vn.com.buaansach.web.pos.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.store.StoreEntity;
+import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.web.pos.repository.store.PosStoreRepository;
@@ -23,13 +24,13 @@ public class PosStoreService {
 
     public PosStoreDTO getStore(String storeGuid) {
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new NotFoundException("pos@storeNotFound@" + storeGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
         return new PosStoreDTO(storeEntity);
     }
 
     public void changeStoreStatus(PosStoreStatusChangeDTO payload) {
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(payload.getStoreGuid())
-                .orElseThrow(() -> new NotFoundException("pos@storeNotFound@" + payload.getStoreGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
         posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
         storeEntity.setStoreStatus(payload.getStoreStatus());
         posStoreRepository.save(storeEntity);

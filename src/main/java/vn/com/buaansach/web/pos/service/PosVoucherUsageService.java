@@ -12,12 +12,11 @@ import java.util.UUID;
 public class PosVoucherUsageService {
     private final PosVoucherUsageRepository posVoucherUsageRepository;
 
-    public void addVoucherUsage(String voucherCode, UUID orderGuid, String usedBy) {
+    public void createVoucherUsage(String voucherCode, UUID orderGuid, String usedBy) {
         /* voucher code usage */
         VoucherUsageEntity voucherUsageEntity = new VoucherUsageEntity();
         voucherUsageEntity.setVoucherCode(voucherCode);
         voucherUsageEntity.setOrderGuid(orderGuid);
-//        voucherUsageEntity.setUsedDate(Instant.now());
         voucherUsageEntity.setUsedBy(usedBy);
         posVoucherUsageRepository.save(voucherUsageEntity);
     }

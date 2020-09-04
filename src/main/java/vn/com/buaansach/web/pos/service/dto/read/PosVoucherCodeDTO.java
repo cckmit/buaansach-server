@@ -2,36 +2,31 @@ package vn.com.buaansach.web.pos.service.dto.read;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import vn.com.buaansach.shared.service.dto.AuditDTO;
 import vn.com.buaansach.entity.enumeration.DiscountType;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.entity.voucher.condition.VoucherTimeConditionEntity;
 import vn.com.buaansach.entity.voucher.condition.VoucherUsageConditionEntity;
-import vn.com.buaansach.core.service.dto.AuditDTO;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class PosVoucherCodeDTO extends AuditDTO {
     private String voucherCode;
-
-    private boolean voucherCodeUsable;
-
+    private boolean voucherCodeActivated;
     private int voucherCodeUsageCount;
-
-    private String customerPhone;
+    private String voucherCodePhone;
+    private UUID voucherGuid;
 
     private String voucherName;
     private String voucherDescription;
     private String voucherImageUrl;
     private int voucherDiscount;
-    @Enumerated(EnumType.STRING)
     private DiscountType voucherDiscountType;
     private String voucherConditions;
-    private boolean voucherEnable;
-
+    private boolean voucherActivated;
 
     private VoucherTimeConditionEntity timeCondition;
     private VoucherUsageConditionEntity usageCondition;
@@ -43,7 +38,9 @@ public class PosVoucherCodeDTO extends AuditDTO {
         assignProperty(voucherCodeEntity, voucherEntity);
     }
 
-    public PosVoucherCodeDTO(VoucherCodeEntity voucherCodeEntity, VoucherEntity voucherEntity, VoucherTimeConditionEntity timeConditionEntity, VoucherUsageConditionEntity usageConditionEntity) {
+    public PosVoucherCodeDTO(VoucherCodeEntity voucherCodeEntity, VoucherEntity voucherEntity,
+                             VoucherTimeConditionEntity timeConditionEntity,
+                             VoucherUsageConditionEntity usageConditionEntity) {
         assignProperty(voucherCodeEntity, voucherEntity);
         this.timeCondition = timeConditionEntity;
         this.usageCondition = usageConditionEntity;
@@ -51,9 +48,11 @@ public class PosVoucherCodeDTO extends AuditDTO {
 
     private void assignProperty(VoucherCodeEntity voucherCodeEntity, VoucherEntity voucherEntity) {
         this.voucherCode = voucherCodeEntity.getVoucherCode();
-//        this.voucherCodeUsable = voucherCodeEntity.isVoucherCodeUsable();
+        this.voucherCodeActivated = voucherCodeEntity.isVoucherCodeActivated();
         this.voucherCodeUsageCount = voucherCodeEntity.getVoucherCodeUsageCount();
-//        this.customerPhone = voucherCodeEntity.getCustomerPhone();
+        this.voucherCodePhone = voucherCodeEntity.getVoucherCodePhone();
+        this.voucherGuid = voucherCodeEntity.getVoucherGuid();
+
         this.createdBy = voucherCodeEntity.getCreatedBy();
         this.createdDate = voucherCodeEntity.getCreatedDate();
         this.lastModifiedBy = voucherCodeEntity.getLastModifiedBy();
@@ -65,7 +64,7 @@ public class PosVoucherCodeDTO extends AuditDTO {
         this.voucherDiscount = voucherEntity.getVoucherDiscount();
         this.voucherDiscountType = voucherEntity.getVoucherDiscountType();
         this.voucherConditions = voucherEntity.getVoucherConditions();
-//        this.voucherEnable = voucherEntity.isVoucherEnable();
+        this.voucherActivated = voucherEntity.isVoucherActivated();
 
     }
 }

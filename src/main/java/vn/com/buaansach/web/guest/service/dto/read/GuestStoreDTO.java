@@ -11,13 +11,14 @@ public class GuestStoreDTO {
     private UUID guid;
     private String storeCode;
     private String storeName;
-    private StoreStatus storeStatus;
     private String storeAddress;
+    private StoreStatus storeStatus;
     private String storeOwnerName;
     private String storeOwnerPhone;
     private String storeOwnerEmail;
     private String storeTaxCode;
     private String storeBusinessHours;
+    private boolean storeActivated;
 
     public GuestStoreDTO() {
     }
@@ -26,12 +27,13 @@ public class GuestStoreDTO {
         this.guid = storeEntity.getGuid();
         this.storeCode = storeEntity.getStoreCode();
         this.storeName = storeEntity.getStoreName();
-        this.storeStatus = storeEntity.getStoreStatus();
         this.storeAddress = storeEntity.getStoreAddress();
+        this.storeStatus = storeEntity.getStoreStatus();
         this.storeOwnerName = storeEntity.getStoreOwnerName();
         this.storeOwnerPhone = storeEntity.getStoreOwnerPhone();
         this.storeOwnerEmail = storeEntity.getStoreOwnerEmail();
         this.storeTaxCode = storeEntity.getStoreTaxCode();
         this.storeBusinessHours = storeEntity.getStoreBusinessHours();
+        this.storeActivated = storeEntity.isStoreActivated();
     }
 }

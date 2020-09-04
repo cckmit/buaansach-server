@@ -61,15 +61,15 @@ public class AdminStoreUserResource {
         return ResponseEntity.noContent().build();
     }
 
-//    /**
-//     * Xóa tài khoản khỏi cửa hàng
-//     */
-//    @DeleteMapping("/delete/{storeUserGuid}")
-//    public ResponseEntity<Void> deleteStoreUser(@PathVariable String storeUserGuid) {
-//        log.debug("REST request from user [{}] to delete [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeUserGuid);
-//        adminStoreUserService.deleteStoreUser(storeUserGuid);
-//        return ResponseEntity.noContent().build();
-//    }
+    /**
+     * Xóa tài khoản khỏi cửa hàng
+     */
+    @DeleteMapping("/delete/{storeUserGuid}")
+    public ResponseEntity<Void> deleteStoreUser(@PathVariable String storeUserGuid) {
+        log.debug("REST request from user [{}] to delete [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeUserGuid);
+        adminStoreUserService.deleteStoreUser(storeUserGuid);
+        return ResponseEntity.noContent().build();
+    }
 
 
 }

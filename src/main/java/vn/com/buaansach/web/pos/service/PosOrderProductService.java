@@ -8,7 +8,9 @@ import vn.com.buaansach.entity.enumeration.ProductStatus;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
+import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
+import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderProductDTO;
 import vn.com.buaansach.web.pos.repository.order.PosOrderProductRepository;
 import vn.com.buaansach.web.pos.repository.order.PosOrderRepository;
 import vn.com.buaansach.web.pos.repository.common.PosProductRepository;
@@ -57,20 +59,20 @@ public class PosOrderProductService {
                     entity.setOrderProductGroup(orderProductGroup);
                     entity.setOrderProductStatus(OrderProductStatus.PREPARING);
                     entity.setOrderProductStatusTimeline(TimelineUtil.initOrderProductStatus(OrderProductStatus.PREPARING, currentUser));
-                    entity.setOrderGuid(orderGuid);
 
                     ProductEntity product = mapProduct.get(entity.getProductGuid());
 
-                    if (product == null) throw new NotFoundException("pos@productNotFound@" + entity.getProductGuid());
-                    if (product.getProductStatus().equals(ProductStatus.STOP_TRADING)) throw new BadRequestException("pos@productStopTrading@" + product.getGuid());
+                    if (product == null) throw new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
+                    if (product.getProductStatus().equals(ProductStatus.STOP_TRADING)) throw new BadRequestException(ErrorCode.PRODUCT_STOP_TRADING);
 
                     entity.setOrderProductRootPrice(product.getProductRootPrice());
                     entity.setOrderProductPrice(product.getProductPrice());
                     entity.setOrderProductDiscount(product.getProductDiscount());
+                    entity.setOrderProductDiscountType(product.getProductDiscountType());
+                    entity.setOrderGuid(orderGuid);
                     entity.setSaleGuid(product.getSaleGuid());
                 })
                 .collect(Collectors.toList());
-
         return posOrderProductRepository.saveAll(list);
     }
 
@@ -81,7 +83,7 @@ public class PosOrderProductService {
         posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
 
         OrderProductEntity orderProductEntity = posOrderProductRepository.findOneByGuid(payload.getOrderProductGuid())
-                .orElseThrow(() -> new NotFoundException("pos@orderProductNotFound@" + payload.getOrderProductGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_PRODUCT_NOT_FOUND));
 
         if (orderProductEntity.getOrderProductStatus().equals(OrderProductStatus.PREPARING)) {
             orderProductEntity.setOrderProductStatus(OrderProductStatus.SERVED);
@@ -89,9 +91,9 @@ public class PosOrderProductService {
                     OrderProductStatus.SERVED,
                     currentUser);
             orderProductEntity.setOrderProductStatusTimeline(timeline);
+            posOrderProductRepository.save(orderProductEntity);
+            checkSeatServiceStatus(orderProductEntity.getOrderGuid());
         }
-        posOrderProductRepository.save(orderProductEntity);
-        checkSeatServiceStatus(orderProductEntity.getOrderGuid());
     }
 
     /**
@@ -103,7 +105,7 @@ public class PosOrderProductService {
         list.forEach(orderProductEntity -> {
             if (!orderProductEntity.getOrderGuid().equals(payload.getOrderGuid())) {
                 /* mã đơn của sản phẩm khác với mã đơn được gửi kèm trong payload => không hợp lệ */
-                throw new BadRequestException("pos@orderProductNotMatchOrder@" + payload.getOrderGuid());
+                throw new BadRequestException(ErrorCode.ORDER_PRODUCT_NOT_MATCH_ORDER);
             }
             if (orderProductEntity.getOrderProductStatus().equals(OrderProductStatus.PREPARING)) {
                 orderProductEntity.setOrderProductStatus(OrderProductStatus.SERVED);
@@ -121,38 +123,50 @@ public class PosOrderProductService {
     @Transactional
     public void cancelOrderProduct(PosOrderProductStatusChangeDTO payload, String currentUser) {
         if (payload.getOrderProductCancelReason().isEmpty())
-            throw new BadRequestException("pos@orderProductCancelReasonRequired@" + payload.getOrderProductGuid());
+            throw new BadRequestException(ErrorCode.ORDER_PRODUCT_CANCEL_REASON_REQUIRED);
         posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
 
         OrderProductEntity orderProductEntity = posOrderProductRepository.findOneByGuid(payload.getOrderProductGuid())
-                .orElseThrow(() -> new NotFoundException("pos@orderProductNotFound@" + payload.getOrderProductGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_PRODUCT_NOT_FOUND));
 
         /* chỉ thực hiện hủy orderProduct khi trạng thái khác trạng thái CANCELLED...*/
-        if (!orderProductEntity.getOrderProductStatus().toString().contains("CANCELLED")) {
+        if (!orderProductEntity.getOrderProductStatus().equals(OrderProductStatus.CANCELLED)) {
             orderProductEntity.setOrderProductCancelReason(payload.getOrderProductCancelReason());
-            orderProductEntity.setOrderProductStatus(OrderProductStatus.CANCELLED_BY_EMPLOYEE);
+            orderProductEntity.setOrderProductStatus(OrderProductStatus.CANCELLED);
             String timeline = TimelineUtil.appendOrderProductStatus(orderProductEntity.getOrderProductStatusTimeline(),
-                    OrderProductStatus.CANCELLED_BY_EMPLOYEE,
+                    OrderProductStatus.CANCELLED,
                     currentUser);
             orderProductEntity.setOrderProductStatusTimeline(timeline);
             posOrderProductRepository.save(orderProductEntity);
 
             /* Tính lại giá trị đơn hàng */
             OrderEntity orderEntity = posOrderRepository.findOneByGuid((orderProductEntity.getOrderGuid()))
-                    .orElseThrow(() -> new NotFoundException("pos@orderNotFound@" + orderProductEntity.getOrderGuid()));
+                    .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
             List<PosOrderProductDTO> listPosOrderProductDTO = posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(orderProductEntity.getOrderGuid());
             int totalAmount = calculateTotalAmount(listPosOrderProductDTO);
             orderEntity.setOrderTotalAmount(totalAmount);
             posOrderRepository.save(orderEntity);
-
             checkSeatServiceStatus(orderProductEntity.getOrderGuid());
         }
     }
 
     private int calculateTotalAmount(List<PosOrderProductDTO> listPosOrderProductDTO) {
         return listPosOrderProductDTO.stream()
-                .filter(dto -> !dto.getOrderProductStatus().toString().contains("CANCELLED"))
-                .mapToInt(dto -> dto.getOrderProductQuantity() * (dto.getOrderProductPrice() - dto.getOrderProductDiscount())).sum();
+                .filter(dto -> !dto.getOrderProductStatus().equals(OrderProductStatus.CANCELLED))
+                .mapToInt(dto -> {
+                    int price = dto.getOrderProductPrice();
+                    if (dto.getOrderProductDiscount() > 0) {
+                        switch (dto.getOrderProductDiscountType()) {
+                            case VALUE:
+                                price = price - dto.getOrderProductDiscount();
+                                break;
+                            case PERCENT:
+                                price = price - (price * dto.getOrderProductDiscount() / 100);
+                                break;
+                        }
+                    }
+                    return dto.getOrderProductQuantity() * price;
+                }).sum();
     }
 
     /* Thực hiện kiểm tra trạng thái phục vụ của chỗ ngồi

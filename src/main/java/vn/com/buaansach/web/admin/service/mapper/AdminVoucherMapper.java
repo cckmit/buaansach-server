@@ -11,12 +11,14 @@ public class AdminVoucherMapper {
         VoucherEntity voucherEntity = new VoucherEntity();
         voucherEntity.setGuid(dto.getGuid());
         voucherEntity.setVoucherName(dto.getVoucherName());
+        voucherEntity.setVoucherNameEng(dto.getVoucherNameEng());
         voucherEntity.setVoucherDescription(dto.getVoucherDescription());
+        voucherEntity.setVoucherDescriptionEng(dto.getVoucherDescriptionEng());
         voucherEntity.setVoucherImageUrl(dto.getVoucherImageUrl());
         voucherEntity.setVoucherDiscount(dto.getVoucherDiscount());
         voucherEntity.setVoucherDiscountType(dto.getVoucherDiscountType());
         voucherEntity.setVoucherConditions(dto.getVoucherConditions());
-//        voucherEntity.setVoucherEnable(dto.isVoucherEnable());
+        voucherEntity.setVoucherActivated(dto.isVoucherActivated());
         voucherEntity.setNumberVoucherCode(dto.getNumberVoucherCode());
         return voucherEntity;
     }

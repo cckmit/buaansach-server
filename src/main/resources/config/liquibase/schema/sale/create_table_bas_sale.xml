@@ -15,7 +15,11 @@
             <column name="sale_name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="sale_description" type="varchar(1000)"/>
+            <column name="sale_name_eng" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sale_description" type="varchar(2000)"/>
+            <column name="sale_description_eng" type="varchar(2000)"/>
             <column name="sale_image_url" type="varchar(255)"/>
             <column name="sale_discount" type="int"/>
             <column name="sale_discount_type" type="varchar(30)">

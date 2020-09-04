@@ -14,7 +14,6 @@ public class PosStoreUserDTO {
     private UUID guid;
     private StoreUserRole storeUserRole;
     private StoreUserStatus storeUserStatus;
-    private boolean storeUserActivated;
     private UUID storeGuid;
     private String userLogin;
 
@@ -30,7 +29,6 @@ public class PosStoreUserDTO {
         this.guid = storeUserEntity.getGuid();
         this.storeUserRole = storeUserEntity.getStoreUserRole();
         this.storeUserStatus = storeUserEntity.getStoreUserStatus();
-        this.storeUserActivated = storeUserEntity.isStoreUserActivated();
         this.storeGuid = storeUserEntity.getStoreGuid();
         this.userLogin = storeUserEntity.getUserLogin();
     }

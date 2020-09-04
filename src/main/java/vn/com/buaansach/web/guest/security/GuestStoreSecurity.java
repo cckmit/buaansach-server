@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.StoreStatus;
 import vn.com.buaansach.entity.store.StoreEntity;
+import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.ForbiddenException;
 import vn.com.buaansach.web.pos.repository.store.PosStoreRepository;
 
@@ -20,7 +21,7 @@ public class GuestStoreSecurity {
     }
 
     public void blockAccessIfStoreIsNotOpenOrDeactivated(UUID storeGuid) {
-        if (isClosedOrDeactivated(storeGuid)) throw new ForbiddenException("guest@storeClosed@" + storeGuid);
+        if (isClosedOrDeactivated(storeGuid)) throw new ForbiddenException(ErrorCode.STORE_CLOSED_OR_DEACTIVATED);
     }
 
 }

@@ -3,7 +3,7 @@ package vn.com.buaansach.web.admin.repository.store;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.core.repository.store.SeatRepository;
+import vn.com.buaansach.shared.repository.store.SeatRepository;
 import vn.com.buaansach.entity.store.SeatEntity;
 
 import java.util.List;

@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.exception.ErrorCode;
-import vn.com.buaansach.core.repository.user.UserRepository;
+import vn.com.buaansach.shared.repository.user.UserRepository;
 import vn.com.buaansach.util.Constants;
 
 import javax.transaction.Transactional;
@@ -33,18 +33,18 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (new EmailValidator().isValid(principal, null)) {
             return userRepository.findOneWithAuthoritiesByUserEmailIgnoreCase(principal)
                     .map(UserPrincipal::create)
-                    .orElseThrow(() -> new UsernameNotFoundException(ErrorCode.USER_NOT_FOUND));
+                    .orElseThrow(() -> new UsernameNotFoundException(ErrorCode.USER_NOT_FOUND.name()));
         }
 
         if (Pattern.matches(Constants.PHONE_REGEX, principal)){
             return userRepository.findOneWithAuthoritiesByUserPhone(principal)
                     .map(UserPrincipal::create)
-                    .orElseThrow(() -> new UsernameNotFoundException(ErrorCode.USER_NOT_FOUND));
+                    .orElseThrow(() -> new UsernameNotFoundException(ErrorCode.USER_NOT_FOUND.name()));
         }
 
         return userRepository.findOneWithAuthoritiesByUserLoginIgnoreCase(principal)
                 .map(UserPrincipal::create)
-                .orElseThrow(() -> new UsernameNotFoundException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new UsernameNotFoundException(ErrorCode.USER_NOT_FOUND.name()));
     }
 
 }

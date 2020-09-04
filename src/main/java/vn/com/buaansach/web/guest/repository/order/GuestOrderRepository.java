@@ -1,16 +1,9 @@
 package vn.com.buaansach.web.guest.repository.order;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.entity.order.OrderEntity;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import vn.com.buaansach.shared.repository.order.OrderRepository;
 
 @Repository
-public interface GuestOrderRepository extends JpaRepository<OrderEntity, Long> {
-    Optional<OrderEntity> findOneByGuid(UUID orderGuid);
+public interface GuestOrderRepository extends OrderRepository {
 
-    List<OrderEntity> findByGuidIn(List<UUID> listOrderGuid);
 }
