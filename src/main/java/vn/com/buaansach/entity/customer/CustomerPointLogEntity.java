@@ -36,5 +36,4 @@ public class CustomerPointLogEntity extends AbstractAuditingEntity implements Se
 
     @Column(name = "earned_point")
     private int earnedPoint;
-
 }

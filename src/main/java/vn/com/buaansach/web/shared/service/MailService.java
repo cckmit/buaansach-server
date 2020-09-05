@@ -13,7 +13,11 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import vn.com.buaansach.entity.user.UserEntity;
+import vn.com.buaansach.entity.user.UserProfileEntity;
+import vn.com.buaansach.exception.ErrorCode;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.Constants;
+import vn.com.buaansach.web.shared.repository.user.UserProfileRepository;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -30,6 +34,7 @@ public class MailService {
     private final JavaMailSender javaMailSender;
     private final MessageSource messageSource;
     private final SpringTemplateEngine templateEngine;
+    private final UserProfileRepository userProfileRepository;
     @Value("${app.mail.from}")
     private String host;
     @Value("${app.mail.enable}")
@@ -64,7 +69,9 @@ public class MailService {
             log.debug("User {} doesn't have and email", userEntity.getUserLogin());
             return;
         }
-        Locale locale = Locale.forLanguageTag(userEntity.getUserProfile().getLangKey() == null ? Constants.DEFAULT_LANGUAGE : userEntity.getUserProfile().getLangKey());
+        UserProfileEntity profileEntity = userProfileRepository.findOneByUserGuid(userEntity.getGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_PROFILE_NOT_FOUND));
+        Locale locale = Locale.forLanguageTag(profileEntity.getLangKey() == null ? Constants.DEFAULT_LANGUAGE : profileEntity.getLangKey());
         Context context = new Context(locale);
         context.setVariable(USER, userEntity);
         context.setVariable(BASE_URL, clientBaseUrl);

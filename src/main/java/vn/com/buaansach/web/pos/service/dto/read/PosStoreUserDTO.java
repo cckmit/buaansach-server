@@ -33,7 +33,7 @@ public class PosStoreUserDTO {
         this.userLogin = storeUserEntity.getUserLogin();
     }
 
-    public PosStoreUserDTO(StoreUserEntity storeUserEntity, UserEntity userEntity) {
+    public PosStoreUserDTO(StoreUserEntity storeUserEntity, UserEntity userEntity, UserProfileEntity profileEntity) {
         this.guid = storeUserEntity.getGuid();
         this.storeUserRole = storeUserEntity.getStoreUserRole();
         this.storeUserStatus = storeUserEntity.getStoreUserStatus();
@@ -42,6 +42,6 @@ public class PosStoreUserDTO {
 
         this.userEmail = userEntity.getUserEmail();
         this.userPhone = userEntity.getUserPhone();
-        this.fullName = userEntity.getUserProfile().getFullName();
+        this.fullName = profileEntity.getFullName();
     }
 }

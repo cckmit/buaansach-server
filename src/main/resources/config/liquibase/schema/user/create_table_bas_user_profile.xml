@@ -18,8 +18,8 @@
             <column name="user_birthday" type="timestamp"/>
             <column name="user_address" type="varchar(255)"/>
             <column name="lang_key" type="varchar(10)"/>
-            <column name="user_id" type="bigint">
-                <constraints nullable="false"/>
+            <column name="user_guid" type="binary(16)">
+                <constraints unique="true" nullable="false" uniqueConstraintName="ux_user_guid_profile"/>
             </column>
 
             <column name="created_by" type="varchar(50)">
@@ -29,13 +29,6 @@
             <column name="last_modified_by" type="varchar(50)"/>
             <column name="last_modified_date" type="timestamp"/>
         </createTable>
-
-        <addForeignKeyConstraint baseColumnNames="user_id"
-                                 baseTableName="bas_user_profile"
-                                 constraintName="fk_user_profile_and_user"
-                                 referencedColumnNames="id"
-                                 referencedTableName="bas_user"/>
-
     </changeSet>
 
 </databaseChangeLog>

@@ -13,10 +13,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.entity.user.UserEntity;
+import vn.com.buaansach.entity.user.UserProfileEntity;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.security.jwt.TokenProvider;
 import vn.com.buaansach.security.util.SecurityUtils;
+import vn.com.buaansach.web.shared.repository.user.UserProfileRepository;
 import vn.com.buaansach.web.shared.repository.user.UserRepository;
 import vn.com.buaansach.web.shared.service.MailService;
 import vn.com.buaansach.web.shared.service.UserService;
@@ -47,6 +49,8 @@ public class UserResource {
 
     private final UserRepository userRepository;
 
+    private final UserProfileRepository userProfileRepository;
+
     @PostMapping("/authenticate")
     public ResponseEntity<JwtTokenDTO> authenticate(@Valid @RequestBody LoginRequestDTO dto) {
         log.debug("REST request to authenticate [{}] : [{}]", ENTITY_NAME, dto.getPrincipal());
@@ -63,17 +67,21 @@ public class UserResource {
     @GetMapping("/info")
     public ResponseEntity<UserDTO> getUserInfo() {
         log.debug("REST request from user [{}] to get [{}] info", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);
-        return userRepository.findOneByUserLoginIgnoreCase(SecurityUtils.getCurrentUserLogin())
-                .map(userEntity -> ResponseEntity.ok(new UserDTO(userEntity)))
+        UserEntity userEntity = userRepository.findOneByUserLoginIgnoreCase(SecurityUtils.getCurrentUserLogin())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+        UserProfileEntity userProfileEntity = userProfileRepository.findOneByUserGuid(userEntity.getGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_PROFILE_NOT_FOUND));
+        return ResponseEntity.ok(new UserDTO(userEntity,userProfileEntity));
     }
 
     @GetMapping("/info/{userLogin}")
     public ResponseEntity<UserDTO> getAccountInfoByLogin(@PathVariable String userLogin) {
         log.debug("REST request from user [{}] to get [{}] info by login [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, userLogin);
-        return userRepository.findOneByUserLoginIgnoreCase(userLogin)
-                .map(userEntity -> ResponseEntity.ok(new UserDTO(userEntity)))
+        UserEntity userEntity = userRepository.findOneByUserLoginIgnoreCase(userLogin)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+        UserProfileEntity userProfileEntity = userProfileRepository.findOneByUserGuid(userEntity.getGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_PROFILE_NOT_FOUND));
+        return ResponseEntity.ok(new UserDTO(userEntity,userProfileEntity));
     }
 
     @PutMapping("/update")

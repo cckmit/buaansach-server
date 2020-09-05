@@ -67,8 +67,8 @@ public class AdminAreaService {
         areaEntity.setAreaNameEng(request.getAreaNameEng());
         areaEntity.setAreaType(request.getAreaType());
         areaEntity.setAreaColor(request.getAreaColor());
+        areaEntity.setAreaActivated(request.isAreaActivated());
         areaEntity.setStoreGuid(request.getStoreGuid());
-        areaEntity.setAreaActivated(true);
         areaEntity = adminAreaRepository.save(areaEntity);
 
         List<SeatEntity> listSeat = new ArrayList<>();
@@ -103,6 +103,7 @@ public class AdminAreaService {
         currentEntity.setAreaName(payload.getAreaName());
         currentEntity.setAreaNameEng(payload.getAreaNameEng());
         currentEntity.setAreaColor(payload.getAreaColor());
+        currentEntity.setAreaActivated(payload.isAreaActivated());
         return new AdminAreaDTO(adminAreaRepository.save(currentEntity), payload.getListSeat());
     }
 
@@ -128,12 +129,5 @@ public class AdminAreaService {
 
         /* finally, delete area */
         adminAreaRepository.delete(areaEntity);
-    }
-
-    public void toggleArea(String areaGuid) {
-        AreaEntity areaEntity = adminAreaRepository.findOneByGuid(UUID.fromString(areaGuid))
-                .orElseThrow(() -> new NotFoundException(ErrorCode.AREA_NOT_FOUND));
-        areaEntity.setAreaActivated(!areaEntity.isAreaActivated());
-        adminAreaRepository.save(areaEntity);
     }
 }

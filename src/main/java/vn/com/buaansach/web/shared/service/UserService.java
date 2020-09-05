@@ -12,9 +12,11 @@ import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.util.RandomUtil;
+import vn.com.buaansach.web.shared.repository.user.UserProfileRepository;
 import vn.com.buaansach.web.shared.repository.user.UserRepository;
 import vn.com.buaansach.web.shared.service.dto.write.UpdateAccountDTO;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -23,10 +25,13 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
+    private final UserProfileRepository userProfileRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     private final FileService fileService;
 
+    @Transactional
     public void updateAccount(UpdateAccountDTO dto, MultipartFile image) {
         userRepository.findOneByUserLoginIgnoreCase(SecurityUtils.getCurrentUserLogin()).ifPresent(user -> {
             if (dto.getUserEmail() != null) {
@@ -44,8 +49,10 @@ public class UserService {
             }
             user.setUserEmail(dto.getUserEmail());
             user.setUserPhone(dto.getUserPhone());
+            userRepository.save(user);
 
-            UserProfileEntity profileEntity = user.getUserProfile();
+            UserProfileEntity profileEntity = userProfileRepository.findOneByUserGuid(user.getGuid())
+                    .orElseThrow(() -> new NotFoundException(ErrorCode.USER_PROFILE_NOT_FOUND));
             if (image != null) {
                 fileService.deleteByUrl(profileEntity.getAvatarUrl());
                 /*handle upload image here*/
@@ -57,9 +64,7 @@ public class UserService {
             profileEntity.setUserBirthday(dto.getUserBirthday());
             profileEntity.setUserAddress(dto.getUserAddress());
             profileEntity.setLangKey(dto.getLangKey());
-
-            user.setUserProfile(profileEntity);
-            userRepository.save(user);
+            userProfileRepository.save(profileEntity);
         });
     }
 

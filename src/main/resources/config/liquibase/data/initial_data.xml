@@ -17,6 +17,8 @@
                 file="config/liquibase/data/csv/user_profile.csv"
                 separator=";"
                 tableName="bas_user_profile">
+            <column name="user_guid" type="numeric"/>
+            <column name="created_date" type="timestamp"/>
         </loadData>
     </changeSet>
     <changeSet id="init_authority_data" author="ductv">

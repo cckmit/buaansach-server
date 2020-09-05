@@ -17,11 +17,14 @@ import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.util.sequence.UserCodeGenerator;
 import vn.com.buaansach.web.admin.repository.user.AdminAuthorityRepository;
+import vn.com.buaansach.web.admin.repository.user.AdminUserProfileRepository;
 import vn.com.buaansach.web.admin.repository.user.AdminUserRepository;
+import vn.com.buaansach.web.admin.service.dto.read.AdminUserDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateUserDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminPasswordChangeDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminUpdateUserDTO;
 
+import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -32,12 +35,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdminUserService {
     private final AdminUserRepository adminUserRepository;
-
+    private final AdminUserProfileRepository adminUserProfileRepository;
     private final PasswordEncoder passwordEncoder;
-
     private final AdminAuthorityRepository adminAuthorityRepository;
 
-    public UserEntity createUser(AdminCreateUserDTO dto) {
+    @Transactional
+    public AdminUserDTO createUser(AdminCreateUserDTO dto) {
         if (dto.getUserLogin() != null && adminUserRepository.findOneByUserLoginIgnoreCase(dto.getUserLogin().toLowerCase()).isPresent()) {
             throw new BadRequestException(ErrorCode.LOGIN_EXIST);
         }
@@ -49,8 +52,8 @@ public class AdminUserService {
         }
 
         UserEntity userEntity = new UserEntity();
-
-        userEntity.setGuid(UUID.randomUUID());
+        UUID userGuid = UUID.randomUUID();
+        userEntity.setGuid(userGuid);
         userEntity.setUserLogin(dto.getUserLogin().toLowerCase());
         if (dto.getUserEmail() != null) {
             userEntity.setUserEmail(dto.getUserEmail().toLowerCase());
@@ -79,27 +82,28 @@ public class AdminUserService {
         UserProfileEntity profileEntity = new UserProfileEntity();
         profileEntity.setUserCode(UserCodeGenerator.generate());
         profileEntity.setFullName(dto.getFullName());
+        profileEntity.setUserGuid(userGuid);
         if (dto.getLangKey() == null || dto.getLangKey().isEmpty()) {
             profileEntity.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
         } else {
             profileEntity.setLangKey(dto.getLangKey());
         }
 
-        userEntity.setUserProfile(profileEntity);
-        return adminUserRepository.save(userEntity);
+        return new AdminUserDTO(adminUserRepository.save(userEntity), adminUserProfileRepository.save(profileEntity));
     }
 
-    public UserEntity updateUser(AdminUpdateUserDTO dto) {
+    @Transactional
+    public AdminUserDTO updateUser(AdminUpdateUserDTO dto) {
         UserEntity currentUser = adminUserRepository.findOneByUserLoginIgnoreCase(dto.getUserLogin())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         adminUserRepository.findOneByUserEmailIgnoreCase(dto.getUserEmail()).ifPresent(userEntity -> {
-            if (userEntity.getUserEmail().equals(currentUser.getUserEmail()) && !userEntity.getUserLogin().equals(currentUser.getUserLogin()))
+            if (!userEntity.getUserLogin().equals(currentUser.getUserLogin()))
                 throw new BadRequestException(ErrorCode.EMAIL_EXIST);
         });
 
         adminUserRepository.findOneByUserPhone(dto.getUserPhone()).ifPresent(userEntity -> {
-            if (userEntity.getUserPhone().equals(currentUser.getUserPhone()) && !userEntity.getUserLogin().equals(currentUser.getUserLogin()))
+            if (!userEntity.getUserLogin().equals(currentUser.getUserLogin()))
                 throw new BadRequestException(ErrorCode.PHONE_EXIST);
         });
 
@@ -115,15 +119,15 @@ public class AdminUserService {
             currentUser.setAuthorities(authorities);
         }
 
-        UserProfileEntity profileEntity = currentUser.getUserProfile();
+        UserProfileEntity profileEntity = adminUserProfileRepository.findOneByUserGuid(currentUser.getGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_PROFILE_NOT_FOUND));
         profileEntity.setFullName(dto.getFullName());
         profileEntity.setLangKey(dto.getLangKey());
-        currentUser.setUserProfile(profileEntity);
 
-        return adminUserRepository.save(currentUser);
+        return new AdminUserDTO(adminUserRepository.save(currentUser), adminUserProfileRepository.save(profileEntity));
     }
 
-    public Page<UserEntity> getPageUser(PageRequest request, String search) {
+    public Page<AdminUserDTO> getPageUser(PageRequest request, String search) {
         return adminUserRepository.findPageUserWithKeyword(request, search.toLowerCase());
     }
 

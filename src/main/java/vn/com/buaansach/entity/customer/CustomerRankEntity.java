@@ -34,5 +34,4 @@ public class CustomerRankEntity extends AbstractAuditingEntity implements Serial
     @Size(max = 255)
     @Column(name = "rank_conditions")
     private String rankConditions;
-
 }

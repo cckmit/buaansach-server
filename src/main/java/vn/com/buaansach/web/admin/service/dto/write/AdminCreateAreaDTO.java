@@ -23,6 +23,8 @@ public class AdminCreateAreaDTO {
     @Size(max = 50)
     private String areaColor;
 
+    private boolean areaActivated;
+
     @Size(max = 40)
     private String seatPrefix;
 

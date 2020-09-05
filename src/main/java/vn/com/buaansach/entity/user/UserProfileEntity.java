@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Table(name = "bas_user_profile")
@@ -52,7 +53,11 @@ public class UserProfileEntity extends AbstractAuditingEntity implements Seriali
     @Column(name = "lang_key", length = 10)
     private String langKey;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private UserEntity userAccount;
+    /**
+     * FK
+     * */
+
+    @Column(name = "user_guid")
+    private UUID userGuid;
+
 }

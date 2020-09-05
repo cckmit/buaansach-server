@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminUserService;
@@ -36,13 +37,13 @@ public class AdminUserResource {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AdminUserDTO> createUser(@Valid @RequestBody AdminCreateUserDTO payload) {
         log.debug("REST request from user [{}] to create [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
-        return ResponseEntity.ok(new AdminUserDTO(adminUserService.createUser(payload)));
+        return ResponseEntity.ok(adminUserService.createUser(payload));
     }
 
     @PutMapping("/update")
     public ResponseEntity<AdminUserDTO> updateUser(@Valid @RequestBody AdminUpdateUserDTO payload) {
         log.debug("REST request from user [{}] to update [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
-        return ResponseEntity.ok(new AdminUserDTO(adminUserService.updateUser(payload)));
+        return ResponseEntity.ok(adminUserService.updateUser(payload));
     }
 
     /**
@@ -56,7 +57,7 @@ public class AdminUserResource {
                                                           @RequestParam(value = "sortDirection", defaultValue = "DESC") Sort.Direction sortDirection) {
         PageRequest request = PageRequest.of(page - 1, size, sortDirection, sortField);
         log.debug("REST request from user [{}] to list [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, request);
-        return ResponseEntity.ok(adminUserService.getPageUser(request, search).map(AdminUserDTO::new));
+        return ResponseEntity.ok(adminUserService.getPageUser(request, search));
     }
 
     /**

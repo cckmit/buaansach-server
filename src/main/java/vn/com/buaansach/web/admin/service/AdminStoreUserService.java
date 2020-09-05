@@ -13,8 +13,10 @@ import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.repository.store.AdminStoreRepository;
 import vn.com.buaansach.web.admin.repository.store.AdminStoreUserRepository;
+import vn.com.buaansach.web.admin.repository.user.AdminUserProfileRepository;
 import vn.com.buaansach.web.admin.repository.user.AdminUserRepository;
 import vn.com.buaansach.web.admin.service.dto.read.AdminStoreUserDTO;
+import vn.com.buaansach.web.admin.service.dto.read.AdminUserDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminAddStoreUserDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateOrUpdateStoreUserDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateUserDTO;
@@ -30,6 +32,7 @@ public class AdminStoreUserService {
     private final AdminUserRepository adminUserRepository;
     private final AdminStoreRepository adminStoreRepository;
     private final AdminStoreUserRepository adminStoreUserRepository;
+    private final AdminUserProfileRepository adminUserProfileRepository;
     private final PasswordEncoder passwordEncoder;
     private final AdminUserService adminUserService;
 
@@ -38,6 +41,9 @@ public class AdminStoreUserService {
         String principal = request.getUserPrincipal().toLowerCase();
         UserEntity userEntity = adminUserRepository.findOneByUserLoginIgnoreCaseOrUserEmailIgnoreCaseOrUserPhone(principal, principal, principal)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        UserProfileEntity userProfileEntity = adminUserProfileRepository.findOneByUserGuid(userEntity.getGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_PROFILE_NOT_FOUND));
 
         /* check store existence */
         adminStoreRepository.findOneByGuid(request.getStoreGuid())
@@ -53,7 +59,8 @@ public class AdminStoreUserService {
         storeUserEntity.setStoreUserActivated(true);
         storeUserEntity.setStoreGuid(request.getStoreGuid());
         storeUserEntity.setUserLogin(userEntity.getUserLogin());
-        return new AdminStoreUserDTO(adminStoreUserRepository.save(storeUserEntity), userEntity);
+
+        return new AdminStoreUserDTO(adminStoreUserRepository.save(storeUserEntity), userEntity, userProfileEntity);
     }
 
     @Transactional
@@ -64,7 +71,7 @@ public class AdminStoreUserService {
 
         AdminCreateUserDTO createUserDTO = new AdminCreateUserDTO(request);
 
-        UserEntity userEntity = adminUserService.createUser(createUserDTO);
+        AdminUserDTO dto = adminUserService.createUser(createUserDTO);
 
         StoreUserEntity storeUserEntity = new StoreUserEntity();
         storeUserEntity.setGuid(UUID.randomUUID());
@@ -74,7 +81,7 @@ public class AdminStoreUserService {
         storeUserEntity.setStoreGuid(request.getStoreGuid());
         storeUserEntity.setUserLogin(request.getUserLogin());
 
-        return new AdminStoreUserDTO(adminStoreUserRepository.save(storeUserEntity), userEntity);
+        return new AdminStoreUserDTO(adminStoreUserRepository.save(storeUserEntity), dto);
     }
 
     @Transactional
@@ -87,23 +94,19 @@ public class AdminStoreUserService {
         /* do not use userLogin from request, because it might be modified */
         UserEntity updateUser = adminUserRepository.findOneByUserLoginIgnoreCase(storeUserEntity.getUserLogin())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
-
-        boolean hasChanges = false;
         if (request.getUserPassword() != null && !request.getUserPassword().isEmpty()) {
             updateUser.setUserPassword(passwordEncoder.encode(request.getUserPassword()));
-            hasChanges = true;
-        }
-        UserProfileEntity profileEntity = updateUser.getUserProfile();
-        if (!profileEntity.getFullName().equals(request.getFullName())) {
-            profileEntity.setFullName(request.getFullName());
-            updateUser.setUserProfile(profileEntity);
-            hasChanges = true;
-        }
-        if (hasChanges) {
             updateUser = adminUserRepository.save(updateUser);
         }
 
-        return new AdminStoreUserDTO(adminStoreUserRepository.save(storeUserEntity), updateUser);
+        UserProfileEntity profileEntity = adminUserProfileRepository.findOneByUserGuid(updateUser.getGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_PROFILE_NOT_FOUND));
+        if (!profileEntity.getFullName().equals(request.getFullName())) {
+            profileEntity.setFullName(request.getFullName());
+            profileEntity = adminUserProfileRepository.save(profileEntity);
+        }
+
+        return new AdminStoreUserDTO(adminStoreUserRepository.save(storeUserEntity), updateUser, profileEntity);
     }
 
     public List<AdminStoreUserDTO> getListStoreUserByStoreGuid(String storeGuid) {

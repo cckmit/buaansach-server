@@ -50,11 +50,4 @@ public class AdminAreaResource {
         adminAreaService.deleteArea(areaGuid);
         return ResponseEntity.noContent().build();
     }
-
-    @PutMapping("/toggle-area")
-    public ResponseEntity<Void> toggleArea(@RequestBody String areaGuid) {
-        log.debug("REST request from user [{}] to toggle [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, areaGuid);
-        adminAreaService.toggleArea(areaGuid);
-        return ResponseEntity.ok().build();
-    }
 }

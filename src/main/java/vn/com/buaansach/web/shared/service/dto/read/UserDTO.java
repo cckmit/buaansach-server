@@ -33,7 +33,7 @@ public class UserDTO extends AuditDTO {
     private String userAddress;
     private String langKey;
 
-    public UserDTO(UserEntity userEntity) {
+    public UserDTO(UserEntity userEntity, UserProfileEntity profileEntity) {
         this.guid = userEntity.getGuid();
         this.userLogin = userEntity.getUserLogin();
         this.userEmail = userEntity.getUserEmail();
@@ -42,7 +42,6 @@ public class UserDTO extends AuditDTO {
                 .map(AuthorityEntity::getName)
                 .collect(Collectors.toSet());
 
-        UserProfileEntity profileEntity = userEntity.getUserProfile();
         this.fullName = profileEntity.getFullName();
         this.avatarUrl = profileEntity.getAvatarUrl();
         this.userGender = profileEntity.getUserGender();

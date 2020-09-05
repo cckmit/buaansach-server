@@ -50,5 +50,4 @@ public class CustomerFeedbackEntity extends AbstractAuditingEntity implements Se
     @Size(max = 1000)
     @Column(name = "feedback_content", length = 1000)
     private String feedbackContent;
-
 }

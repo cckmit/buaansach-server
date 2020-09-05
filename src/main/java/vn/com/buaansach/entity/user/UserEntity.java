@@ -84,9 +84,4 @@ public class UserEntity extends AbstractAuditingEntity implements Serializable {
             inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
     @BatchSize(size = 20)
     private Set<AuthorityEntity> authorities = new HashSet<>();
-
-    @OneToOne(fetch = FetchType.LAZY,
-            cascade =  CascadeType.ALL,
-            mappedBy = "userAccount")
-    private UserProfileEntity userProfile;
 }
