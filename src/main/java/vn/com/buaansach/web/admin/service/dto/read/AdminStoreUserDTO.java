@@ -3,6 +3,7 @@ package vn.com.buaansach.web.admin.service.dto.read;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import vn.com.buaansach.entity.enumeration.Gender;
 import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 import vn.com.buaansach.entity.store.StoreUserEntity;
@@ -10,6 +11,11 @@ import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.entity.user.UserProfileEntity;
 import vn.com.buaansach.web.shared.service.dto.AuditDTO;
 
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.validation.constraints.Size;
+import java.time.Instant;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
@@ -24,7 +30,12 @@ public class AdminStoreUserDTO extends AuditDTO {
     private String userLogin;
 
     /* User Profile */
+    private String userCode;
     private String fullName;
+    private String avatarUrl;
+    private Gender userGender;
+    private Instant userBirthday;
+    private String userAddress;
 
     public AdminStoreUserDTO(StoreUserEntity storeUserEntity, UserEntity userEntity, UserProfileEntity profileEntity) {
         this.guid = storeUserEntity.getGuid();
@@ -34,7 +45,12 @@ public class AdminStoreUserDTO extends AuditDTO {
         this.storeGuid = storeUserEntity.getStoreGuid().toString();
         this.userLogin = storeUserEntity.getUserLogin();
 
+        this.userCode = profileEntity.getUserCode();
         this.fullName = profileEntity.getFullName();
+        this.avatarUrl = profileEntity.getAvatarUrl();
+        this.userGender = profileEntity.getUserGender();
+        this.userBirthday = profileEntity.getUserBirthday();
+        this.userAddress = profileEntity.getUserAddress();
 
         this.createdBy = storeUserEntity.getCreatedBy();
         this.createdDate = storeUserEntity.getCreatedDate();

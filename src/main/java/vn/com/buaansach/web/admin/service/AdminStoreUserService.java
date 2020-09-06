@@ -38,7 +38,7 @@ public class AdminStoreUserService {
 
     public AdminStoreUserDTO addStoreUser(AdminAddStoreUserDTO request) {
         /* check user existence */
-        String principal = request.getUserPrincipal().toLowerCase();
+        String principal = request.getPrincipal().toLowerCase();
         UserEntity userEntity = adminUserRepository.findOneByUserLoginIgnoreCaseOrUserEmailIgnoreCaseOrUserPhone(principal, principal, principal)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 

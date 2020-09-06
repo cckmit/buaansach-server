@@ -18,8 +18,7 @@ public interface AdminStoreProductRepository extends StoreProductRepository {
             "JOIN vn.com.buaansach.entity.common.ProductEntity product " +
             "ON storeProduct.productGuid = product.guid " +
             "WHERE storeProduct.storeGuid = :storeGuid " +
-            "AND product.productStatus <> :productStatus " +
             "ORDER BY product.productPosition ASC")
-    List<AdminStoreProductDTO> findListAdminStoreProductDTOExceptStatus(@Param("storeGuid") UUID storeGuid, @Param("productStatus") ProductStatus productStatus);
+    List<AdminStoreProductDTO> findListAdminStoreProductDTOByStore(@Param("storeGuid") UUID storeGuid);
 
 }

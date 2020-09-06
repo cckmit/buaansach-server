@@ -34,6 +34,7 @@ public class AdminStoreProductService {
         StoreProductEntity storeProductEntity = new StoreProductEntity();
         storeProductEntity.setGuid(UUID.randomUUID());
         storeProductEntity.setStoreProductStatus(StoreProductStatus.AVAILABLE);
+        storeProductEntity.setStoreProductHidden(payload.isStoreProductHidden());
         storeProductEntity.setStoreGuid(payload.getStoreGuid());
         storeProductEntity.setProductGuid(payload.getProductGuid());
         return new AdminStoreProductDTO(adminStoreProductRepository.save(storeProductEntity), productEntity);
@@ -49,6 +50,7 @@ public class AdminStoreProductService {
             StoreProductEntity storeProductEntity = new StoreProductEntity();
             storeProductEntity.setGuid(UUID.randomUUID());
             storeProductEntity.setStoreProductStatus(StoreProductStatus.AVAILABLE);
+            storeProductEntity.setStoreProductHidden(false);
             storeProductEntity.setProductGuid(productEntity.getGuid());
             storeProductEntity.setStoreGuid(UUID.fromString(storeGuid));
             listStoreProduct.add(storeProductEntity);
@@ -69,7 +71,7 @@ public class AdminStoreProductService {
     }
 
     public List<AdminStoreProductDTO> getListStoreProductByStoreGuid(String storeGuid) {
-        return adminStoreProductRepository.findListAdminStoreProductDTOExceptStatus(UUID.fromString(storeGuid), ProductStatus.STOP_TRADING);
+        return adminStoreProductRepository.findListAdminStoreProductDTOByStore(UUID.fromString(storeGuid));
     }
 
     public void deleteStoreProduct(String storeProductGuid) {

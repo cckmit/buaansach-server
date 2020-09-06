@@ -6,6 +6,7 @@ import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 import vn.com.buaansach.util.Constants;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.UUID;
@@ -26,7 +27,6 @@ public class AdminCreateOrUpdateStoreUserDTO {
     private String userEmail;
 
     @Pattern(regexp = Constants.PHONE_REGEX)
-    @Size(max = 20)
     private String userPhone;
 
     @Size(max = 100)
