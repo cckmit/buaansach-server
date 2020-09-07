@@ -69,6 +69,7 @@ public class PosStoreNotificationService {
         orderNotification.setOrderProductGroup(orderProductGroup);
         orderNotification.setNumberOfProduct(numberOfProduct);
         orderNotification.setNumberOfProduct(numberOfProduct);
+        orderNotification.setOrderGuid(orderGuid);
         orderNotification.setStoreNotificationGuid(notificationGuid);
         orderNotification = posStoreOrderNotificationRepository.save(orderNotification);
 
@@ -98,19 +99,28 @@ public class PosStoreNotificationService {
     public List<PosStoreNotificationDTO> getListStoreNotification(String storeGuid, Instant startDate, StoreNotificationType type, Boolean hidden) {
         posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
         List<PosStoreNotificationDTO> list = new ArrayList<>();
-        switch (type) {
-            case CALL_WAITER:
-                list = posStoreNotificationRepository
-                        .findByStoreGuidAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(UUID.fromString(storeGuid), startDate)
-                        .stream().map(PosStoreNotificationDTO::new)
-                        .collect(Collectors.toList());
-                break;
-            case ORDER_UPDATE:
-                list = posStoreNotificationRepository.findListPosStoreOrderNotificationDTO(UUID.fromString(storeGuid), startDate);
-                break;
-            case PAY_REQUEST:
-                list = posStoreNotificationRepository.findListPosStorePayRequestNotificationDTO(UUID.fromString(storeGuid), startDate);
-                break;
+        if (type == null){
+            list = posStoreNotificationRepository
+                    .findByStoreGuidAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(UUID.fromString(storeGuid), startDate)
+                    .stream().map(PosStoreNotificationDTO::new)
+                    .collect(Collectors.toList());
+            list.addAll(posStoreNotificationRepository.findListPosStoreOrderNotificationDTO(UUID.fromString(storeGuid), startDate));
+            list.addAll(posStoreNotificationRepository.findListPosStorePayRequestNotificationDTO(UUID.fromString(storeGuid), startDate));
+        } else {
+            switch (type) {
+                case CALL_WAITER:
+                    list = posStoreNotificationRepository
+                            .findByStoreGuidAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(UUID.fromString(storeGuid), startDate)
+                            .stream().map(PosStoreNotificationDTO::new)
+                            .collect(Collectors.toList());
+                    break;
+                case ORDER_UPDATE:
+                    list = posStoreNotificationRepository.findListPosStoreOrderNotificationDTO(UUID.fromString(storeGuid), startDate);
+                    break;
+                case PAY_REQUEST:
+                    list = posStoreNotificationRepository.findListPosStorePayRequestNotificationDTO(UUID.fromString(storeGuid), startDate);
+                    break;
+            }
         }
         if (hidden != null) {
             if (hidden) {

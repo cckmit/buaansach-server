@@ -37,6 +37,7 @@ public class GuestStoreOrderNotificationService {
         orderNotification.setOrderProductGroup(orderProductGroup);
         orderNotification.setNumberOfProduct(numberOfProduct);
         orderNotification.setNumberOfProduct(numberOfProduct);
+        orderNotification.setOrderGuid(orderGuid);
         orderNotification.setStoreNotificationGuid(notificationGuid);
         orderNotification = guestStoreOrderNotificationRepository.save(orderNotification);
 

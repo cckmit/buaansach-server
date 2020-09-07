@@ -14,9 +14,9 @@ public interface PosOrderProductRepository extends OrderProductRepository {
 
     @Query("SELECT new vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO(orderProduct, product) " +
             "FROM OrderProductEntity orderProduct " +
-            "LEFT JOIN vn.com.buaansach.entity.order.OrderEntity od " +
+            "JOIN vn.com.buaansach.entity.order.OrderEntity od " +
             "ON orderProduct.orderGuid = od.guid " +
-            "LEFT JOIN vn.com.buaansach.entity.common.ProductEntity product " +
+            "JOIN vn.com.buaansach.entity.common.ProductEntity product " +
             "ON orderProduct.productGuid = product.guid " +
             "WHERE orderProduct.orderGuid = :orderGuid " +
             "ORDER BY orderProduct.id ASC")

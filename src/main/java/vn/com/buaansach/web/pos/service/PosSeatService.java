@@ -26,13 +26,6 @@ public class PosSeatService {
     private final PosStoreSecurity posStoreSecurity;
     private final PosSocketService posSocketService;
 
-    public List<PosSeatDTO> getListSeatByStoreGuid(String storeGuid) {
-        posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
-        posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
-                .orElseThrow(() -> new NotFoundException("pos@storeNotFound@" + storeGuid));
-        return posSeatRepository.findListPosSeatDTOByStoreGuid(UUID.fromString(storeGuid));
-    }
-
     public PosSeatDTO getPosSeatDTO(String seatGuid) {
         return posSeatRepository.findPosSeatDTOBySeatGuid(UUID.fromString(seatGuid))
                 .orElseThrow(() -> new NotFoundException("pos@seatNotFound@" + seatGuid));

@@ -27,7 +27,8 @@ public class GuestSocketService {
     public void sendCreateOrderNotification(UUID storeGuid, GuestOrderDTO orderDTO) {
         StoreNotificationEntity entity = new StoreNotificationEntity();
         entity.setSeatGuid(orderDTO.getSeatGuid());
-        GuestSocketDTO socketDTO = new GuestSocketDTO(WebSocketConstants.GUEST_CREATE_ORDER, entity);
+        GuestStoreNotificationDTO dto = new GuestStoreNotificationDTO(entity);
+        GuestSocketDTO socketDTO = new GuestSocketDTO(WebSocketConstants.GUEST_CREATE_ORDER, dto);
         sendMessage(WebSocketConstants.TOPIC_POS_PREFIX + storeGuid, socketDTO);
     }
 

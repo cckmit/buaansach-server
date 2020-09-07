@@ -14,9 +14,8 @@ import java.util.UUID;
 @Repository
 public interface PosOrderRepository extends OrderRepository {
 
-
     @Query("SELECT orderEntity FROM OrderEntity orderEntity " +
-            "LEFT JOIN vn.com.buaansach.entity.store.SeatEntity seat " +
+            "JOIN vn.com.buaansach.entity.store.SeatEntity seat " +
             "ON orderEntity.guid = seat.orderGuid " +
             "WHERE seat.guid = :seatGuid")
     Optional<OrderEntity> findSeatCurrentOrder(@Param("seatGuid") UUID seatGuid);

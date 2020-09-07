@@ -13,9 +13,9 @@ import java.util.UUID;
 public interface PosStoreRepository extends StoreRepository {
 
     @Query("SELECT store FROM StoreEntity store " +
-            "LEFT JOIN vn.com.buaansach.entity.store.AreaEntity area " +
+            "JOIN vn.com.buaansach.entity.store.AreaEntity area " +
             "ON store.guid = area.storeGuid " +
-            "LEFT JOIN vn.com.buaansach.entity.store.SeatEntity seat " +
+            "JOIN vn.com.buaansach.entity.store.SeatEntity seat " +
             "ON area.guid = seat.areaGuid " +
             "WHERE seat.guid = :seatGuid " +
             "AND store.storeActivated = TRUE ")

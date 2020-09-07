@@ -15,16 +15,16 @@ public interface PosSeatRepository extends SeatRepository {
 
     @Query("SELECT new vn.com.buaansach.web.pos.service.dto.read.PosSeatDTO(seat, area) " +
             "FROM vn.com.buaansach.entity.store.SeatEntity seat " +
-            "LEFT JOIN vn.com.buaansach.entity.store.AreaEntity area " +
+            "JOIN vn.com.buaansach.entity.store.AreaEntity area " +
             "ON seat.areaGuid = area.guid " +
-            "LEFT JOIN vn.com.buaansach.entity.store.StoreEntity store " +
+            "JOIN vn.com.buaansach.entity.store.StoreEntity store " +
             "ON area.storeGuid = store.guid " +
             "WHERE store.guid = :storeGuid")
     List<PosSeatDTO> findListPosSeatDTOByStoreGuid(@Param("storeGuid") UUID storeGuid);
 
     @Query("SELECT new vn.com.buaansach.web.pos.service.dto.read.PosSeatDTO(seat, area) " +
             "FROM vn.com.buaansach.entity.store.SeatEntity seat " +
-            "LEFT JOIN vn.com.buaansach.entity.store.AreaEntity area " +
+            "JOIN vn.com.buaansach.entity.store.AreaEntity area " +
             "ON seat.areaGuid = area.guid " +
             "WHERE seat.guid = :seatGuid")
     Optional<PosSeatDTO> findPosSeatDTOBySeatGuid(@Param("seatGuid") UUID seatGuid);

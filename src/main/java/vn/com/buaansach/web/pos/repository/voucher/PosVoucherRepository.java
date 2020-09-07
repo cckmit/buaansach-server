@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface PosVoucherRepository extends VoucherRepository {
 
     @Query("SELECT ve FROM VoucherEntity ve " +
-            "LEFT JOIN vn.com.buaansach.entity.voucher.VoucherCodeEntity vce " +
+            "JOIN vn.com.buaansach.entity.voucher.VoucherCodeEntity vce " +
             "ON ve.guid = vce.voucherGuid " +
             "WHERE vce.voucherCode = :voucherCode")
     Optional<VoucherEntity> findOneByVoucherCode(@Param("voucherCode") String voucherCode);
