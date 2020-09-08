@@ -38,9 +38,9 @@ public class PosOrderResource {
     }
 
     @GetMapping("/get-seat-order/{seatGuid}")
-    public ResponseEntity<PosOrderDTO> getSeatCurrentOrder(@PathVariable String seatGuid) {
+    public ResponseEntity<PosOrderDTO> getSeatOrder(@PathVariable String seatGuid) {
         log.debug("REST request from user [{}] to get [{}] by seat : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, seatGuid);
-        return ResponseEntity.ok(posOrderService.getSeatCurrentOrder(seatGuid));
+        return ResponseEntity.ok(posOrderService.getSeatOrder(seatGuid));
     }
 
     @PutMapping("/change-seat")

@@ -101,24 +101,31 @@ public class PosStoreNotificationService {
         List<PosStoreNotificationDTO> list = new ArrayList<>();
         if (type == null){
             list = posStoreNotificationRepository
-                    .findByStoreGuidAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(UUID.fromString(storeGuid), startDate)
+                    .findByStoreGuidAndStoreNotificationTypeAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(UUID.fromString(storeGuid),
+                            StoreNotificationType.CALL_WAITER, startDate)
                     .stream().map(PosStoreNotificationDTO::new)
                     .collect(Collectors.toList());
-            list.addAll(posStoreNotificationRepository.findListPosStoreOrderNotificationDTO(UUID.fromString(storeGuid), startDate));
-            list.addAll(posStoreNotificationRepository.findListPosStorePayRequestNotificationDTO(UUID.fromString(storeGuid), startDate));
+            list.addAll(posStoreNotificationRepository
+                    .findListPosStoreOrderNotificationDTO(UUID.fromString(storeGuid), startDate, StoreNotificationType.ORDER_UPDATE));
+            list.addAll(posStoreNotificationRepository
+                    .findListPosStorePayRequestNotificationDTO(UUID.fromString(storeGuid), startDate, StoreNotificationType.PAY_REQUEST));
         } else {
             switch (type) {
                 case CALL_WAITER:
                     list = posStoreNotificationRepository
-                            .findByStoreGuidAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(UUID.fromString(storeGuid), startDate)
+                            .findByStoreGuidAndStoreNotificationTypeAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(UUID.fromString(storeGuid),
+                                    StoreNotificationType.CALL_WAITER,
+                                    startDate)
                             .stream().map(PosStoreNotificationDTO::new)
                             .collect(Collectors.toList());
                     break;
                 case ORDER_UPDATE:
-                    list = posStoreNotificationRepository.findListPosStoreOrderNotificationDTO(UUID.fromString(storeGuid), startDate);
+                    list = posStoreNotificationRepository
+                            .findListPosStoreOrderNotificationDTO(UUID.fromString(storeGuid), startDate, StoreNotificationType.ORDER_UPDATE);
                     break;
                 case PAY_REQUEST:
-                    list = posStoreNotificationRepository.findListPosStorePayRequestNotificationDTO(UUID.fromString(storeGuid), startDate);
+                    list = posStoreNotificationRepository
+                            .findListPosStorePayRequestNotificationDTO(UUID.fromString(storeGuid), startDate, StoreNotificationType.PAY_REQUEST);
                     break;
             }
         }

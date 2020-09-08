@@ -15,8 +15,6 @@ import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
-import vn.com.buaansach.web.shared.service.PaymentService;
-import vn.com.buaansach.web.shared.service.PriceService;
 import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
 import vn.com.buaansach.web.pos.repository.order.PosOrderProductRepository;
@@ -34,6 +32,8 @@ import vn.com.buaansach.web.pos.service.mapper.PosOrderProductMapper;
 import vn.com.buaansach.web.pos.util.TimelineUtil;
 import vn.com.buaansach.web.pos.websocket.PosSocketService;
 import vn.com.buaansach.web.pos.websocket.dto.PosSocketDTO;
+import vn.com.buaansach.web.shared.service.PaymentService;
+import vn.com.buaansach.web.shared.service.PriceService;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
@@ -162,16 +162,19 @@ public class PosOrderService {
         return result;
     }
 
-    public PosOrderDTO getSeatCurrentOrder(String seatGuid) {
+    public PosOrderDTO getSeatOrder(String seatGuid) {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(UUID.fromString(seatGuid))
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
+        /* if order not found, return an empty object so that api wont catch an error */
         OrderEntity orderEntity = posOrderRepository.findSeatCurrentOrder(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
+                .orElse(new OrderEntity());
         PosOrderDTO result = new PosOrderDTO(orderEntity);
-        result.setListOrderProduct(posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(orderEntity.getGuid()));
+        if (orderEntity.getGuid() != null) {
+            result.setListOrderProduct(posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(orderEntity.getGuid()));
+        }
         return result;
     }
 

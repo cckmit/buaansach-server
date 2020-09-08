@@ -24,7 +24,7 @@ public class PosSocketService {
     }
 
     public void sendUpdateOrderNotification(PosStoreNotificationDTO dto) {
-        PosSocketDTO socketDTO = new PosSocketDTO(WebSocketConstants.GUEST_UPDATE_ORDER, dto);
+        PosSocketDTO socketDTO = new PosSocketDTO(WebSocketConstants.POS_UPDATE_ORDER, dto);
         sendMessage(WebSocketConstants.TOPIC_POS_PREFIX + dto.getStoreGuid(), socketDTO);
     }
 
