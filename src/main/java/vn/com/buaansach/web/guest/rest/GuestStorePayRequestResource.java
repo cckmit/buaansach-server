@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.guest.service.GuestStorePayRequestNotificationService;
-import vn.com.buaansach.web.guest.service.dto.readwrite.GuestStorePayRequestDTO;
+import vn.com.buaansach.web.guest.service.dto.write.GuestStorePayRequestDTO;
 
 @RestController
 @RequestMapping("/api/v1/guest/store-pay-request")

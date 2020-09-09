@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface StorePayRequestNotificationRepository extends JpaRepository<StorePayRequestNotificationEntity, Long> {
-    Optional<StorePayRequestNotificationEntity> findOneByOrderGuid(UUID orderGuid);
+    Optional<StorePayRequestNotificationEntity> findOneByStoreNotificationGuid(UUID guid);
 }

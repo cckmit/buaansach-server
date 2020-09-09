@@ -26,6 +26,7 @@ public class GuestStoreNotificationDTO extends AuditDTO {
     private UUID storeGuid;
     private UUID areaGuid;
     private UUID seatGuid;
+    private UUID orderGuid;
 
     private StoreOrderNotificationEntity orderNotification;
     private StorePayRequestNotificationEntity payRequestNotification;
@@ -59,6 +60,7 @@ public class GuestStoreNotificationDTO extends AuditDTO {
         this.storeGuid = entity.getStoreGuid();
         this.areaGuid = entity.getAreaGuid();
         this.seatGuid = entity.getSeatGuid();
+        this.orderGuid = entity.getOrderGuid();
 
         this.createdBy = entity.getCreatedBy();
         this.createdDate = entity.getCreatedDate();

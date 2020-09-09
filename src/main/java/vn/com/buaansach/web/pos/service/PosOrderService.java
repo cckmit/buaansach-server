@@ -6,6 +6,7 @@ import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.OrderType;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
+import vn.com.buaansach.entity.notification.StoreNotificationEntity;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.order.PaymentEntity;
@@ -17,6 +18,7 @@ import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
+import vn.com.buaansach.web.pos.repository.notification.PosStoreNotificationRepository;
 import vn.com.buaansach.web.pos.repository.order.PosOrderProductRepository;
 import vn.com.buaansach.web.pos.repository.order.PosOrderRepository;
 import vn.com.buaansach.web.pos.repository.store.PosAreaRepository;
@@ -39,6 +41,7 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -59,6 +62,7 @@ public class PosOrderService {
     private final PosOrderProductMapper posOrderProductMapper;
     private final PriceService priceService;
     private final PaymentService paymentService;
+    private final PosStoreNotificationRepository posStoreNotificationRepository;
 
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
@@ -342,6 +346,13 @@ public class PosOrderService {
         posOrderRepository.save(orderEntity);
 
         /* Cập nhật lại vị trí cho các thông báo gọi món */
+        List<StoreNotificationEntity> listNotification = posStoreNotificationRepository.findByOrderGuid(orderEntity.getGuid());
+        listNotification = listNotification.stream().peek(item -> {
+            item.setSeatGuid(newSeat.getGuid());
+            item.setAreaGuid(newSeat.getAreaGuid());
+            item.setStoreGuid(storeNewSeat.getGuid());
+        }).collect(Collectors.toList());
+        posStoreNotificationRepository.saveAll(listNotification);
 
         /* Cập nhật trạng thái cho vị trí mới */
         newSeat.setSeatStatus(SeatStatus.NON_EMPTY);

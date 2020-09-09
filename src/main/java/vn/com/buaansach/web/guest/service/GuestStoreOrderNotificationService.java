@@ -30,6 +30,7 @@ public class GuestStoreOrderNotificationService {
         notificationEntity.setStoreGuid(storeGuid);
         notificationEntity.setAreaGuid(areaGuid);
         notificationEntity.setSeatGuid(seatGuid);
+        notificationEntity.setOrderGuid(orderGuid);
         notificationEntity = guestStoreNotificationRepository.save(notificationEntity);
 
         StoreOrderNotificationEntity orderNotification = new StoreOrderNotificationEntity();
@@ -37,7 +38,6 @@ public class GuestStoreOrderNotificationService {
         orderNotification.setOrderProductGroup(orderProductGroup);
         orderNotification.setNumberOfProduct(numberOfProduct);
         orderNotification.setNumberOfProduct(numberOfProduct);
-        orderNotification.setOrderGuid(orderGuid);
         orderNotification.setStoreNotificationGuid(notificationGuid);
         orderNotification = guestStoreOrderNotificationRepository.save(orderNotification);
 

@@ -12,17 +12,18 @@ import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
-import vn.com.buaansach.web.shared.service.PaymentService;
 import vn.com.buaansach.web.guest.repository.notification.GuestStoreNotificationRepository;
 import vn.com.buaansach.web.guest.repository.notification.GuestStorePayRequestNotificationRepository;
 import vn.com.buaansach.web.guest.repository.order.GuestOrderRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestSeatRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestStoreRepository;
 import vn.com.buaansach.web.guest.service.dto.read.GuestStoreNotificationDTO;
-import vn.com.buaansach.web.guest.service.dto.readwrite.GuestStorePayRequestDTO;
+import vn.com.buaansach.web.guest.service.dto.write.GuestStorePayRequestDTO;
 import vn.com.buaansach.web.guest.websocket.GuestSocketService;
+import vn.com.buaansach.web.shared.service.PaymentService;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -47,9 +48,9 @@ public class GuestStorePayRequestNotificationService {
         StoreEntity storeEntity = guestStoreRepository.findOneBySeatGuid(seatEntity.getGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
-
-        if (guestStorePayRequestNotificationRepository.findOneByOrderGuid(orderEntity.getGuid()).isPresent())
-            throw new BadRequestException(ErrorCode.STORE_PAY_REQUEST_EXIST);
+        List<StoreNotificationEntity> list = guestStoreNotificationRepository
+                .findByOrderGuidAndStoreNotificationType(orderEntity.getGuid(), StoreNotificationType.PAY_REQUEST);
+        if (!list.isEmpty()) throw new BadRequestException(ErrorCode.STORE_PAY_REQUEST_EXIST);
 
         long payAmount = paymentService.calculatePayAmount(orderEntity);
         if (payAmount > payload.getStorePayRequestAmount())
@@ -67,6 +68,7 @@ public class GuestStorePayRequestNotificationService {
         notificationEntity.setStoreGuid(storeEntity.getGuid());
         notificationEntity.setAreaGuid(seatEntity.getAreaGuid());
         notificationEntity.setSeatGuid(seatEntity.getGuid());
+        notificationEntity.setOrderGuid(orderEntity.getGuid());
         notificationEntity = guestStoreNotificationRepository.save(notificationEntity);
 
         StorePayRequestNotificationEntity payRequestNotification = new StorePayRequestNotificationEntity();
@@ -75,16 +77,21 @@ public class GuestStorePayRequestNotificationService {
         payRequestNotification.setNumberOfExtraSeat(payload.getNumberOfExtraSeat());
         payRequestNotification.setListExtraSeat(payload.getListExtraSeat());
         payRequestNotification.setListExtraOrder(payload.getListExtraOrder());
-        payRequestNotification.setOrderGuid(orderEntity.getGuid());
         payRequestNotification.setStoreNotificationGuid(notificationGuid);
         payRequestNotification = guestStorePayRequestNotificationRepository.save(payRequestNotification);
 
         guestSocketService.sendPayRequestNotification(new GuestStoreNotificationDTO(notificationEntity, payRequestNotification));
-        return new GuestStorePayRequestDTO(payRequestNotification);
+        return new GuestStorePayRequestDTO(notificationEntity, payRequestNotification);
     }
 
     public GuestStorePayRequestDTO getByOrderGuid(String orderGuid) {
-        return new GuestStorePayRequestDTO(guestStorePayRequestNotificationRepository.findOneByOrderGuid(UUID.fromString(orderGuid))
-                .orElse(new StorePayRequestNotificationEntity()));
+        List<StoreNotificationEntity> list = guestStoreNotificationRepository
+                .findByOrderGuidAndStoreNotificationType(UUID.fromString(orderGuid), StoreNotificationType.PAY_REQUEST);
+        StoreNotificationEntity storeNotificationEntity = new StoreNotificationEntity();
+        if (list.size() != 0) storeNotificationEntity = list.get(0);
+        StorePayRequestNotificationEntity payRequestNotificationEntity = guestStorePayRequestNotificationRepository
+                .findOneByStoreNotificationGuid(storeNotificationEntity.getGuid())
+                .orElse(new StorePayRequestNotificationEntity());
+        return new GuestStorePayRequestDTO(storeNotificationEntity, payRequestNotificationEntity);
     }
 }

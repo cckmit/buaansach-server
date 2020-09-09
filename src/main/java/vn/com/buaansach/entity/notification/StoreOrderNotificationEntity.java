@@ -39,9 +39,6 @@ public class StoreOrderNotificationEntity implements Serializable {
      * FK
      */
 
-    @Column(name = "order_guid")
-    private UUID orderGuid;
-
     @Column(name = "store_notification_guid")
     private UUID storeNotificationGuid;
 }

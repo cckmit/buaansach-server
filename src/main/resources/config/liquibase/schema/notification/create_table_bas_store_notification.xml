@@ -25,15 +25,10 @@
             <column name="first_hidden_by" type="varchar(50)"/>
             <column name="first_hidden_date" type="timestamp"/>
 
-            <column name="store_guid" type="binary(16)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="area_guid" type="binary(16)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="seat_guid" type="binary(16)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="store_guid" type="binary(16)"/>
+            <column name="area_guid" type="binary(16)"/>
+            <column name="seat_guid" type="binary(16)"/>
+            <column name="order_guid" type="binary(16)"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

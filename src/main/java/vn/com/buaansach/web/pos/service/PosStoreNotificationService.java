@@ -62,6 +62,7 @@ public class PosStoreNotificationService {
         notificationEntity.setStoreGuid(storeGuid);
         notificationEntity.setAreaGuid(areaGuid);
         notificationEntity.setSeatGuid(seatGuid);
+        notificationEntity.setOrderGuid(orderGuid);
         notificationEntity = posStoreNotificationRepository.save(notificationEntity);
 
         StoreOrderNotificationEntity orderNotification = new StoreOrderNotificationEntity();
@@ -69,7 +70,6 @@ public class PosStoreNotificationService {
         orderNotification.setOrderProductGroup(orderProductGroup);
         orderNotification.setNumberOfProduct(numberOfProduct);
         orderNotification.setNumberOfProduct(numberOfProduct);
-        orderNotification.setOrderGuid(orderGuid);
         orderNotification.setStoreNotificationGuid(notificationGuid);
         orderNotification = posStoreOrderNotificationRepository.save(orderNotification);
 
@@ -99,7 +99,7 @@ public class PosStoreNotificationService {
     public List<PosStoreNotificationDTO> getListStoreNotification(String storeGuid, Instant startDate, StoreNotificationType type, Boolean hidden) {
         posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
         List<PosStoreNotificationDTO> list = new ArrayList<>();
-        if (type == null){
+        if (type == null) {
             list = posStoreNotificationRepository
                     .findByStoreGuidAndStoreNotificationTypeAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(UUID.fromString(storeGuid),
                             StoreNotificationType.CALL_WAITER, startDate)
@@ -144,7 +144,7 @@ public class PosStoreNotificationService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOTIFICATION_NOT_FOUND));
         posStoreSecurity.blockAccessIfNotInStore(entity.getStoreGuid());
         entity.setStoreNotificationStatus(payload.getStoreNotificationStatus());
-        if (entity.getFirstSeenBy() == null && payload.getStoreNotificationStatus().equals(StoreNotificationStatus.SEEN)){
+        if (entity.getFirstSeenBy() == null && payload.getStoreNotificationStatus().equals(StoreNotificationStatus.SEEN)) {
             entity.setFirstSeenBy(currentUser);
             entity.setFirstSeenDate(Instant.now());
         }

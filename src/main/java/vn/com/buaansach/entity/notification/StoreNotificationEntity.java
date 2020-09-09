@@ -64,4 +64,7 @@ public class StoreNotificationEntity extends AbstractAuditingEntity implements S
 
     @Column(name = "seat_guid")
     private UUID seatGuid;
+
+    @Column(name = "order_guid")
+    private UUID orderGuid;
 }
