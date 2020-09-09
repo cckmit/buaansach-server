@@ -13,7 +13,6 @@ import java.util.UUID;
 @Table(name = "bas_sale_time_condition")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class SaleTimeConditionEntity extends AbstractAuditingEntity implements Serializable {

@@ -3,7 +3,6 @@ package vn.com.buaansach.entity.sale;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
-import vn.com.buaansach.entity.enumeration.StoreSaleType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -26,10 +25,6 @@ public class StoreSaleEntity extends AbstractAuditingEntity implements Serializa
 
     @Column(unique = true)
     private UUID guid;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "store_sale_type")
-    private StoreSaleType storeSaleType;
 
     @Column(name = "store_sale_activated")
     private boolean storeSaleActivated;

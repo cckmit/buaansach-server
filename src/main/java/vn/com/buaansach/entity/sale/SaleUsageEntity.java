@@ -27,6 +27,8 @@ public class SaleUsageEntity extends AbstractAuditingEntity implements Serializa
     /**
      * FK
      * */
+    @Column(name = "sale_guid")
+    private UUID saleGuid;
 
     @Column(name = "store_guid")
     private UUID storeGuid;

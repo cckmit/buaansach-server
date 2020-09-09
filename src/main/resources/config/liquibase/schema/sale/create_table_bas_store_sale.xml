@@ -12,9 +12,6 @@
             <column name="guid" type="binary(16)">
                 <constraints unique="true" nullable="false" uniqueConstraintName="ux_store_sale_guid"/>
             </column>
-            <column name="store_sale_type" type="varchar(30)">
-                <constraints nullable="false"/>
-            </column>
             <column name="store_sale_activated" type="boolean"/>
 
             <column name="store_guid" type="binary(16)"/>
