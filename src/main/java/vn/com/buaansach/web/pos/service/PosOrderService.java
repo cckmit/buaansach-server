@@ -63,6 +63,7 @@ public class PosOrderService {
     private final PriceService priceService;
     private final PaymentService paymentService;
     private final PosStoreNotificationRepository posStoreNotificationRepository;
+    private final PosSaleService posSaleService;
 
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
@@ -110,7 +111,14 @@ public class PosOrderService {
         seatEntity.setOrderGuid(orderGuid);
         posSeatRepository.save(seatEntity);
 
-        return new PosOrderDTO(posOrderRepository.save(orderEntity));
+        orderEntity = posOrderRepository.save(orderEntity);
+
+        /* Tự động apply sale nếu có */
+        if (storeEntity.getStorePrimarySaleGuid() != null){
+            orderEntity = posSaleService.autoApplySale(orderEntity, storeEntity.getStorePrimarySaleGuid(), storeEntity.getGuid());
+        }
+
+        return new PosOrderDTO(orderEntity);
     }
 
     /**

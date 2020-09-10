@@ -10,7 +10,6 @@ import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminSaleService;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminSaleDTO;
-import vn.com.buaansach.web.admin.service.dto.write.AdminSaleApplyDTO;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -59,13 +58,6 @@ public class AdminSaleResource {
     public ResponseEntity<Void> deleteSale(@PathVariable UUID saleGuid) {
         log.debug("REST request from user [{}] to delete [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, saleGuid);
         adminSaleService.deleteSale(saleGuid);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/apply")
-    public ResponseEntity<Void> applySale(@RequestBody AdminSaleApplyDTO payload){
-        log.debug("REST request from user [{}] to apply [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
-        adminSaleService.applySale(payload);
         return ResponseEntity.noContent().build();
     }
 
