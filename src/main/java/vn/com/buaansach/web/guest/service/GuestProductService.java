@@ -15,6 +15,9 @@ public class GuestProductService {
     private final GuestProductRepository guestProductRepository;
 
     public List<GuestProductDTO> getAllProduct() {
-        return guestProductRepository.findAll().stream().filter(item -> !item.getProductStatus().equals(ProductStatus.STOP_TRADING)).map(GuestProductDTO::new).collect(Collectors.toList());
+        return guestProductRepository.findAll().stream()
+                .filter(item -> !item.getProductStatus().equals(ProductStatus.STOP_TRADING) && item.isProductActivated())
+                .map(GuestProductDTO::new)
+                .collect(Collectors.toList());
     }
 }

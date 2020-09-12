@@ -35,7 +35,7 @@ public class GuestCategoryService {
         StoreEntity storeEntity = guestStoreRepository.findOneBySeatGuid(UUID.fromString(seatGuid))
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
-        List<CategoryEntity> categories = guestCategoryRepository.findAllCategoryOrderByPositionAsc();
+        List<CategoryEntity> categories = guestCategoryRepository.findAllActiveCategoryOrderByPositionAsc();
         List<GuestStoreCategoryDTO> result = new ArrayList<>();
         categories.forEach(category -> {
             GuestStoreCategoryDTO dto = new GuestStoreCategoryDTO(category);
@@ -48,7 +48,7 @@ public class GuestCategoryService {
     }
 
     public List<GuestCategoryDTO> getListCategoryDTO() {
-        List<CategoryEntity> categories = guestCategoryRepository.findAllCategoryOrderByPositionAsc();
+        List<CategoryEntity> categories = guestCategoryRepository.findAllActiveCategoryOrderByPositionAsc();
         List<GuestCategoryDTO> result = new ArrayList<>();
         categories.forEach(category -> {
             GuestCategoryDTO dto = new GuestCategoryDTO(category);

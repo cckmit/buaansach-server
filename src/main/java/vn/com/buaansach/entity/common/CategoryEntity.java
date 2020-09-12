@@ -54,6 +54,7 @@ public class CategoryEntity extends AbstractAuditingEntity implements Serializab
     @Column(name = "category_position")
     private int categoryPosition;
 
+    /* Ẩn đối với trang của khách, vẫn hiện trên trang POS */
     @Column(name = "category_activated")
     private boolean categoryActivated;
 }

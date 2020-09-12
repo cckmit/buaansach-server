@@ -8,6 +8,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.entity.common.FileEntity;
+import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.shared.repository.common.FileRepository;
@@ -71,7 +72,7 @@ public class FileService {
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
             return new InputStreamResource(input);
         }
-        throw new NotFoundException("File not found with guid: " + guid);
+        throw new NotFoundException(ErrorCode.FILE_NOT_FOUND);
     }
 
     public void deleteByUrl(String fileUrl) {

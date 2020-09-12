@@ -10,7 +10,6 @@ import java.util.UUID;
 @Data
 public class GuestOrderUpdateDTO {
     private UUID storeGuid;
-    private UUID areaGuid;
     private UUID orderGuid;
     private List<GuestOrderProductDTO> listOrderProduct = new ArrayList<>();
 }

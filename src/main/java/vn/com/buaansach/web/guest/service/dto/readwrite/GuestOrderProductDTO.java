@@ -35,7 +35,9 @@ public class GuestOrderProductDTO extends AuditDTO {
     /* Additional Info */
     private String productCode;
     private String productName;
+    private String productNameEng;
     private String productUnit;
+    private String productUnitEng;
     private String productImageUrl;
     private String productThumbnailUrl;
 
@@ -47,7 +49,9 @@ public class GuestOrderProductDTO extends AuditDTO {
         assignProperty(orderProductEntity);
         this.productCode = productEntity.getProductCode();
         this.productName = productEntity.getProductName();
+        this.productNameEng = productEntity.getProductNameEng();
         this.productUnit = productEntity.getProductUnit();
+        this.productUnitEng = productEntity.getProductUnitEng();
         this.productImageUrl = productEntity.getProductImageUrl();
         this.productThumbnailUrl = productEntity.getProductThumbnailUrl();
     }

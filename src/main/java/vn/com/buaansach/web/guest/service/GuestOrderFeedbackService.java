@@ -2,6 +2,7 @@ package vn.com.buaansach.web.guest.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.entity.enumeration.OrderFeedbackAction;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderFeedbackEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
@@ -13,6 +14,7 @@ import vn.com.buaansach.web.guest.repository.order.GuestOrderRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestStoreRepository;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderFeedbackDTO;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -29,14 +31,17 @@ public class GuestOrderFeedbackService {
         StoreEntity storeEntity = guestStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
-        if (guestOrderFeedbackRepository.findOneByOrderGuid(payload.getOrderGuid()).isPresent())
-            throw new BadRequestException(ErrorCode.ORDER_FEEDBACK_EXIST);
-
-        OrderFeedbackEntity orderFeedbackEntity = new OrderFeedbackEntity();
-        orderFeedbackEntity.setGuid(UUID.randomUUID());
-        orderFeedbackEntity.setOrderGuid(payload.getOrderGuid());
-        orderFeedbackEntity.setStoreGuid(storeEntity.getGuid());
-        orderFeedbackEntity.setOrderFeedbackAction(payload.getOrderFeedbackAction());
+        OrderFeedbackEntity orderFeedbackEntity;
+        Optional<OrderFeedbackEntity> optional = guestOrderFeedbackRepository.findOneByOrderGuid(payload.getOrderGuid());
+        if (optional.isPresent()) {
+            orderFeedbackEntity = optional.get();
+        } else {
+            orderFeedbackEntity = new OrderFeedbackEntity();
+            orderFeedbackEntity.setGuid(UUID.randomUUID());
+            orderFeedbackEntity.setOrderGuid(payload.getOrderGuid());
+            orderFeedbackEntity.setStoreGuid(storeEntity.getGuid());
+            orderFeedbackEntity.setOrderFeedbackAction(OrderFeedbackAction.SUBMIT);
+        }
         orderFeedbackEntity.setProductQualityRating(payload.getProductQualityRating());
         orderFeedbackEntity.setServiceQualityRating(payload.getServiceQualityRating());
         orderFeedbackEntity.setOrderFeedbackContent(payload.getOrderFeedbackContent());
@@ -45,7 +50,7 @@ public class GuestOrderFeedbackService {
 
     public GuestOrderFeedbackDTO getFeedback(String orderGuid) {
         OrderFeedbackEntity orderFeedbackEntity = guestOrderFeedbackRepository.findOneByOrderGuid(UUID.fromString(orderGuid))
-                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_FEEDBACK_NOT_FOUND));
+                .orElse(new OrderFeedbackEntity());
         return new GuestOrderFeedbackDTO(orderFeedbackEntity);
     }
 }

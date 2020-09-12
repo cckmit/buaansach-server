@@ -6,6 +6,7 @@ import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
 import vn.com.buaansach.entity.enumeration.SeatStatus;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
+import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.web.pos.repository.store.PosSeatRepository;
@@ -28,7 +29,7 @@ public class PosSeatService {
 
     public PosSeatDTO getPosSeatDTO(String seatGuid) {
         return posSeatRepository.findPosSeatDTOBySeatGuid(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new NotFoundException("pos@seatNotFound@" + seatGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
     }
 
     /* Must have an ID */
@@ -41,7 +42,7 @@ public class PosSeatService {
 
     public void resetSeat(UUID seatGuid) {
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(seatGuid)
-                .orElseThrow(() -> new NotFoundException("pos@seatNotFound@" + seatGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
         seatEntity.setSeatStatus(SeatStatus.EMPTY);
         seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
         seatEntity.setOrderGuid(null);
@@ -50,14 +51,14 @@ public class PosSeatService {
 
     public void makeSeatServiceFinished(UUID seatGuid) {
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(seatGuid)
-                .orElseThrow(() -> new NotFoundException("pos@seatNotFound@" + seatGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
         seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
         posSeatRepository.save(seatEntity);
     }
 
     public void makeSeatServiceUnfinished(UUID seatGuid) {
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(seatGuid)
-                .orElseThrow(() -> new NotFoundException("pos@seatNotFound@" + seatGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
         seatEntity.setSeatServiceStatus(SeatServiceStatus.UNFINISHED);
         posSeatRepository.save(seatEntity);
     }
@@ -69,12 +70,12 @@ public class PosSeatService {
 
     public void toggleLock(String seatGuid) {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new NotFoundException("pos@storeNotFoundWithSeat@" + seatGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new NotFoundException("pos@seatNotFound@" + seatGuid));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
         seatEntity.setSeatLocked(!seatEntity.isSeatLocked());
         posSeatRepository.save(seatEntity);
 

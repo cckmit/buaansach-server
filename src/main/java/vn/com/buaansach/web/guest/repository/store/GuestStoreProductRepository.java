@@ -21,6 +21,7 @@ public interface GuestStoreProductRepository extends StoreProductRepository {
             "WHERE storeProduct.storeGuid = :storeGuid " +
             "AND productCategory.categoryGuid = :categoryGuid " +
             "AND storeProduct.storeProductStatus <> :storeProductStatus " +
+            "AND storeProduct.storeProductHidden = FALSE " +
             "ORDER BY product.productPosition ASC")
     List<GuestStoreProductDTO> findListGuestStoreProductByStoreAndCategoryExceptStatus(@Param("storeGuid") UUID storeGuid,
                                                                                        @Param("categoryGuid") UUID categoryGuid,

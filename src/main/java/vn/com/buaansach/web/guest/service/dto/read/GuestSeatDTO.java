@@ -12,14 +12,16 @@ import java.util.UUID;
 
 @Data
 public class GuestSeatDTO {
-    private UUID seatGuid;
+    private UUID guid;
     private String seatName;
+    private String seatNameEng;
     private SeatStatus seatStatus;
     private SeatServiceStatus seatServiceStatus;
     private boolean seatLocked;
 
     private UUID areaGuid;
     private String areaName;
+    private String areaNameEng;
     private boolean areaActivated;
 
     private UUID storeGuid;
@@ -30,14 +32,16 @@ public class GuestSeatDTO {
     }
 
     public GuestSeatDTO(StoreEntity storeEntity, AreaEntity areaEntity, SeatEntity seatEntity) {
-        this.seatGuid = seatEntity.getGuid();
+        this.guid = seatEntity.getGuid();
         this.seatName = seatEntity.getSeatName();
+        this.seatNameEng = seatEntity.getSeatNameEng();
         this.seatStatus = seatEntity.getSeatStatus();
         this.seatServiceStatus = seatEntity.getSeatServiceStatus();
         this.seatLocked = seatEntity.isSeatLocked();
 
         this.areaGuid = areaEntity.getGuid();
         this.areaName = areaEntity.getAreaName();
+        this.areaNameEng = areaEntity.getAreaNameEng();
         this.areaActivated = areaEntity.isAreaActivated();
 
         this.storeGuid = storeEntity.getGuid();

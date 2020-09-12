@@ -10,11 +10,13 @@ import java.util.UUID;
 public class GuestVoucherDTO {
     private UUID guid;
     private String voucherName;
+    private String voucherNameEng;
     private String voucherDescription;
+    private String voucherDescriptionEng;
     private String voucherImageUrl;
     private int voucherDiscount;
     private DiscountType voucherDiscountType;
-    private boolean voucherEnable;
+    private boolean voucherActivated;
 
     public GuestVoucherDTO() {
     }
@@ -22,10 +24,12 @@ public class GuestVoucherDTO {
     public GuestVoucherDTO(VoucherEntity voucherEntity) {
         this.guid = voucherEntity.getGuid();
         this.voucherName = voucherEntity.getVoucherName();
+        this.voucherNameEng = voucherEntity.getVoucherNameEng();
         this.voucherDescription = voucherEntity.getVoucherDescription();
+        this.voucherDescriptionEng = voucherEntity.getVoucherDescriptionEng();
         this.voucherImageUrl = voucherEntity.getVoucherImageUrl();
         this.voucherDiscount = voucherEntity.getVoucherDiscount();
         this.voucherDiscountType = voucherEntity.getVoucherDiscountType();
-//        this.voucherEnable = voucherEntity.isVoucherEnable();
+        this.voucherActivated = voucherEntity.isVoucherActivated();
     }
 }

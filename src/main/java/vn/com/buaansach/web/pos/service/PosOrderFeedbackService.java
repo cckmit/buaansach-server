@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.order.OrderFeedbackEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
+import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.pos.repository.order.PosOrderFeedbackRepository;
 import vn.com.buaansach.web.pos.repository.order.PosOrderRepository;
@@ -24,10 +25,10 @@ public class PosOrderFeedbackService {
 
     public void sendFeedback(PosOrderFeedbackDTO payload) {
         posOrderRepository.findOneByGuid(payload.getOrderGuid())
-                .orElseThrow(() -> new NotFoundException("pos@orderNotFound@" + payload.getOrderGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
 
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(payload.getStoreGuid())
-                .orElseThrow(() -> new NotFoundException("pos@storeNotFound@" + payload.getStoreGuid()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 

@@ -11,6 +11,7 @@ import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
+import vn.com.buaansach.web.pos.service.PosSaleService;
 import vn.com.buaansach.web.shared.service.PriceService;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
 import vn.com.buaansach.web.guest.repository.order.GuestOrderProductRepository;
@@ -50,6 +51,7 @@ public class GuestOrderService {
     private final GuestStoreOrderNotificationService guestStoreOrderNotificationService;
     private final PriceService priceService;
     private final GuestOrderProductMapper guestOrderProductMapper;
+    private final PosSaleService posSaleService;
 
     public GuestOrderDTO getOrder(String orderGuid) {
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
@@ -108,8 +110,13 @@ public class GuestOrderService {
         seatEntity.setOrderGuid(orderGuid);
         guestSeatRepository.save(seatEntity);
 
+        orderEntity = guestOrderRepository.save(orderEntity);
+        /* Tự động apply sale nếu có */
+        if (storeEntity.getStorePrimarySaleGuid() != null){
+            orderEntity = posSaleService.autoApplySale(orderEntity, storeEntity.getStorePrimarySaleGuid(), storeEntity.getGuid());
+        }
 
-        GuestOrderDTO result = new GuestOrderDTO(guestOrderRepository.save(orderEntity));
+        GuestOrderDTO result = new GuestOrderDTO(orderEntity);
         /* make sure order saved then send notification */
 
         guestSocketService.sendCreateOrderNotification(payload.getStoreGuid(), result);
@@ -200,5 +207,14 @@ public class GuestOrderService {
         guestSocketService.sendUpdateOrderNotification(notificationDTO);
 
         return result;
+    }
+
+    public void updateOrderPhone(OrderEntity entity, String currentUser){
+        OrderEntity update = guestOrderRepository.findOneByGuid(entity.getGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
+        String newTimeline = TimelineUtil.appendCustomOrderStatus(update.getOrderStatusTimeline(), "CHANGE_PHONE", currentUser, entity.getOrderCustomerPhone());
+        update.setOrderStatusTimeline(newTimeline);
+        update.setOrderCustomerPhone(entity.getOrderCustomerPhone());
+        guestOrderRepository.save(update);
     }
 }

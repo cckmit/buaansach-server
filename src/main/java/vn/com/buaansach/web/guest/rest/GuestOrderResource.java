@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.guest.service.GuestOrderService;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderDTO;
@@ -39,6 +40,14 @@ public class GuestOrderResource {
         String currentUser = SecurityUtils.getCurrentUserLogin();
         log.debug("REST request from user [{}] to update [{}] : [{}]", currentUser, ENTITY_NAME, payload);
         return ResponseEntity.ok(guestOrderService.updateOrder(payload, currentUser));
+    }
+
+    @PutMapping("/update-phone")
+    public ResponseEntity<Void> updateOrderPhone(@RequestBody OrderEntity payload) {
+        String currentUser = SecurityUtils.getCurrentUserLogin();
+        log.debug("REST request from user [{}] to update phone [{}] : [{}]", currentUser, ENTITY_NAME, payload);
+        guestOrderService.updateOrderPhone(payload, currentUser);
+        return ResponseEntity.noContent().build();
     }
 
 }

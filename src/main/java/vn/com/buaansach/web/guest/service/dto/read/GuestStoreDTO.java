@@ -19,6 +19,7 @@ public class GuestStoreDTO {
     private String storeTaxCode;
     private String storeBusinessHours;
     private boolean storeActivated;
+    private UUID storePrimarySaleGuid;
 
     public GuestStoreDTO() {
     }
@@ -35,5 +36,6 @@ public class GuestStoreDTO {
         this.storeTaxCode = storeEntity.getStoreTaxCode();
         this.storeBusinessHours = storeEntity.getStoreBusinessHours();
         this.storeActivated = storeEntity.isStoreActivated();
+        this.storePrimarySaleGuid = storeEntity.getStorePrimarySaleGuid();
     }
 }

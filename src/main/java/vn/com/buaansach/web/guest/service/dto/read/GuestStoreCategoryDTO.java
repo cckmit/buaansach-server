@@ -12,7 +12,9 @@ import java.util.UUID;
 public class GuestStoreCategoryDTO {
     private UUID guid;
     private String categoryName;
+    private String categoryNameEng;
     private String categoryDescription;
+    private String categoryDescriptionEng;
     private String categoryImageUrl;
     private int categoryPosition;
 
@@ -21,7 +23,9 @@ public class GuestStoreCategoryDTO {
     public GuestStoreCategoryDTO(CategoryEntity categoryEntity) {
         this.guid = categoryEntity.getGuid();
         this.categoryName = categoryEntity.getCategoryName();
+        this.categoryNameEng = categoryEntity.getCategoryNameEng();
         this.categoryDescription = categoryEntity.getCategoryDescription();
+        this.categoryDescriptionEng = categoryEntity.getCategoryDescriptionEng();
         this.categoryImageUrl = categoryEntity.getCategoryImageUrl();
         this.categoryPosition = categoryEntity.getCategoryPosition();
     }

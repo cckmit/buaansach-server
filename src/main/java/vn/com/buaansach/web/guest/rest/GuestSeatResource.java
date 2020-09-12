@@ -36,10 +36,4 @@ public class GuestSeatResource {
         log.debug("REST request from user [{}] to check [{}] with list order guid: [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(guestSeatService.checkOrderSeat(payload));
     }
-//
-//    @PutMapping("/change-seat")
-//    public ResponseEntity<Void> changeSeat() {
-//        return null;
-//    }
-
 }

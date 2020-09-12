@@ -18,6 +18,7 @@ public interface GuestProductRepository extends ProductRepository {
             "ON productCategory.productGuid = product.guid " +
             "WHERE productCategory.categoryGuid = :categoryGuid " +
             "AND product.productStatus <> :productStatus " +
+            "AND product.productActivated = TRUE " +
             "ORDER BY product.productPosition ASC")
     List<ProductEntity> findByCategoryGuidExceptStatus(@Param("categoryGuid") UUID categoryGuid, @Param("productStatus") ProductStatus productStatus);
 }

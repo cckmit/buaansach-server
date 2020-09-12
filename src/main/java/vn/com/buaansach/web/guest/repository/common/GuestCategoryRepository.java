@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface GuestCategoryRepository extends CategoryRepository {
-    @Query("SELECT ce FROM CategoryEntity ce ORDER BY ce.categoryPosition ASC")
-    List<CategoryEntity> findAllCategoryOrderByPositionAsc();
+    @Query("SELECT ce FROM CategoryEntity ce WHERE ce.categoryActivated = TRUE ORDER BY ce.categoryPosition ASC")
+    List<CategoryEntity> findAllActiveCategoryOrderByPositionAsc();
 }

@@ -10,6 +10,5 @@ import java.util.UUID;
 @Data
 public class GuestCreateOrderDTO {
     private UUID storeGuid;
-    private UUID areaGuid;
     private UUID seatGuid;
 }
