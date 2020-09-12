@@ -12,6 +12,7 @@ public class GuestStoreDTO {
     private String storeCode;
     private String storeName;
     private String storeAddress;
+    private String storeImageUrl;
     private StoreStatus storeStatus;
     private String storeOwnerName;
     private String storeOwnerPhone;
@@ -29,6 +30,7 @@ public class GuestStoreDTO {
         this.storeCode = storeEntity.getStoreCode();
         this.storeName = storeEntity.getStoreName();
         this.storeAddress = storeEntity.getStoreAddress();
+        this.storeImageUrl = storeEntity.getStoreImageUrl();
         this.storeStatus = storeEntity.getStoreStatus();
         this.storeOwnerName = storeEntity.getStoreOwnerName();
         this.storeOwnerPhone = storeEntity.getStoreOwnerPhone();
