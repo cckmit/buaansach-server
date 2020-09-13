@@ -4,6 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
     <!--Schema-->
+    <include file="config/liquibase/schema/brand/index.xml"/>
     <include file="config/liquibase/schema/common/index.xml"/>
     <include file="config/liquibase/schema/customer/index.xml"/>
     <include file="config/liquibase/schema/notification/index.xml"/>

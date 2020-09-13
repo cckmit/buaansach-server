@@ -68,7 +68,7 @@ public class AdminCategoryService {
         if (image != null) {
             /* if update image */
             fileService.deleteByUrl(currentEntity.getCategoryImageUrl());
-            FileEntity newImage = fileService.uploadImage(image, Constants.PRODUCT_IMAGE_PATH);
+            FileEntity newImage = fileService.uploadImage(image, Constants.CATEGORY_IMAGE_PATH);
             updateEntity.setCategoryImageUrl(newImage.getUrl());
         } else {
             /* if updateEntity has imageUrl = null or empty
