@@ -3,6 +3,7 @@ package vn.com.buaansach.entity.notification;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
+import vn.com.buaansach.entity.enumeration.PaymentMethod;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -25,6 +26,9 @@ public class StorePayRequestNotificationEntity implements Serializable {
 
     @Column(name = "store_pay_request_amount")
     private int storePayRequestAmount;
+
+    @Column(name = "store_pay_request_method")
+    private PaymentMethod storePayRequestMethod;
 
     @Column(name = "store_pay_request_note")
     private String storePayRequestNote;

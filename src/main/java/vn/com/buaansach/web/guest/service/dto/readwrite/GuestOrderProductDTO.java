@@ -67,6 +67,7 @@ public class GuestOrderProductDTO extends AuditDTO {
 
         this.orderProductPrice = orderProductEntity.getOrderProductPrice();
         this.orderProductDiscount = orderProductEntity.getOrderProductDiscount();
+        this.orderProductDiscountType = orderProductEntity.getOrderProductDiscountType();
 
         this.orderGuid = orderProductEntity.getOrderGuid();
         this.productGuid = orderProductEntity.getProductGuid();

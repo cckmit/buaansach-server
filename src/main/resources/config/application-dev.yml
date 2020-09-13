@@ -43,8 +43,7 @@ app:
     # Token valid for 7 days with remember me
     token-time-for-remember: 604800
   upload-dir: 'bas/storage/'
-  server-domain: 'http://192.168.2.2'
   mail:
     enable: true
     from: noreply.ductran.tech@gmail.com
-    cms-ui-url: 'http://192.168.2.2:8081'
+    cms-ui-url: 'http://localhost:8081'

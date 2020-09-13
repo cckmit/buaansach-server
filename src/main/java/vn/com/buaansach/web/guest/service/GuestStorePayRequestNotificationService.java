@@ -73,6 +73,7 @@ public class GuestStorePayRequestNotificationService {
 
         StorePayRequestNotificationEntity payRequestNotification = new StorePayRequestNotificationEntity();
         payRequestNotification.setStorePayRequestAmount(payload.getStorePayRequestAmount());
+        payRequestNotification.setStorePayRequestMethod(payload.getStorePayRequestMethod());
         payRequestNotification.setStorePayRequestNote(payload.getStorePayRequestNote());
         payRequestNotification.setNumberOfExtraSeat(payload.getNumberOfExtraSeat());
         payRequestNotification.setListExtraSeat(payload.getListExtraSeat());

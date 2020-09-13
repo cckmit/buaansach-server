@@ -12,6 +12,9 @@
             <column name="store_pay_request_amount" type="int">
                 <constraints nullable="false"/>
             </column>
+            <column name="store_pay_request_method" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
             <column name="store_pay_request_note" type="varchar(255)"/>
             <column name="number_of_extra_seat" type="int"/>
             <column name="list_extra_seat" type="varchar(500)"/>

@@ -31,14 +31,8 @@ import java.util.UUID;
 public class FileService {
     private final Logger log = LoggerFactory.getLogger(FileService.class);
     private final FileRepository fileRepository;
-    @Value("${server.port}")
-    private Long serverPort;
-    @Value("${app.server-domain}")
-    private String serverDomain;
     @Value("${app.upload-dir}")
     private String uploadDir;
-    @Value("${spring.profiles.active}")
-    private String activeProfile;
 
     /* default image directory */
     public FileEntity uploadImage(MultipartFile image) {

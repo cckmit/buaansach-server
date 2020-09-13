@@ -2,6 +2,7 @@ package vn.com.buaansach.web.guest.service.dto.write;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import vn.com.buaansach.entity.enumeration.PaymentMethod;
 import vn.com.buaansach.entity.notification.StoreNotificationEntity;
 import vn.com.buaansach.entity.notification.StorePayRequestNotificationEntity;
 
@@ -11,6 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class GuestStorePayRequestDTO {
     private int storePayRequestAmount;
+    private PaymentMethod storePayRequestMethod;
     private String storePayRequestNote;
     private int numberOfExtraSeat;
     private String listExtraSeat;
@@ -21,6 +23,7 @@ public class GuestStorePayRequestDTO {
 
     public GuestStorePayRequestDTO(StoreNotificationEntity notificationEntity, StorePayRequestNotificationEntity payRequest) {
         this.storePayRequestAmount = payRequest.getStorePayRequestAmount();
+        this.storePayRequestMethod = payRequest.getStorePayRequestMethod();
         this.storePayRequestNote = payRequest.getStorePayRequestNote();
         this.numberOfExtraSeat = payRequest.getNumberOfExtraSeat();
         this.listExtraSeat = payRequest.getListExtraSeat();

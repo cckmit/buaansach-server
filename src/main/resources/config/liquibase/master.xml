@@ -9,6 +9,7 @@
     <include file="config/liquibase/schema/notification/index.xml"/>
     <include file="config/liquibase/schema/order/index.xml"/>
     <include file="config/liquibase/schema/sale/index.xml"/>
+    <include file="config/liquibase/schema/statistic/index.xml"/>
     <include file="config/liquibase/schema/store/index.xml"/>
     <include file="config/liquibase/schema/user/index.xml"/>
     <include file="config/liquibase/schema/voucher/index.xml"/>

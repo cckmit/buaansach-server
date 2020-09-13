@@ -43,7 +43,6 @@ app:
     # Token valid for 7 days with remember me
     token-time-for-remember: 604800
   upload-dir: "/bas/storage/"
-  server-domain: "https://api.ductran.tech"
   mail:
     enable: true
     from: ${EMAIL_ACCOUNT}
