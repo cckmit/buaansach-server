@@ -6,5 +6,6 @@
     <!--Schema-->
 
     <include file="config/liquibase/schema/brand/create_table_bas_banner.xml"/>
+    <include file="config/liquibase/schema/brand/create_table_bas_version.xml"/>
 
 </databaseChangeLog>

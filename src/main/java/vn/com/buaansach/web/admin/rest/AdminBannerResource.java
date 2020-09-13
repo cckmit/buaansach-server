@@ -38,9 +38,9 @@ public class AdminBannerResource {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<BannerEntity>> getListBanner() {
+    public ResponseEntity<List<BannerEntity>> getAllBanner() {
         log.debug("REST request from user [{}] to list [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);
-        return ResponseEntity.ok(adminBannerService.getListBanner());
+        return ResponseEntity.ok(adminBannerService.getAllBanner());
     }
 
     @DeleteMapping("/delete/{bannerGuid}")

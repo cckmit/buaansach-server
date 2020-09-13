@@ -42,7 +42,7 @@ public class AdminBannerService {
         return adminBannerRepository.save(payload);
     }
 
-    public List<BannerEntity> getListBanner() {
+    public List<BannerEntity> getAllBanner() {
         return adminBannerRepository.findAll();
     }
 
