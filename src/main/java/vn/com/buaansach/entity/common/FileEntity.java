@@ -41,7 +41,7 @@ public class FileEntity extends AbstractAuditingEntity implements Serializable {
 
     @Size(max = 255)
     @JsonIgnore
-    @Column(unique = true)
+    @Column(unique = true, name = "local_url")
     private String localUrl;
 
     @Size(max = 255)

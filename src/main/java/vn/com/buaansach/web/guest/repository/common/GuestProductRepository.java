@@ -17,8 +17,8 @@ public interface GuestProductRepository extends ProductRepository {
             "JOIN vn.com.buaansach.entity.common.ProductCategoryEntity productCategory " +
             "ON productCategory.productGuid = product.guid " +
             "WHERE productCategory.categoryGuid = :categoryGuid " +
-            "AND product.productStatus <> :productStatus " +
             "AND product.productActivated = TRUE " +
+            "AND product.productStatus <> :productStatus " +
             "ORDER BY product.productPosition ASC")
-    List<ProductEntity> findByCategoryGuidExceptStatus(@Param("categoryGuid") UUID categoryGuid, @Param("productStatus") ProductStatus productStatus);
+    List<ProductEntity> findActiveProductByCategoryGuidExceptStatus(@Param("categoryGuid") UUID categoryGuid, @Param("productStatus") ProductStatus productStatus);
 }

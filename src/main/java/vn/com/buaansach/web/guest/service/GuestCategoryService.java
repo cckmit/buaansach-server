@@ -35,12 +35,12 @@ public class GuestCategoryService {
         StoreEntity storeEntity = guestStoreRepository.findOneBySeatGuid(UUID.fromString(seatGuid))
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
-        List<CategoryEntity> categories = guestCategoryRepository.findAllActiveCategoryOrderByPositionAsc();
+        List<CategoryEntity> categories = guestCategoryRepository.findByCategoryHiddenFalseOrderByCategoryPositionAsc();
         List<GuestStoreCategoryDTO> result = new ArrayList<>();
         categories.forEach(category -> {
             GuestStoreCategoryDTO dto = new GuestStoreCategoryDTO(category);
             List<GuestStoreProductDTO> storeProductDTOS = guestStoreProductRepository
-                    .findListGuestStoreProductByStoreAndCategoryExceptStatus(storeEntity.getGuid(), category.getGuid(), StoreProductStatus.STOP_TRADING);
+                    .findGuestStoreProductByStoreAndCategoryExceptStatus(storeEntity.getGuid(), category.getGuid(), StoreProductStatus.STOP_TRADING);
             dto.setListStoreProduct(storeProductDTOS);
             result.add(dto);
         });
@@ -48,11 +48,11 @@ public class GuestCategoryService {
     }
 
     public List<GuestCategoryDTO> getListCategoryDTO() {
-        List<CategoryEntity> categories = guestCategoryRepository.findAllActiveCategoryOrderByPositionAsc();
+        List<CategoryEntity> categories = guestCategoryRepository.findByCategoryHiddenFalseOrderByCategoryPositionAsc();
         List<GuestCategoryDTO> result = new ArrayList<>();
         categories.forEach(category -> {
             GuestCategoryDTO dto = new GuestCategoryDTO(category);
-            List<ProductEntity> products = guestProductRepository.findByCategoryGuidExceptStatus(category.getGuid(), ProductStatus.STOP_TRADING);
+            List<ProductEntity> products = guestProductRepository.findActiveProductByCategoryGuidExceptStatus(category.getGuid(), ProductStatus.STOP_TRADING);
             dto.setListProduct(products.stream().map(GuestProductDTO::new).collect(Collectors.toList()));
             result.add(dto);
         });

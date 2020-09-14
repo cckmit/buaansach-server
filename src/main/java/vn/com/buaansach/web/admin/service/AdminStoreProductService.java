@@ -34,7 +34,6 @@ public class AdminStoreProductService {
         StoreProductEntity storeProductEntity = new StoreProductEntity();
         storeProductEntity.setGuid(UUID.randomUUID());
         storeProductEntity.setStoreProductStatus(StoreProductStatus.AVAILABLE);
-        storeProductEntity.setStoreProductHidden(payload.isStoreProductHidden());
         storeProductEntity.setStoreGuid(payload.getStoreGuid());
         storeProductEntity.setProductGuid(payload.getProductGuid());
         return new AdminStoreProductDTO(adminStoreProductRepository.save(storeProductEntity), productEntity);
@@ -50,7 +49,6 @@ public class AdminStoreProductService {
             StoreProductEntity storeProductEntity = new StoreProductEntity();
             storeProductEntity.setGuid(UUID.randomUUID());
             storeProductEntity.setStoreProductStatus(StoreProductStatus.AVAILABLE);
-            storeProductEntity.setStoreProductHidden(false);
             storeProductEntity.setProductGuid(productEntity.getGuid());
             storeProductEntity.setStoreGuid(UUID.fromString(storeGuid));
             listStoreProduct.add(storeProductEntity);
@@ -65,7 +63,6 @@ public class AdminStoreProductService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_PRODUCT_NOT_FOUND));
 
         storeProductEntity.setStoreProductStatus(payload.getStoreProductStatus());
-        storeProductEntity.setStoreProductHidden(payload.isStoreProductHidden());
         payload.updateAudit(adminStoreProductRepository.save(storeProductEntity));
         return payload;
     }

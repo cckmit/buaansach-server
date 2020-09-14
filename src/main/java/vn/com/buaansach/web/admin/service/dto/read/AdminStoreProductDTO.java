@@ -17,7 +17,6 @@ import java.util.UUID;
 public class AdminStoreProductDTO extends AuditDTO {
     private UUID guid;
     private StoreProductStatus storeProductStatus;
-    private boolean storeProductHidden;
     private UUID storeGuid;
     private UUID productGuid;
 
@@ -45,7 +44,6 @@ public class AdminStoreProductDTO extends AuditDTO {
     public AdminStoreProductDTO(StoreProductEntity storeProductEntity, ProductEntity productEntity) {
         this.guid = storeProductEntity.getGuid();
         this.storeProductStatus = storeProductEntity.getStoreProductStatus();
-        this.storeProductHidden = storeProductEntity.isStoreProductHidden();
         this.storeGuid = storeProductEntity.getStoreGuid();
         this.productGuid = storeProductEntity.getStoreGuid();
 
@@ -76,7 +74,6 @@ public class AdminStoreProductDTO extends AuditDTO {
     public void updateAudit(StoreProductEntity storeProductEntity) {
         this.guid = storeProductEntity.getGuid();
         this.storeProductStatus = storeProductEntity.getStoreProductStatus();
-        this.storeProductHidden = storeProductEntity.isStoreProductHidden();
         this.storeGuid = storeProductEntity.getStoreGuid();
         this.productGuid = storeProductEntity.getStoreGuid();
 

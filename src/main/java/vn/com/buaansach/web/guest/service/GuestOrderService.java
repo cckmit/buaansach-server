@@ -212,6 +212,8 @@ public class GuestOrderService {
     public void updateOrderPhone(OrderEntity entity, String currentUser){
         OrderEntity update = guestOrderRepository.findOneByGuid(entity.getGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
+        if (entity.getOrderCustomerPhone() == null && update.getOrderCustomerPhone() == null) return;
+        if (entity.getOrderCustomerPhone() != null && entity.getOrderCustomerPhone().equals(update.getOrderCustomerPhone())) return;
         String newTimeline = TimelineUtil.appendCustomOrderStatus(update.getOrderStatusTimeline(), "CHANGE_PHONE", currentUser, entity.getOrderCustomerPhone());
         update.setOrderStatusTimeline(newTimeline);
         update.setOrderCustomerPhone(entity.getOrderCustomerPhone());

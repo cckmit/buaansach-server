@@ -24,7 +24,8 @@ public interface AdminProductRepository extends ProductRepository {
             "SELECT DISTINCT storeProduct.productGuid " +
             "FROM vn.com.buaansach.entity.store.StoreProductEntity storeProduct " +
             "WHERE storeProduct.storeGuid = :storeGuid)")
-    List<ProductEntity> findAllProductNotInStoreExceptStatus(@Param("storeGuid") UUID storeGuid, @Param("productStatus") ProductStatus productStatus);
+    List<ProductEntity> findAllProductNotInStoreExceptStatus(@Param("storeGuid") UUID storeGuid,
+                                                             @Param("productStatus") ProductStatus productStatus);
 
     @Query("SELECT MAX(pe.productPosition) FROM ProductEntity pe")
     Integer findLastProductPosition();

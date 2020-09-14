@@ -3,6 +3,7 @@ package vn.com.buaansach.web.pos.repository.store;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import vn.com.buaansach.entity.enumeration.StoreProductStatus;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreProductDTO;
 import vn.com.buaansach.web.shared.repository.store.StoreProductRepository;
 
@@ -19,7 +20,10 @@ public interface PosStoreProductRepository extends StoreProductRepository {
             "ON product.guid = productCategory.productGuid " +
             "WHERE storeProduct.storeGuid = :storeGuid " +
             "AND productCategory.categoryGuid = :categoryGuid " +
+            "AND storeProduct.storeProductStatus <> :storeProductStatus " +
+            "AND product.productActivated = TRUE " +
             "ORDER BY product.productPosition ASC")
-    List<PosStoreProductDTO> findListPosStoreProductByStoreAndCategory(@Param("storeGuid") UUID storeGuid,
-                                                                       @Param("categoryGuid") UUID categoryGuid);
+    List<PosStoreProductDTO> findListActivePosStoreProductByStoreAndCategoryExceptStatus(@Param("storeGuid") UUID storeGuid,
+                                                                                         @Param("categoryGuid") UUID categoryGuid,
+                                                                                         @Param("storeProductStatus") StoreProductStatus storeProductStatus);
 }

@@ -23,7 +23,7 @@
             <column name="category_image_url" type="varchar(255)"/>
             <column name="category_thumbnail_url" type="varchar(255)"/>
             <column name="category_position" type="int"/>
-            <column name="category_activated" type="boolean"/>
+            <column name="category_hidden" type="boolean"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

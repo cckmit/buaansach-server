@@ -31,9 +31,6 @@ public class StoreProductEntity extends AbstractAuditingEntity implements Serial
     @Column(name = "store_product_status")
     private StoreProductStatus storeProductStatus = StoreProductStatus.AVAILABLE;
 
-    @Column(name = "store_product_hidden")
-    private boolean storeProductHidden;
-
     /**
      * FK
      * */

@@ -14,7 +14,6 @@ import java.util.UUID;
 public class PosStoreProductDTO {
     private UUID guid;
     private StoreProductStatus storeProductStatus;
-    private boolean storeProductHidden;
     private UUID storeGuid;
     private UUID productGuid;
 
@@ -38,7 +37,6 @@ public class PosStoreProductDTO {
     public PosStoreProductDTO(StoreProductEntity storeProductEntity, ProductEntity productEntity) {
         this.guid = storeProductEntity.getGuid();
         this.storeProductStatus = storeProductEntity.getStoreProductStatus();
-        this.storeProductHidden = storeProductEntity.isStoreProductHidden();
         this.storeGuid = storeProductEntity.getStoreGuid();
         this.productGuid = storeProductEntity.getProductGuid();
 
