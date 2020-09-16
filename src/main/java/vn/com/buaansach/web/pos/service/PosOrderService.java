@@ -2,10 +2,7 @@ package vn.com.buaansach.web.pos.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.enumeration.OrderStatus;
-import vn.com.buaansach.entity.enumeration.OrderType;
-import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
-import vn.com.buaansach.entity.enumeration.SeatStatus;
+import vn.com.buaansach.entity.enumeration.*;
 import vn.com.buaansach.entity.notification.StoreNotificationEntity;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
@@ -13,6 +10,7 @@ import vn.com.buaansach.entity.order.PaymentEntity;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
+import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
@@ -23,6 +21,7 @@ import vn.com.buaansach.web.pos.repository.order.PosOrderProductRepository;
 import vn.com.buaansach.web.pos.repository.order.PosOrderRepository;
 import vn.com.buaansach.web.pos.repository.store.PosAreaRepository;
 import vn.com.buaansach.web.pos.repository.store.PosSeatRepository;
+import vn.com.buaansach.web.pos.repository.store.PosStoreProductRepository;
 import vn.com.buaansach.web.pos.repository.store.PosStoreRepository;
 import vn.com.buaansach.web.pos.repository.voucher.PosVoucherCodeRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
@@ -64,6 +63,7 @@ public class PosOrderService {
     private final PaymentService paymentService;
     private final PosStoreNotificationRepository posStoreNotificationRepository;
     private final PosSaleService posSaleService;
+    private final PosStoreProductRepository posStoreProductRepository;
 
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
@@ -114,7 +114,7 @@ public class PosOrderService {
         orderEntity = posOrderRepository.save(orderEntity);
 
         /* Tự động apply sale nếu có */
-        if (storeEntity.getStorePrimarySaleGuid() != null){
+        if (storeEntity.getStorePrimarySaleGuid() != null) {
             orderEntity = posSaleService.autoApplySale(orderEntity, storeEntity.getStorePrimarySaleGuid(), storeEntity.getGuid());
         }
 
@@ -136,6 +136,16 @@ public class PosOrderService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
+
+        /* check product availability */
+        List<UUID> listProductGuid = payload.getListOrderProduct().stream().map(PosOrderProductDTO::getProductGuid).collect(Collectors.toList());
+        List<StoreProductEntity> listStoreProduct = posStoreProductRepository.findByStoreGuidAndProductGuidIn(storeEntity.getGuid(), listProductGuid);
+
+        List<StoreProductEntity> listStopTrading = listStoreProduct.stream()
+                .filter(item -> item.getStoreProductStatus().equals(StoreProductStatus.STOP_TRADING)).collect(Collectors.toList());
+        if (listStopTrading.size() > 0) {
+            throw new BadRequestException(ErrorCode.STORE_PRODUCT_STOP_TRADING);
+        }
 
         /* Lưu tất cả orderProduct của đơn hàng */
         UUID orderProductGroup = UUID.randomUUID();

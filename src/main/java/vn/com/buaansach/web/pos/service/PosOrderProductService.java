@@ -63,6 +63,7 @@ public class PosOrderProductService {
                     ProductEntity product = mapProduct.get(entity.getProductGuid());
 
                     if (product == null) throw new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
+                    if (!product.isProductActivated()) throw new BadRequestException(ErrorCode.PRODUCT_NOT_ACTIVATED);
                     if (product.getProductStatus().equals(ProductStatus.STOP_TRADING)) throw new BadRequestException(ErrorCode.PRODUCT_STOP_TRADING);
 
                     entity.setOrderProductRootPrice(product.getProductRootPrice());
