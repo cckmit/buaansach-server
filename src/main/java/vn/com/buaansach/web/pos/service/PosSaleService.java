@@ -2,6 +2,7 @@ package vn.com.buaansach.web.pos.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.entity.enumeration.OrderTimelineStatus;
 import vn.com.buaansach.entity.enumeration.SaleCondition;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.sale.SaleUsageEntity;
@@ -10,6 +11,8 @@ import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
+import vn.com.buaansach.security.util.SecurityUtils;
+import vn.com.buaansach.util.TimelineUtil;
 import vn.com.buaansach.web.pos.repository.order.PosOrderRepository;
 import vn.com.buaansach.web.pos.repository.sale.PosSaleRepository;
 import vn.com.buaansach.web.pos.repository.sale.PosSaleUsageRepository;
@@ -59,6 +62,13 @@ public class PosSaleService {
 
         if (!isValidSale(dto, storeGuid)) return orderEntity;
 
+        String newTimeline = TimelineUtil.appendOrderStatusWithMeta(
+                orderEntity.getOrderStatusTimeline(),
+                OrderTimelineStatus.AUTO_APPLY_SALE,
+                SecurityUtils.getCurrentUserLogin(),
+                saleGuid.toString());
+        orderEntity.setOrderStatusTimeline(newTimeline);
+
         orderEntity.setOrderDiscount(dto.getSaleDiscount());
         orderEntity.setOrderDiscountType(dto.getSaleDiscountType());
         orderEntity.setSaleGuid(dto.getGuid());
@@ -91,6 +101,13 @@ public class PosSaleService {
             if (!storeSaleEntity.isStoreSaleActivated()) throw new BadRequestException(ErrorCode.STORE_SALE_DISABLED);
         }
 
+        String newTimeline = TimelineUtil.appendOrderStatusWithMeta(
+                orderEntity.getOrderStatusTimeline(),
+                OrderTimelineStatus.APPLY_SALE,
+                SecurityUtils.getCurrentUserLogin(),
+                payload.getSaleGuid().toString());
+        orderEntity.setOrderStatusTimeline(newTimeline);
+
         orderEntity.setOrderDiscount(dto.getSaleDiscount());
         orderEntity.setOrderDiscountType(dto.getSaleDiscountType());
         orderEntity.setSaleGuid(dto.getGuid());
@@ -100,6 +117,13 @@ public class PosSaleService {
     public void cancelSale(UUID orderGuid) {
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(orderGuid)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
+
+        String newTimeline = TimelineUtil.appendOrderStatus(
+                orderEntity.getOrderStatusTimeline(),
+                OrderTimelineStatus.CANCEL_SALE,
+                SecurityUtils.getCurrentUserLogin());
+        orderEntity.setOrderStatusTimeline(newTimeline);
+
         orderEntity.setOrderDiscount(0);
         orderEntity.setOrderDiscountType(null);
         orderEntity.setSaleGuid(null);

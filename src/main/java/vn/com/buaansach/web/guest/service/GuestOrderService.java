@@ -28,7 +28,7 @@ import vn.com.buaansach.web.guest.service.dto.write.GuestCreateOrderDTO;
 import vn.com.buaansach.web.guest.service.dto.write.GuestOrderUpdateDTO;
 import vn.com.buaansach.web.guest.service.mapper.GuestOrderProductMapper;
 import vn.com.buaansach.web.guest.websocket.GuestSocketService;
-import vn.com.buaansach.web.pos.util.TimelineUtil;
+import vn.com.buaansach.util.TimelineUtil;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -91,7 +91,7 @@ public class GuestOrderService {
 
         /* Order type must be the same area type */
         orderEntity.setOrderType(OrderType.valueOf(areaEntity.getAreaType().name()));
-        orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderStatus.CREATED, currentUser));
+        orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderTimelineStatus.CREATED, currentUser));
         orderEntity.setOrderCancelReason(null);
         orderEntity.setOrderDiscount(0);
         orderEntity.setOrderDiscountType(null);
@@ -184,8 +184,8 @@ public class GuestOrderService {
         /* Đổi trạng thái phục vụ của bàn ăn => chưa xong */
         guestSeatService.makeSeatServiceUnfinished(orderEntity.getSeatGuid());
 
-        String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(),
-                "UPDATE_ORDER",
+        String newTimeline = TimelineUtil.appendOrderStatusWithMeta(orderEntity.getOrderStatusTimeline(),
+                OrderTimelineStatus.UPDATE_ORDER,
                 currentUser,
                 payload.getListOrderProduct().size() + "*" + orderProductGroup.toString());
         orderEntity.setOrderStatusTimeline(newTimeline);
@@ -214,7 +214,10 @@ public class GuestOrderService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
         if (entity.getOrderCustomerPhone() == null && update.getOrderCustomerPhone() == null) return;
         if (entity.getOrderCustomerPhone() != null && entity.getOrderCustomerPhone().equals(update.getOrderCustomerPhone())) return;
-        String newTimeline = TimelineUtil.appendCustomOrderStatus(update.getOrderStatusTimeline(), "CHANGE_PHONE", currentUser, entity.getOrderCustomerPhone());
+        String newTimeline = TimelineUtil.appendOrderStatusWithMeta(update.getOrderStatusTimeline(),
+                OrderTimelineStatus.UPDATE_PHONE,
+                currentUser,
+                entity.getOrderCustomerPhone());
         update.setOrderStatusTimeline(newTimeline);
         update.setOrderCustomerPhone(entity.getOrderCustomerPhone());
         guestOrderRepository.save(update);

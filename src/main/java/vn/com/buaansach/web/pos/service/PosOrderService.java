@@ -14,6 +14,7 @@ import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
+import vn.com.buaansach.util.TimelineUtil;
 import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
 import vn.com.buaansach.web.pos.repository.notification.PosStoreNotificationRepository;
@@ -30,7 +31,6 @@ import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreNotificationDTO;
 import vn.com.buaansach.web.pos.service.dto.write.*;
 import vn.com.buaansach.web.pos.service.mapper.PosOrderProductMapper;
-import vn.com.buaansach.web.pos.util.TimelineUtil;
 import vn.com.buaansach.web.pos.websocket.PosSocketService;
 import vn.com.buaansach.web.pos.websocket.dto.PosSocketDTO;
 import vn.com.buaansach.web.shared.service.PaymentService;
@@ -101,7 +101,7 @@ public class PosOrderService {
         /* Dựa theo loại khu vực để xác định loại đơn hàng */
         orderEntity.setOrderType(OrderType.valueOf(areaEntity.getAreaType().name()));
 
-        orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderStatus.RECEIVED, currentUser));
+        orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderTimelineStatus.RECEIVED, currentUser));
         orderEntity.setSeatGuid(payload.getSeatGuid());
         orderEntity.setOrderReceivedBy(currentUser);
         orderEntity.setOrderReceivedDate(Instant.now());
@@ -152,8 +152,8 @@ public class PosOrderService {
         posOrderProductService.saveListOrderProduct(orderProductGroup, payload.getOrderGuid(), payload.getListOrderProduct(), currentUser);
 
         /* Cập nhật thông tin đơn */
-        String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(),
-                "UPDATE_ORDER",
+        String newTimeline = TimelineUtil.appendOrderStatusWithMeta(orderEntity.getOrderStatusTimeline(),
+                OrderTimelineStatus.UPDATE_ORDER,
                 currentUser,
                 payload.getListOrderProduct().size() + "*" + orderProductGroup.toString());
         orderEntity.setOrderStatusTimeline(newTimeline);
@@ -219,7 +219,7 @@ public class PosOrderService {
             orderEntity.setOrderReceivedBy(currentUser);
             orderEntity.setOrderReceivedDate(Instant.now());
             orderEntity.setOrderStatus(OrderStatus.RECEIVED);
-            String newTimeline = TimelineUtil.appendOrderStatus(orderEntity.getOrderStatusTimeline(), OrderStatus.RECEIVED, currentUser);
+            String newTimeline = TimelineUtil.appendOrderStatus(orderEntity.getOrderStatusTimeline(), OrderTimelineStatus.RECEIVED, currentUser);
             orderEntity.setOrderStatusTimeline(newTimeline);
 
             List<OrderProductEntity> orderProductEntityList = posOrderProductRepository.findByOrderGuid(orderEntity.getGuid());
@@ -268,7 +268,7 @@ public class PosOrderService {
 
                 String newTimeline = TimelineUtil.appendOrderStatus(
                         orderEntity.getOrderStatusTimeline(),
-                        OrderStatus.PURCHASED,
+                        OrderTimelineStatus.PURCHASED,
                         currentUser);
                 orderEntity.setOrderStatusTimeline(newTimeline);
 
@@ -309,7 +309,7 @@ public class PosOrderService {
 
         String newTimeline = TimelineUtil.appendOrderStatus(
                 orderEntity.getOrderStatusTimeline(),
-                OrderStatus.CANCELLED,
+                OrderTimelineStatus.CANCELLED,
                 currentUser);
         orderEntity.setOrderStatusTimeline(newTimeline);
 
@@ -355,8 +355,8 @@ public class PosOrderService {
             throw new BadRequestException(ErrorCode.SEAT_NON_EMPTY);
 
         /* Cập nhật vị trí mới vào order */
-        String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(),
-                "CHANGE_SEAT",
+        String newTimeline = TimelineUtil.appendOrderStatusWithMeta(orderEntity.getOrderStatusTimeline(),
+                OrderTimelineStatus.CHANGE_SEAT,
                 currentUser,
                 currentSeat.getGuid() + "*" + newSeat.getGuid());
         orderEntity.setOrderStatusTimeline(newTimeline);
@@ -422,7 +422,10 @@ public class PosOrderService {
             });
         }
 
-        String newTimeline = TimelineUtil.appendCustomOrderStatus(orderEntity.getOrderStatusTimeline(), "CHANGE_PHONE", currentUser, payload.getNewCustomerPhone());
+        String newTimeline = TimelineUtil.appendOrderStatusWithMeta(orderEntity.getOrderStatusTimeline(),
+                OrderTimelineStatus.UPDATE_PHONE,
+                currentUser,
+                payload.getNewCustomerPhone());
         orderEntity.setOrderStatusTimeline(newTimeline);
         orderEntity.setOrderCustomerPhone(payload.getNewCustomerPhone());
         posOrderRepository.save(orderEntity);

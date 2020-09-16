@@ -13,7 +13,7 @@ import vn.com.buaansach.web.guest.repository.order.GuestOrderProductRepository;
 import vn.com.buaansach.web.guest.repository.common.GuestProductRepository;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderProductDTO;
 import vn.com.buaansach.web.guest.service.mapper.GuestOrderProductMapper;
-import vn.com.buaansach.web.pos.util.TimelineUtil;
+import vn.com.buaansach.util.TimelineUtil;
 
 import java.util.HashMap;
 import java.util.List;
