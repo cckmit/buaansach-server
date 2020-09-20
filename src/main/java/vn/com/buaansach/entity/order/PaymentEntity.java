@@ -47,8 +47,4 @@ public class PaymentEntity extends AbstractAuditingEntity implements Serializabl
 
     @Column(name = "number_of_order")
     private int numberOfOrder;
-
-    @Column(name = "list_order_guid", length = 1000)
-    private String listOrderGuid;
-
 }
