@@ -40,6 +40,15 @@ public class PosSeatService {
         posSeatRepository.save(seatEntity);
     }
 
+    public void resetListSeat(List<SeatEntity> listSeat){
+        listSeat.forEach(seatEntity -> {
+            seatEntity.setSeatStatus(SeatStatus.EMPTY);
+            seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
+            seatEntity.setOrderGuid(null);
+        });
+        posSeatRepository.saveAll(listSeat);
+    }
+
     public void resetSeat(UUID seatGuid) {
         SeatEntity seatEntity = posSeatRepository.findOneByGuid(seatGuid)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));

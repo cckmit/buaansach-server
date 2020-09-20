@@ -14,6 +14,7 @@ import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
+import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.TimelineUtil;
 import vn.com.buaansach.util.WebSocketConstants;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
@@ -26,6 +27,7 @@ import vn.com.buaansach.web.pos.repository.store.PosStoreProductRepository;
 import vn.com.buaansach.web.pos.repository.store.PosStoreRepository;
 import vn.com.buaansach.web.pos.repository.voucher.PosVoucherCodeRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
+import vn.com.buaansach.web.pos.service.dto.readwrite.PosListOrderDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreNotificationDTO;
@@ -429,5 +431,61 @@ public class PosOrderService {
         orderEntity.setOrderStatusTimeline(newTimeline);
         orderEntity.setOrderCustomerPhone(payload.getNewCustomerPhone());
         posOrderRepository.save(orderEntity);
+    }
+
+    public List<PosOrderDTO> getListOrderByListSeat(PosListOrderDTO payload) {
+        posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
+        List<SeatEntity> listSeat = posSeatRepository.findByGuidIn(payload.getListSeatGuid());
+
+        if (listSeat.stream().anyMatch(item -> item.getSeatServiceStatus().equals(SeatServiceStatus.UNFINISHED)))
+            throw new BadRequestException(ErrorCode.LIST_PURCHASE_HAS_UNFINISHED_SEAT);
+        List<UUID> listOrderGuid = listSeat.stream().map(SeatEntity::getOrderGuid).collect(Collectors.toList());
+        List<OrderEntity> listOrder = posOrderRepository.findByGuidIn(listOrderGuid);
+        if (listOrder.size() != payload.getListSeatGuid().size())
+            throw new BadRequestException(ErrorCode.ORDER_AND_SEAT_SIZE_NOT_EQUAL);
+        List<PosOrderDTO> listPosOrder = listOrder.stream().map(PosOrderDTO::new).collect(Collectors.toList());
+        listPosOrder.forEach(item -> {
+            item.setListOrderProduct(posOrderProductRepository.findListPosOrderProductDTOByOrderGuid(item.getGuid()));
+        });
+        return listPosOrder;
+    }
+
+    @Transactional
+    public void purchaseGroupOrder(PosPurchaseGroupDTO payload) {
+            String currentUser = SecurityUtils.getCurrentUserLogin();
+        List<SeatEntity> listSeat = posSeatRepository.findByGuidIn(payload.getListSeatGuid());
+
+        if (listSeat.size() != payload.getListSeatGuid().size())
+            throw new BadRequestException(ErrorCode.SOME_ORDER_NOT_FOUND);
+
+        listSeat.forEach(item -> {
+            if (item.getSeatStatus().equals(SeatStatus.EMPTY))
+                throw new BadRequestException(ErrorCode.LIST_PURCHASE_HAS_EMPTY_SEAT);
+            if (item.getSeatServiceStatus().equals(SeatServiceStatus.UNFINISHED))
+                throw new BadRequestException(ErrorCode.LIST_PURCHASE_HAS_UNFINISHED_SEAT);
+        });
+
+        List<UUID> listOrderGuid = listSeat.stream().map(SeatEntity::getOrderGuid).collect(Collectors.toList());
+
+        List<OrderEntity> listOrder = posOrderRepository.findByGuidIn(listOrderGuid);
+
+        if (listOrder.size() != payload.getListSeatGuid().size())
+            throw new BadRequestException(ErrorCode.ORDER_AND_SEAT_SIZE_NOT_EQUAL);
+
+        PaymentEntity payment = paymentService.makeCashPayment(payload.getPaymentNote(), listOrder);
+        listOrder.forEach(orderEntity -> {
+            orderEntity.setPaymentGuid(payment.getGuid());
+            orderEntity.setOrderStatus(OrderStatus.PURCHASED);
+            orderEntity.setOrderPurchasedBy(currentUser);
+            orderEntity.setOrderPurchasedDate(Instant.now());
+
+            String newTimeline = TimelineUtil.appendOrderStatus(
+                    orderEntity.getOrderStatusTimeline(),
+                    OrderTimelineStatus.PURCHASED,
+                    currentUser);
+            orderEntity.setOrderStatusTimeline(newTimeline);
+        });
+        posOrderRepository.saveAll(listOrder);
+        posSeatService.resetListSeat(listSeat);
     }
 }

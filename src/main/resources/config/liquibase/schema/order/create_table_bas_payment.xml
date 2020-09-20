@@ -20,7 +20,6 @@
             <column name="payment_status" type="varchar(30)"/>
             <column name="payment_amount" type="int"/>
             <column name="number_of_order" type="int"/>
-            <column name="list_order_guid" type="varchar(1000)"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

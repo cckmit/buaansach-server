@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.service.PosOrderService;
+import vn.com.buaansach.web.pos.service.dto.readwrite.PosListOrderDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
 import vn.com.buaansach.web.pos.service.dto.write.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Secured(AuthoritiesConstants.INTERNAL_USER)
 @RestController
@@ -81,5 +83,20 @@ public class PosOrderResource {
         log.debug("REST request from user [{}] to change customer phone for [{}] : [{}]", currentUser, ENTITY_NAME, payload);
         posOrderService.changeCustomerPhone(payload, currentUser);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/get-list-order-by-list-seat")
+    public ResponseEntity<List<PosOrderDTO>> getListOrderByListSeat(@Valid @RequestBody PosListOrderDTO payload) {
+        String currentUser = SecurityUtils.getCurrentUserLogin();
+        log.debug("REST request from user [{}] to get list [{}] by list seat : [{}]", currentUser, ENTITY_NAME, payload);
+        return ResponseEntity.ok(posOrderService.getListOrderByListSeat(payload));
+    }
+
+    @PutMapping("/purchase-group-order")
+    public ResponseEntity<Void> purchaseListOrder(@Valid @RequestBody PosPurchaseGroupDTO payload){
+        String currentUser = SecurityUtils.getCurrentUserLogin();
+        log.debug("REST request from user [{}] to purchase list [{}] : [{}]", currentUser, ENTITY_NAME, payload);
+        posOrderService.purchaseGroupOrder(payload);
+        return ResponseEntity.noContent().build();
     }
 }
