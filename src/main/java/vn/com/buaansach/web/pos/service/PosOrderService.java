@@ -258,6 +258,10 @@ public class PosOrderService {
             posVoucherUsageService.createVoucherUsage(orderEntity.getVoucherCode(), orderEntity.getGuid(), orderEntity.getOrderCustomerPhone());
         }
 
+        if (orderEntity.getSaleGuid() != null) {
+            posSaleService.addSaleUsage(orderEntity.getSaleGuid(), storeEntity.getGuid(), orderEntity.getGuid());
+        }
+
         switch (payload.getPaymentMethod()) {
             case CASH:
                 /* Thanh toán tiền mặt */
@@ -452,8 +456,13 @@ public class PosOrderService {
 
     @Transactional
     public void purchaseGroupOrder(PosPurchaseGroupDTO payload) {
-            String currentUser = SecurityUtils.getCurrentUserLogin();
+        String currentUser = SecurityUtils.getCurrentUserLogin();
+        if (payload.getListSeatGuid().size() == 0)
+            throw new BadRequestException(ErrorCode.LIST_SEAT_GUID_EMPTY);
+
         List<SeatEntity> listSeat = posSeatRepository.findByGuidIn(payload.getListSeatGuid());
+        StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(listSeat.get(0).getGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         if (listSeat.size() != payload.getListSeatGuid().size())
             throw new BadRequestException(ErrorCode.SOME_ORDER_NOT_FOUND);
@@ -478,6 +487,9 @@ public class PosOrderService {
             orderEntity.setOrderStatus(OrderStatus.PURCHASED);
             orderEntity.setOrderPurchasedBy(currentUser);
             orderEntity.setOrderPurchasedDate(Instant.now());
+            if (orderEntity.getSaleGuid() != null) {
+                posSaleService.addSaleUsage(orderEntity.getSaleGuid(), storeEntity.getGuid(), orderEntity.getGuid());
+            }
 
             String newTimeline = TimelineUtil.appendOrderStatus(
                     orderEntity.getOrderStatusTimeline(),
@@ -485,6 +497,7 @@ public class PosOrderService {
                     currentUser);
             orderEntity.setOrderStatusTimeline(newTimeline);
         });
+
         posOrderRepository.saveAll(listOrder);
         posSeatService.resetListSeat(listSeat);
     }

@@ -26,6 +26,7 @@ public interface PosSaleRepository extends SaleRepository {
             "LEFT JOIN vn.com.buaansach.entity.sale.condition.SaleTimeConditionEntity time " +
             "ON sale.guid = time.saleGuid " +
             "WHERE storeSale.storeGuid = :storeGuid " +
+            "AND storeSale.storeSaleActivated = TRUE " +
             "AND sale.saleActivated = TRUE " +
             "ORDER BY sale.createdDate ASC")
     List<PosSaleDTO> findListDTOByStoreGuid(@Param("storeGuid") UUID storeGuid);
