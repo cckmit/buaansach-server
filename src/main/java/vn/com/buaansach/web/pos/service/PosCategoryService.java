@@ -19,7 +19,7 @@ public class PosCategoryService {
     private final PosStoreProductRepository posStoreProductRepository;
 
     public List<PosCategoryDTO> getListPosCategoryDTO(String storeGuid) {
-        List<CategoryEntity> categories = posCategoryRepository.findAllCategoryOrderByPositionAsc();
+        List<CategoryEntity> categories = posCategoryRepository.findAllByOrderByCategoryPositionAsc();
         List<PosCategoryDTO> result = new ArrayList<>();
         categories.forEach(category -> {
             PosCategoryDTO dto = new PosCategoryDTO(category);

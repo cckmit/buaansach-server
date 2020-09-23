@@ -23,7 +23,6 @@ import vn.com.buaansach.web.pos.service.dto.write.PosApplySaleDTO;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -35,48 +34,8 @@ public class PosSaleService {
     private final PosOrderRepository posOrderRepository;
     private final PosStoreRepository posStoreRepository;
 
-    private boolean isValidSale(PosSaleDTO dto, UUID storeGuid) {
-        if (!dto.isSaleActivated()) return false;
-
-        if (dto.getTimeCondition() != null) {
-            Instant now = Instant.now();
-            Instant start = dto.getTimeCondition().getValidFrom();
-            Instant end = dto.getTimeCondition().getValidUntil();
-            if (now.toEpochMilli() < start.toEpochMilli()) return false;
-            if (end != null && now.toEpochMilli() > end.toEpochMilli()) return false;
-        }
-
-        if (dto.getSaleConditions().contains(SaleCondition.STORE_LIMIT.name())) {
-            Optional<StoreSaleEntity> optional = posStoreSaleRepository.findOneByStoreGuidAndSaleGuid(storeGuid, dto.getGuid());
-            if (optional.isEmpty()) return false;
-            if (!optional.get().isStoreSaleActivated()) return false;
-        }
-        return true;
-    }
-
-
-    public OrderEntity autoApplySale(OrderEntity orderEntity, UUID saleGuid, UUID storeGuid){
-        PosSaleDTO dto = posSaleRepository.findOneDTOByGuid(saleGuid)
-                .orElse(null);
-        if (dto == null) return orderEntity;
-
-        if (!isValidSale(dto, storeGuid)) return orderEntity;
-
-        String newTimeline = TimelineUtil.appendOrderStatusWithMeta(
-                orderEntity.getOrderStatusTimeline(),
-                OrderTimelineStatus.AUTO_APPLY_SALE,
-                SecurityUtils.getCurrentUserLogin(),
-                saleGuid.toString());
-        orderEntity.setOrderStatusTimeline(newTimeline);
-
-        orderEntity.setOrderDiscount(dto.getSaleDiscount());
-        orderEntity.setOrderDiscountType(dto.getSaleDiscountType());
-        orderEntity.setSaleGuid(dto.getGuid());
-        return posOrderRepository.save(orderEntity);
-    }
-
     public void applySale(PosApplySaleDTO payload) {
-        PosSaleDTO dto = posSaleRepository.findOneDTOByGuid(payload.getSaleGuid())
+        PosSaleDTO dto = posSaleRepository.findOnePosSaleDTOByGuid(payload.getSaleGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.SALE_NOT_FOUND));
 
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
@@ -139,6 +98,6 @@ public class PosSaleService {
     }
 
     public List<PosSaleDTO> getListStoreSaleByStore(UUID storeGuid) {
-        return posSaleRepository.findListDTOByStoreGuid(storeGuid);
+        return posSaleRepository.findListPosSaleDTOByStoreGuid(storeGuid);
     }
 }

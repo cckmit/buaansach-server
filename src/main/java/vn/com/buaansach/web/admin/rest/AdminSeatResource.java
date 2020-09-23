@@ -38,18 +38,6 @@ public class AdminSeatResource {
         return ResponseEntity.ok(adminSeatService.updateSeat(payload));
     }
 
-//    @GetMapping("/list-by-area/{areaGuid}")
-//    public ResponseEntity<List<SeatEntity>> getListSeatByAreaGuid(@PathVariable String areaGuid) {
-//        log.debug("REST request from user [{}] to list [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, areaGuid);
-//        return ResponseEntity.ok(adminSeatService.getListSeatByAreaGuid(areaGuid));
-//    }
-//
-//    @GetMapping("/list-by-store/{storeGuid}")
-//    public ResponseEntity<List<SeatEntity>> getListSeatByStoreGuid(@PathVariable String storeGuid) {
-//        log.debug("REST request from user [{}] to list [{}] by store : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
-//        return ResponseEntity.ok(adminSeatService.getListSeatByStoreGuid(storeGuid));
-//    }
-
     @DeleteMapping("/delete/{seatGuid}")
     public ResponseEntity<Void> deleteSeat(@PathVariable String seatGuid) {
         log.debug("REST request from user [{}] to delete [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, seatGuid);

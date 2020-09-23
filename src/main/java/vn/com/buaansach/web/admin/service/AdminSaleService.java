@@ -8,11 +8,8 @@ import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
-import vn.com.buaansach.web.admin.repository.order.AdminOrderRepository;
 import vn.com.buaansach.web.admin.repository.sale.AdminSaleRepository;
 import vn.com.buaansach.web.admin.repository.sale.AdminSaleTimeConditionRepository;
-import vn.com.buaansach.web.admin.repository.sale.AdminSaleUsageRepository;
-import vn.com.buaansach.web.admin.repository.sale.AdminStoreSaleRepository;
 import vn.com.buaansach.web.admin.repository.store.AdminStoreRepository;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminSaleDTO;
 
@@ -49,12 +46,12 @@ public class AdminSaleService {
     }
 
     public AdminSaleDTO getSale(UUID saleGuid) {
-        return adminSaleRepository.findOneDTOByGuid(saleGuid)
+        return adminSaleRepository.findOneAdminSaleDTOByGuid(saleGuid)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.SALE_NOT_FOUND));
     }
 
     public List<AdminSaleDTO> getListSale() {
-        return adminSaleRepository.findListDTOByGuid();
+        return adminSaleRepository.findListAdminSaleDTO();
     }
 
     @Transactional
@@ -92,7 +89,7 @@ public class AdminSaleService {
         adminSaleRepository.deleteByGuid(saleGuid);
     }
 
-    public List<AdminSaleDTO> getListStoreSaleByStore(UUID storeGuid) {
-        return adminSaleRepository.findListDTOByStoreGuid(storeGuid);
+    public List<AdminSaleDTO> getListAdminSaleDTOByStoreGuid(UUID storeGuid) {
+        return adminSaleRepository.findListAdminSaleDTOByStoreGuid(storeGuid);
     }
 }

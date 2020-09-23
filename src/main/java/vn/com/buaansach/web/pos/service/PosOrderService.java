@@ -37,6 +37,7 @@ import vn.com.buaansach.web.pos.websocket.PosSocketService;
 import vn.com.buaansach.web.pos.websocket.dto.PosSocketDTO;
 import vn.com.buaansach.web.shared.service.PaymentService;
 import vn.com.buaansach.web.shared.service.PriceService;
+import vn.com.buaansach.web.shared.service.SaleService;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
@@ -66,6 +67,7 @@ public class PosOrderService {
     private final PosStoreNotificationRepository posStoreNotificationRepository;
     private final PosSaleService posSaleService;
     private final PosStoreProductRepository posStoreProductRepository;
+    private final SaleService saleService;
 
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
@@ -117,7 +119,7 @@ public class PosOrderService {
 
         /* Tự động apply sale nếu có */
         if (storeEntity.getStorePrimarySaleGuid() != null) {
-            orderEntity = posSaleService.autoApplySale(orderEntity, storeEntity.getStorePrimarySaleGuid(), storeEntity.getGuid());
+            orderEntity = saleService.autoApplySale(orderEntity, storeEntity.getStorePrimarySaleGuid(), storeEntity.getGuid());
         }
 
         return new PosOrderDTO(orderEntity);

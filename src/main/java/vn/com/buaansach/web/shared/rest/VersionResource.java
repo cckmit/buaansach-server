@@ -10,7 +10,7 @@ import vn.com.buaansach.entity.brand.VersionEntity;
 import vn.com.buaansach.web.shared.service.VersionService;
 
 @RestController
-@RequestMapping("/api/v1/public/banner")
+@RequestMapping("/api/v1/public/version")
 @RequiredArgsConstructor
 public class VersionResource {
     private final VersionService versionService;

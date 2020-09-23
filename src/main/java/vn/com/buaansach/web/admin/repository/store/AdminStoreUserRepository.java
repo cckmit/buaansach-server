@@ -18,5 +18,5 @@ public interface AdminStoreUserRepository extends StoreUserRepository {
             "JOIN vn.com.buaansach.entity.user.UserProfileEntity profile " +
             "ON user.guid = profile.userGuid " +
             "WHERE storeUser.storeGuid = :storeGuid")
-    List<AdminStoreUserDTO> findDTOByStoreGuid(@Param("storeGuid") UUID storeGuid);
+    List<AdminStoreUserDTO> findAdminStoreUserDTOByStoreGuid(@Param("storeGuid") UUID storeGuid);
 }

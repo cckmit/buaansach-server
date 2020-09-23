@@ -17,9 +17,6 @@ public interface AdminCategoryRepository extends CategoryRepository {
             "WHERE bpc.product_guid = :productGuid)", nativeQuery = true)
     List<CategoryEntity> findListCategoryByProductGuid(@Param("productGuid") UUID productGuid);
 
-    @Query("SELECT ce FROM CategoryEntity ce ORDER BY ce.categoryPosition ASC")
-    List<CategoryEntity> findListCategory();
-
     @Query("SELECT MAX(ce.categoryPosition) FROM CategoryEntity ce")
     Integer findLastCategoryPosition();
 

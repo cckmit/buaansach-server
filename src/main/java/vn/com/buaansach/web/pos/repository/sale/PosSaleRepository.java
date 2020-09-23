@@ -17,7 +17,7 @@ public interface PosSaleRepository extends SaleRepository {
             "LEFT JOIN vn.com.buaansach.entity.sale.condition.SaleTimeConditionEntity time " +
             "ON sale.guid = time.saleGuid " +
             "WHERE sale.guid = :saleGuid")
-    Optional<PosSaleDTO> findOneDTOByGuid(@Param("saleGuid") UUID saleGuid);
+    Optional<PosSaleDTO> findOnePosSaleDTOByGuid(@Param("saleGuid") UUID saleGuid);
 
     @Query("SELECT new vn.com.buaansach.web.pos.service.dto.read.PosSaleDTO(sale, time) " +
             "FROM SaleEntity sale " +
@@ -29,5 +29,5 @@ public interface PosSaleRepository extends SaleRepository {
             "AND storeSale.storeSaleActivated = TRUE " +
             "AND sale.saleActivated = TRUE " +
             "ORDER BY sale.createdDate ASC")
-    List<PosSaleDTO> findListDTOByStoreGuid(@Param("storeGuid") UUID storeGuid);
+    List<PosSaleDTO> findListPosSaleDTOByStoreGuid(@Param("storeGuid") UUID storeGuid);
 }

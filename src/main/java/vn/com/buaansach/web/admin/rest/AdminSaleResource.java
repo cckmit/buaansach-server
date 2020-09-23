@@ -43,9 +43,9 @@ public class AdminSaleResource {
     }
 
     @GetMapping("/list-by-store/{storeGuid}")
-    public ResponseEntity<List<AdminSaleDTO>> getListStoreSale(@PathVariable UUID storeGuid) {
+    public ResponseEntity<List<AdminSaleDTO>> getListSaleByStore(@PathVariable UUID storeGuid) {
         log.debug("REST request from user [{}] to list [{}]: [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
-        return ResponseEntity.ok(adminSaleService.getListStoreSaleByStore(storeGuid));
+        return ResponseEntity.ok(adminSaleService.getListAdminSaleDTOByStoreGuid(storeGuid));
     }
 
     @PutMapping("/update")

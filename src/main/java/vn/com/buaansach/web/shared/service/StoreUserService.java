@@ -14,6 +14,6 @@ public class StoreUserService {
     private final StoreUserRepository storeUserRepository;
 
     public List<StoreUserDTO> getListStoreUserByUser(String currentUser) {
-        return storeUserRepository.findListStoreUserByUser(currentUser, true, StoreUserStatus.WORKING);
+        return storeUserRepository.findListStoreUserDTOByUser(currentUser, true, StoreUserStatus.WORKING);
     }
 }

@@ -37,6 +37,5 @@ public interface AdminProductRepository extends ProductRepository {
     @Query(value = "UPDATE bas_product SET product_position = :pos  WHERE guid = :productGuid", nativeQuery = true)
     void updatePosition(@Param("productGuid") UUID productGuid, @Param("pos") int pos);
 
-    @Query("SELECT p FROM ProductEntity p ORDER BY p.productPosition ASC")
-    List<ProductEntity> findListProductOrderByPositionAsc();
+    List<ProductEntity> findAllByOrderByProductPositionAsc();
 }

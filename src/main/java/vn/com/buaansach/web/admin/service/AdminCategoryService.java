@@ -86,7 +86,7 @@ public class AdminCategoryService {
     }
 
     public List<CategoryEntity> getAllCategory() {
-        return adminCategoryRepository.findListCategory();
+        return adminCategoryRepository.findAllByOrderByCategoryPositionAsc();
     }
 
     @Transactional

@@ -110,7 +110,7 @@ public class AdminStoreUserService {
     }
 
     public List<AdminStoreUserDTO> getListStoreUserByStoreGuid(String storeGuid) {
-        return adminStoreUserRepository.findDTOByStoreGuid(UUID.fromString(storeGuid));
+        return adminStoreUserRepository.findAdminStoreUserDTOByStoreGuid(UUID.fromString(storeGuid));
     }
 
     public void toggleStoreUserActivation(String storeUserGuid) {

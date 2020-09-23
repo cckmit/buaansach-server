@@ -29,6 +29,7 @@ import vn.com.buaansach.web.guest.service.dto.write.GuestOrderUpdateDTO;
 import vn.com.buaansach.web.guest.service.mapper.GuestOrderProductMapper;
 import vn.com.buaansach.web.guest.websocket.GuestSocketService;
 import vn.com.buaansach.util.TimelineUtil;
+import vn.com.buaansach.web.shared.service.SaleService;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -49,9 +50,9 @@ public class GuestOrderService {
     private final GuestStoreProductRepository guestStoreProductRepository;
     private final GuestAreaRepository guestAreaRepository;
     private final GuestStoreOrderNotificationService guestStoreOrderNotificationService;
-    private final PriceService priceService;
     private final GuestOrderProductMapper guestOrderProductMapper;
-    private final PosSaleService posSaleService;
+    private final PriceService priceService;
+    private final SaleService saleService;
 
     public GuestOrderDTO getOrder(String orderGuid) {
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
@@ -113,7 +114,7 @@ public class GuestOrderService {
         orderEntity = guestOrderRepository.save(orderEntity);
         /* Tự động apply sale nếu có */
         if (storeEntity.getStorePrimarySaleGuid() != null){
-            orderEntity = posSaleService.autoApplySale(orderEntity, storeEntity.getStorePrimarySaleGuid(), storeEntity.getGuid());
+            orderEntity = saleService.autoApplySale(orderEntity, storeEntity.getStorePrimarySaleGuid(), storeEntity.getGuid());
         }
 
         GuestOrderDTO result = new GuestOrderDTO(orderEntity);

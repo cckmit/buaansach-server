@@ -20,10 +20,6 @@ public interface StoreUserRepository extends JpaRepository<StoreUserEntity, Long
 
     void deleteByStoreGuid(UUID storeGuid);
 
-    List<StoreUserEntity> findByStoreGuid(UUID storeGuid);
-
-    Optional<StoreUserEntity> findByStoreGuidAndUserLogin(UUID storeGuid, String userLogin);
-
     /* Use for all user */
     @Query("SELECT new vn.com.buaansach.web.shared.service.dto.read.StoreUserDTO(storeUser, store) " +
             "FROM StoreUserEntity storeUser " +
@@ -32,7 +28,7 @@ public interface StoreUserRepository extends JpaRepository<StoreUserEntity, Long
             "WHERE storeUser.userLogin = :userLogin " +
             "AND store.storeActivated = :storeActivated " +
             "AND storeUser.storeUserStatus = :storeUserStatus")
-    List<StoreUserDTO> findListStoreUserByUser(@Param("userLogin") String userLogin,
-                                               @Param("storeActivated") boolean storeActivated,
-                                               @Param("storeUserStatus") StoreUserStatus storeUserStatus);
+    List<StoreUserDTO> findListStoreUserDTOByUser(@Param("userLogin") String userLogin,
+                                                  @Param("storeActivated") boolean storeActivated,
+                                                  @Param("storeUserStatus") StoreUserStatus storeUserStatus);
 }

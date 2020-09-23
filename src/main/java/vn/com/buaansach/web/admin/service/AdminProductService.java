@@ -161,7 +161,7 @@ public class AdminProductService {
     }
 
     public List<AdminProductDTO> getAllProductOrderByPositionAsc() {
-        List<ProductEntity> listProduct = adminProductRepository.findListProductOrderByPositionAsc();
+        List<ProductEntity> listProduct = adminProductRepository.findAllByOrderByProductPositionAsc();
         return listProduct.stream().map(AdminProductDTO::new).collect(Collectors.toList());
     }
 }

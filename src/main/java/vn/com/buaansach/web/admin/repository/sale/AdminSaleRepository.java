@@ -17,14 +17,14 @@ public interface AdminSaleRepository extends SaleRepository {
             "LEFT JOIN vn.com.buaansach.entity.sale.condition.SaleTimeConditionEntity time " +
             "ON sale.guid = time.saleGuid " +
             "WHERE sale.guid = :saleGuid")
-    Optional<AdminSaleDTO> findOneDTOByGuid(@Param("saleGuid") UUID saleGuid);
+    Optional<AdminSaleDTO> findOneAdminSaleDTOByGuid(@Param("saleGuid") UUID saleGuid);
 
     @Query("SELECT new vn.com.buaansach.web.admin.service.dto.readwrite.AdminSaleDTO(sale, time) " +
             "FROM SaleEntity sale " +
             "LEFT JOIN vn.com.buaansach.entity.sale.condition.SaleTimeConditionEntity time " +
             "ON sale.guid = time.saleGuid " +
             "ORDER BY sale.createdDate ASC")
-    List<AdminSaleDTO> findListDTOByGuid();
+    List<AdminSaleDTO> findListAdminSaleDTO();
 
     @Query("SELECT new vn.com.buaansach.web.admin.service.dto.readwrite.AdminSaleDTO(sale, time) " +
             "FROM SaleEntity sale " +
@@ -34,5 +34,5 @@ public interface AdminSaleRepository extends SaleRepository {
             "ON sale.guid = time.saleGuid " +
             "WHERE storeSale.storeGuid = :storeGuid " +
             "ORDER BY sale.createdDate ASC")
-    List<AdminSaleDTO> findListDTOByStoreGuid(@Param("storeGuid") UUID storeGuid);
+    List<AdminSaleDTO> findListAdminSaleDTOByStoreGuid(@Param("storeGuid") UUID storeGuid);
 }

@@ -1,17 +1,14 @@
 package vn.com.buaansach.web.admin.repository.voucher;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminVoucherDTO;
+import vn.com.buaansach.web.shared.repository.voucher.VoucherRepository;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface AdminVoucherRepository extends JpaRepository<VoucherEntity, Long> {
+public interface AdminVoucherRepository extends VoucherRepository {
     @Query("SELECT new vn.com.buaansach.web.admin.service.dto.readwrite.AdminVoucherDTO(voucher, time, usage) " +
             "FROM VoucherEntity voucher " +
             "LEFT JOIN vn.com.buaansach.entity.voucher.condition.VoucherTimeConditionEntity time " +
@@ -20,6 +17,4 @@ public interface AdminVoucherRepository extends JpaRepository<VoucherEntity, Lon
             "ON voucher.guid = usage.voucherGuid " +
             "ORDER BY voucher.id ASC")
     List<AdminVoucherDTO> findListAdminVoucherDTO();
-
-    Optional<VoucherEntity> findOneByGuid(UUID voucherGuid);
 }

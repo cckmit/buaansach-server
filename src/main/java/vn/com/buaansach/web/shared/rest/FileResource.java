@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/v1/file")
+@RequestMapping("/api/v1/public/file")
 @RequiredArgsConstructor
 public class FileResource {
     private final FileService fileService;
