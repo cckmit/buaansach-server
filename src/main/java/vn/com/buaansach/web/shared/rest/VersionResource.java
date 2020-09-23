@@ -16,7 +16,7 @@ public class VersionResource {
     private final VersionService versionService;
 
     @GetMapping("/latest/{versionType}")
-    public ResponseEntity<VersionEntity> getLatestVersion(@PathVariable String versionType) {
+    public ResponseEntity<String> getLatestVersion(@PathVariable String versionType) {
         return ResponseEntity.ok(versionService.getLatestVersion(versionType));
     }
 }

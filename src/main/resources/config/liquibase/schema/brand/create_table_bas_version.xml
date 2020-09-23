@@ -16,6 +16,7 @@
             <column name="version_description" type="varchar(255)"/>
             <column name="version_type" type="varchar(30)"/>
             <column name="version_number" type="varchar(255)"/>
+            <column name="version_deployed" type="boolean"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

@@ -45,6 +45,13 @@ public class AdminVersionResource {
         return ResponseEntity.ok(adminVersionService.getLatestVersion(versionType));
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<Void> updateVersion(@RequestBody VersionEntity payload) {
+        log.debug("REST request from user [{}] to update [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        adminVersionService.updateVersion(payload);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/delete/{versionGuid}")
     public ResponseEntity<Void> deleteVersion(@PathVariable String versionGuid) {
         log.debug("REST request from user [{}] to delete [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, versionGuid);

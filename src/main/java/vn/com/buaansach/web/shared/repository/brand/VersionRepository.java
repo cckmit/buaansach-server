@@ -7,14 +7,14 @@ import org.springframework.stereotype.Repository;
 import vn.com.buaansach.entity.brand.VersionEntity;
 import vn.com.buaansach.entity.enumeration.VersionType;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface VersionRepository extends JpaRepository<VersionEntity, Long> {
 
-    @Query(value = "SELECT ve FROM bas_version ve WHERE ve.version_type = :versionType ORDER BY ve.id DESC LIMIT 1", nativeQuery = true)
-    Optional<VersionEntity> findLatestVersionByType(@Param("versionType") VersionType versionType);
+    List<VersionEntity> findByVersionTypeAndVersionDeployedTrueOrderByIdDesc(VersionType versionType);
 
     Optional<VersionEntity> findOneByGuid(UUID fromString);
 }

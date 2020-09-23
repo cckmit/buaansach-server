@@ -6,13 +6,15 @@ import vn.com.buaansach.entity.brand.VersionEntity;
 import vn.com.buaansach.entity.enumeration.VersionType;
 import vn.com.buaansach.web.shared.repository.brand.VersionRepository;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class VersionService {
     private final VersionRepository versionRepository;
 
-    public VersionEntity getLatestVersion(String versionType) {
-        return versionRepository.findLatestVersionByType(VersionType.valueOf(versionType))
-                .orElse(new VersionEntity());
+    public String getLatestVersion(String versionType) {
+        List<VersionEntity> list =  versionRepository.findByVersionTypeAndVersionDeployedTrueOrderByIdDesc(VersionType.valueOf(versionType));
+        return list.size() > 0 ? list.get(0).getVersionNumber() : null;
     }
 }

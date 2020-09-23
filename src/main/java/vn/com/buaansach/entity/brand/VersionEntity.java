@@ -39,4 +39,7 @@ public class VersionEntity extends AbstractAuditingEntity implements Serializabl
 
     @Column(name = "version_number")
     private String versionNumber;
+
+    @Column(name = "version_deployed")
+    private boolean versionDeployed;
 }

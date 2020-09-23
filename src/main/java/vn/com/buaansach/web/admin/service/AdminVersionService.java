@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.brand.VersionEntity;
 import vn.com.buaansach.entity.enumeration.VersionType;
+import vn.com.buaansach.exception.ErrorCode;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.admin.repository.brand.AdminVersionRepository;
 
 import java.util.List;
@@ -15,7 +17,15 @@ public class AdminVersionService {
     private final AdminVersionRepository adminVersionRepository;
 
     public VersionEntity createVersion(VersionEntity payload) {
+        payload.setGuid(UUID.randomUUID());
         return adminVersionRepository.save(payload);
+    }
+
+    public void updateVersion(VersionEntity payload){
+        VersionEntity entity = adminVersionRepository.findOneByGuid(payload.getGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.VERSION_NOT_FOUND));
+        entity.setVersionDeployed(!entity.isVersionDeployed());
+        adminVersionRepository.save(entity);
     }
 
     public void deleteVersion(String versionGuid) {
@@ -27,7 +37,7 @@ public class AdminVersionService {
     }
 
     public VersionEntity getLatestVersion(String versionType) {
-        return adminVersionRepository.findLatestVersionByType(VersionType.valueOf(versionType))
-                .orElse(new VersionEntity());
+        List<VersionEntity> list =  adminVersionRepository.findByVersionTypeAndVersionDeployedTrueOrderByIdDesc(VersionType.valueOf(versionType));
+        return list.get(0);
     }
 }

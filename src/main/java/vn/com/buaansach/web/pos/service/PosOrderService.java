@@ -239,6 +239,9 @@ public class PosOrderService {
         }
     }
 
+    /**
+     * Thanh toán đơn lẻ
+     */
     @Transactional
     public void purchaseOrder(PosOrderPurchaseDTO payload, String currentUser) {
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
@@ -456,6 +459,9 @@ public class PosOrderService {
         return listPosOrder;
     }
 
+    /**
+     * Thanh toán đơn lẻ
+     */
     @Transactional
     public void purchaseGroupOrder(PosPurchaseGroupDTO payload) {
         String currentUser = SecurityUtils.getCurrentUserLogin();
@@ -502,5 +508,12 @@ public class PosOrderService {
 
         posOrderRepository.saveAll(listOrder);
         posSeatService.resetListSeat(listSeat);
+
+        listOrder.forEach(order -> {
+            PosSocketDTO dto = new PosSocketDTO();
+            dto.setMessage(WebSocketConstants.POS_PURCHASE_ORDER);
+            dto.setPayload(null);
+            posSocketService.sendMessage(WebSocketConstants.TOPIC_GUEST_PREFIX + order.getGuid(), dto);
+        });
     }
 }
