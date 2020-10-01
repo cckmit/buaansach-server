@@ -3,6 +3,7 @@ package vn.com.buaansach.web.shared.repository.user;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import vn.com.buaansach.entity.enumeration.UserType;
 import vn.com.buaansach.entity.user.UserEntity;
 
 import java.util.Optional;
@@ -29,4 +30,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     @EntityGraph(attributePaths = "authorities")
     Optional<UserEntity> findOneWithAuthoritiesByUserPhone(String phone);
+
+    int countByUserType(UserType userType);
 }

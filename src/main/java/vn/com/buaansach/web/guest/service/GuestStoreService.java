@@ -11,6 +11,7 @@ import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.guest.repository.notification.GuestStoreNotificationRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestSeatRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestStoreRepository;
+import vn.com.buaansach.web.guest.security.GuestStoreSecurity;
 import vn.com.buaansach.web.guest.service.dto.read.GuestStoreDTO;
 import vn.com.buaansach.web.guest.service.dto.read.GuestStoreNotificationDTO;
 import vn.com.buaansach.web.guest.websocket.GuestSocketService;
@@ -25,6 +26,7 @@ public class GuestStoreService {
     private final GuestSocketService guestSocketService;
     private final GuestSeatRepository guestSeatRepository;
     private final GuestStoreNotificationRepository guestStoreNotificationRepository;
+    private final GuestStoreSecurity guestStoreSecurity;
 
     public GuestStoreDTO getStoreBySeat(String seatGuid) {
         return new GuestStoreDTO(guestStoreRepository.findOneBySeatGuid(UUID.fromString(seatGuid))
@@ -32,6 +34,8 @@ public class GuestStoreService {
     }
 
     public void callWaiter(GuestCallWaiterDTO payload) {
+        guestStoreSecurity.blockAccessIfStoreIsNotOpenOrDeactivated(payload.getStoreGuid());
+
         guestStoreRepository.findOneByGuid(payload.getStoreGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 

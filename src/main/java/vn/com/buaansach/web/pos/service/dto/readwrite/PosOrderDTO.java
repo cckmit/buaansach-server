@@ -28,6 +28,8 @@ public class PosOrderDTO extends AuditDTO {
     private String orderCancelReason;
     private int orderDiscount;
     private DiscountType orderDiscountType;
+    private int orderPointValue;
+    private int orderPointCost;
     private int orderTotalAmount;
     private String orderCustomerPhone;
 
@@ -62,6 +64,8 @@ public class PosOrderDTO extends AuditDTO {
         this.orderCancelReason = orderEntity.getOrderCancelReason();
         this.orderDiscount = orderEntity.getOrderDiscount();
         this.orderDiscountType = orderEntity.getOrderDiscountType();
+        this.orderPointValue = orderEntity.getOrderPointValue();
+        this.orderPointCost = orderEntity.getOrderPointCost();
         this.orderTotalAmount = orderEntity.getOrderTotalAmount();
         this.orderCustomerPhone = orderEntity.getOrderCustomerPhone();
 

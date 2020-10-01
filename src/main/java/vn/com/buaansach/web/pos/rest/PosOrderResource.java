@@ -77,13 +77,13 @@ public class PosOrderResource {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/change-customer-phone")
-    public ResponseEntity<Void> changeCustomerPhone(@Valid @RequestBody PosOrderCustomerPhoneChangeDTO payload) {
-        String currentUser = SecurityUtils.getCurrentUserLogin();
-        log.debug("REST request from user [{}] to change customer phone for [{}] : [{}]", currentUser, ENTITY_NAME, payload);
-        posOrderService.changeCustomerPhone(payload, currentUser);
-        return ResponseEntity.ok().build();
-    }
+//    @PutMapping("/change-customer-phone")
+//    public ResponseEntity<Void> changeCustomerPhone(@Valid @RequestBody PosOrderCustomerPhoneChangeDTO payload) {
+//        String currentUser = SecurityUtils.getCurrentUserLogin();
+//        log.debug("REST request from user [{}] to change customer phone for [{}] : [{}]", currentUser, ENTITY_NAME, payload);
+//        posOrderService.changeCustomerPhone(payload, currentUser);
+//        return ResponseEntity.ok().build();
+//    }
 
     @PostMapping("/get-list-order-by-list-seat")
     public ResponseEntity<List<PosOrderDTO>> getListOrderByListSeat(@Valid @RequestBody PosListOrderDTO payload) {

@@ -37,4 +37,14 @@
             <column name="user_id" type="numeric"/>
         </loadData>
     </changeSet>
+    <changeSet id="init_customer_data" author="ductv">
+        <loadData
+                file="config/liquibase/data/csv/customer.csv"
+                separator=";"
+                tableName="bas_customer">
+            <column name="customer_point" type="numeric"/>
+            <column name="user_guid" type="numeric"/>
+            <column name="created_date" type="timestamp"/>
+        </loadData>
+    </changeSet>
 </databaseChangeLog>

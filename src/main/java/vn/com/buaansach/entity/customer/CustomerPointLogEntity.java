@@ -5,6 +5,7 @@ import lombok.*;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.CustomerZaloStatus;
 import vn.com.buaansach.entity.enumeration.Gender;
+import vn.com.buaansach.entity.enumeration.PointLogType;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -27,13 +28,20 @@ public class CustomerPointLogEntity extends AbstractAuditingEntity implements Se
     @JsonIgnore
     private Long id;
 
-    @Size(max = 20)
-    @Column(name = "customer_phone", length = 20)
-    private String customerPhone;
+    @Column(name = "point_log_value")
+    private float pointLogValue;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "point_log_type")
+    private PointLogType pointLogType;
+
+    /**
+     * FK
+     * */
 
     @Column(name = "order_guid")
     private UUID orderGuid;
 
-    @Column(name = "earned_point")
-    private int earnedPoint;
+    @Column(name = "user_guid")
+    private UUID userGuid;
 }

@@ -4,10 +4,10 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
     <!--Schema-->
-    <include file="config/liquibase/schema/voucher/create_table_bas_voucher.xml"/>
-    <include file="config/liquibase/schema/voucher/create_table_bas_voucher_code.xml"/>
-    <include file="config/liquibase/schema/voucher/create_table_bas_voucher_usage.xml"/>
+<!--    <include file="config/liquibase/schema/voucher/create_table_bas_voucher.xml"/>-->
+<!--    <include file="config/liquibase/schema/voucher/create_table_bas_voucher_code.xml"/>-->
+<!--    <include file="config/liquibase/schema/voucher/create_table_bas_voucher_usage.xml"/>-->
 
-    <include file="config/liquibase/schema/voucher/condition/create_table_bas_voucher_time_condition.xml"/>
-    <include file="config/liquibase/schema/voucher/condition/create_table_bas_voucher_usage_condition.xml"/>
+<!--    <include file="config/liquibase/schema/voucher/condition/create_table_bas_voucher_time_condition.xml"/>-->
+<!--    <include file="config/liquibase/schema/voucher/condition/create_table_bas_voucher_usage_condition.xml"/>-->
 </databaseChangeLog>

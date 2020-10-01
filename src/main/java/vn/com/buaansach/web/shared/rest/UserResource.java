@@ -24,10 +24,7 @@ import vn.com.buaansach.web.shared.service.MailService;
 import vn.com.buaansach.web.shared.service.UserService;
 import vn.com.buaansach.web.shared.service.dto.read.JwtTokenDTO;
 import vn.com.buaansach.web.shared.service.dto.read.UserDTO;
-import vn.com.buaansach.web.shared.service.dto.write.LoginRequestDTO;
-import vn.com.buaansach.web.shared.service.dto.write.PasswordResetDTO;
-import vn.com.buaansach.web.shared.service.dto.write.UpdateAccountDTO;
-import vn.com.buaansach.web.shared.service.dto.write.UserPasswordChangeDTO;
+import vn.com.buaansach.web.shared.service.dto.write.*;
 
 import javax.validation.Valid;
 import java.util.Optional;
@@ -50,6 +47,14 @@ public class UserResource {
     private final UserRepository userRepository;
 
     private final UserProfileRepository userProfileRepository;
+
+    @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Void> registerUser(@Valid @RequestBody UserRegisterDTO payload){
+        log.debug("REST request to register [{}] : [{}]", ENTITY_NAME, payload.getUserLogin());
+        userService.registerUser(payload);
+        return ResponseEntity.noContent().build();
+    }
 
     @PostMapping("/authenticate")
     public ResponseEntity<JwtTokenDTO> authenticate(@Valid @RequestBody LoginRequestDTO dto) {
@@ -119,5 +124,25 @@ public class UserResource {
         log.debug("REST request to complete password reset with reset key: [{}]", dto.getKey());
         userService.completePasswordReset(dto.getNewPassword(), dto.getKey());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/check-phone-exist")
+    public ResponseEntity<Boolean> checkPhoneExist(@RequestParam("userPhone") String userPhone){
+        return ResponseEntity.ok(userService.checkPhoneExist(userPhone));
+    }
+
+    @GetMapping("/check-email-exist")
+    public ResponseEntity<Boolean> checkEmailExist(@RequestParam("userEmail") String userEmail){
+        return ResponseEntity.ok(userService.checkEmailExist(userEmail));
+    }
+
+    @GetMapping("/check-login-exist")
+    public ResponseEntity<Boolean> checkLoginExist(@RequestParam("userLogin") String userLogin){
+        return ResponseEntity.ok(userService.checkLoginExist(userLogin));
+    }
+
+    @GetMapping("/get-suggested-login")
+    public ResponseEntity<String> getSuggestedUserLogin(@RequestParam("fullName") String fullName){
+        return ResponseEntity.ok(userService.getSuggestedUserLogin(fullName));
     }
 }

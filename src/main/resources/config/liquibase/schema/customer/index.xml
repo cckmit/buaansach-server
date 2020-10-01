@@ -4,12 +4,12 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
     <!--Schema-->
-    <!--    <include file="config/liquibase/schema/customer/create_table_bas_customer.xml"/>-->
+        <include file="config/liquibase/schema/customer/create_table_bas_customer.xml"/>
     <!--    <include file="config/liquibase/schema/customer/create_table_bas_customer_feedback.xml"/>-->
     <!--    <include file="config/liquibase/schema/customer/create_table_bas_customer_rank.xml"/>-->
     <!--    <include file="config/liquibase/schema/customer/create_table_bas_customer_wallet.xml"/>-->
     <!--    <include file="config/liquibase/schema/customer/create_table_bas_customer_order.xml"/>-->
-    <!--    <include file="config/liquibase/schema/customer/create_table_bas_customer_point_log.xml"/>-->
+        <include file="config/liquibase/schema/customer/create_table_bas_customer_point_log.xml"/>
 
     <!--Modification-->
 

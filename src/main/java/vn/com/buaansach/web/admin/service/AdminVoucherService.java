@@ -2,7 +2,6 @@ package vn.com.buaansach.web.admin.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.enumeration.VoucherCodeClaimStatus;
 import vn.com.buaansach.entity.voucher.VoucherCodeEntity;
 import vn.com.buaansach.entity.voucher.VoucherEntity;
 import vn.com.buaansach.entity.voucher.condition.VoucherTimeConditionEntity;
@@ -11,8 +10,10 @@ import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.VoucherUtil;
 import vn.com.buaansach.util.sequence.CodeConstants;
-import vn.com.buaansach.util.sequence.CustomerCodeGenerator;
-import vn.com.buaansach.web.admin.repository.voucher.*;
+import vn.com.buaansach.web.admin.repository.voucher.AdminVoucherCodeRepository;
+import vn.com.buaansach.web.admin.repository.voucher.AdminVoucherRepository;
+import vn.com.buaansach.web.admin.repository.voucher.AdminVoucherTimeConditionRepository;
+import vn.com.buaansach.web.admin.repository.voucher.AdminVoucherUsageConditionRepository;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminVoucherDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminUpdateVoucherDTO;
 import vn.com.buaansach.web.admin.service.mapper.AdminVoucherMapper;
@@ -37,14 +38,14 @@ public class AdminVoucherService {
         return adminVoucherRepository.findListAdminVoucherDTO();
     }
 
-    private Set<String> generateVoucherCode(int numberOfCode){
+    private Set<String> generateVoucherCode(int numberOfCode) {
         List<VoucherCodeEntity> existedVoucherCodes = adminVoucherCodeRepository.findAll();
         Set<String> existedCodes = existedVoucherCodes.stream().map(VoucherCodeEntity::getVoucherCode).collect(Collectors.toSet());
 
         Set<String> setNewCodes = new HashSet<>();
         while (setNewCodes.size() < numberOfCode) {
             String code = VoucherUtil.generateVoucherCode(CodeConstants.VOUCHER_CODE_LENGTH).toLowerCase();
-            if (!code.startsWith(CodeConstants.CUSTOMER_CODE_PREFIX.toLowerCase()) && !existedCodes.contains(code)) {
+            if (!existedCodes.contains(code)) {
                 setNewCodes.add(code);
             }
         }

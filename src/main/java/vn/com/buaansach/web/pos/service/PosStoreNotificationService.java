@@ -20,6 +20,7 @@ import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreNotificationDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosStoreNotificationVisibilityUpdateDTO;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -39,9 +40,10 @@ public class PosStoreNotificationService {
     /**
      * Old store notification should be automatically deleted after 10 days.
      * <p>
-     * This is scheduled to get fired at 2:00 (am).
+     * This is scheduled to get fired at 1:00 (am).
      */
     @Scheduled(cron = "0 0 1 * * ?")
+    @Transactional
     public void removeOldStoreNotification() {
         Instant deletePoint = Instant.now().minus(10, ChronoUnit.DAYS);
         List<StoreNotificationEntity> list = posStoreNotificationRepository.findByCreatedDateBefore(deletePoint);
@@ -50,6 +52,7 @@ public class PosStoreNotificationService {
         posStorePayRequestNotificationRepository.deleteByStoreNotificationGuidIn(listGuid);
         posStoreOrderNotificationRepository.deleteByStoreNotificationGuidIn(listGuid);
         posStoreNotificationRepository.deleteAll(list);
+        log.debug("[Scheduling] Old store notification data deleted");
     }
 
     public PosStoreNotificationDTO createStoreOrderNotification(UUID storeGuid, UUID areaGuid, UUID seatGuid, UUID orderGuid, UUID orderProductGroup, int numberOfProduct) {

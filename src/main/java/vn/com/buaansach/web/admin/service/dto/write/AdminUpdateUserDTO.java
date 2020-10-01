@@ -27,8 +27,6 @@ public class AdminUpdateUserDTO {
     @Size(min = 10, max = 20)
     private String userPhone;
 
-    private UserType userType;
-
     private Set<String> authorities;
 
     @Size(min = 1, max = 100)

@@ -15,33 +15,17 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PaymentService {
     private final PaymentRepository paymentRepository;
-
-    public int calculatePayAmount(OrderEntity orderEntity) {
-        int payAmount = orderEntity.getOrderTotalAmount();
-        if (orderEntity.getOrderDiscount() > 0) {
-            switch (orderEntity.getOrderDiscountType()) {
-                case VALUE:
-                    payAmount = payAmount - orderEntity.getOrderDiscount();
-                    break;
-                case PERCENT:
-                    payAmount = payAmount - (payAmount * orderEntity.getOrderDiscount() / 100);
-                    break;
-            }
-        }
-        /* Nếu payAmount < 0 thì vẫn set về 0 */
-        payAmount = Math.max(payAmount, 0);
-        return payAmount;
-    }
+    private final PriceService priceService;
 
     public PaymentEntity makeCashPayment(String note, OrderEntity orderEntity) {
-        int paymentAmount = calculatePayAmount(orderEntity);
+        int paymentAmount = priceService.calculatePayAmount(orderEntity);
         return saveCashPayment(note, paymentAmount, 1);
     }
 
     public PaymentEntity makeCashPayment(String note, List<OrderEntity> listOrder) {
         int paymentAmount = 0;
         for (OrderEntity orderEntity : listOrder) {
-            paymentAmount += calculatePayAmount(orderEntity);
+            paymentAmount += priceService.calculatePayAmount(orderEntity);
         }
         return saveCashPayment(note, paymentAmount, listOrder.size());
     }

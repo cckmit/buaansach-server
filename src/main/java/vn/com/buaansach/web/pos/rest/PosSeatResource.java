@@ -10,6 +10,7 @@ import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.service.PosSeatService;
 import vn.com.buaansach.web.pos.service.dto.read.PosSeatDTO;
+import vn.com.buaansach.web.pos.service.dto.write.PosToggleLockListSeatDTO;
 
 import java.util.List;
 
@@ -32,6 +33,13 @@ public class PosSeatResource {
     public ResponseEntity<Void> toggleLock(@PathVariable String seatGuid){
         log.debug("REST request from user [{}] to toggle lock [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, seatGuid);
         posSeatService.toggleLock(seatGuid);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/toggle-lock-list")
+    public ResponseEntity<Void> toggleLockListSeat(@RequestBody PosToggleLockListSeatDTO payload){
+        log.debug("REST request from user [{}] to toggle lock [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        posSeatService.toggleLockListSeat(payload);
         return ResponseEntity.ok().build();
     }
 }

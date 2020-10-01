@@ -57,6 +57,12 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
     @Column(name = "order_discount_type")
     private DiscountType orderDiscountType;
 
+    @Column(name = "order_point_value")
+    private int orderPointValue;
+
+    @Column(name = "order_point_cost")
+    private int orderPointCost;
+
     @Column(name = "order_total_amount")
     private int orderTotalAmount;
 

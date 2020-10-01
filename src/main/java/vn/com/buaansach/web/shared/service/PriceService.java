@@ -3,6 +3,7 @@ package vn.com.buaansach.web.shared.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
+import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 
 import java.util.List;
@@ -33,5 +34,28 @@ public class PriceService {
                     price = Math.max(price, 0);
                     return entity.getOrderProductQuantity() * price;
                 }).sum();
+    }
+
+    public int calculatePayAmount(OrderEntity orderEntity) {
+        int payAmount = orderEntity.getOrderTotalAmount();
+        if (orderEntity.getOrderDiscount() > 0) {
+            switch (orderEntity.getOrderDiscountType()) {
+                case VALUE:
+                    payAmount = payAmount - orderEntity.getOrderDiscount();
+                    break;
+                case PERCENT:
+                    payAmount = payAmount - (payAmount * orderEntity.getOrderDiscount() / 100);
+                    break;
+            }
+        }
+
+        if (orderEntity.getOrderPointCost() > 0){
+            payAmount = payAmount - orderEntity.getOrderPointCost();
+        }
+
+        /* Nếu payAmount < 0 thì vẫn set về 0 */
+        payAmount = Math.max(payAmount, 0);
+
+        return payAmount;
     }
 }

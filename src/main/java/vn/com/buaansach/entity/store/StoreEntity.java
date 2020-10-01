@@ -73,6 +73,9 @@ public class StoreEntity extends AbstractAuditingEntity implements Serializable 
     @Column(name = "store_activated")
     private boolean storeActivated;
 
+    @Column(name = "store_reward_point_activated")
+    private boolean storeRewardPointActivated;
+
     @Column(name = "store_primary_sale_guid")
     private UUID storePrimarySaleGuid;
 }

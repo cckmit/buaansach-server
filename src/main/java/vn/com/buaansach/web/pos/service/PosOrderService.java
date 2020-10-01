@@ -35,6 +35,7 @@ import vn.com.buaansach.web.pos.service.dto.write.*;
 import vn.com.buaansach.web.pos.service.mapper.PosOrderProductMapper;
 import vn.com.buaansach.web.pos.websocket.PosSocketService;
 import vn.com.buaansach.web.pos.websocket.dto.PosSocketDTO;
+import vn.com.buaansach.web.shared.service.CustomerService;
 import vn.com.buaansach.web.shared.service.PaymentService;
 import vn.com.buaansach.web.shared.service.PriceService;
 import vn.com.buaansach.web.shared.service.SaleService;
@@ -68,6 +69,7 @@ public class PosOrderService {
     private final PosSaleService posSaleService;
     private final PosStoreProductRepository posStoreProductRepository;
     private final SaleService saleService;
+    private final CustomerService customerService;
 
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
@@ -256,6 +258,9 @@ public class PosOrderService {
         if (!orderEntity.getOrderStatus().equals(OrderStatus.RECEIVED))
             throw new BadRequestException(ErrorCode.INVALID_ORDER_STATUS);
 
+        if (payload.getOrderPointValue() != orderEntity.getOrderPointValue())
+            throw new BadRequestException(ErrorCode.ORDER_POINT_VALUE_NOT_MATCH);
+
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         /* create voucher code usage record if a voucher code has been applied */
@@ -294,6 +299,12 @@ public class PosOrderService {
                 break;
         }
 
+        customerService.usePoint(orderEntity);
+
+        if (storeEntity.isStoreRewardPointActivated()) {
+            customerService.earnPoint(orderEntity);
+        }
+
         PosSocketDTO dto = new PosSocketDTO();
         dto.setMessage(WebSocketConstants.POS_PURCHASE_ORDER);
         dto.setPayload(null);
@@ -324,6 +335,7 @@ public class PosOrderService {
                 currentUser);
         orderEntity.setOrderStatusTimeline(newTimeline);
 
+        customerService.rollbackPoint(orderEntity);
         posSeatService.resetSeat(orderEntity.getSeatGuid());
         posOrderRepository.save(orderEntity);
 
@@ -475,12 +487,12 @@ public class PosOrderService {
         if (listSeat.size() != payload.getListSeatGuid().size())
             throw new BadRequestException(ErrorCode.SOME_ORDER_NOT_FOUND);
 
-        listSeat.forEach(item -> {
+        for (SeatEntity item: listSeat){
             if (item.getSeatStatus().equals(SeatStatus.EMPTY))
                 throw new BadRequestException(ErrorCode.LIST_PURCHASE_HAS_EMPTY_SEAT);
             if (item.getSeatServiceStatus().equals(SeatServiceStatus.UNFINISHED))
                 throw new BadRequestException(ErrorCode.LIST_PURCHASE_HAS_UNFINISHED_SEAT);
-        });
+        }
 
         List<UUID> listOrderGuid = listSeat.stream().map(SeatEntity::getOrderGuid).collect(Collectors.toList());
 
@@ -504,6 +516,10 @@ public class PosOrderService {
                     OrderTimelineStatus.PURCHASED,
                     currentUser);
             orderEntity.setOrderStatusTimeline(newTimeline);
+            customerService.usePoint(orderEntity);
+            if (storeEntity.isStoreRewardPointActivated()){
+                customerService.earnPoint(orderEntity);
+            }
         });
 
         posOrderRepository.saveAll(listOrder);

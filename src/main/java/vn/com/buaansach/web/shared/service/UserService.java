@@ -1,24 +1,34 @@
 package vn.com.buaansach.web.shared.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import vn.com.buaansach.entity.enumeration.UserType;
+import vn.com.buaansach.entity.user.AuthorityEntity;
 import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.entity.user.UserProfileEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
+import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.util.RandomUtil;
+import vn.com.buaansach.util.StringUtil;
+import vn.com.buaansach.util.sequence.UserCodeGenerator;
 import vn.com.buaansach.web.shared.repository.user.UserProfileRepository;
 import vn.com.buaansach.web.shared.repository.user.UserRepository;
 import vn.com.buaansach.web.shared.service.dto.write.UpdateAccountDTO;
+import vn.com.buaansach.web.shared.service.dto.write.UserRegisterDTO;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +40,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final FileService fileService;
+
+    private final CustomerService customerService;
 
     @Transactional
     public void updateAccount(UpdateAccountDTO dto, MultipartFile image) {
@@ -103,6 +115,76 @@ public class UserService {
         } else {
             throw new NotFoundException(ErrorCode.RESET_KEY_NOT_FOUND_OR_EXPIRED);
         }
+    }
+
+    public void registerUser(UserRegisterDTO dto) {
+        if (dto.getUserLogin() != null && userRepository.findOneByUserLoginIgnoreCase(dto.getUserLogin().toLowerCase()).isPresent()) {
+            throw new BadRequestException(ErrorCode.LOGIN_EXIST);
+        }
+        if (dto.getUserEmail() != null && userRepository.findOneByUserEmailIgnoreCase(dto.getUserEmail()).isPresent()) {
+            throw new BadRequestException(ErrorCode.EMAIL_EXIST);
+        }
+        if (dto.getUserPhone() != null && userRepository.findOneByUserPhone(dto.getUserPhone()).isPresent()) {
+            throw new BadRequestException(ErrorCode.PHONE_EXIST);
+        }
+
+        UserEntity userEntity = new UserEntity();
+        UUID userGuid = UUID.randomUUID();
+        userEntity.setGuid(userGuid);
+        userEntity.setUserLogin(dto.getUserLogin().toLowerCase());
+        if (dto.getUserEmail() != null) {
+            userEntity.setUserEmail(dto.getUserEmail().toLowerCase());
+        }
+        if (dto.getUserPhone() != null) {
+            userEntity.setUserPhone(dto.getUserPhone());
+        }
+
+        userEntity.setUserPassword(passwordEncoder.encode(dto.getUserPassword()));
+        userEntity.setUserActivated(true);
+        userEntity.setUserType(UserType.CUSTOMER);
+
+        Set<AuthorityEntity> authorities = new HashSet<>();
+        authorities.add(new AuthorityEntity(AuthoritiesConstants.CUSTOMER));
+        userEntity.setAuthorities(authorities);
+
+        UserProfileEntity profileEntity = new UserProfileEntity();
+        profileEntity.setUserCode(UserCodeGenerator.generateForCustomer());
+        profileEntity.setFullName(dto.getFullName());
+        profileEntity.setUserGuid(userGuid);
+        profileEntity.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
+        userRepository.save(userEntity);
+        userProfileRepository.save(profileEntity);
+        customerService.createdCustomer(userGuid);
+    }
+
+    public boolean checkPhoneExist(String userPhone) {
+        return userRepository.findOneByUserPhone(userPhone).isPresent();
+    }
+
+    public boolean checkEmailExist(String userEmail) {
+        return userRepository.findOneByUserEmailIgnoreCase(userEmail.toLowerCase()).isPresent();
+    }
+
+    public boolean checkLoginExist(String userLogin) {
+        return userRepository.findOneByUserLoginIgnoreCase(userLogin.toLowerCase()).isPresent();
+    }
+
+    public String getSuggestedUserLogin(String fullName) {
+        int tryCount = 0;
+        String prefix = fullName.toLowerCase().replaceAll("\\s+", "");
+        prefix = StringUtil.normalizeString(prefix);
+        boolean validUserLogin = false;
+        String suffix = RandomStringUtils.randomNumeric(3);
+        while (!validUserLogin && tryCount < 100) {
+            if (userRepository.findOneByUserLoginIgnoreCase(prefix + suffix).isEmpty()) {
+                validUserLogin = true;
+            }
+            suffix = RandomStringUtils.randomNumeric(3);
+            tryCount++;
+        }
+
+        if (validUserLogin) return prefix + suffix;
+        else return "";
     }
 
 }

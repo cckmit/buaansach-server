@@ -17,10 +17,12 @@ import vn.com.buaansach.web.guest.repository.notification.GuestStorePayRequestNo
 import vn.com.buaansach.web.guest.repository.order.GuestOrderRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestSeatRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestStoreRepository;
+import vn.com.buaansach.web.guest.security.GuestStoreSecurity;
 import vn.com.buaansach.web.guest.service.dto.read.GuestStoreNotificationDTO;
 import vn.com.buaansach.web.guest.service.dto.write.GuestStorePayRequestDTO;
 import vn.com.buaansach.web.guest.websocket.GuestSocketService;
 import vn.com.buaansach.web.shared.service.PaymentService;
+import vn.com.buaansach.web.shared.service.PriceService;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -34,7 +36,8 @@ public class GuestStorePayRequestNotificationService {
     private final GuestStoreRepository guestStoreRepository;
     private final GuestSeatRepository guestSeatRepository;
     private final GuestSocketService guestSocketService;
-    private final PaymentService paymentService;
+    private final GuestStoreSecurity guestStoreSecurity;
+    private final PriceService priceService;
     private final GuestStoreNotificationRepository guestStoreNotificationRepository;
 
     @Transactional
@@ -48,11 +51,16 @@ public class GuestStorePayRequestNotificationService {
         StoreEntity storeEntity = guestStoreRepository.findOneBySeatGuid(seatEntity.getGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
+        guestStoreSecurity.blockAccessIfStoreIsNotOpenOrDeactivated(storeEntity.getGuid());
+
+        if (seatEntity.isSeatLocked())
+            throw new BadRequestException(ErrorCode.SEAT_LOCKED);
+
         List<StoreNotificationEntity> list = guestStoreNotificationRepository
                 .findByOrderGuidAndStoreNotificationType(orderEntity.getGuid(), StoreNotificationType.PAY_REQUEST);
         if (!list.isEmpty()) throw new BadRequestException(ErrorCode.STORE_PAY_REQUEST_EXIST);
 
-        long payAmount = paymentService.calculatePayAmount(orderEntity);
+        long payAmount = priceService.calculatePayAmount(orderEntity);
         if (payAmount > payload.getStorePayRequestAmount())
             throw new BadRequestException(ErrorCode.PAY_AMOUNT_NOT_ENOUGH);
 

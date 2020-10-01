@@ -32,8 +32,6 @@ public class AdminCreateUserDTO {
 
     private boolean userActivated;
 
-    private UserType userType;
-
     private Set<String> authorities;
 
     /* Profile */
@@ -50,9 +48,9 @@ public class AdminCreateUserDTO {
         this.userPhone = dto.getUserPhone();
         this.userPassword = dto.getUserPassword();
         this.userActivated = true;
-        this.userType = UserType.INTERNAL;
         Set<String> authorities = new HashSet<>();
         authorities.add(AuthoritiesConstants.INTERNAL_USER);
+        authorities.add(AuthoritiesConstants.CUSTOMER);
         this.authorities = authorities;
         this.fullName = dto.getFullName();
         this.langKey = Constants.DEFAULT_LANGUAGE;

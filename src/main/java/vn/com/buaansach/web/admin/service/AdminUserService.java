@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.entity.enumeration.UserType;
 import vn.com.buaansach.entity.user.AuthorityEntity;
 import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.entity.user.UserProfileEntity;
@@ -23,6 +24,7 @@ import vn.com.buaansach.web.admin.service.dto.read.AdminUserDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateUserDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminPasswordChangeDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminUpdateUserDTO;
+import vn.com.buaansach.web.shared.service.CustomerService;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
@@ -38,6 +40,8 @@ public class AdminUserService {
     private final AdminUserProfileRepository adminUserProfileRepository;
     private final PasswordEncoder passwordEncoder;
     private final AdminAuthorityRepository adminAuthorityRepository;
+    private final AdminCodeService adminCodeService;
+    private final CustomerService customerService;
 
     @Transactional
     public AdminUserDTO createUser(AdminCreateUserDTO dto) {
@@ -64,7 +68,7 @@ public class AdminUserService {
 
         userEntity.setUserPassword(passwordEncoder.encode(dto.getUserPassword()));
         userEntity.setUserActivated(dto.isUserActivated());
-        userEntity.setUserType(dto.getUserType());
+        userEntity.setUserType(UserType.INTERNAL);
 
         if (dto.getAuthorities() != null) {
             Set<AuthorityEntity> authorities = dto.getAuthorities().stream()
@@ -76,11 +80,12 @@ public class AdminUserService {
         } else {
             Set<AuthorityEntity> authorities = new HashSet<>();
             authorities.add(new AuthorityEntity(AuthoritiesConstants.INTERNAL_USER));
+            authorities.add(new AuthorityEntity(AuthoritiesConstants.CUSTOMER));
             userEntity.setAuthorities(authorities);
         }
 
         UserProfileEntity profileEntity = new UserProfileEntity();
-        profileEntity.setUserCode(UserCodeGenerator.generate());
+        profileEntity.setUserCode(adminCodeService.generateCodeForUser());
         profileEntity.setFullName(dto.getFullName());
         profileEntity.setUserGuid(userGuid);
         if (dto.getLangKey() == null || dto.getLangKey().isEmpty()) {
@@ -89,6 +94,7 @@ public class AdminUserService {
             profileEntity.setLangKey(dto.getLangKey());
         }
 
+        customerService.createdCustomer(userGuid);
         return new AdminUserDTO(adminUserRepository.save(userEntity), adminUserProfileRepository.save(profileEntity));
     }
 
@@ -109,7 +115,6 @@ public class AdminUserService {
 
         currentUser.setUserEmail(dto.getUserEmail());
         currentUser.setUserPhone(dto.getUserPhone());
-        currentUser.setUserType(dto.getUserType());
         if (dto.getAuthorities() != null) {
             Set<AuthorityEntity> authorities = dto.getAuthorities().stream()
                     .map(adminAuthorityRepository::findByName)

@@ -21,6 +21,8 @@
             <column name="order_cancel_reason" type="varchar(255)"/>
             <column name="order_discount" type="int"/>
             <column name="order_discount_type" type="varchar(30)"/>
+            <column name="order_point_value" type="int"/>
+            <column name="order_point_cost" type="int"/>
             <column name="order_total_amount" type="int"/>
             <column name="order_customer_phone" type="varchar(20)"/>
 
