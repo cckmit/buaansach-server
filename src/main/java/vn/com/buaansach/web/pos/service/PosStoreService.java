@@ -5,7 +5,8 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
-import vn.com.buaansach.util.WebSocketConstants;
+import vn.com.buaansach.util.WebSocketEndpoints;
+import vn.com.buaansach.util.WebSocketMessages;
 import vn.com.buaansach.web.pos.repository.store.PosStoreRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosStoreDTO;
@@ -36,8 +37,8 @@ public class PosStoreService {
         posStoreRepository.save(storeEntity);
 
         PosSocketDTO dto = new PosSocketDTO();
-        dto.setMessage(WebSocketConstants.POS_UPDATE_STORE_STATUS);
+        dto.setMessage(WebSocketMessages.POS_UPDATE_STORE_STATUS);
         dto.setPayload(payload);
-        posSocketService.sendMessage(WebSocketConstants.TOPIC_GUEST_PREFIX + storeEntity.getGuid(), dto);
+        posSocketService.sendMessage(WebSocketEndpoints.TOPIC_GUEST_PREFIX + storeEntity.getGuid(), dto);
     }
 }

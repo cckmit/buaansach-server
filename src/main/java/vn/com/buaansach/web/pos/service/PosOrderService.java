@@ -16,7 +16,8 @@ import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.TimelineUtil;
-import vn.com.buaansach.util.WebSocketConstants;
+import vn.com.buaansach.util.WebSocketEndpoints;
+import vn.com.buaansach.util.WebSocketMessages;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
 import vn.com.buaansach.web.pos.repository.notification.PosStoreNotificationRepository;
 import vn.com.buaansach.web.pos.repository.order.PosOrderProductRepository;
@@ -306,9 +307,9 @@ public class PosOrderService {
         }
 
         PosSocketDTO dto = new PosSocketDTO();
-        dto.setMessage(WebSocketConstants.POS_PURCHASE_ORDER);
+        dto.setMessage(WebSocketMessages.POS_PURCHASE_ORDER);
         dto.setPayload(null);
-        posSocketService.sendMessage(WebSocketConstants.TOPIC_GUEST_PREFIX + payload.getOrderGuid(), dto);
+        posSocketService.sendMessage(WebSocketEndpoints.TOPIC_GUEST_PREFIX + payload.getOrderGuid(), dto);
     }
 
     /**
@@ -487,7 +488,7 @@ public class PosOrderService {
         if (listSeat.size() != payload.getListSeatGuid().size())
             throw new BadRequestException(ErrorCode.SOME_ORDER_NOT_FOUND);
 
-        for (SeatEntity item: listSeat){
+        for (SeatEntity item : listSeat) {
             if (item.getSeatStatus().equals(SeatStatus.EMPTY))
                 throw new BadRequestException(ErrorCode.LIST_PURCHASE_HAS_EMPTY_SEAT);
             if (item.getSeatServiceStatus().equals(SeatServiceStatus.UNFINISHED))
@@ -517,7 +518,7 @@ public class PosOrderService {
                     currentUser);
             orderEntity.setOrderStatusTimeline(newTimeline);
             customerService.usePoint(orderEntity);
-            if (storeEntity.isStoreRewardPointActivated()){
+            if (storeEntity.isStoreRewardPointActivated()) {
                 customerService.earnPoint(orderEntity);
             }
         });
@@ -527,9 +528,9 @@ public class PosOrderService {
 
         listOrder.forEach(order -> {
             PosSocketDTO dto = new PosSocketDTO();
-            dto.setMessage(WebSocketConstants.POS_PURCHASE_ORDER);
+            dto.setMessage(WebSocketMessages.POS_PURCHASE_ORDER);
             dto.setPayload(null);
-            posSocketService.sendMessage(WebSocketConstants.TOPIC_GUEST_PREFIX + order.getGuid(), dto);
+            posSocketService.sendMessage(WebSocketEndpoints.TOPIC_GUEST_PREFIX + order.getGuid(), dto);
         });
     }
 }

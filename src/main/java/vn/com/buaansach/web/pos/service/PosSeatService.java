@@ -9,7 +9,8 @@ import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
-import vn.com.buaansach.util.WebSocketConstants;
+import vn.com.buaansach.util.WebSocketEndpoints;
+import vn.com.buaansach.util.WebSocketMessages;
 import vn.com.buaansach.web.pos.repository.store.PosSeatRepository;
 import vn.com.buaansach.web.pos.repository.store.PosStoreRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
@@ -44,7 +45,7 @@ public class PosSeatService {
         posSeatRepository.save(seatEntity);
     }
 
-    public void resetListSeat(List<SeatEntity> listSeat){
+    public void resetListSeat(List<SeatEntity> listSeat) {
         listSeat.forEach(seatEntity -> {
             seatEntity.setSeatLocked(false);
             seatEntity.setSeatStatus(SeatStatus.EMPTY);
@@ -95,12 +96,12 @@ public class PosSeatService {
         posSeatRepository.save(seatEntity);
 
         PosSocketDTO dto = new PosSocketDTO();
-        dto.setMessage(WebSocketConstants.POS_LOCK_SEAT);
+        dto.setMessage(WebSocketMessages.POS_LOCK_SEAT);
         dto.setPayload(seatEntity);
-        posSocketService.sendMessage(WebSocketConstants.TOPIC_GUEST_PREFIX + seatEntity.getGuid(), dto);
+        posSocketService.sendMessage(WebSocketEndpoints.TOPIC_GUEST_PREFIX + seatEntity.getGuid(), dto);
     }
 
-    public void toggleLockListSeat(PosToggleLockListSeatDTO payload){
+    public void toggleLockListSeat(PosToggleLockListSeatDTO payload) {
         List<SeatEntity> list = posSeatRepository.findByGuidIn(payload.getListSeatGuid());
         if (list.size() != payload.getListSeatGuid().size())
             throw new BadRequestException(ErrorCode.LIST_SEAT_SIZE_NOT_MATCH);
@@ -111,9 +112,9 @@ public class PosSeatService {
 
         list.forEach(item -> {
             PosSocketDTO dto = new PosSocketDTO();
-            dto.setMessage(WebSocketConstants.POS_LOCK_SEAT);
+            dto.setMessage(WebSocketMessages.POS_LOCK_SEAT);
             dto.setPayload(item);
-            posSocketService.sendMessage(WebSocketConstants.TOPIC_GUEST_PREFIX + item.getGuid(), dto);
+            posSocketService.sendMessage(WebSocketEndpoints.TOPIC_GUEST_PREFIX + item.getGuid(), dto);
         });
     }
 }

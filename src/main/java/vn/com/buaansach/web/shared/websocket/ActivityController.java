@@ -10,7 +10,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import vn.com.buaansach.util.Constants;
-import vn.com.buaansach.util.WebSocketConstants;
+import vn.com.buaansach.util.WebSocketEndpoints;
 import vn.com.buaansach.web.shared.websocket.dto.ActivityDTO;
 import vn.com.buaansach.web.shared.websocket.enumeration.ActiveStatus;
 
@@ -29,8 +29,8 @@ public class ActivityController implements ApplicationListener<SessionDisconnect
     private final SimpMessageSendingOperations messagingTemplate;
 
     /* prefix /app */
-    @MessageMapping(WebSocketConstants.APP_ACTIVITY)
-    @SendTo(WebSocketConstants.TOPIC_ADMIN_TRACKER)
+    @MessageMapping(WebSocketEndpoints.APP_ACTIVITY)
+    @SendTo(WebSocketEndpoints.TOPIC_ADMIN_TRACKER)
     public ActivityDTO sendActivity(@Payload ActivityDTO activityDTO, StompHeaderAccessor stompHeaderAccessor, Principal principal) {
         activityDTO.setStatus(ActiveStatus.CONNECTED);
         activityDTO.setUserLogin(principal.getName());
@@ -50,6 +50,6 @@ public class ActivityController implements ApplicationListener<SessionDisconnect
         String userLogin = event.getUser() != null ? event.getUser().getName() : Constants.ANONYMOUS_USER;
         activityDTO.setUserLogin(userLogin);
         activeUsers.remove(activityDTO);
-        messagingTemplate.convertAndSend(WebSocketConstants.TOPIC_ADMIN_TRACKER, activityDTO);
+        messagingTemplate.convertAndSend(WebSocketEndpoints.TOPIC_ADMIN_TRACKER, activityDTO);
     }
 }
