@@ -42,12 +42,4 @@ public class GuestOrderResource {
         return ResponseEntity.ok(guestOrderService.updateOrder(payload, currentUser));
     }
 
-    @PutMapping("/update-phone")
-    public ResponseEntity<Void> updateOrderPhone(@RequestBody OrderEntity payload) {
-        String currentUser = SecurityUtils.getCurrentUserLogin();
-        log.debug("REST request from user [{}] to update phone [{}] : [{}]", currentUser, ENTITY_NAME, payload);
-        guestOrderService.updateOrderPhone(payload, currentUser);
-        return ResponseEntity.noContent().build();
-    }
-
 }

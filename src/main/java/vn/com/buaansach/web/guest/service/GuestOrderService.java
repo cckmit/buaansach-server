@@ -72,12 +72,6 @@ public class GuestOrderService {
 
     @Transactional
     public GuestOrderDTO createOrder(GuestCreateOrderDTO payload, String currentUser) {
-        UserEntity userEntity = new UserEntity();
-        if (!currentUser.equals(Constants.ANONYMOUS_USER)){
-            userEntity = guestUserRepository.findOneByUserLoginIgnoreCase(currentUser)
-                    .orElse(new UserEntity());
-        }
-
         StoreEntity storeEntity = guestStoreRepository.findOneByGuid(payload.getStoreGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
@@ -111,7 +105,7 @@ public class GuestOrderService {
         orderEntity.setOrderDiscount(0);
         orderEntity.setOrderDiscountType(null);
         orderEntity.setOrderTotalAmount(0);
-        orderEntity.setOrderCustomerPhone(userEntity.getUserPhone());
+        orderEntity.setOrderCustomerPhone(null);
 
         orderEntity.setSaleGuid(null);
         orderEntity.setVoucherGuid(null);
@@ -222,32 +216,5 @@ public class GuestOrderService {
         guestSocketService.sendUpdateOrderNotification(notificationDTO);
 
         return result;
-    }
-
-    @Transactional
-    public void updateOrderPhone(OrderEntity entity, String currentUser) {
-        OrderEntity update = guestOrderRepository.findOneByGuid(entity.getGuid())
-                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
-        if (entity.getOrderCustomerPhone() == null && update.getOrderCustomerPhone() == null) return;
-        if (entity.getOrderCustomerPhone() != null && entity.getOrderCustomerPhone().equals(update.getOrderCustomerPhone()))
-            return;
-
-        /* rollback point for previous phone */
-        if (update.getOrderPointValue() != 0) {
-            CustomerEntity customerEntity = guestCustomerRepository.findOneByUserPhone(update.getOrderCustomerPhone())
-                    .orElseThrow(() -> new NotFoundException(ErrorCode.CUSTOMER_NOT_FOUND));
-            customerEntity.setCustomerPoint(customerEntity.getCustomerPoint() + update.getOrderPointValue());
-            update.setOrderPointValue(0);
-            update.setOrderPointCost(0);
-            guestCustomerRepository.save(customerEntity);
-        }
-
-        String newTimeline = TimelineUtil.appendOrderStatusWithMeta(update.getOrderStatusTimeline(),
-                OrderTimelineStatus.UPDATE_PHONE,
-                currentUser,
-                entity.getOrderCustomerPhone());
-        update.setOrderStatusTimeline(newTimeline);
-        update.setOrderCustomerPhone(entity.getOrderCustomerPhone());
-        guestOrderRepository.save(update);
     }
 }

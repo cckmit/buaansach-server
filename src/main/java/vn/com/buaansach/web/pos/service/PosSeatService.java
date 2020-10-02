@@ -104,7 +104,7 @@ public class PosSeatService {
     public void toggleLockListSeat(PosToggleLockListSeatDTO payload) {
         List<SeatEntity> list = posSeatRepository.findByGuidIn(payload.getListSeatGuid());
         if (list.size() != payload.getListSeatGuid().size())
-            throw new BadRequestException(ErrorCode.LIST_SEAT_SIZE_NOT_MATCH);
+            throw new BadRequestException(ErrorCode.SOME_SEAT_NOT_FOUND);
         list = list.stream().peek(item -> {
             item.setSeatLocked(payload.isLocked());
         }).collect(Collectors.toList());

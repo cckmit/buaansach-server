@@ -9,6 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface BannerRepository extends JpaRepository<BannerEntity, Long> {
-
     Optional<BannerEntity> findOneByGuid(UUID guid);
 }

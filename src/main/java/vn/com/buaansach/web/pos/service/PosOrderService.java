@@ -486,7 +486,7 @@ public class PosOrderService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         if (listSeat.size() != payload.getListSeatGuid().size())
-            throw new BadRequestException(ErrorCode.SOME_ORDER_NOT_FOUND);
+            throw new BadRequestException(ErrorCode.SOME_SEAT_NOT_FOUND);
 
         for (SeatEntity item : listSeat) {
             if (item.getSeatStatus().equals(SeatStatus.EMPTY))
