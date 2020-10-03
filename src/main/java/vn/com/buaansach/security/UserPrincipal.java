@@ -1,6 +1,8 @@
 package vn.com.buaansach.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +16,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class UserPrincipal implements UserDetails {
+    private static final Logger log = LoggerFactory.getLogger(UserPrincipal.class);
     private Long id;
     private String username;
     @JsonIgnore
@@ -31,6 +34,7 @@ public class UserPrincipal implements UserDetails {
 
     public static UserPrincipal create(UserEntity userEntity) {
         if (!userEntity.isUserActivated()) {
+            log.debug("User not activated: [{}]", userEntity.getUserLogin());
             throw new UnauthorizedException(ErrorCode.USER_NOT_ACTIVATED);
         }
 

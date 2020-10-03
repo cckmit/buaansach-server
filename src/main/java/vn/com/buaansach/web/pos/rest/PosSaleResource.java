@@ -26,7 +26,7 @@ public class PosSaleResource {
     @GetMapping("/list-by-store/{storeGuid}")
     public ResponseEntity<List<PosSaleDTO>> getListStoreSale(@PathVariable String storeGuid) {
         log.debug("REST request from user [{}] to list [{}]: [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
-        return ResponseEntity.ok(posSaleService.getListStoreSaleByStore(UUID.fromString(storeGuid)));
+        return ResponseEntity.ok(posSaleService.getListStoreSaleByStore(storeGuid));
     }
 
     @PutMapping("/apply")

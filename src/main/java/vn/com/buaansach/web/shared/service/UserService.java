@@ -53,14 +53,7 @@ public class UserService {
                 }
             }
 
-            if (dto.getUserPhone() != null) {
-                Optional<UserEntity> optionalPhone = userRepository.findOneByUserPhone(dto.getUserPhone());
-                if (optionalPhone.isPresent() && !optionalPhone.get().getUserLogin().equals(user.getUserLogin())) {
-                    throw new BadRequestException(ErrorCode.PHONE_EXIST);
-                }
-            }
             user.setUserEmail(dto.getUserEmail());
-            user.setUserPhone(dto.getUserPhone());
             userRepository.save(user);
 
             UserProfileEntity profileEntity = userProfileRepository.findOneByUserGuid(user.getGuid())
@@ -71,11 +64,11 @@ public class UserService {
                 profileEntity.setAvatarUrl(fileService.uploadImage(image, Constants.USER_IMAGE_PATH).getUrl());
             }
 
-            profileEntity.setFullName(dto.getFullName());
-            profileEntity.setUserGender(dto.getUserGender());
-            profileEntity.setUserBirthday(dto.getUserBirthday());
-            profileEntity.setUserAddress(dto.getUserAddress());
-            profileEntity.setLangKey(dto.getLangKey());
+            if (dto.getFullName() != null) profileEntity.setFullName(dto.getFullName());
+            if (dto.getUserGender() != null) profileEntity.setUserGender(dto.getUserGender());
+            if (dto.getUserBirthday() != null) profileEntity.setUserBirthday(dto.getUserBirthday());
+            if (dto.getUserAddress() != null) profileEntity.setUserAddress(dto.getUserAddress());
+            if (dto.getLangKey() != null) profileEntity.setLangKey(dto.getLangKey());
             userProfileRepository.save(profileEntity);
         });
     }

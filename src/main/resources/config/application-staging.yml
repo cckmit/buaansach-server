@@ -47,3 +47,4 @@ app:
     enable: true
     from: ${EMAIL_ACCOUNT}
     cms-ui-url: "https://pos.ductran.tech"
+    customer-ui-url: "https://ductran.tech"

@@ -6,6 +6,7 @@ import vn.com.buaansach.entity.enumeration.StoreStatus;
 import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 import vn.com.buaansach.entity.store.StoreEntity;
+import vn.com.buaansach.entity.store.StoreUserEntity;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.ForbiddenException;
 import vn.com.buaansach.security.util.SecurityUtils;
@@ -50,12 +51,12 @@ public class PosStoreSecurity {
 //        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) return true;
 
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(storeGuid).orElse(null);
-        if (storeEntity == null) return false;
-        if (!storeEntity.isStoreActivated()) return false;
+        if (storeEntity == null || !storeEntity.isStoreActivated()) return false;
 
         return posStoreUserRepository.findOneByUserLoginAndStoreGuid(currentUserLogin, storeGuid)
                 .map(storeUserEntity -> roles.contains(storeUserEntity.getStoreUserRole())
                         /* if user is not working in this store => return false too */
+                        && storeUserEntity.isStoreUserActivated()
                         && storeUserEntity.getStoreUserStatus().equals(StoreUserStatus.WORKING)).orElse(false);
     }
 

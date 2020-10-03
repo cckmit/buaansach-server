@@ -24,6 +24,7 @@ public class PosStoreService {
     private final PosSocketService posSocketService;
 
     public PosStoreDTO getStore(String storeGuid) {
+        posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
         return new PosStoreDTO(storeEntity);

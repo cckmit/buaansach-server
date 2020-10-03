@@ -28,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     // add transactional annotation to avoid LazyInitializationException,
     // because transaction will be closed before get we can get authorities
     public UserDetails loadUserByUsername(final String principal) {
-        log.debug("Authenticating {}", principal);
+//        log.debug("Authenticating {}", principal);
 
         if (new EmailValidator().isValid(principal, null)) {
             return userRepository.findOneWithAuthoritiesByUserEmailIgnoreCase(principal)

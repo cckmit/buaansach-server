@@ -27,7 +27,8 @@ public interface StoreUserRepository extends JpaRepository<StoreUserEntity, Long
             "ON storeUser.storeGuid = store.guid " +
             "WHERE storeUser.userLogin = :userLogin " +
             "AND store.storeActivated = :storeActivated " +
-            "AND storeUser.storeUserStatus = :storeUserStatus")
+            "AND storeUser.storeUserStatus = :storeUserStatus " +
+            "AND storeUser.storeUserActivated = TRUE")
     List<StoreUserDTO> findListStoreUserDTOByUser(@Param("userLogin") String userLogin,
                                                   @Param("storeActivated") boolean storeActivated,
                                                   @Param("storeUserStatus") StoreUserStatus storeUserStatus);

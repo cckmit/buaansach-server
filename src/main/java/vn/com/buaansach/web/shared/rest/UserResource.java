@@ -58,7 +58,7 @@ public class UserResource {
 
     @PostMapping("/authenticate")
     public ResponseEntity<JwtTokenDTO> authenticate(@Valid @RequestBody LoginRequestDTO dto) {
-        log.debug("REST request to authenticate [{}] : [{}]", ENTITY_NAME, dto.getPrincipal());
+        log.debug("Authenticating [{}]", dto.getPrincipal());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(dto.getPrincipal(), dto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);

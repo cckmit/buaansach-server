@@ -16,10 +16,6 @@ public class UpdateAccountDTO {
     @Size(min = 5, max = 100)
     private String userEmail;
 
-    @Pattern(regexp = Constants.PHONE_REGEX)
-    @Size(min = 10, max = 20)
-    private String userPhone;
-
     @NotBlank
     @Size(min = 1, max = 100)
     private String fullName;

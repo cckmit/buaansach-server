@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
+import vn.com.buaansach.entity.enumeration.UserType;
 import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.entity.user.UserProfileEntity;
 import vn.com.buaansach.exception.ErrorCode;
@@ -40,7 +41,9 @@ public class MailService {
     @Value("${app.mail.enable}")
     private String enableSendMail;
     @Value("${app.mail.cms-ui-url}")
-    private String clientBaseUrl;
+    private String cmsBaseUrl;
+    @Value("${app.mail.customer-ui-url}")
+    private String customerBaseUrl;
 
     @Async
     public void sendEmail(String senderName, String to, String subject, String content, boolean isMultipart, boolean isHtml) {
@@ -65,6 +68,7 @@ public class MailService {
     @Async
     public void sendEmailFromTemplate(UserEntity userEntity, String templateName, String titleKey) {
         if (!Boolean.parseBoolean(enableSendMail)) return;
+        String baseUrl = userEntity.getUserType().equals(UserType.INTERNAL) ? cmsBaseUrl : customerBaseUrl;
         if (userEntity.getUserEmail() == null) {
             log.debug("User {} doesn't have and email", userEntity.getUserLogin());
             return;
@@ -74,7 +78,7 @@ public class MailService {
         Locale locale = Locale.forLanguageTag(profileEntity.getLangKey() == null ? Constants.DEFAULT_LANGUAGE : profileEntity.getLangKey());
         Context context = new Context(locale);
         context.setVariable(USER, userEntity);
-        context.setVariable(BASE_URL, clientBaseUrl);
+        context.setVariable(BASE_URL, baseUrl);
         String content = templateEngine.process(templateName, context);
         String subject = messageSource.getMessage(titleKey, null, locale);
         String senderName = messageSource.getMessage("email.sender.name", null, locale);
@@ -99,6 +103,11 @@ public class MailService {
     public void sendPasswordResetMail(UserEntity userEntity) {
         if (!Boolean.parseBoolean(enableSendMail)) return;
         log.debug("Sending password reset email to '{}'", userEntity.getUserEmail());
-        sendEmailFromTemplate(userEntity, "mail/passwordResetEmail", "email.reset.title");
+        if (userEntity.getUserType().equals(UserType.INTERNAL)){
+            sendEmailFromTemplate(userEntity, "mail/passwordResetEmail", "email.reset.title");
+        } else {
+            sendEmailFromTemplate(userEntity, "mail/customerPasswordResetEmail", "email.reset.title");
+        }
+
     }
 }

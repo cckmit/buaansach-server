@@ -32,6 +32,10 @@ public class PosSeatService {
     private final PosSocketService posSocketService;
 
     public PosSeatDTO getPosSeatDTO(String seatGuid) {
+        StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(UUID.fromString(seatGuid))
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
+        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
+
         return posSeatRepository.findPosSeatDTOBySeatGuid(UUID.fromString(seatGuid))
                 .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
     }
@@ -102,15 +106,19 @@ public class PosSeatService {
     }
 
     public void toggleLockListSeat(PosToggleLockListSeatDTO payload) {
-        List<SeatEntity> list = posSeatRepository.findByGuidIn(payload.getListSeatGuid());
-        if (list.size() != payload.getListSeatGuid().size())
+        List<SeatEntity> listSeat = posSeatRepository.findByGuidIn(payload.getListSeatGuid());
+        if (listSeat.size() != payload.getListSeatGuid().size())
             throw new BadRequestException(ErrorCode.SOME_SEAT_NOT_FOUND);
-        list = list.stream().peek(item -> {
+        StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(listSeat.get(0).getGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
+        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
+
+        listSeat = listSeat.stream().peek(item -> {
             item.setSeatLocked(payload.isLocked());
         }).collect(Collectors.toList());
-        posSeatRepository.saveAll(list);
+        posSeatRepository.saveAll(listSeat);
 
-        list.forEach(item -> {
+        listSeat.forEach(item -> {
             PosSocketDTO dto = new PosSocketDTO();
             dto.setMessage(WebSocketMessages.POS_LOCK_SEAT);
             dto.setPayload(item);

@@ -256,13 +256,14 @@ public class PosOrderService {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
+        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
+
         if (!orderEntity.getOrderStatus().equals(OrderStatus.RECEIVED))
             throw new BadRequestException(ErrorCode.INVALID_ORDER_STATUS);
 
         if (payload.getOrderPointValue() != orderEntity.getOrderPointValue())
             throw new BadRequestException(ErrorCode.ORDER_POINT_VALUE_NOT_MATCH);
 
-        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         /* create voucher code usage record if a voucher code has been applied */
         if (orderEntity.getVoucherCode() != null && !orderEntity.getVoucherCode().isBlank()) {
@@ -482,11 +483,14 @@ public class PosOrderService {
             throw new BadRequestException(ErrorCode.LIST_SEAT_GUID_EMPTY);
 
         List<SeatEntity> listSeat = posSeatRepository.findByGuidIn(payload.getListSeatGuid());
-        StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(listSeat.get(0).getGuid())
-                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         if (listSeat.size() != payload.getListSeatGuid().size())
             throw new BadRequestException(ErrorCode.SOME_SEAT_NOT_FOUND);
+
+        StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(listSeat.get(0).getGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
+
+        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         for (SeatEntity item : listSeat) {
             if (item.getSeatStatus().equals(SeatStatus.EMPTY))

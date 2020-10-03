@@ -18,6 +18,7 @@ import vn.com.buaansach.web.pos.repository.sale.PosSaleRepository;
 import vn.com.buaansach.web.pos.repository.sale.PosSaleUsageRepository;
 import vn.com.buaansach.web.pos.repository.sale.PosStoreSaleRepository;
 import vn.com.buaansach.web.pos.repository.store.PosStoreRepository;
+import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosSaleDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosApplySaleDTO;
 
@@ -33,6 +34,7 @@ public class PosSaleService {
     private final PosSaleUsageRepository posSaleUsageRepository;
     private final PosOrderRepository posOrderRepository;
     private final PosStoreRepository posStoreRepository;
+    private final PosStoreSecurity posStoreSecurity;
 
     public void applySale(PosApplySaleDTO payload) {
         PosSaleDTO dto = posSaleRepository.findOnePosSaleDTOByGuid(payload.getSaleGuid())
@@ -40,6 +42,11 @@ public class PosSaleService {
 
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(payload.getOrderGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
+
+        StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
+
+        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
         if (!dto.isSaleActivated()) throw new BadRequestException(ErrorCode.SALE_DISABLED);
 
@@ -53,9 +60,9 @@ public class PosSaleService {
         }
 
         if (dto.getSaleConditions().contains(SaleCondition.STORE_LIMIT.name())) {
-            StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
+            StoreEntity storeCondition = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
                     .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
-            StoreSaleEntity storeSaleEntity = posStoreSaleRepository.findOneByStoreGuidAndSaleGuid(storeEntity.getGuid(), payload.getSaleGuid())
+            StoreSaleEntity storeSaleEntity = posStoreSaleRepository.findOneByStoreGuidAndSaleGuid(storeCondition.getGuid(), payload.getSaleGuid())
                     .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_SALE_NOT_FOUND));
             if (!storeSaleEntity.isStoreSaleActivated()) throw new BadRequestException(ErrorCode.STORE_SALE_DISABLED);
         }
@@ -77,6 +84,11 @@ public class PosSaleService {
         OrderEntity orderEntity = posOrderRepository.findOneByGuid(orderGuid)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
 
+        StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
+
+        posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
+
         String newTimeline = TimelineUtil.appendOrderStatus(
                 orderEntity.getOrderStatusTimeline(),
                 OrderTimelineStatus.CANCEL_SALE,
@@ -97,7 +109,8 @@ public class PosSaleService {
         posSaleUsageRepository.save(saleUsageEntity);
     }
 
-    public List<PosSaleDTO> getListStoreSaleByStore(UUID storeGuid) {
-        return posSaleRepository.findListPosSaleDTOByStoreGuid(storeGuid);
+    public List<PosSaleDTO> getListStoreSaleByStore(String storeGuid) {
+        posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
+        return posSaleRepository.findListPosSaleDTOByStoreGuid(UUID.fromString(storeGuid));
     }
 }

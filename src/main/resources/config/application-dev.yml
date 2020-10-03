@@ -47,3 +47,4 @@ app:
     enable: true
     from: noreply.ductran.tech@gmail.com
     cms-ui-url: 'http://localhost:8081'
+    customer-ui-url: 'http://localhost:8082'
