@@ -79,7 +79,7 @@ public class AdminStoreUserService {
         storeUserEntity.setStoreUserStatus(request.getStoreUserStatus());
         storeUserEntity.setStoreUserActivated(true);
         storeUserEntity.setStoreGuid(request.getStoreGuid());
-        storeUserEntity.setUserLogin(request.getUserLogin());
+        storeUserEntity.setUserLogin(request.getUserLogin().toLowerCase());
 
         return new AdminStoreUserDTO(adminStoreUserRepository.save(storeUserEntity), dto);
     }

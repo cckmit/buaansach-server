@@ -47,4 +47,13 @@
             <column name="created_date" type="timestamp"/>
         </loadData>
     </changeSet>
+    <changeSet id="init_sequence_data" author="ductv">
+        <loadData
+                file="config/liquibase/data/csv/sequence.csv"
+                separator=";"
+                tableName="bas_sequence">
+            <column name="sequence_id" type="string"/>
+            <column name="sequence_number" type="numeric"/>
+        </loadData>
+    </changeSet>
 </databaseChangeLog>

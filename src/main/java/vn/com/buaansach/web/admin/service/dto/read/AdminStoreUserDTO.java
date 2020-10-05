@@ -66,6 +66,7 @@ public class AdminStoreUserDTO extends AuditDTO {
         this.storeGuid = storeUserEntity.getStoreGuid().toString();
         this.userLogin = storeUserEntity.getUserLogin();
 
+        this.userCode = adminUserDTO.getUserCode();
         this.fullName = adminUserDTO.getFullName();
 
         this.createdBy = storeUserEntity.getCreatedBy();

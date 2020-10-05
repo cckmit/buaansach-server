@@ -15,5 +15,4 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     Optional<ProductEntity> findOneByProductCode(String productCode);
 
     List<ProductEntity> findByGuidIn(List<UUID> uuids);
-
 }

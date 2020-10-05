@@ -18,7 +18,6 @@ import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.util.RandomUtil;
 import vn.com.buaansach.util.StringUtil;
-import vn.com.buaansach.util.sequence.UserCodeGenerator;
 import vn.com.buaansach.web.shared.repository.user.UserProfileRepository;
 import vn.com.buaansach.web.shared.repository.user.UserRepository;
 import vn.com.buaansach.web.shared.service.dto.write.UpdateAccountDTO;
@@ -43,6 +42,8 @@ public class UserService {
     private final FileService fileService;
 
     private final CustomerService customerService;
+
+    private final CodeService codeService;
 
     @Transactional
     public void updateAccount(UpdateAccountDTO dto, MultipartFile image) {
@@ -150,7 +151,7 @@ public class UserService {
         userEntity.setAuthorities(authorities);
 
         UserProfileEntity profileEntity = new UserProfileEntity();
-        profileEntity.setUserCode(UserCodeGenerator.generateForCustomer());
+        profileEntity.setUserCode(codeService.generateCodeForCustomerUser());
         profileEntity.setFullName(dto.getFullName());
         profileEntity.setUserGuid(userGuid);
         profileEntity.setLangKey(Constants.DEFAULT_LANGUAGE); // default language

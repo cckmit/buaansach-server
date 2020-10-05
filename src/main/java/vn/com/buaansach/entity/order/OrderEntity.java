@@ -107,6 +107,9 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
     @Column(name = "seat_guid")
     private UUID seatGuid;
 
+    @Column(name = "store_guid")
+    private UUID storeGuid;
+
     @Column(name = "payment_guid")
     private UUID paymentGuid;
 }

@@ -18,7 +18,6 @@ import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.TimelineUtil;
 import vn.com.buaansach.util.WebSocketEndpoints;
 import vn.com.buaansach.util.WebSocketMessages;
-import vn.com.buaansach.util.sequence.OrderCodeGenerator;
 import vn.com.buaansach.web.pos.repository.notification.PosStoreNotificationRepository;
 import vn.com.buaansach.web.pos.repository.order.PosOrderProductRepository;
 import vn.com.buaansach.web.pos.repository.order.PosOrderRepository;
@@ -34,10 +33,7 @@ import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
 import vn.com.buaansach.web.pos.service.dto.write.*;
 import vn.com.buaansach.web.pos.service.mapper.PosOrderProductMapper;
 import vn.com.buaansach.web.pos.websocket.PosSocketService;
-import vn.com.buaansach.web.shared.service.CustomerService;
-import vn.com.buaansach.web.shared.service.PaymentService;
-import vn.com.buaansach.web.shared.service.PriceService;
-import vn.com.buaansach.web.shared.service.SaleService;
+import vn.com.buaansach.web.shared.service.*;
 import vn.com.buaansach.web.shared.service.dto.readwrite.StoreNotificationDTO;
 import vn.com.buaansach.web.shared.websocket.dto.DataSocketDTO;
 
@@ -71,6 +67,7 @@ public class PosOrderService {
     private final PosStoreProductRepository posStoreProductRepository;
     private final SaleService saleService;
     private final CustomerService customerService;
+    private final CodeService codeService;
 
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
@@ -100,7 +97,8 @@ public class PosOrderService {
         OrderEntity orderEntity = new OrderEntity();
         UUID orderGuid = UUID.randomUUID();
         orderEntity.setGuid(orderGuid);
-        orderEntity.setOrderCode(OrderCodeGenerator.generate(storeEntity.getStoreCode()));
+
+        orderEntity.setOrderCode(codeService.generateCodeForOrder(storeEntity));
 
         /* Đơn tạo bởi nhân viên sẽ mặc định ở trạng thái RECEIVED */
         orderEntity.setOrderStatus(OrderStatus.RECEIVED);
@@ -109,7 +107,10 @@ public class PosOrderService {
         orderEntity.setOrderType(OrderType.valueOf(areaEntity.getAreaType().name()));
 
         orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderTimelineStatus.RECEIVED, currentUser));
+
         orderEntity.setSeatGuid(payload.getSeatGuid());
+        orderEntity.setStoreGuid(storeEntity.getGuid());
+
         orderEntity.setOrderReceivedBy(currentUser);
         orderEntity.setOrderReceivedDate(Instant.now());
 

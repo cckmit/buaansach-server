@@ -23,6 +23,7 @@ import vn.com.buaansach.web.admin.service.dto.read.AdminUserDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateUserDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminPasswordChangeDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminUpdateUserDTO;
+import vn.com.buaansach.web.shared.service.CodeService;
 import vn.com.buaansach.web.shared.service.CustomerService;
 
 import javax.transaction.Transactional;
@@ -39,8 +40,8 @@ public class AdminUserService {
     private final AdminUserProfileRepository adminUserProfileRepository;
     private final PasswordEncoder passwordEncoder;
     private final AdminAuthorityRepository adminAuthorityRepository;
-    private final AdminCodeService adminCodeService;
     private final CustomerService customerService;
+    private final CodeService codeService;
 
     @Transactional
     public AdminUserDTO createUser(AdminCreateUserDTO dto) {
@@ -84,7 +85,7 @@ public class AdminUserService {
         }
 
         UserProfileEntity profileEntity = new UserProfileEntity();
-        profileEntity.setUserCode(adminCodeService.generateCodeForUser());
+        profileEntity.setUserCode(codeService.generateCodeForInternalUser());
         profileEntity.setFullName(dto.getFullName());
         profileEntity.setUserGuid(userGuid);
         if (dto.getLangKey() == null || dto.getLangKey().isEmpty()) {

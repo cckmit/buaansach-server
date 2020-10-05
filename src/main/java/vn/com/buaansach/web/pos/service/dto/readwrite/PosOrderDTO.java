@@ -45,6 +45,7 @@ public class PosOrderDTO extends AuditDTO {
     @JsonIgnore
     private String voucherCode;
     private UUID seatGuid;
+    private UUID storeGuid;
     private UUID paymentGuid;
 
     /* computed */
@@ -80,6 +81,7 @@ public class PosOrderDTO extends AuditDTO {
         this.voucherGuid = orderEntity.getVoucherGuid();
         this.voucherCode = orderEntity.getVoucherCode();
         this.seatGuid = orderEntity.getSeatGuid();
+        this.storeGuid = orderEntity.getStoreGuid();
         this.paymentGuid = orderEntity.getPaymentGuid();
 
         this.createdBy = orderEntity.getCreatedBy();

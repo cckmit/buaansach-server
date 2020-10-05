@@ -9,12 +9,8 @@ import vn.com.buaansach.entity.enumeration.DiscountType;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.OrderType;
 import vn.com.buaansach.entity.order.OrderEntity;
-import vn.com.buaansach.web.pos.service.dto.read.PosVoucherCodeDTO;
 import vn.com.buaansach.web.shared.service.dto.AuditDTO;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.validation.constraints.Size;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +46,7 @@ public class GuestOrderDTO extends AuditDTO {
     @JsonIgnore
     private String voucherCode;
     private UUID seatGuid;
+    private UUID storeGuid;
     private UUID paymentGuid;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -85,6 +82,7 @@ public class GuestOrderDTO extends AuditDTO {
         this.voucherGuid = orderEntity.getVoucherGuid();
         this.voucherCode = orderEntity.getVoucherCode();
         this.seatGuid = orderEntity.getSeatGuid();
+        this.storeGuid = orderEntity.getStoreGuid();
         this.paymentGuid = orderEntity.getPaymentGuid();
     }
 }

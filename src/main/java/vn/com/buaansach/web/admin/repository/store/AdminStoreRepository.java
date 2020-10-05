@@ -12,7 +12,4 @@ import vn.com.buaansach.web.shared.repository.store.StoreRepository;
 public interface AdminStoreRepository extends StoreRepository {
     @Query("SELECT s FROM StoreEntity s WHERE s.storeName LIKE %:search% OR s.storeCode LIKE %:search%")
     Page<StoreEntity> findPageStoreWithKeyword(Pageable pageable, @Param("search") String search);
-
-    @Query(value = "SELECT s.store_code FROM bas_store s ORDER BY s.id DESC LIMIT 1", nativeQuery = true)
-    String findLastStoreCode();
 }

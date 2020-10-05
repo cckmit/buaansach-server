@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import vn.com.buaansach.web.shared.repository.common.ProductRepository;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.ProductStatus;
+import vn.com.buaansach.web.shared.repository.common.ProductRepository;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,9 +29,6 @@ public interface AdminProductRepository extends ProductRepository {
 
     @Query("SELECT MAX(pe.productPosition) FROM ProductEntity pe")
     Integer findLastProductPosition();
-
-    @Query(value = "SELECT p.product_code FROM bas_product p ORDER BY p.id DESC LIMIT 1", nativeQuery = true)
-    String findLastProductCode();
 
     @Modifying
     @Query(value = "UPDATE bas_product SET product_position = :pos  WHERE guid = :productGuid", nativeQuery = true)

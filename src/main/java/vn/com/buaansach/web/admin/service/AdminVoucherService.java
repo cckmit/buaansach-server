@@ -9,7 +9,6 @@ import vn.com.buaansach.entity.voucher.condition.VoucherUsageConditionEntity;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.VoucherUtil;
-import vn.com.buaansach.util.sequence.CodeConstants;
 import vn.com.buaansach.web.admin.repository.voucher.AdminVoucherCodeRepository;
 import vn.com.buaansach.web.admin.repository.voucher.AdminVoucherRepository;
 import vn.com.buaansach.web.admin.repository.voucher.AdminVoucherTimeConditionRepository;
@@ -44,7 +43,7 @@ public class AdminVoucherService {
 
         Set<String> setNewCodes = new HashSet<>();
         while (setNewCodes.size() < numberOfCode) {
-            String code = VoucherUtil.generateVoucherCode(CodeConstants.VOUCHER_CODE_LENGTH).toLowerCase();
+            String code = VoucherUtil.generateVoucherCode(VoucherUtil.VOUCHER_CODE_LENGTH).toLowerCase();
             if (!existedCodes.contains(code)) {
                 setNewCodes.add(code);
             }

@@ -1,4 +1,4 @@
-id;user_code;full_name;lang_key;user_guid;created_by;created_date
-1;1;Anonymous User;vi;1;system;NOW
-2;2;System User;vi;2;system;NOW
-3;3;Administrator;vi;3;system;NOW
+id;full_name;lang_key;user_guid;created_by;created_date
+1;Anonymous User;vi;1;system;NOW
+2;System User;vi;2;system;NOW
+3;Administrator;vi;3;system;NOW

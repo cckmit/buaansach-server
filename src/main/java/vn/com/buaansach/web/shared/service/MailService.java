@@ -68,7 +68,7 @@ public class MailService {
     @Async
     public void sendEmailFromTemplate(UserEntity userEntity, String templateName, String titleKey) {
         if (!Boolean.parseBoolean(enableSendMail)) return;
-        String baseUrl = userEntity.getUserType().equals(UserType.INTERNAL) ? cmsBaseUrl : customerBaseUrl;
+        String baseUrl = userEntity.getUserType().equals(UserType.CUSTOMER) ? customerBaseUrl : cmsBaseUrl;
         if (userEntity.getUserEmail() == null) {
             log.debug("User {} doesn't have and email", userEntity.getUserLogin());
             return;
@@ -103,10 +103,10 @@ public class MailService {
     public void sendPasswordResetMail(UserEntity userEntity) {
         if (!Boolean.parseBoolean(enableSendMail)) return;
         log.debug("Sending password reset email to '{}'", userEntity.getUserEmail());
-        if (userEntity.getUserType().equals(UserType.INTERNAL)){
-            sendEmailFromTemplate(userEntity, "mail/passwordResetEmail", "email.reset.title");
-        } else {
+        if (userEntity.getUserType().equals(UserType.CUSTOMER)) {
             sendEmailFromTemplate(userEntity, "mail/customerPasswordResetEmail", "email.reset.title");
+        } else {
+            sendEmailFromTemplate(userEntity, "mail/passwordResetEmail", "email.reset.title");
         }
 
     }

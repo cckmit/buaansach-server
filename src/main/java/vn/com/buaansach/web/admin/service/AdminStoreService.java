@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.entity.common.FileEntity;
+import vn.com.buaansach.entity.common.SequenceEntity;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
@@ -13,9 +14,11 @@ import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.Constants;
+import vn.com.buaansach.web.admin.repository.common.AdminSequenceRepository;
 import vn.com.buaansach.web.admin.repository.order.AdminOrderProductRepository;
 import vn.com.buaansach.web.admin.repository.order.AdminOrderRepository;
 import vn.com.buaansach.web.admin.repository.store.*;
+import vn.com.buaansach.web.shared.service.CodeService;
 import vn.com.buaansach.web.shared.service.FileService;
 
 import javax.transaction.Transactional;
@@ -31,19 +34,22 @@ public class AdminStoreService {
     private final AdminAreaRepository adminAreaRepository;
     private final AdminStoreUserRepository adminStoreUserRepository;
     private final AdminSeatRepository adminSeatRepository;
-    private final AdminCodeService adminCodeService;
     private final AdminStoreProductRepository adminStoreProductRepository;
     private final AdminOrderRepository adminOrderRepository;
     private final AdminOrderProductRepository adminOrderProductRepository;
+    private final CodeService codeService;
+    private final AdminSequenceRepository adminSequenceRepository;
 
     @Transactional
     public StoreEntity createStore(StoreEntity payload, MultipartFile image) {
         payload.setGuid(UUID.randomUUID());
-        payload.setStoreCode(adminCodeService.generateCodeForStore());
+        payload.setStoreCode(codeService.generateCodeForStore());
         if (image != null) {
             FileEntity fileEntity = fileService.uploadImage(image, Constants.STORE_IMAGE_PATH);
             payload.setStoreImageUrl(fileEntity.getUrl());
         }
+        SequenceEntity sequenceEntity = new SequenceEntity(payload.getStoreCode(), 0);
+        adminSequenceRepository.save(sequenceEntity);
         return adminStoreRepository.save(payload);
     }
 

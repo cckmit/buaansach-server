@@ -11,16 +11,14 @@ import vn.com.buaansach.entity.store.StoreProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
+import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.TimelineUtil;
-import vn.com.buaansach.util.sequence.OrderCodeGenerator;
-import vn.com.buaansach.web.guest.repository.customer.GuestCustomerRepository;
 import vn.com.buaansach.web.guest.repository.order.GuestOrderProductRepository;
 import vn.com.buaansach.web.guest.repository.order.GuestOrderRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestAreaRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestSeatRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestStoreProductRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestStoreRepository;
-import vn.com.buaansach.web.guest.repository.user.GuestUserRepository;
 import vn.com.buaansach.web.guest.security.GuestStoreSecurity;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderDTO;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderProductDTO;
@@ -28,6 +26,7 @@ import vn.com.buaansach.web.guest.service.dto.write.GuestCreateOrderDTO;
 import vn.com.buaansach.web.guest.service.dto.write.GuestOrderUpdateDTO;
 import vn.com.buaansach.web.guest.service.mapper.GuestOrderProductMapper;
 import vn.com.buaansach.web.guest.websocket.GuestSocketService;
+import vn.com.buaansach.web.shared.service.CodeService;
 import vn.com.buaansach.web.shared.service.PriceService;
 import vn.com.buaansach.web.shared.service.SaleService;
 import vn.com.buaansach.web.shared.service.dto.readwrite.StoreNotificationDTO;
@@ -54,6 +53,7 @@ public class GuestOrderService {
     private final GuestOrderProductMapper guestOrderProductMapper;
     private final PriceService priceService;
     private final SaleService saleService;
+    private final CodeService codeService;
 
     public GuestOrderDTO getOrder(String orderGuid) {
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
@@ -88,23 +88,17 @@ public class GuestOrderService {
         OrderEntity orderEntity = new OrderEntity();
         UUID orderGuid = UUID.randomUUID();
         orderEntity.setGuid(orderGuid);
-        orderEntity.setOrderCode(OrderCodeGenerator.generate(storeEntity.getStoreCode()));
+
+        orderEntity.setOrderCode(codeService.generateCodeForOrder(storeEntity));
         orderEntity.setOrderStatus(OrderStatus.CREATED);
 
         /* Order type must be the same area type */
         orderEntity.setOrderType(OrderType.valueOf(areaEntity.getAreaType().name()));
-        orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderTimelineStatus.CREATED, currentUser));
-        orderEntity.setOrderCancelReason(null);
-        orderEntity.setOrderDiscount(0);
-        orderEntity.setOrderDiscountType(null);
-        orderEntity.setOrderTotalAmount(0);
-        orderEntity.setOrderCustomerPhone(null);
 
-        orderEntity.setSaleGuid(null);
-        orderEntity.setVoucherGuid(null);
-        orderEntity.setVoucherCode(null);
+        orderEntity.setOrderStatusTimeline(TimelineUtil.initOrderStatus(OrderTimelineStatus.CREATED, currentUser));
+
         orderEntity.setSeatGuid(payload.getSeatGuid());
-        orderEntity.setPaymentGuid(null);
+        orderEntity.setStoreGuid(storeEntity.getGuid());
 
         /* Update seat status*/
         seatEntity.setSeatStatus(SeatStatus.NON_EMPTY);
@@ -113,6 +107,7 @@ public class GuestOrderService {
         guestSeatRepository.save(seatEntity);
 
         orderEntity = guestOrderRepository.save(orderEntity);
+
         /* Tự động apply sale nếu có */
         if (storeEntity.getStorePrimarySaleGuid() != null) {
             orderEntity = saleService.autoApplySale(orderEntity, storeEntity.getStorePrimarySaleGuid(), storeEntity.getGuid());

@@ -37,6 +37,7 @@
             <column name="voucher_guid" type="binary(16)"/>
             <column name="voucher_code" type="varchar(30)"/>
             <column name="seat_guid" type="binary(16)"/>
+            <column name="store_guid" type="binary(16)"/>
             <column name="payment_guid" type="binary(16)"/>
 
             <column name="created_by" type="varchar(50)">

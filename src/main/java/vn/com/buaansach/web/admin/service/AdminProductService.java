@@ -21,6 +21,7 @@ import vn.com.buaansach.web.admin.repository.common.AdminProductRepository;
 import vn.com.buaansach.web.admin.repository.store.AdminStoreProductRepository;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminProductDTO;
 import vn.com.buaansach.web.admin.service.mapper.AdminProductMapper;
+import vn.com.buaansach.web.shared.service.CodeService;
 import vn.com.buaansach.web.shared.service.FileService;
 
 import javax.transaction.Transactional;
@@ -37,7 +38,7 @@ public class AdminProductService {
     private final AdminProductMapper adminProductMapper;
     private final AdminProductCategoryRepository adminProductCategoryRepository;
     private final AdminCategoryRepository adminCategoryRepository;
-    private final AdminCodeService adminCodeService;
+    private final CodeService codeService;
 
     private void saveProductCategory(UUID productGuid, List<CategoryEntity> categories) {
         List<ProductCategoryEntity> productCategories = categories.stream().map(categoryEntity -> {
@@ -60,7 +61,7 @@ public class AdminProductService {
         int pos = lastPos != null ? lastPos + Constants.POSITION_INCREMENT : Constants.POSITION_INCREMENT - 1;
         UUID productGuid = UUID.randomUUID();
         productEntity.setGuid(productGuid);
-        productEntity.setProductCode(adminCodeService.generateCodeForProduct());
+        productEntity.setProductCode(codeService.generateCodeForProduct());
         productEntity.setProductPosition(pos);
         saveProductCategory(productGuid, payload.getCategories());
         if (image != null) {
