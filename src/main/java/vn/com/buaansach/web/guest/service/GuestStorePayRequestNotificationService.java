@@ -18,11 +18,10 @@ import vn.com.buaansach.web.guest.repository.order.GuestOrderRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestSeatRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestStoreRepository;
 import vn.com.buaansach.web.guest.security.GuestStoreSecurity;
-import vn.com.buaansach.web.guest.service.dto.read.GuestStoreNotificationDTO;
 import vn.com.buaansach.web.guest.service.dto.write.GuestStorePayRequestDTO;
 import vn.com.buaansach.web.guest.websocket.GuestSocketService;
-import vn.com.buaansach.web.shared.service.PaymentService;
 import vn.com.buaansach.web.shared.service.PriceService;
+import vn.com.buaansach.web.shared.service.dto.readwrite.StoreNotificationDTO;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -89,7 +88,7 @@ public class GuestStorePayRequestNotificationService {
         payRequestNotification.setStoreNotificationGuid(notificationGuid);
         payRequestNotification = guestStorePayRequestNotificationRepository.save(payRequestNotification);
 
-        guestSocketService.sendPayRequestNotification(new GuestStoreNotificationDTO(notificationEntity, payRequestNotification));
+        guestSocketService.sendPayRequestNotification(new StoreNotificationDTO(notificationEntity, payRequestNotification));
         return new GuestStorePayRequestDTO(notificationEntity, payRequestNotification);
     }
 

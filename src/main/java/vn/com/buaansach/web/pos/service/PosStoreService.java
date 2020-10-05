@@ -12,7 +12,7 @@ import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosStoreDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosStoreStatusChangeDTO;
 import vn.com.buaansach.web.pos.websocket.PosSocketService;
-import vn.com.buaansach.web.pos.websocket.dto.PosSocketDTO;
+import vn.com.buaansach.web.shared.websocket.dto.DataSocketDTO;
 
 import java.util.UUID;
 
@@ -37,7 +37,7 @@ public class PosStoreService {
         storeEntity.setStoreStatus(payload.getStoreStatus());
         posStoreRepository.save(storeEntity);
 
-        PosSocketDTO dto = new PosSocketDTO();
+        DataSocketDTO dto = new DataSocketDTO();
         dto.setMessage(WebSocketMessages.POS_UPDATE_STORE_STATUS);
         dto.setPayload(payload);
         posSocketService.sendMessage(WebSocketEndpoints.TOPIC_GUEST_PREFIX + storeEntity.getGuid(), dto);

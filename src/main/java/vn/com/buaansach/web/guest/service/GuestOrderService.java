@@ -1,20 +1,16 @@
 package vn.com.buaansach.web.guest.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.customer.CustomerEntity;
 import vn.com.buaansach.entity.enumeration.*;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.entity.store.StoreProductEntity;
-import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
-import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.util.TimelineUtil;
 import vn.com.buaansach.util.sequence.OrderCodeGenerator;
 import vn.com.buaansach.web.guest.repository.customer.GuestCustomerRepository;
@@ -26,16 +22,15 @@ import vn.com.buaansach.web.guest.repository.store.GuestStoreProductRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestStoreRepository;
 import vn.com.buaansach.web.guest.repository.user.GuestUserRepository;
 import vn.com.buaansach.web.guest.security.GuestStoreSecurity;
-import vn.com.buaansach.web.guest.service.dto.read.GuestStoreNotificationDTO;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderDTO;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderProductDTO;
 import vn.com.buaansach.web.guest.service.dto.write.GuestCreateOrderDTO;
 import vn.com.buaansach.web.guest.service.dto.write.GuestOrderUpdateDTO;
 import vn.com.buaansach.web.guest.service.mapper.GuestOrderProductMapper;
 import vn.com.buaansach.web.guest.websocket.GuestSocketService;
-import vn.com.buaansach.web.shared.repository.user.UserRepository;
 import vn.com.buaansach.web.shared.service.PriceService;
 import vn.com.buaansach.web.shared.service.SaleService;
+import vn.com.buaansach.web.shared.service.dto.readwrite.StoreNotificationDTO;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -59,8 +54,6 @@ public class GuestOrderService {
     private final GuestOrderProductMapper guestOrderProductMapper;
     private final PriceService priceService;
     private final SaleService saleService;
-    private final GuestCustomerRepository guestCustomerRepository;
-    private final GuestUserRepository guestUserRepository;
 
     public GuestOrderDTO getOrder(String orderGuid) {
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
@@ -207,7 +200,7 @@ public class GuestOrderService {
         result.setListOrderProduct(listOrderProductDTO);
 
         /* Send notification */
-        GuestStoreNotificationDTO notificationDTO = guestStoreOrderNotificationService.createStoreOrderUpdateNotification(storeEntity.getGuid(),
+        StoreNotificationDTO notificationDTO = guestStoreOrderNotificationService.createStoreOrderUpdateNotification(storeEntity.getGuid(),
                 areaEntity.getGuid(),
                 seatEntity.getGuid(),
                 orderEntity.getGuid(),

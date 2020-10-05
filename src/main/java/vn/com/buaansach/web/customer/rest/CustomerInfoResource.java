@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.entity.customer.CustomerEntity;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
-import vn.com.buaansach.web.customer.service.write.CustomerUsePointDTO;
+import vn.com.buaansach.web.shared.service.dto.readwrite.UsePointDTO;
 import vn.com.buaansach.web.shared.service.CustomerService;
 
 @Secured(AuthoritiesConstants.CUSTOMER)
@@ -28,9 +28,9 @@ public class CustomerInfoResource {
     }
 
     @PostMapping("/use-point")
-    public ResponseEntity<Void> usePoint(@RequestBody CustomerUsePointDTO payload){
+    public ResponseEntity<Void> usePoint(@RequestBody UsePointDTO payload){
         log.debug("REST request from user [{}] to use [{}] point", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);
-        customerService.assignPoint(payload);
+        customerService.userPoint(payload);
         return ResponseEntity.ok().build();
     }
 }

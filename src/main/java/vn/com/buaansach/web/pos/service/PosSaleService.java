@@ -77,6 +77,10 @@ public class PosSaleService {
         orderEntity.setOrderDiscount(dto.getSaleDiscount());
         orderEntity.setOrderDiscountType(dto.getSaleDiscountType());
         orderEntity.setSaleGuid(dto.getGuid());
+
+        /* Chỉ 1 khuyến mãi 1 lúc */
+        orderEntity.setVoucherCode(null);
+        orderEntity.setVoucherGuid(null);
         posOrderRepository.save(orderEntity);
     }
 

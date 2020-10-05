@@ -8,4 +8,5 @@ import java.util.UUID;
 public class AdminMakeSalePrimaryDTO {
     private UUID storeGuid;
     private UUID saleGuid;
+    boolean revert;
 }

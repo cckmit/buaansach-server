@@ -6,9 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminSaleService;
+import vn.com.buaansach.web.admin.service.dto.readwrite.AdminProductDTO;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminSaleDTO;
 
 import javax.validation.Valid;
@@ -25,9 +27,10 @@ public class AdminSaleResource {
     private final AdminSaleService adminSaleService;
 
     @PostMapping("/create")
-    public ResponseEntity<AdminSaleDTO> createSale(@Valid @RequestBody AdminSaleDTO payload) {
+    public ResponseEntity<AdminSaleDTO> createSale(@Valid @RequestPart("payload") AdminSaleDTO payload,
+                                                   @RequestPart(value = "image", required = false) MultipartFile image) {
         log.debug("REST request from user [{}] to create [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
-        return ResponseEntity.ok(adminSaleService.createSale(payload));
+        return ResponseEntity.ok(adminSaleService.createSale(payload, image));
     }
 
     @GetMapping("/get/{saleGuid}")
@@ -49,9 +52,10 @@ public class AdminSaleResource {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<AdminSaleDTO> updateSale(@Valid @RequestBody AdminSaleDTO payload) {
+    public ResponseEntity<AdminSaleDTO> updateSale(@Valid @RequestPart("payload") AdminSaleDTO payload,
+                                                   @RequestPart(value = "image", required = false) MultipartFile image) {
         log.debug("REST request from user [{}] to update [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
-        return ResponseEntity.ok(adminSaleService.updateSale(payload));
+        return ResponseEntity.ok(adminSaleService.updateSale(payload, image));
     }
 
     @DeleteMapping("/delete/{saleGuid}")

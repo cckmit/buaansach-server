@@ -57,7 +57,11 @@ public class AdminStoreSaleService {
         StoreEntity storeEntity = adminStoreRepository.findOneByGuid(payload.getStoreGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
-        storeEntity.setStorePrimarySaleGuid(payload.getSaleGuid());
+        if (payload.isRevert()) {
+            storeEntity.setStorePrimarySaleGuid(null);
+        } else {
+            storeEntity.setStorePrimarySaleGuid(payload.getSaleGuid());
+        }
         adminStoreRepository.save(storeEntity);
     }
 

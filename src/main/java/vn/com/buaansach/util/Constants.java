@@ -10,6 +10,7 @@ public final class Constants {
     public static final String SPRING_PROFILE_PRODUCTION = "prod";
     public static final String STORE_IMAGE_PATH = "store_images";
     public static final String PRODUCT_IMAGE_PATH = "product_images";
+    public static final String SALE_IMAGE_PATH = "sale_images";
     public static final String CATEGORY_IMAGE_PATH = "category_images";
     public static final String USER_IMAGE_PATH = "user_images";
     public static final String BANNER_IMAGE_PATH = "banner_images";

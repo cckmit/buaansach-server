@@ -7,10 +7,9 @@ import vn.com.buaansach.entity.enumeration.StoreNotificationType;
 import vn.com.buaansach.entity.enumeration.StoreOrderType;
 import vn.com.buaansach.entity.notification.StoreNotificationEntity;
 import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
-import vn.com.buaansach.entity.notification.StorePayRequestNotificationEntity;
 import vn.com.buaansach.web.guest.repository.notification.GuestStoreNotificationRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestStoreOrderNotificationRepository;
-import vn.com.buaansach.web.guest.service.dto.read.GuestStoreNotificationDTO;
+import vn.com.buaansach.web.shared.service.dto.readwrite.StoreNotificationDTO;
 
 import java.util.UUID;
 
@@ -20,7 +19,7 @@ public class GuestStoreOrderNotificationService {
     private final GuestStoreOrderNotificationRepository guestStoreOrderNotificationRepository;
     private final GuestStoreNotificationRepository guestStoreNotificationRepository;
 
-    public GuestStoreNotificationDTO createStoreOrderUpdateNotification(UUID storeGuid, UUID areaGuid, UUID seatGuid, UUID orderGuid, UUID orderProductGroup, int numberOfProduct) {
+    public StoreNotificationDTO createStoreOrderUpdateNotification(UUID storeGuid, UUID areaGuid, UUID seatGuid, UUID orderGuid, UUID orderProductGroup, int numberOfProduct) {
         StoreNotificationEntity notificationEntity = new StoreNotificationEntity();
         UUID notificationGuid = UUID.randomUUID();
         notificationEntity.setGuid(notificationGuid);
@@ -41,6 +40,6 @@ public class GuestStoreOrderNotificationService {
         orderNotification.setStoreNotificationGuid(notificationGuid);
         orderNotification = guestStoreOrderNotificationRepository.save(orderNotification);
 
-        return new GuestStoreNotificationDTO(notificationEntity, orderNotification);
+        return new StoreNotificationDTO(notificationEntity, orderNotification);
     }
 }

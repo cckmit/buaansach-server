@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import vn.com.buaansach.entity.enumeration.StoreNotificationType;
 import vn.com.buaansach.entity.notification.StoreNotificationEntity;
 import vn.com.buaansach.web.shared.repository.notification.StoreNotificationRepository;
-import vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreNotificationDTO;
+import vn.com.buaansach.web.shared.service.dto.readwrite.StoreNotificationDTO;
 
 import java.time.Instant;
 import java.util.List;
@@ -18,7 +18,7 @@ public interface PosStoreNotificationRepository extends StoreNotificationReposit
                                                                                                                              StoreNotificationType notificationType,
                                                                                                                              Instant startDate);
 
-    @Query("SELECT new vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreNotificationDTO(notification, payRequest) " +
+    @Query("SELECT new vn.com.buaansach.web.shared.service.dto.readwrite.StoreNotificationDTO(notification, payRequest) " +
             "FROM StoreNotificationEntity notification " +
             "JOIN vn.com.buaansach.entity.notification.StorePayRequestNotificationEntity payRequest " +
             "ON notification.guid = payRequest.storeNotificationGuid " +
@@ -26,11 +26,11 @@ public interface PosStoreNotificationRepository extends StoreNotificationReposit
             "AND notification.storeNotificationType = :notificationType " +
             "AND notification.createdDate >= :startDate " +
             "ORDER BY notification.createdDate ASC ")
-    List<PosStoreNotificationDTO> findListPosStorePayRequestNotificationDTO(@Param("storeGuid") UUID storeGuid,
-                                                                            @Param("startDate") Instant startDate,
-                                                                            @Param("notificationType") StoreNotificationType notificationType);
+    List<StoreNotificationDTO> findListPosStorePayRequestNotificationDTO(@Param("storeGuid") UUID storeGuid,
+                                                                         @Param("startDate") Instant startDate,
+                                                                         @Param("notificationType") StoreNotificationType notificationType);
 
-    @Query("SELECT new vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreNotificationDTO(notification, storeOrder) " +
+    @Query("SELECT new vn.com.buaansach.web.shared.service.dto.readwrite.StoreNotificationDTO(notification, storeOrder) " +
             "FROM StoreNotificationEntity notification " +
             "JOIN vn.com.buaansach.entity.notification.StoreOrderNotificationEntity storeOrder " +
             "ON notification.guid = storeOrder.storeNotificationGuid " +
@@ -38,7 +38,7 @@ public interface PosStoreNotificationRepository extends StoreNotificationReposit
             "AND notification.storeNotificationType = :notificationType " +
             "AND notification.createdDate >= :startDate " +
             "ORDER BY notification.createdDate ASC ")
-    List<PosStoreNotificationDTO> findListPosStoreOrderNotificationDTO(@Param("storeGuid") UUID storeGuid,
-                                                                       @Param("startDate") Instant startDate,
-                                                                       @Param("notificationType") StoreNotificationType notificationType);
+    List<StoreNotificationDTO> findListPosStoreOrderNotificationDTO(@Param("storeGuid") UUID storeGuid,
+                                                                    @Param("startDate") Instant startDate,
+                                                                    @Param("notificationType") StoreNotificationType notificationType);
 }

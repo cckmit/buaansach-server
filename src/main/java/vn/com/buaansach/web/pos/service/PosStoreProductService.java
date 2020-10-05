@@ -11,7 +11,7 @@ import vn.com.buaansach.web.pos.repository.store.PosStoreProductRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.write.PosStoreProductStatusChangeDTO;
 import vn.com.buaansach.web.pos.websocket.PosSocketService;
-import vn.com.buaansach.web.pos.websocket.dto.PosSocketDTO;
+import vn.com.buaansach.web.shared.websocket.dto.DataSocketDTO;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +27,7 @@ public class PosStoreProductService {
         storeProductEntity.setStoreProductStatus(payload.getStoreProductStatus());
         posStoreProductRepository.save(storeProductEntity);
 
-        PosSocketDTO dto = new PosSocketDTO();
+        DataSocketDTO dto = new DataSocketDTO();
         dto.setMessage(WebSocketMessages.POS_UPDATE_STORE_PRODUCT);
         dto.setPayload(payload);
         posSocketService.sendMessage(WebSocketEndpoints.TOPIC_GUEST_PREFIX + storeProductEntity.getStoreGuid(), dto);

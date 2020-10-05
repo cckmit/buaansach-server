@@ -17,8 +17,8 @@ import vn.com.buaansach.web.pos.repository.notification.PosStoreNotificationRepo
 import vn.com.buaansach.web.pos.repository.notification.PosStoreOrderNotificationRepository;
 import vn.com.buaansach.web.pos.repository.notification.PosStorePayRequestNotificationRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
-import vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreNotificationDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosStoreNotificationVisibilityUpdateDTO;
+import vn.com.buaansach.web.shared.service.dto.readwrite.StoreNotificationDTO;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
@@ -55,7 +55,7 @@ public class PosStoreNotificationService {
         log.debug("[Scheduling] Old store notification data deleted");
     }
 
-    public PosStoreNotificationDTO createStoreOrderNotification(UUID storeGuid, UUID areaGuid, UUID seatGuid, UUID orderGuid, UUID orderProductGroup, int numberOfProduct) {
+    public StoreNotificationDTO createStoreOrderNotification(UUID storeGuid, UUID areaGuid, UUID seatGuid, UUID orderGuid, UUID orderProductGroup, int numberOfProduct) {
         StoreNotificationEntity notificationEntity = new StoreNotificationEntity();
         UUID notificationGuid = UUID.randomUUID();
         notificationEntity.setGuid(notificationGuid);
@@ -76,7 +76,7 @@ public class PosStoreNotificationService {
         orderNotification.setStoreNotificationGuid(notificationGuid);
         orderNotification = posStoreOrderNotificationRepository.save(orderNotification);
 
-        return new PosStoreNotificationDTO(notificationEntity, orderNotification);
+        return new StoreNotificationDTO(notificationEntity, orderNotification);
     }
 
     public void toggleVisibility(PosStoreNotificationVisibilityUpdateDTO payload, String currentUser) {
@@ -99,14 +99,14 @@ public class PosStoreNotificationService {
         posStoreNotificationRepository.saveAll(list);
     }
 
-    public List<PosStoreNotificationDTO> getListStoreNotification(String storeGuid, Instant startDate, StoreNotificationType type, Boolean hidden) {
+    public List<StoreNotificationDTO> getListStoreNotification(String storeGuid, Instant startDate, StoreNotificationType type, Boolean hidden) {
         posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
-        List<PosStoreNotificationDTO> list = new ArrayList<>();
+        List<StoreNotificationDTO> list = new ArrayList<>();
         if (type == null) {
             list = posStoreNotificationRepository
                     .findByStoreGuidAndStoreNotificationTypeAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(UUID.fromString(storeGuid),
                             StoreNotificationType.CALL_WAITER, startDate)
-                    .stream().map(PosStoreNotificationDTO::new)
+                    .stream().map(StoreNotificationDTO::new)
                     .collect(Collectors.toList());
             list.addAll(posStoreNotificationRepository
                     .findListPosStoreOrderNotificationDTO(UUID.fromString(storeGuid), startDate, StoreNotificationType.ORDER_UPDATE));
@@ -119,7 +119,7 @@ public class PosStoreNotificationService {
                             .findByStoreGuidAndStoreNotificationTypeAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(UUID.fromString(storeGuid),
                                     StoreNotificationType.CALL_WAITER,
                                     startDate)
-                            .stream().map(PosStoreNotificationDTO::new)
+                            .stream().map(StoreNotificationDTO::new)
                             .collect(Collectors.toList());
                     break;
                 case ORDER_UPDATE:
@@ -134,7 +134,7 @@ public class PosStoreNotificationService {
         }
         if (hidden != null) {
             if (hidden) {
-                list = list.stream().filter(PosStoreNotificationDTO::isStoreNotificationHidden).collect(Collectors.toList());
+                list = list.stream().filter(StoreNotificationDTO::isStoreNotificationHidden).collect(Collectors.toList());
             } else {
                 list = list.stream().filter(item -> !item.isStoreNotificationHidden()).collect(Collectors.toList());
             }
@@ -142,7 +142,7 @@ public class PosStoreNotificationService {
         return list;
     }
 
-    public PosStoreNotificationDTO updateStoreNotification(PosStoreNotificationDTO payload, String currentUser) {
+    public StoreNotificationDTO updateStoreNotification(StoreNotificationDTO payload, String currentUser) {
         StoreNotificationEntity entity = posStoreNotificationRepository.findOneByGuid(payload.getGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOTIFICATION_NOT_FOUND));
         posStoreSecurity.blockAccessIfNotInStore(entity.getStoreGuid());

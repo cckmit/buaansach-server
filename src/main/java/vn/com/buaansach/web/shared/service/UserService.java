@@ -5,6 +5,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import vn.com.buaansach.entity.enumeration.Gender;
 import vn.com.buaansach.entity.enumeration.UserType;
 import vn.com.buaansach.entity.user.AuthorityEntity;
 import vn.com.buaansach.entity.user.UserEntity;
@@ -65,10 +66,18 @@ public class UserService {
             }
 
             if (dto.getFullName() != null) profileEntity.setFullName(dto.getFullName());
+            else throw new BadRequestException(ErrorCode.BAD_REQUEST);
+
             if (dto.getUserGender() != null) profileEntity.setUserGender(dto.getUserGender());
+            else profileEntity.setUserGender(Gender.UNDEFINED);
+
             if (dto.getUserBirthday() != null) profileEntity.setUserBirthday(dto.getUserBirthday());
+
             if (dto.getUserAddress() != null) profileEntity.setUserAddress(dto.getUserAddress());
+
             if (dto.getLangKey() != null) profileEntity.setLangKey(dto.getLangKey());
+            else profileEntity.setLangKey(Constants.DEFAULT_LANGUAGE);
+
             userProfileRepository.save(profileEntity);
         });
     }
@@ -111,13 +120,17 @@ public class UserService {
     }
 
     public void registerUser(UserRegisterDTO dto) {
-        if (dto.getUserLogin() != null && userRepository.findOneByUserLoginIgnoreCase(dto.getUserLogin().toLowerCase()).isPresent()) {
+        if (dto.getUserLogin() == null || dto.getUserEmail() == null || dto.getUserPhone() == null) {
+            throw new BadRequestException(ErrorCode.BAD_REQUEST);
+        }
+
+        if (userRepository.findOneByUserLoginIgnoreCase(dto.getUserLogin().toLowerCase()).isPresent()) {
             throw new BadRequestException(ErrorCode.LOGIN_EXIST);
         }
-        if (dto.getUserEmail() != null && userRepository.findOneByUserEmailIgnoreCase(dto.getUserEmail()).isPresent()) {
+        if (userRepository.findOneByUserEmailIgnoreCase(dto.getUserEmail()).isPresent()) {
             throw new BadRequestException(ErrorCode.EMAIL_EXIST);
         }
-        if (dto.getUserPhone() != null && userRepository.findOneByUserPhone(dto.getUserPhone()).isPresent()) {
+        if (userRepository.findOneByUserPhone(dto.getUserPhone()).isPresent()) {
             throw new BadRequestException(ErrorCode.PHONE_EXIST);
         }
 
@@ -125,12 +138,8 @@ public class UserService {
         UUID userGuid = UUID.randomUUID();
         userEntity.setGuid(userGuid);
         userEntity.setUserLogin(dto.getUserLogin().toLowerCase());
-        if (dto.getUserEmail() != null) {
-            userEntity.setUserEmail(dto.getUserEmail().toLowerCase());
-        }
-        if (dto.getUserPhone() != null) {
-            userEntity.setUserPhone(dto.getUserPhone());
-        }
+        userEntity.setUserEmail(dto.getUserEmail().toLowerCase());
+        userEntity.setUserPhone(dto.getUserPhone());
 
         userEntity.setUserPassword(passwordEncoder.encode(dto.getUserPassword()));
         userEntity.setUserActivated(true);

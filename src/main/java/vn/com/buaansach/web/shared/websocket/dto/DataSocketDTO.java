@@ -1,23 +1,23 @@
-package vn.com.buaansach.web.pos.websocket.dto;
+package vn.com.buaansach.web.shared.websocket.dto;
 
 import lombok.Data;
 
 @Data
-public class PosSocketDTO {
+public class DataSocketDTO {
     private int statusCode;
     private String message;
     private Object payload;
 
-    public PosSocketDTO() {
+    public DataSocketDTO() {
     }
 
-    public PosSocketDTO(int statusCode, String message, Object payload) {
+    public DataSocketDTO(int statusCode, String message, Object payload) {
         this.statusCode = statusCode;
         this.message = message;
         this.payload = payload;
     }
 
-    public PosSocketDTO(String message, Object payload) {
+    public DataSocketDTO(String message, Object payload) {
         this.message = message;
         this.payload = payload;
     }

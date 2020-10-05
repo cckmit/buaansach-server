@@ -25,6 +25,7 @@ public class SaleService {
     private final OrderRepository orderRepository;
 
     private boolean isValidSale(SaleDTO dto, UUID storeGuid) {
+        /* Sale đã bị vô hiệu hóa toàn bộ */
         if (!dto.isSaleActivated()) return false;
 
         if (dto.getTimeCondition() != null) {
@@ -38,6 +39,7 @@ public class SaleService {
         if (dto.getSaleConditions().contains(SaleCondition.STORE_LIMIT.name())) {
             Optional<StoreSaleEntity> optional = storeSaleRepository.findOneByStoreGuidAndSaleGuid(storeGuid, dto.getGuid());
             if (optional.isEmpty()) return false;
+            /* Sale đã bị vô hiệu tại cửa hàng hay chưa */
             return optional.get().isStoreSaleActivated();
         }
         return true;

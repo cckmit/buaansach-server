@@ -13,9 +13,9 @@ import vn.com.buaansach.web.guest.repository.store.GuestSeatRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestStoreRepository;
 import vn.com.buaansach.web.guest.security.GuestStoreSecurity;
 import vn.com.buaansach.web.guest.service.dto.read.GuestStoreDTO;
-import vn.com.buaansach.web.guest.service.dto.read.GuestStoreNotificationDTO;
-import vn.com.buaansach.web.guest.websocket.GuestSocketService;
 import vn.com.buaansach.web.guest.service.dto.write.GuestCallWaiterDTO;
+import vn.com.buaansach.web.guest.websocket.GuestSocketService;
+import vn.com.buaansach.web.shared.service.dto.readwrite.StoreNotificationDTO;
 
 import java.util.UUID;
 
@@ -52,6 +52,6 @@ public class GuestStoreService {
         notificationEntity.setSeatGuid(seatEntity.getGuid());
         guestStoreNotificationRepository.save(notificationEntity);
 
-        guestSocketService.sendCallWaiterNotification(new GuestStoreNotificationDTO(guestStoreNotificationRepository.save(notificationEntity)));
+        guestSocketService.sendCallWaiterNotification(new StoreNotificationDTO(guestStoreNotificationRepository.save(notificationEntity)));
     }
 }

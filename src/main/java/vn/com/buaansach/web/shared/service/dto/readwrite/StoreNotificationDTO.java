@@ -1,4 +1,4 @@
-package vn.com.buaansach.web.pos.service.dto.readwrite;
+package vn.com.buaansach.web.shared.service.dto.readwrite;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-public class PosStoreNotificationDTO extends AuditDTO {
+public class StoreNotificationDTO extends AuditDTO {
     private UUID guid;
     private StoreNotificationStatus storeNotificationStatus;
     private StoreNotificationType storeNotificationType;
@@ -33,16 +33,16 @@ public class PosStoreNotificationDTO extends AuditDTO {
     private StoreOrderNotificationEntity orderNotification;
     private StorePayRequestNotificationEntity payRequestNotification;
 
-    public PosStoreNotificationDTO(StoreNotificationEntity entity) {
+    public StoreNotificationDTO(StoreNotificationEntity entity) {
         assignProperty(entity);
     }
 
-    public PosStoreNotificationDTO(StoreNotificationEntity entity, StorePayRequestNotificationEntity payRequestNotification) {
+    public StoreNotificationDTO(StoreNotificationEntity entity, StorePayRequestNotificationEntity payRequestNotification) {
         assignProperty(entity);
         this.payRequestNotification = payRequestNotification;
     }
 
-    public PosStoreNotificationDTO(StoreNotificationEntity entity, StoreOrderNotificationEntity orderNotification) {
+    public StoreNotificationDTO(StoreNotificationEntity entity, StoreOrderNotificationEntity orderNotification) {
         assignProperty(entity);
         this.orderNotification = orderNotification;
     }

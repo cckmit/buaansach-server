@@ -16,7 +16,6 @@ import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.Constants;
-import vn.com.buaansach.util.sequence.UserCodeGenerator;
 import vn.com.buaansach.web.admin.repository.user.AdminAuthorityRepository;
 import vn.com.buaansach.web.admin.repository.user.AdminUserProfileRepository;
 import vn.com.buaansach.web.admin.repository.user.AdminUserRepository;
@@ -45,13 +44,17 @@ public class AdminUserService {
 
     @Transactional
     public AdminUserDTO createUser(AdminCreateUserDTO dto) {
-        if (dto.getUserLogin() != null && adminUserRepository.findOneByUserLoginIgnoreCase(dto.getUserLogin().toLowerCase()).isPresent()) {
+        if (dto.getUserLogin() == null || dto.getUserEmail() == null || dto.getUserPhone() == null) {
+            throw new BadRequestException(ErrorCode.BAD_REQUEST);
+        }
+
+        if (adminUserRepository.findOneByUserLoginIgnoreCase(dto.getUserLogin().toLowerCase()).isPresent()) {
             throw new BadRequestException(ErrorCode.LOGIN_EXIST);
         }
-        if (dto.getUserEmail() != null && adminUserRepository.findOneByUserEmailIgnoreCase(dto.getUserEmail()).isPresent()) {
+        if (adminUserRepository.findOneByUserEmailIgnoreCase(dto.getUserEmail()).isPresent()) {
             throw new BadRequestException(ErrorCode.EMAIL_EXIST);
         }
-        if (dto.getUserPhone() != null && adminUserRepository.findOneByUserPhone(dto.getUserPhone()).isPresent()) {
+        if (adminUserRepository.findOneByUserPhone(dto.getUserPhone()).isPresent()) {
             throw new BadRequestException(ErrorCode.PHONE_EXIST);
         }
 
@@ -59,12 +62,8 @@ public class AdminUserService {
         UUID userGuid = UUID.randomUUID();
         userEntity.setGuid(userGuid);
         userEntity.setUserLogin(dto.getUserLogin().toLowerCase());
-        if (dto.getUserEmail() != null) {
-            userEntity.setUserEmail(dto.getUserEmail().toLowerCase());
-        }
-        if (dto.getUserPhone() != null) {
-            userEntity.setUserPhone(dto.getUserPhone());
-        }
+        userEntity.setUserEmail(dto.getUserEmail().toLowerCase());
+        userEntity.setUserPhone(dto.getUserPhone());
 
         userEntity.setUserPassword(passwordEncoder.encode(dto.getUserPassword()));
         userEntity.setUserActivated(dto.isUserActivated());
@@ -107,14 +106,16 @@ public class AdminUserService {
             if (!userEntity.getUserLogin().equals(currentUser.getUserLogin()))
                 throw new BadRequestException(ErrorCode.EMAIL_EXIST);
         });
-
-        adminUserRepository.findOneByUserPhone(dto.getUserPhone()).ifPresent(userEntity -> {
-            if (!userEntity.getUserLogin().equals(currentUser.getUserLogin()))
-                throw new BadRequestException(ErrorCode.PHONE_EXIST);
-        });
-
         currentUser.setUserEmail(dto.getUserEmail());
-        currentUser.setUserPhone(dto.getUserPhone());
+
+
+        // Khong cho doi SDT
+//        adminUserRepository.findOneByUserPhone(dto.getUserPhone()).ifPresent(userEntity -> {
+//            if (!userEntity.getUserLogin().equals(currentUser.getUserLogin()))
+//                throw new BadRequestException(ErrorCode.PHONE_EXIST);
+//        });
+//        currentUser.setUserPhone(dto.getUserPhone());
+
         if (dto.getAuthorities() != null) {
             Set<AuthorityEntity> authorities = dto.getAuthorities().stream()
                     .map(adminAuthorityRepository::findByName)

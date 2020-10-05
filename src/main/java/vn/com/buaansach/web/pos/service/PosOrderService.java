@@ -31,15 +31,15 @@ import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosListOrderDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
-import vn.com.buaansach.web.pos.service.dto.readwrite.PosStoreNotificationDTO;
 import vn.com.buaansach.web.pos.service.dto.write.*;
 import vn.com.buaansach.web.pos.service.mapper.PosOrderProductMapper;
 import vn.com.buaansach.web.pos.websocket.PosSocketService;
-import vn.com.buaansach.web.pos.websocket.dto.PosSocketDTO;
 import vn.com.buaansach.web.shared.service.CustomerService;
 import vn.com.buaansach.web.shared.service.PaymentService;
 import vn.com.buaansach.web.shared.service.PriceService;
 import vn.com.buaansach.web.shared.service.SaleService;
+import vn.com.buaansach.web.shared.service.dto.readwrite.StoreNotificationDTO;
+import vn.com.buaansach.web.shared.websocket.dto.DataSocketDTO;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
@@ -178,7 +178,7 @@ public class PosOrderService {
         posSeatService.makeSeatServiceUnfinished(seatEntity);
 
         /* Tạo thông báo */
-        PosStoreNotificationDTO notificationDTO = posStoreNotificationService.createStoreOrderNotification(
+        StoreNotificationDTO notificationDTO = posStoreNotificationService.createStoreOrderNotification(
                 storeEntity.getGuid(),
                 seatEntity.getAreaGuid(),
                 seatEntity.getGuid(),
@@ -301,13 +301,13 @@ public class PosOrderService {
                 break;
         }
 
-        customerService.usePoint(orderEntity);
+        customerService.addUsePointLog(orderEntity);
 
         if (storeEntity.isStoreRewardPointActivated()) {
             customerService.earnPoint(orderEntity);
         }
 
-        PosSocketDTO dto = new PosSocketDTO();
+        DataSocketDTO dto = new DataSocketDTO();
         dto.setMessage(WebSocketMessages.POS_PURCHASE_ORDER);
         dto.setPayload(null);
         posSocketService.sendMessage(WebSocketEndpoints.TOPIC_GUEST_PREFIX + payload.getOrderGuid(), dto);
@@ -521,7 +521,7 @@ public class PosOrderService {
                     OrderTimelineStatus.PURCHASED,
                     currentUser);
             orderEntity.setOrderStatusTimeline(newTimeline);
-            customerService.usePoint(orderEntity);
+            customerService.addUsePointLog(orderEntity);
             if (storeEntity.isStoreRewardPointActivated()) {
                 customerService.earnPoint(orderEntity);
             }
@@ -531,7 +531,7 @@ public class PosOrderService {
         posSeatService.resetListSeat(listSeat);
 
         listOrder.forEach(order -> {
-            PosSocketDTO dto = new PosSocketDTO();
+            DataSocketDTO dto = new DataSocketDTO();
             dto.setMessage(WebSocketMessages.POS_PURCHASE_ORDER);
             dto.setPayload(null);
             posSocketService.sendMessage(WebSocketEndpoints.TOPIC_GUEST_PREFIX + order.getGuid(), dto);

@@ -2,16 +2,20 @@ package vn.com.buaansach.web.admin.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import vn.com.buaansach.entity.common.FileEntity;
 import vn.com.buaansach.entity.sale.SaleEntity;
 import vn.com.buaansach.entity.sale.condition.SaleTimeConditionEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
+import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.admin.repository.sale.AdminSaleRepository;
 import vn.com.buaansach.web.admin.repository.sale.AdminSaleTimeConditionRepository;
 import vn.com.buaansach.web.admin.repository.store.AdminStoreRepository;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminSaleDTO;
+import vn.com.buaansach.web.shared.service.FileService;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
@@ -25,6 +29,7 @@ public class AdminSaleService {
     private final AdminSaleRepository adminSaleRepository;
     private final AdminSaleTimeConditionRepository adminSaleTimeConditionRepository;
     private final AdminStoreRepository adminStoreRepository;
+    private final FileService fileService;
 
     private void validateTime(SaleTimeConditionEntity entity) {
         Instant start = entity.getValidFrom();
@@ -34,7 +39,11 @@ public class AdminSaleService {
     }
 
     @Transactional
-    public AdminSaleDTO createSale(AdminSaleDTO payload) {
+    public AdminSaleDTO createSale(AdminSaleDTO payload, MultipartFile image) {
+        if (image != null) {
+            FileEntity fileEntity = fileService.uploadImage(image, Constants.SALE_IMAGE_PATH);
+            payload.setSaleImageUrl(fileEntity.getUrl());
+        }
         UUID saleGuid = UUID.randomUUID();
         payload.setGuid(saleGuid);
         if (payload.getTimeCondition() != null) {
@@ -55,11 +64,20 @@ public class AdminSaleService {
     }
 
     @Transactional
-    public AdminSaleDTO updateSale(AdminSaleDTO payload) {
+    public AdminSaleDTO updateSale(AdminSaleDTO payload, MultipartFile image) {
         SaleEntity existSale = adminSaleRepository.findOneByGuid(payload.getGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.SALE_NOT_FOUND));
         SaleEntity updateSale = payload.toEntity();
         updateSale.setId(existSale.getId());
+
+        if (image != null) {
+            /* if update image */
+            fileService.deleteByUrl(existSale.getSaleImageUrl());
+            FileEntity newImage = fileService.uploadImage(image, Constants.SALE_IMAGE_PATH);
+            updateSale.setSaleImageUrl(newImage.getUrl());
+        } else {
+            updateSale.setSaleImageUrl(existSale.getSaleImageUrl());
+        }
 
         AdminSaleDTO result = new AdminSaleDTO(adminSaleRepository.save(updateSale));
 
@@ -86,7 +104,10 @@ public class AdminSaleService {
         }).collect(Collectors.toList());
         adminStoreRepository.saveAll(list);
         adminSaleTimeConditionRepository.deleteBySaleGuid(saleGuid);
-        adminSaleRepository.deleteByGuid(saleGuid);
+        SaleEntity saleEntity = adminSaleRepository.findOneByGuid(saleGuid)
+                .orElseThrow(()-> new NotFoundException(ErrorCode.SALE_NOT_FOUND));
+        fileService.deleteByUrl(saleEntity.getSaleImageUrl());
+        adminSaleRepository.delete(saleEntity);
     }
 
     public List<AdminSaleDTO> getListAdminSaleDTOByStoreGuid(UUID storeGuid) {

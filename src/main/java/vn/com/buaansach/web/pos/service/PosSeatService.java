@@ -17,7 +17,7 @@ import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosSeatDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosToggleLockListSeatDTO;
 import vn.com.buaansach.web.pos.websocket.PosSocketService;
-import vn.com.buaansach.web.pos.websocket.dto.PosSocketDTO;
+import vn.com.buaansach.web.shared.websocket.dto.DataSocketDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -99,7 +99,7 @@ public class PosSeatService {
         seatEntity.setSeatLocked(!seatEntity.isSeatLocked());
         posSeatRepository.save(seatEntity);
 
-        PosSocketDTO dto = new PosSocketDTO();
+        DataSocketDTO dto = new DataSocketDTO();
         dto.setMessage(WebSocketMessages.POS_LOCK_SEAT);
         dto.setPayload(seatEntity);
         posSocketService.sendMessage(WebSocketEndpoints.TOPIC_GUEST_PREFIX + seatEntity.getGuid(), dto);
@@ -119,7 +119,7 @@ public class PosSeatService {
         posSeatRepository.saveAll(listSeat);
 
         listSeat.forEach(item -> {
-            PosSocketDTO dto = new PosSocketDTO();
+            DataSocketDTO dto = new DataSocketDTO();
             dto.setMessage(WebSocketMessages.POS_LOCK_SEAT);
             dto.setPayload(item);
             posSocketService.sendMessage(WebSocketEndpoints.TOPIC_GUEST_PREFIX + item.getGuid(), dto);

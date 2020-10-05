@@ -8,18 +8,21 @@ import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.PointLogType;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
+import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.util.Constants;
-import vn.com.buaansach.web.customer.service.write.CustomerUsePointDTO;
+import vn.com.buaansach.web.shared.service.dto.readwrite.UsePointDTO;
 import vn.com.buaansach.web.shared.repository.customer.CustomerPointLogRepository;
 import vn.com.buaansach.web.shared.repository.customer.CustomerRepository;
 import vn.com.buaansach.web.shared.repository.order.OrderRepository;
 import vn.com.buaansach.web.shared.repository.store.SeatRepository;
+import vn.com.buaansach.web.shared.repository.store.StoreRepository;
 import vn.com.buaansach.web.shared.repository.user.UserRepository;
+import vn.com.buaansach.web.shared.websocket.WebsocketService;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -34,6 +37,8 @@ public class CustomerService {
     private final PriceService priceService;
     private final OrderRepository orderRepository;
     private final SeatRepository seatRepository;
+    private final StoreRepository storeRepository;
+    private final WebsocketService websocketService;
 
     public void createdCustomer(UUID userGuid) {
         CustomerEntity customerEntity = new CustomerEntity();
@@ -68,8 +73,8 @@ public class CustomerService {
     }
 
     @Transactional
-    public void assignPoint(OrderEntity orderEntity, int point) {
-        if (point < 0) throw new BadRequestException(ErrorCode.POINT_USAGE_MUST_GREATER_THAN_EQUAL_ZERO);
+    public void usePoint(OrderEntity orderEntity, int orderPointValue) {
+        if (orderPointValue < 0) throw new BadRequestException(ErrorCode.POINT_USAGE_MUST_GREATER_THAN_EQUAL_ZERO);
 
         if (orderEntity.getOrderCustomerPhone() == null)
             throw new BadRequestException(ErrorCode.ORDER_CUSTOMER_PHONE_EMPTY);
@@ -85,19 +90,23 @@ public class CustomerService {
 
         customerEntity.setCustomerPoint(customerEntity.getCustomerPoint() + orderEntity.getOrderPointValue());
 
-        if (customerEntity.getCustomerPoint() < point)
+        if (customerEntity.getCustomerPoint() < orderPointValue)
             throw new BadRequestException(ErrorCode.CUSTOMER_POINT_NOT_ENOUGH);
 
-        orderEntity.setOrderPointValue(point);
-        orderEntity.setOrderPointCost(point * Constants.VND_PER_POINT);
+        orderEntity.setOrderPointValue(orderPointValue);
+        orderEntity.setOrderPointCost(orderPointValue * Constants.VND_PER_POINT);
 
-        customerEntity.setCustomerPoint(customerEntity.getCustomerPoint() - point);
+        customerEntity.setCustomerPoint(customerEntity.getCustomerPoint() - orderPointValue);
 
         orderRepository.save(orderEntity);
         customerRepository.save(customerEntity);
+
+        StoreEntity storeEntity = storeRepository.findOneBySeatGuid(orderEntity.getSeatGuid())
+                .orElseThrow(()-> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
+        websocketService.sendUsePointNotification(storeEntity.getGuid(), orderEntity);
     }
 
-    public void assignPoint(CustomerUsePointDTO payload) {
+    public void userPoint(UsePointDTO payload) {
         OrderEntity orderEntity = orderRepository.findOneByGuid(payload.getOrderGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
         SeatEntity seatEntity = seatRepository.findOneByGuid(orderEntity.getSeatGuid())
@@ -108,7 +117,7 @@ public class CustomerService {
             throw new BadRequestException(ErrorCode.ORDER_PURCHASED);
         if (orderEntity.getOrderStatus().equals(OrderStatus.CANCELLED))
             throw new BadRequestException(ErrorCode.ORDER_CANCELLED);
-        assignPoint(orderEntity, payload.getPoint());
+        usePoint(orderEntity, payload.getOrderPointValue());
     }
 
     @Transactional
@@ -126,7 +135,7 @@ public class CustomerService {
         customerRepository.save(customerEntity);
     }
 
-    public void usePoint(OrderEntity orderEntity) {
+    public void addUsePointLog(OrderEntity orderEntity) {
         if (orderEntity.getOrderCustomerPhone() == null) return;
 
         if (orderEntity.getOrderPointValue() == 0) return;

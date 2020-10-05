@@ -15,7 +15,7 @@ public interface SaleRepository extends JpaRepository<SaleEntity, Long> {
 
     Optional<SaleEntity> findOneByGuid(UUID saleGuid);
 
-    void deleteByGuid(UUID saleGuid);
+    Optional<SaleEntity> findOneByGuidAndSaleActivated(UUID saleGuid, boolean saleActivated);
 
     @Query("SELECT new vn.com.buaansach.web.shared.service.dto.read.SaleDTO(sale, time) " +
             "FROM SaleEntity sale " +
