@@ -29,6 +29,10 @@ public class AdminStoreUserDTO extends AuditDTO {
     private String storeGuid;
     private String userLogin;
 
+    /* User account */
+    private String userEmail;
+    private String userPhone;
+
     /* User Profile */
     private String userCode;
     private String fullName;
@@ -44,6 +48,9 @@ public class AdminStoreUserDTO extends AuditDTO {
         this.storeUserActivated = storeUserEntity.isStoreUserActivated();
         this.storeGuid = storeUserEntity.getStoreGuid().toString();
         this.userLogin = storeUserEntity.getUserLogin();
+
+        this.userEmail = userEntity.getUserEmail();
+        this.userPhone = userEntity.getUserPhone();
 
         this.userCode = profileEntity.getUserCode();
         this.fullName = profileEntity.getFullName();
@@ -66,8 +73,15 @@ public class AdminStoreUserDTO extends AuditDTO {
         this.storeGuid = storeUserEntity.getStoreGuid().toString();
         this.userLogin = storeUserEntity.getUserLogin();
 
+        this.userEmail = adminUserDTO.getUserEmail();
+        this.userPhone = adminUserDTO.getUserPhone();
+
         this.userCode = adminUserDTO.getUserCode();
         this.fullName = adminUserDTO.getFullName();
+        this.avatarUrl = adminUserDTO.getAvatarUrl();
+        this.userGender = adminUserDTO.getUserGender();
+        this.userBirthday = adminUserDTO.getUserBirthday();
+        this.userAddress = adminUserDTO.getUserAddress();
 
         this.createdBy = storeUserEntity.getCreatedBy();
         this.createdDate = storeUserEntity.getCreatedDate();

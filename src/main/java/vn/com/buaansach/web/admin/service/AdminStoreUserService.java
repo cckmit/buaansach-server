@@ -94,10 +94,12 @@ public class AdminStoreUserService {
         /* do not use userLogin from request, because it might be modified */
         UserEntity updateUser = adminUserRepository.findOneByUserLoginIgnoreCase(storeUserEntity.getUserLogin())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        updateUser.setUserEmail(request.getUserEmail());
         if (request.getUserPassword() != null && !request.getUserPassword().isEmpty()) {
             updateUser.setUserPassword(passwordEncoder.encode(request.getUserPassword()));
-            updateUser = adminUserRepository.save(updateUser);
         }
+        updateUser = adminUserRepository.save(updateUser);
 
         UserProfileEntity profileEntity = adminUserProfileRepository.findOneByUserGuid(updateUser.getGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_PROFILE_NOT_FOUND));

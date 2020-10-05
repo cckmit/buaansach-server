@@ -327,10 +327,17 @@ public class PosOrderService {
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
+        if (orderEntity.getOrderStatus().equals(OrderStatus.CANCELLED)) return;
+
         orderEntity.setOrderStatus(OrderStatus.CANCELLED);
         orderEntity.setOrderCancelReason(payload.getCancelReason());
         orderEntity.setOrderCancelledBy(currentUser);
         orderEntity.setOrderCancelledDate(Instant.now());
+
+        if (orderEntity.getOrderReceivedBy() == null){
+            orderEntity.setOrderReceivedBy(currentUser);
+            orderEntity.setOrderReceivedDate(Instant.now());
+        }
 
         String newTimeline = TimelineUtil.appendOrderStatus(
                 orderEntity.getOrderStatusTimeline(),
