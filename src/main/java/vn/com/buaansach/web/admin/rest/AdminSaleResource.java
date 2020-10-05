@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminSaleService;
-import vn.com.buaansach.web.admin.service.dto.readwrite.AdminProductDTO;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminSaleDTO;
 
 import javax.validation.Valid;

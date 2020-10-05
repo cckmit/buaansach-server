@@ -9,12 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vn.com.buaansach.entity.statistic.PageViewEntity;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.service.AdminPageViewService;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminPageViewDTO;
-import vn.com.buaansach.web.guest.service.GuestPageViewService;
 
 import javax.validation.Valid;
 

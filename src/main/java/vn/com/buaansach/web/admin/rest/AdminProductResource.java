@@ -45,7 +45,7 @@ public class AdminProductResource {
     }
 
     @GetMapping("/list-all")
-    public ResponseEntity<List<AdminProductDTO>> getAllProduct(){
+    public ResponseEntity<List<AdminProductDTO>> getAllProduct() {
         log.debug("REST request from user [{}] to list all [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME);
         return ResponseEntity.ok(adminProductService.getAllProductOrderByPositionAsc());
     }
@@ -88,7 +88,7 @@ public class AdminProductResource {
     }
 
     @PutMapping("/update-list-position")
-    public ResponseEntity<Void> updateListCategoryPosition(@RequestBody List<AdminProductDTO> payload){
+    public ResponseEntity<Void> updateListCategoryPosition(@RequestBody List<AdminProductDTO> payload) {
         log.debug("REST request from user [{}] to update list [{}] position : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         adminProductService.updateListProductPosition(payload);
         return ResponseEntity.ok().build();

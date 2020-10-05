@@ -20,7 +20,7 @@ public class AdminVoucherCodeService {
         adminVoucherCodeRepository.save(voucherCodeEntity);
     }
 
-    public void updateVoucherCode(AdminUpdateVoucherCodeDTO payload){
+    public void updateVoucherCode(AdminUpdateVoucherCodeDTO payload) {
         VoucherCodeEntity voucherCodeEntity = adminVoucherCodeRepository.findOneByVoucherCode(payload.getVoucherCode())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.VOUCHER_CODE_NOT_FOUND));
         voucherCodeEntity.setVoucherCodePhone(payload.getVoucherCodePhone());

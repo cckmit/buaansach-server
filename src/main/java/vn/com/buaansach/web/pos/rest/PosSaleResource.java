@@ -6,10 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.com.buaansach.security.util.SecurityUtils;
-import vn.com.buaansach.web.admin.service.dto.readwrite.AdminSaleDTO;
+import vn.com.buaansach.web.pos.service.PosSaleService;
 import vn.com.buaansach.web.pos.service.dto.read.PosSaleDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosApplySaleDTO;
-import vn.com.buaansach.web.pos.service.PosSaleService;
 
 import java.util.List;
 import java.util.UUID;

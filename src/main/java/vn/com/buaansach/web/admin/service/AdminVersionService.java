@@ -21,7 +21,7 @@ public class AdminVersionService {
         return adminVersionRepository.save(payload);
     }
 
-    public void updateVersion(VersionEntity payload){
+    public void updateVersion(VersionEntity payload) {
         VersionEntity entity = adminVersionRepository.findOneByGuid(payload.getGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.VERSION_NOT_FOUND));
         entity.setVersionDeployed(!entity.isVersionDeployed());
@@ -37,7 +37,7 @@ public class AdminVersionService {
     }
 
     public VersionEntity getLatestVersion(String versionType) {
-        List<VersionEntity> list =  adminVersionRepository.findByVersionTypeAndVersionDeployedTrueOrderByIdDesc(VersionType.valueOf(versionType));
+        List<VersionEntity> list = adminVersionRepository.findByVersionTypeAndVersionDeployedTrueOrderByIdDesc(VersionType.valueOf(versionType));
         return list.get(0);
     }
 }

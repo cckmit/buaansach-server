@@ -39,7 +39,7 @@ public class AdminStoreProductResource {
 
     /**
      * Cập nhật trạng thái, ẩn/hiện của store product
-     * */
+     */
     @PutMapping("/update")
     public ResponseEntity<AdminStoreProductDTO> updateStoreProduct(@Valid @RequestBody AdminStoreProductDTO payload) {
         log.debug("REST request from user [{}] to update [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);

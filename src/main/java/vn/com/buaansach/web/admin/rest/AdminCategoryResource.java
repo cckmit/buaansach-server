@@ -48,7 +48,7 @@ public class AdminCategoryResource {
     }
 
     @PutMapping("/update-list-position")
-    public ResponseEntity<Void> updateListCategoryPosition(@RequestBody List<CategoryEntity> payload){
+    public ResponseEntity<Void> updateListCategoryPosition(@RequestBody List<CategoryEntity> payload) {
         log.debug("REST request from user [{}] to update list [{}] position : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         adminCategoryService.updateListCategoryPosition(payload);
         return ResponseEntity.ok().build();

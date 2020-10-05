@@ -7,12 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import vn.com.buaansach.entity.brand.BannerEntity;
 import vn.com.buaansach.entity.brand.VersionEntity;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
-import vn.com.buaansach.web.admin.service.AdminBannerService;
 import vn.com.buaansach.web.admin.service.AdminVersionService;
 
 import java.util.List;

@@ -32,7 +32,7 @@ public class AdminStoreSaleResource {
     }
 
     @GetMapping("/list-by-sale/{saleGuid}")
-    public ResponseEntity<List<AdminStoreSaleDTO>> getListStoreSaleBySale(@PathVariable UUID saleGuid){
+    public ResponseEntity<List<AdminStoreSaleDTO>> getListStoreSaleBySale(@PathVariable UUID saleGuid) {
         log.debug("REST request from user [{}] to list by sale [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, saleGuid);
         return ResponseEntity.ok(adminStoreSaleService.getListStoreSaleBySale(saleGuid));
     }

@@ -105,7 +105,7 @@ public class AdminSaleService {
         adminStoreRepository.saveAll(list);
         adminSaleTimeConditionRepository.deleteBySaleGuid(saleGuid);
         SaleEntity saleEntity = adminSaleRepository.findOneByGuid(saleGuid)
-                .orElseThrow(()-> new NotFoundException(ErrorCode.SALE_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SALE_NOT_FOUND));
         fileService.deleteByUrl(saleEntity.getSaleImageUrl());
         adminSaleRepository.delete(saleEntity);
     }
