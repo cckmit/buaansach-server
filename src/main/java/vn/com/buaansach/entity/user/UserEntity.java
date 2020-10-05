@@ -1,7 +1,9 @@
 package vn.com.buaansach.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.UserType;
@@ -21,9 +23,7 @@ import java.util.UUID;
 @Table(name = "bas_user")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class UserEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 

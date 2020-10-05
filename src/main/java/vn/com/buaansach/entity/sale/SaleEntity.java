@@ -1,7 +1,9 @@
 package vn.com.buaansach.entity.sale;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.DiscountType;
 
@@ -14,9 +16,7 @@ import java.util.UUID;
 @Table(name = "bas_sale")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class SaleEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 

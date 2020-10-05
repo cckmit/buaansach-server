@@ -1,7 +1,9 @@
 package vn.com.buaansach.entity.sale.condition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
 
 import javax.persistence.*;
@@ -14,7 +16,6 @@ import java.util.UUID;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
 public class SaleTimeConditionEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 

@@ -1,8 +1,6 @@
 package vn.com.buaansach.entity.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,9 +11,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "bas_product_category")
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class ProductCategoryEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -26,7 +22,7 @@ public class ProductCategoryEntity implements Serializable {
 
     /**
      * FK
-     * */
+     */
 
     @Column(name = "product_guid")
     private UUID productGuid;

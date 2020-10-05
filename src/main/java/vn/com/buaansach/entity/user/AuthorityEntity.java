@@ -15,7 +15,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "bas_authority")
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthorityEntity implements Serializable {

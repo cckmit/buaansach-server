@@ -1,22 +1,21 @@
 package vn.com.buaansach.entity.voucher;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @Table(name = "bas_voucher_usage")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class VoucherUsageEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 

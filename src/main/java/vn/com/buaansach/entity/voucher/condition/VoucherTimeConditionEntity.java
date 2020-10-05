@@ -1,7 +1,9 @@
 package vn.com.buaansach.entity.voucher.condition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
 
 import javax.persistence.*;
@@ -13,9 +15,7 @@ import java.util.UUID;
 @Table(name = "bas_voucher_time_condition")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class VoucherTimeConditionEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 

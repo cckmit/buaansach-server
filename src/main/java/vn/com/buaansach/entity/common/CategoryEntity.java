@@ -1,7 +1,9 @@
 package vn.com.buaansach.entity.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
 
 import javax.persistence.*;
@@ -13,9 +15,7 @@ import java.util.UUID;
 @Table(name = "bas_category")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class CategoryEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 

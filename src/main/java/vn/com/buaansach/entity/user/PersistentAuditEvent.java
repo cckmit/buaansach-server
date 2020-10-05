@@ -1,7 +1,5 @@
 package vn.com.buaansach.entity.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,9 +13,7 @@ import java.util.Map;
 @Entity
 @Table(name = "persistent_audit_event")
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class PersistentAuditEvent implements Serializable {
     private static final long serialVersionUID = 1L;
 

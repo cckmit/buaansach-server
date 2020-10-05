@@ -1,8 +1,8 @@
 package vn.com.buaansach.entity.notification;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
-import vn.com.buaansach.entity.AbstractAuditingEntity;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import vn.com.buaansach.entity.enumeration.PaymentMethod;
 
 import javax.persistence.*;
@@ -13,9 +13,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "bas_store_pay_request_notification")
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class StorePayRequestNotificationEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 

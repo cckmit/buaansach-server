@@ -1,7 +1,9 @@
 package vn.com.buaansach.entity.store;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import vn.com.buaansach.entity.AbstractAuditingEntity;
 import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
@@ -15,9 +17,7 @@ import java.util.UUID;
 @Table(name = "bas_store_user")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class StoreUserEntity extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -42,7 +42,7 @@ public class StoreUserEntity extends AbstractAuditingEntity implements Serializa
 
     /**
      * FK
-     * */
+     */
 
     @Column(name = "store_guid")
     private UUID storeGuid;
