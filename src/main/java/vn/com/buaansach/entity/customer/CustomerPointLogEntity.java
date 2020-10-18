@@ -31,6 +31,9 @@ public class CustomerPointLogEntity extends AbstractAuditingEntity implements Se
     @Column(name = "point_log_type")
     private PointLogType pointLogType;
 
+    @Column(name = "point_log_reason")
+    private String pointLogReason;
+
     /**
      * FK
      */

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.customer.CustomerEntity;
 import vn.com.buaansach.entity.customer.CustomerPointLogEntity;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
+import vn.com.buaansach.entity.enumeration.PointLogReason;
 import vn.com.buaansach.entity.enumeration.PointLogType;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
@@ -40,11 +41,20 @@ public class CustomerService {
     private final StoreRepository storeRepository;
     private final WebsocketService websocketService;
 
+    @Transactional
     public void createdCustomer(UUID userGuid) {
         CustomerEntity customerEntity = new CustomerEntity();
         customerEntity.setUserGuid(userGuid);
-        customerEntity.setCustomerPoint(0);
+        customerEntity.setCustomerPoint(10);
         customerRepository.save(customerEntity);
+
+        CustomerPointLogEntity pointLogEntity = new CustomerPointLogEntity();
+        pointLogEntity.setOrderGuid(null);
+        pointLogEntity.setPointLogReason(PointLogReason.INITIAL_ACCOUNT.name());
+        pointLogEntity.setUserGuid(userGuid);
+        pointLogEntity.setPointLogValue(10);
+        pointLogEntity.setPointLogType(PointLogType.ADD);
+        customerPointLogRepository.save(pointLogEntity);
     }
 
     @Transactional
@@ -64,6 +74,7 @@ public class CustomerService {
 
         CustomerPointLogEntity pointLogEntity = new CustomerPointLogEntity();
         pointLogEntity.setOrderGuid(orderEntity.getGuid());
+        pointLogEntity.setPointLogReason(PointLogReason.EARN_FROM_ORDER.name());
         pointLogEntity.setUserGuid(customerEntity.getUserGuid());
         pointLogEntity.setPointLogValue(earnedPoint);
         pointLogEntity.setPointLogType(PointLogType.ADD);
@@ -145,6 +156,7 @@ public class CustomerService {
 
         CustomerPointLogEntity pointLogEntity = new CustomerPointLogEntity();
         pointLogEntity.setOrderGuid(orderEntity.getGuid());
+        pointLogEntity.setPointLogReason(PointLogReason.USE_FOR_ORDER.name());
         pointLogEntity.setUserGuid(userEntity.getGuid());
         pointLogEntity.setPointLogValue(orderEntity.getOrderPointValue());
         pointLogEntity.setPointLogType(PointLogType.SUBTRACT);
