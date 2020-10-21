@@ -16,6 +16,8 @@ public final class Constants {
     public static final String BANNER_IMAGE_PATH = "banner_images";
     public static final int POSITION_INCREMENT = (int) Math.pow(2, 16);
     public static final int VND_PER_POINT = 50;
+    public static final String CMS_UI_DOMAIN = "CMS_UI_DOMAIN";
+    public static final String CUSTOMER_UI_DOMAIN = "CUSTOMER_UI_DOMAIN";
 
     private Constants() {
     }

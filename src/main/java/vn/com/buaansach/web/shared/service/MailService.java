@@ -66,9 +66,9 @@ public class MailService {
     }
 
     @Async
-    public void sendEmailFromTemplate(UserEntity userEntity, String templateName, String titleKey) {
+    public void sendEmailFromTemplate(UserEntity userEntity, String domainType, String templateName, String titleKey) {
         if (!Boolean.parseBoolean(enableSendMail)) return;
-        String baseUrl = userEntity.getUserType().equals(UserType.CUSTOMER) ? customerBaseUrl : cmsBaseUrl;
+        String baseUrl = domainType.equals(Constants.CUSTOMER_UI_DOMAIN) ? customerBaseUrl : cmsBaseUrl;
         if (userEntity.getUserEmail() == null) {
             log.debug("User {} doesn't have and email", userEntity.getUserLogin());
             return;
@@ -85,28 +85,28 @@ public class MailService {
         sendEmail(senderName, userEntity.getUserEmail(), subject, content, false, true);
     }
 
-    @Async
-    public void sendActivationEmail(UserEntity userEntity) {
-        if (!Boolean.parseBoolean(enableSendMail)) return;
-        log.debug("Sending activation email to '{}'", userEntity.getUserEmail());
-        sendEmailFromTemplate(userEntity, "mail/activationEmail", "email.activation.title");
-    }
+//    @Async
+//    public void sendActivationEmail(UserEntity userEntity) {
+//        if (!Boolean.parseBoolean(enableSendMail)) return;
+//        log.debug("Sending activation email to '{}'", userEntity.getUserEmail());
+//        sendEmailFromTemplate(userEntity, Constants.CMS_UI_DOMAIN, "mail/activationEmail", "email.activation.title");
+//    }
+//
+//    @Async
+//    public void sendCreationEmail(UserEntity userEntity) {
+//        if (!Boolean.parseBoolean(enableSendMail)) return;
+//        log.debug("Sending creation email to '{}'", userEntity.getUserEmail());
+//        sendEmailFromTemplate(userEntity, Constants.CMS_UI_DOMAIN, "mail/creationEmail", "email.activation.title");
+//    }
 
     @Async
-    public void sendCreationEmail(UserEntity userEntity) {
-        if (!Boolean.parseBoolean(enableSendMail)) return;
-        log.debug("Sending creation email to '{}'", userEntity.getUserEmail());
-        sendEmailFromTemplate(userEntity, "mail/creationEmail", "email.activation.title");
-    }
-
-    @Async
-    public void sendPasswordResetMail(UserEntity userEntity) {
+    public void sendPasswordResetMail(UserEntity userEntity, String domainType) {
         if (!Boolean.parseBoolean(enableSendMail)) return;
         log.debug("Sending password reset email to '{}'", userEntity.getUserEmail());
-        if (userEntity.getUserType().equals(UserType.CUSTOMER)) {
-            sendEmailFromTemplate(userEntity, "mail/customerPasswordResetEmail", "email.reset.title");
+        if (domainType.equals(Constants.CUSTOMER_UI_DOMAIN)) {
+            sendEmailFromTemplate(userEntity, domainType, "mail/customerPasswordResetEmail", "email.reset.title");
         } else {
-            sendEmailFromTemplate(userEntity, "mail/passwordResetEmail", "email.reset.title");
+            sendEmailFromTemplate(userEntity, domainType, "mail/passwordResetEmail", "email.reset.title");
         }
 
     }

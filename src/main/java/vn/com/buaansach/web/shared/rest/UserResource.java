@@ -105,16 +105,15 @@ public class UserResource {
     }
 
     @PostMapping("/reset-password/init")
-    public ResponseEntity<Void> requestPasswordReset(@RequestBody String email) {
-        email = email.replace("\"", "");
-        Optional<UserEntity> user = userService.requestPasswordReset(email);
+    public ResponseEntity<Void> requestPasswordReset(@RequestBody ResetPasswordDTO payload) {
+        Optional<UserEntity> user = userService.requestPasswordReset(payload.getEmail());
         if (user.isPresent()) {
-            log.debug("REST request to reset password for email : [{}]", email);
-            mailService.sendPasswordResetMail(user.get());
+            log.debug("REST request to reset password for email : [{}]", payload);
+            mailService.sendPasswordResetMail(user.get(), payload.getDomainType());
         } else {
             // Pretend the request has been successful to prevent checking which emails really exist
             // but log that an invalid attempt has been made
-            log.warn("Password reset requested for non existing mail : [{}]", email);
+            log.warn("Password reset requested for non existing mail : [{}]", payload);
         }
         return ResponseEntity.noContent().build();
     }

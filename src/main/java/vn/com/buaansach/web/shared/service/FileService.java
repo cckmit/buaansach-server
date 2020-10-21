@@ -8,9 +8,9 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.entity.common.FileEntity;
+import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
-import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.shared.repository.common.FileRepository;
 
 import javax.servlet.http.HttpServletResponse;
@@ -34,24 +34,29 @@ public class FileService {
     @Value("${app.upload-dir}")
     private String uploadDir;
 
+    public FileEntity uploadFile(String fileName, MultipartFile file) {
+        if (fileName == null || fileName.isBlank()) throw new BadRequestException(ErrorCode.BAD_REQUEST);
+        return customUploadFile(file, "files", fileName, UUID.randomUUID());
+    }
+
     /* default image directory */
     public FileEntity uploadImage(MultipartFile image) {
-        return uploadFile(image, "images", UUID.randomUUID());
+        return uploadFile(image, "images", null, UUID.randomUUID());
     }
 
     /* custom image directory */
     public FileEntity uploadImage(MultipartFile image, String customPath) {
-        return uploadFile(image, customPath, UUID.randomUUID());
+        return uploadFile(image, customPath, null, UUID.randomUUID());
     }
 
     /* default attachment directory */
     public FileEntity uploadAttachment(MultipartFile attachment) {
-        return uploadFile(attachment, "attachments", UUID.randomUUID());
+        return uploadFile(attachment, "attachments", null, UUID.randomUUID());
     }
 
     /* custom attachment directory */
     public FileEntity uploadAttachment(MultipartFile attachment, String customPath) {
-        return uploadFile(attachment, customPath, UUID.randomUUID());
+        return uploadFile(attachment, customPath, null, UUID.randomUUID());
     }
 
     public InputStreamResource downloadFile(HttpServletResponse response, String guid) throws IOException {
@@ -86,7 +91,7 @@ public class FileService {
      * @param customPath: relative path to save file on server, concat with uploadDir in application.yml file;
      * @param guid:       guid will be filename on hard disk
      */
-    private FileEntity uploadFile(MultipartFile file, String customPath, UUID guid) {
+    private FileEntity uploadFile(MultipartFile file, String customPath, String fileName, UUID guid) {
         FileEntity fileEntity = new FileEntity();
         fileEntity.setGuid(guid);
         fileEntity.setOriginalName(file.getOriginalFilename());
@@ -97,7 +102,8 @@ public class FileService {
         fileEntity.setExtension(extension);
 
         // file name to be save on hard disk
-        String fileName = guid + extension;
+        if (fileName == null) fileName = guid + extension;
+        else fileName += extension;
 
         try {
             String localDir = uploadDir + customPath;
@@ -112,6 +118,27 @@ public class FileService {
             return new FileEntity();
         }
         return fileRepository.save(fileEntity);
+    }
+
+    private FileEntity customUploadFile(MultipartFile file, String customPath, String fileName, UUID guid) {
+        String extension = getExtensionFile(Objects.requireNonNull(file.getOriginalFilename()));
+        fileName = fileName + extension;
+        String fileUrl = uploadDir + customPath + "/" + fileName;
+
+        FileEntity fileEntity = fileRepository.findOneByUrl(fileUrl).orElse(null);
+        if (fileEntity == null) {
+            return uploadFile(file, customPath, fileName, guid);
+        } else {
+            try {
+                String localDir = uploadDir + customPath;
+                Files.createDirectories(Paths.get(localDir));
+                Files.copy(file.getInputStream(), Paths.get(localDir, fileName));
+                return fileEntity;
+            } catch (IOException e) {
+                log.error(e.getMessage());
+                return new FileEntity();
+            }
+        }
     }
 
 
