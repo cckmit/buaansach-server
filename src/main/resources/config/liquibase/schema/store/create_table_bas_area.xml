@@ -25,6 +25,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="area_activated" type="boolean"/>
+            <column name="area_position" type="int"/>
 
             <column name="store_guid" type="binary(16)">
                 <constraints nullable="false"/>

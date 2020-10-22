@@ -25,6 +25,8 @@ public class AdminCreateAreaDTO {
 
     private boolean areaActivated;
 
+    private int areaPosition;
+
     @Size(max = 40)
     private String seatPrefix;
 

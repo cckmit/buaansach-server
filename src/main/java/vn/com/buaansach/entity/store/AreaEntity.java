@@ -47,6 +47,9 @@ public class AreaEntity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "area_activated")
     private boolean areaActivated;
 
+    @Column(name = "area_position")
+    private int areaPosition;
+
     /**
      * FK
      */

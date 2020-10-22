@@ -32,7 +32,7 @@ public class PosAreaService {
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
-        List<AreaEntity> listArea = posAreaRepository.findByStoreGuidAndAreaActivated(storeEntity.getGuid(), true);
+        List<AreaEntity> listArea = posAreaRepository.findByStoreGuidAndAreaActivatedOrderByAreaPositionAsc(storeEntity.getGuid(), true);
         List<PosSeatDTO> listSeat = posSeatRepository.findListPosSeatDTOByStoreGuid(storeEntity.getGuid());
         List<PosAreaDTO> result = new ArrayList<>();
         listArea.forEach(area -> {

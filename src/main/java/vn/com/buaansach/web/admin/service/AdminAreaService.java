@@ -68,6 +68,7 @@ public class AdminAreaService {
         areaEntity.setAreaType(request.getAreaType());
         areaEntity.setAreaColor(request.getAreaColor());
         areaEntity.setAreaActivated(request.isAreaActivated());
+        areaEntity.setAreaPosition(request.getAreaPosition());
         areaEntity.setStoreGuid(request.getStoreGuid());
         areaEntity = adminAreaRepository.save(areaEntity);
 
@@ -83,7 +84,7 @@ public class AdminAreaService {
         adminStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
-        List<AreaEntity> listArea = adminAreaRepository.findByStoreGuid(UUID.fromString(storeGuid));
+        List<AreaEntity> listArea = adminAreaRepository.findByStoreGuidOrderByAreaPositionAsc(UUID.fromString(storeGuid));
         List<SeatEntity> listSeat = adminSeatRepository.findListSeatByStoreGuid(UUID.fromString(storeGuid));
         List<AdminAreaDTO> result = new ArrayList<>();
         listArea.forEach(area -> {
@@ -104,6 +105,7 @@ public class AdminAreaService {
         currentEntity.setAreaNameEng(payload.getAreaNameEng());
         currentEntity.setAreaColor(payload.getAreaColor());
         currentEntity.setAreaActivated(payload.isAreaActivated());
+        currentEntity.setAreaPosition(payload.getAreaPosition());
         return new AdminAreaDTO(adminAreaRepository.save(currentEntity), payload.getListSeat());
     }
 

@@ -33,6 +33,8 @@ public class AdminAreaDTO extends AuditDTO {
 
     private boolean areaActivated;
 
+    private int areaPosition;
+
     private UUID storeGuid;
 
     private List<SeatEntity> listSeat = new ArrayList<>();
@@ -47,6 +49,7 @@ public class AdminAreaDTO extends AuditDTO {
         this.areaType = entity.getAreaType();
         this.areaColor = entity.getAreaColor();
         this.areaActivated = entity.isAreaActivated();
+        this.areaPosition = entity.getAreaPosition();
         this.storeGuid = entity.getStoreGuid();
 
         this.createdBy = entity.getCreatedBy();

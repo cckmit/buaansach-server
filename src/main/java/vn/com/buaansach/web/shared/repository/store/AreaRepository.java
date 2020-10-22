@@ -14,7 +14,11 @@ public interface AreaRepository extends JpaRepository<AreaEntity, Long> {
 
     List<AreaEntity> findByStoreGuid(UUID storeGuid);
 
+    List<AreaEntity> findByStoreGuidOrderByAreaPositionAsc(UUID storeGuid);
+
     void deleteByStoreGuid(UUID storeGuid);
 
     List<AreaEntity> findByStoreGuidAndAreaActivated(UUID storeGuid, boolean areaActivated);
+
+    List<AreaEntity> findByStoreGuidAndAreaActivatedOrderByAreaPositionAsc(UUID storeGuid, boolean areaActivated);
 }
