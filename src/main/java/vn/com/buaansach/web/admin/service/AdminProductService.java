@@ -165,4 +165,11 @@ public class AdminProductService {
         List<ProductEntity> listProduct = adminProductRepository.findAllByOrderByProductPositionAsc();
         return listProduct.stream().map(AdminProductDTO::new).collect(Collectors.toList());
     }
+
+    public void toggleActivation(String productGuid) {
+        ProductEntity productEntity = adminProductRepository.findOneByGuid(UUID.fromString(productGuid))
+                .orElseThrow(() -> new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
+        productEntity.setProductActivated(!productEntity.isProductActivated());
+        adminProductRepository.save(productEntity);
+    }
 }

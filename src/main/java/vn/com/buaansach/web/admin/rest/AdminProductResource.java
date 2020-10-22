@@ -93,4 +93,11 @@ public class AdminProductResource {
         adminProductService.updateListProductPosition(payload);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/toggle-activation")
+    public ResponseEntity<Void> toggleActivation(@RequestBody String productGuid) {
+        log.debug("REST request from user [{}] to toggle [{}] activation : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, productGuid);
+        adminProductService.toggleActivation(productGuid);
+        return ResponseEntity.ok().build();
+    }
 }
