@@ -13,6 +13,7 @@ import vn.com.buaansach.web.admin.repository.store.AdminStoreProductRepository;
 import vn.com.buaansach.web.admin.repository.store.AdminStoreRepository;
 import vn.com.buaansach.web.admin.service.dto.read.AdminStoreProductDTO;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -78,4 +79,8 @@ public class AdminStoreProductService {
         adminStoreProductRepository.delete(storeProductEntity);
     }
 
+    @Transactional
+    public void deleteByStore(UUID storeGuid) {
+        adminStoreProductRepository.deleteByStoreGuid(storeGuid);
+    }
 }

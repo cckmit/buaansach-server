@@ -14,6 +14,7 @@ import vn.com.buaansach.web.admin.service.AdminSeatService;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateSeatDTO;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 @Secured(AuthoritiesConstants.ADMIN)
 @RestController
@@ -41,7 +42,7 @@ public class AdminSeatResource {
     @DeleteMapping("/delete/{seatGuid}")
     public ResponseEntity<Void> deleteSeat(@PathVariable String seatGuid) {
         log.debug("REST request from user [{}] to delete [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, seatGuid);
-        adminSeatService.deleteSeat(seatGuid);
+        adminSeatService.deleteSeat(UUID.fromString(seatGuid));
         return ResponseEntity.noContent().build();
     }
 }

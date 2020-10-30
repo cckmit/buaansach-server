@@ -30,8 +30,7 @@ public class AdminAreaService {
     private final AdminAreaRepository adminAreaRepository;
     private final AdminStoreRepository adminStoreRepository;
     private final AdminSeatRepository adminSeatRepository;
-    private final AdminOrderRepository adminOrderRepository;
-    private final AdminOrderProductRepository adminOrderProductRepository;
+    private final AdminSeatService adminSeatService;
 
     /* used when create area with init seats */
     private List<SeatEntity> createListSeat(AreaEntity areaEntity, int numberOfSeats, String seatPrefix, String seatPrefixEng) {
@@ -110,26 +109,18 @@ public class AdminAreaService {
     }
 
     @Transactional
-    public void deleteArea(String areaGuid) {
-        AreaEntity areaEntity = adminAreaRepository.findOneByGuid(UUID.fromString(areaGuid))
+    public void deleteArea(UUID areaGuid) {
+        AreaEntity areaEntity = adminAreaRepository.findOneByGuid(areaGuid)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.AREA_NOT_FOUND));
 
-        List<SeatEntity> listSeat = adminSeatRepository.findByAreaGuid(areaEntity.getGuid());
-
-        List<UUID> listSeatGuid = listSeat.stream().map(SeatEntity::getGuid).collect(Collectors.toList());
-        List<OrderEntity> listOrder = adminOrderRepository.findBySeatGuidIn(listSeatGuid);
-
-        List<UUID> listOrderGuid = listOrder.stream().map(OrderEntity::getGuid).collect(Collectors.toList());
-        List<OrderProductEntity> listOrderProduct = adminOrderProductRepository.findByOrderGuidIn(listOrderGuid);
-
-        /* delete all orders, order products related to all seat of area */
-        adminOrderProductRepository.deleteInBatch(listOrderProduct);
-        adminOrderRepository.deleteInBatch(listOrder);
-
-        /* then delete all seat of area */
-        adminSeatRepository.deleteInBatch(listSeat);
+        adminSeatService.deleteByArea(areaGuid);
 
         /* finally, delete area */
         adminAreaRepository.delete(areaEntity);
+    }
+
+    @Transactional
+    public void deleteByStore(UUID storeGuid){
+        adminAreaRepository.deleteByStoreGuid(storeGuid);
     }
 }

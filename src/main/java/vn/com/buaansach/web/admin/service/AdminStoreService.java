@@ -7,9 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.com.buaansach.entity.common.FileEntity;
 import vn.com.buaansach.entity.common.SequenceEntity;
-import vn.com.buaansach.entity.order.OrderEntity;
-import vn.com.buaansach.entity.order.OrderProductEntity;
-import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
@@ -24,21 +21,20 @@ import vn.com.buaansach.web.shared.service.FileService;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AdminStoreService {
     private final FileService fileService;
     private final AdminStoreRepository adminStoreRepository;
-    private final AdminAreaRepository adminAreaRepository;
-    private final AdminStoreUserRepository adminStoreUserRepository;
-    private final AdminSeatRepository adminSeatRepository;
-    private final AdminStoreProductRepository adminStoreProductRepository;
-    private final AdminOrderRepository adminOrderRepository;
-    private final AdminOrderProductRepository adminOrderProductRepository;
     private final CodeService codeService;
     private final AdminSequenceRepository adminSequenceRepository;
+    private final AdminStoreNotificationService adminStoreNotificationService;
+    private final AdminAreaService adminAreaService;
+    private final AdminSeatService adminSeatService;
+    private final AdminStoreUserService adminStoreUserService;
+    private final AdminStoreProductService adminStoreProductService;
+    private final AdminStoreSaleService adminStoreSaleService;
 
     @Transactional
     public StoreEntity createStore(StoreEntity payload, MultipartFile image) {
@@ -86,26 +82,18 @@ public class AdminStoreService {
     }
 
     @Transactional
-    public void deleteStore(String storeGuid) {
+    public void deleteStore(UUID storeGuid) {
         /* be careful when delete store - must test more cases to catch all possible errors */
-        StoreEntity storeEntity = adminStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
+        StoreEntity storeEntity = adminStoreRepository.findOneByGuid(storeGuid)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
-        List<SeatEntity> listSeat = adminSeatRepository.findListSeatByStoreGuid(storeEntity.getGuid());
-        List<UUID> listSeatGuid = listSeat.stream().map(SeatEntity::getGuid).collect(Collectors.toList());
-        List<OrderEntity> listOrder = adminOrderRepository.findBySeatGuidIn(listSeatGuid);
-        List<UUID> listOrderGuid = listOrder.stream().map(OrderEntity::getGuid).collect(Collectors.toList());
-        List<OrderProductEntity> listOrderProduct = adminOrderProductRepository.findByOrderGuidIn(listOrderGuid);
+        adminSeatService.deleteByStore(storeGuid);
+        adminAreaService.deleteByStore(storeGuid);
+        adminStoreUserService.deleteByStore(storeGuid);
+        adminStoreProductService.deleteByStore(storeGuid);
+        adminStoreSaleService.deleteByStore(storeGuid);
+        adminStoreNotificationService.deleteNotificationByStore(storeGuid);
 
-
-        /* delete all things related to store */
-        adminOrderProductRepository.deleteInBatch(listOrderProduct);
-        adminOrderRepository.deleteInBatch(listOrder);
-
-        adminSeatRepository.deleteInBatch(listSeat);
-        adminAreaRepository.deleteByStoreGuid(storeEntity.getGuid());
-        adminStoreUserRepository.deleteByStoreGuid(storeEntity.getGuid());
-        adminStoreProductRepository.deleteByStoreGuid(storeEntity.getGuid());
         fileService.deleteByUrl(storeEntity.getStoreImageUrl());
         adminStoreRepository.delete(storeEntity);
     }

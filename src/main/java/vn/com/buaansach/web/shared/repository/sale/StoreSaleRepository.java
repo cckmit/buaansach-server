@@ -18,4 +18,6 @@ public interface StoreSaleRepository extends JpaRepository<StoreSaleEntity, Long
     Optional<StoreSaleEntity> findOneByGuid(UUID guid);
 
     List<StoreSaleEntity> findBySaleGuid(UUID saleGuid);
+
+    void deleteByStoreGuid(UUID storeGuid);
 }

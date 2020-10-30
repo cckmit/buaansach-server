@@ -18,4 +18,8 @@ public interface SeatRepository extends JpaRepository<SeatEntity, Long> {
     Optional<SeatEntity> findOneByOrderGuid(UUID orderGuid);
 
     List<SeatEntity> findByGuidIn(List<UUID> listSeatGuid);
+
+    void deleteByAreaGuid(UUID areaGuid);
+
+    void deleteByGuid(UUID seatGuid);
 }

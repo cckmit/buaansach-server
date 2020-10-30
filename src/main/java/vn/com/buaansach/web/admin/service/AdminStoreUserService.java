@@ -135,4 +135,8 @@ public class AdminStoreUserService {
         adminStoreUserRepository.delete(storeUserEntity);
     }
 
+    @Transactional
+    public void deleteByStore(UUID storeGuid) {
+        adminStoreUserRepository.deleteByStoreGuid(storeGuid);
+    }
 }

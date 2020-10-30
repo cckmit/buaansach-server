@@ -18,6 +18,7 @@ import vn.com.buaansach.web.admin.service.AdminStoreService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 @Secured(AuthoritiesConstants.ADMIN)
 @RestController
@@ -70,7 +71,7 @@ public class AdminStoreResource {
     @DeleteMapping("/delete/{storeGuid}")
     public ResponseEntity<Void> deleteStore(@PathVariable String storeGuid) {
         log.debug("REST request from user [{}] to delete [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
-        adminStoreService.deleteStore(storeGuid);
+        adminStoreService.deleteStore(UUID.fromString(storeGuid));
         return ResponseEntity.noContent().build();
     }
 }

@@ -68,4 +68,9 @@ public class AdminStoreSaleService {
     public List<AdminStoreSaleDTO> getListStoreSaleBySale(UUID saleGuid) {
         return adminStoreSaleRepository.findBySaleGuid(saleGuid).stream().map(AdminStoreSaleDTO::new).collect(Collectors.toList());
     }
+
+    @Transactional
+    public void deleteByStore(UUID storeGuid) {
+        adminStoreSaleRepository.deleteByStoreGuid(storeGuid);
+    }
 }

@@ -22,4 +22,10 @@ public interface StoreNotificationRepository extends JpaRepository<StoreNotifica
     List<StoreNotificationEntity> findByOrderGuidAndStoreNotificationType(UUID orderGuid, StoreNotificationType type);
 
     List<StoreNotificationEntity> findByOrderGuid(UUID orderGuid);
+
+    List<StoreNotificationEntity> findBySeatGuid(UUID seatGuid);
+
+    List<StoreNotificationEntity> findByAreaGuid(UUID areaGuid);
+
+    List<StoreNotificationEntity> findByStoreGuid(UUID storeGuid);
 }

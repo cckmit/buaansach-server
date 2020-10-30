@@ -15,6 +15,7 @@ import vn.com.buaansach.web.admin.service.dto.write.AdminCreateAreaDTO;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 @Secured(AuthoritiesConstants.ADMIN)
 @RestController
@@ -47,7 +48,7 @@ public class AdminAreaResource {
     @DeleteMapping("/delete/{areaGuid}")
     public ResponseEntity<Void> deleteArea(@PathVariable String areaGuid) {
         log.debug("REST request from user [{}] to delete [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, areaGuid);
-        adminAreaService.deleteArea(areaGuid);
+        adminAreaService.deleteArea(UUID.fromString(areaGuid));
         return ResponseEntity.noContent().build();
     }
 }

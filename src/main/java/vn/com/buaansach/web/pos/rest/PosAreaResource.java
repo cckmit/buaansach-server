@@ -15,6 +15,7 @@ import vn.com.buaansach.web.pos.service.PosAreaService;
 import vn.com.buaansach.web.pos.service.dto.read.PosAreaDTO;
 
 import java.util.List;
+import java.util.UUID;
 
 @Secured(AuthoritiesConstants.INTERNAL_USER)
 @RestController
@@ -34,7 +35,7 @@ public class PosAreaResource {
     @GetMapping("/list-with-seat-by-store/{storeGuid}")
     public ResponseEntity<List<PosAreaDTO>> getListAreaWithSeatByStoreGuid(@PathVariable String storeGuid) {
         log.debug("REST request from user [{}] to list [{}] with seat by store: [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
-        return ResponseEntity.ok(posAreaService.getListAreaWithSeatByStoreGuid(storeGuid));
+        return ResponseEntity.ok(posAreaService.getListAreaWithSeatByStoreGuid(UUID.fromString(storeGuid)));
     }
 
 }

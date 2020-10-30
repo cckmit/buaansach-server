@@ -31,15 +31,13 @@ public class PosAreaService {
     private final PosStoreSecurity posStoreSecurity;
     private final PosStoreUserRepository posStoreUserRepository;
 
-    public List<PosAreaDTO> getListAreaWithSeatByStoreGuid(String storeGuid) {
-        posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
+    public List<PosAreaDTO> getListAreaWithSeatByStoreGuid(UUID storeGuid) {
+        posStoreSecurity.blockAccessIfNotInStore(storeGuid);
 
-        StoreEntity storeEntity = posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
+        StoreEntity storeEntity = posStoreRepository.findOneByGuid(storeGuid)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
-        String currentUser = SecurityUtils.getCurrentUserLogin();
-
-        StoreUserEntity storeUserEntity = posStoreUserRepository.findOneByUserLoginAndStoreGuid(currentUser, UUID.fromString(storeGuid))
+        StoreUserEntity storeUserEntity = posStoreUserRepository.findOneByUserLoginAndStoreGuid(SecurityUtils.getCurrentUserLogin(), storeGuid)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_USER_NOT_FOUND));
 
         List<UUID> listAreaGuid;
@@ -47,7 +45,6 @@ public class PosAreaService {
         else {
             listAreaGuid = Arrays.stream(storeUserEntity.getStoreUserArea().split(";")).map(UUID::fromString).collect(Collectors.toList());
         }
-//        List<AreaEntity> listArea = posAreaRepository.findByStoreGuidAndAreaActivatedOrderByAreaPositionAsc(storeEntity.getGuid(), true);
         List<AreaEntity> listArea = posAreaRepository.findByStoreGuidAndAreaActivatedAndGuidInOrderByAreaPositionAsc(storeEntity.getGuid(), true, listAreaGuid);
         List<PosSeatDTO> listSeat = posSeatRepository.findListPosSeatDTOByStoreGuid(storeEntity.getGuid());
         List<PosAreaDTO> result = new ArrayList<>();
