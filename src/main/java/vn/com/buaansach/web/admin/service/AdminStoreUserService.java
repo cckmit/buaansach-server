@@ -56,6 +56,7 @@ public class AdminStoreUserService {
         storeUserEntity.setGuid(UUID.randomUUID());
         storeUserEntity.setStoreUserRole(request.getStoreUserRole());
         storeUserEntity.setStoreUserStatus(request.getStoreUserStatus());
+        storeUserEntity.setStoreUserArea(request.getStoreUserArea());
         storeUserEntity.setStoreUserActivated(true);
         storeUserEntity.setStoreGuid(request.getStoreGuid());
         storeUserEntity.setUserLogin(userEntity.getUserLogin());
@@ -80,6 +81,7 @@ public class AdminStoreUserService {
         storeUserEntity.setStoreUserActivated(true);
         storeUserEntity.setStoreGuid(request.getStoreGuid());
         storeUserEntity.setUserLogin(request.getUserLogin().toLowerCase());
+        storeUserEntity.setStoreUserArea(request.getStoreUserArea());
 
         return new AdminStoreUserDTO(adminStoreUserRepository.save(storeUserEntity), dto);
     }
@@ -90,6 +92,7 @@ public class AdminStoreUserService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_USER_NOT_FOUND));
         storeUserEntity.setStoreUserRole(request.getStoreUserRole());
         storeUserEntity.setStoreUserStatus(request.getStoreUserStatus());
+        storeUserEntity.setStoreUserArea(request.getStoreUserArea());
 
         /* do not use userLogin from request, because it might be modified */
         UserEntity updateUser = adminUserRepository.findOneByUserLoginIgnoreCase(storeUserEntity.getUserLogin())

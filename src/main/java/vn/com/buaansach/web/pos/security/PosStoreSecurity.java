@@ -2,13 +2,13 @@ package vn.com.buaansach.web.pos.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import vn.com.buaansach.entity.enumeration.StoreStatus;
 import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.entity.store.StoreUserEntity;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.ForbiddenException;
+import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.repository.store.PosStoreRepository;
 import vn.com.buaansach.web.pos.repository.store.PosStoreUserRepository;
@@ -85,5 +85,16 @@ public class PosStoreSecurity {
     public void blockAccessIfNotInStore(UUID storeGuid) {
         if (!hasPermission(storeGuid))
             throw new ForbiddenException(ErrorCode.USER_NOT_IN_STORE);
+    }
+
+    public void blockAccessIfNotInStoreAndArea(UUID storeGuid, UUID areaGuid) {
+        if (!hasPermission(storeGuid))
+            throw new ForbiddenException(ErrorCode.USER_NOT_IN_STORE);
+        StoreUserEntity storeUserEntity = posStoreUserRepository.findOneByUserLoginAndStoreGuid(SecurityUtils.getCurrentUserLogin(), storeGuid)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_USER_NOT_FOUND));
+        if (areaGuid != null && storeUserEntity.getStoreUserArea() == null || storeUserEntity.getStoreUserArea().isBlank())
+            throw new ForbiddenException(ErrorCode.FORBIDDEN);
+        if (areaGuid != null && !storeUserEntity.getStoreUserArea().contains(areaGuid.toString()))
+            throw new ForbiddenException(ErrorCode.FORBIDDEN);
     }
 }

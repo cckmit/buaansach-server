@@ -4,16 +4,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
+import vn.com.buaansach.entity.store.StoreUserEntity;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
+import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.repository.store.PosAreaRepository;
 import vn.com.buaansach.web.pos.repository.store.PosSeatRepository;
 import vn.com.buaansach.web.pos.repository.store.PosStoreRepository;
+import vn.com.buaansach.web.pos.repository.store.PosStoreUserRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosAreaDTO;
 import vn.com.buaansach.web.pos.service.dto.read.PosSeatDTO;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -25,6 +29,7 @@ public class PosAreaService {
     private final PosAreaRepository posAreaRepository;
     private final PosSeatRepository posSeatRepository;
     private final PosStoreSecurity posStoreSecurity;
+    private final PosStoreUserRepository posStoreUserRepository;
 
     public List<PosAreaDTO> getListAreaWithSeatByStoreGuid(String storeGuid) {
         posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
@@ -32,7 +37,18 @@ public class PosAreaService {
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(UUID.fromString(storeGuid))
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
-        List<AreaEntity> listArea = posAreaRepository.findByStoreGuidAndAreaActivatedOrderByAreaPositionAsc(storeEntity.getGuid(), true);
+        String currentUser = SecurityUtils.getCurrentUserLogin();
+
+        StoreUserEntity storeUserEntity = posStoreUserRepository.findOneByUserLoginAndStoreGuid(currentUser, UUID.fromString(storeGuid))
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_USER_NOT_FOUND));
+
+        List<UUID> listAreaGuid;
+        if (storeUserEntity.getStoreUserArea() == null || storeUserEntity.getStoreUserArea().isBlank()) listAreaGuid = new ArrayList<>();
+        else {
+            listAreaGuid = Arrays.stream(storeUserEntity.getStoreUserArea().split(";")).map(UUID::fromString).collect(Collectors.toList());
+        }
+//        List<AreaEntity> listArea = posAreaRepository.findByStoreGuidAndAreaActivatedOrderByAreaPositionAsc(storeEntity.getGuid(), true);
+        List<AreaEntity> listArea = posAreaRepository.findByStoreGuidAndAreaActivatedAndGuidInOrderByAreaPositionAsc(storeEntity.getGuid(), true, listAreaGuid);
         List<PosSeatDTO> listSeat = posSeatRepository.findListPosSeatDTOByStoreGuid(storeEntity.getGuid());
         List<PosAreaDTO> result = new ArrayList<>();
         listArea.forEach(area -> {

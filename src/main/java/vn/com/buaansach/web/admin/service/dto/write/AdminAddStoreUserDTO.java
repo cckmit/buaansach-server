@@ -20,4 +20,6 @@ public class AdminAddStoreUserDTO {
     private StoreUserRole storeUserRole;
     @NotNull
     private StoreUserStatus storeUserStatus;
+
+    private String storeUserArea;
 }

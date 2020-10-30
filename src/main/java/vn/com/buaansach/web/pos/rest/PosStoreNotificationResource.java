@@ -27,11 +27,12 @@ public class PosStoreNotificationResource {
 
     @GetMapping("/list-by-store")
     public ResponseEntity<List<StoreNotificationDTO>> getListStoreNotification(@RequestParam("storeGuid") String storeGuid,
+                                                                               @RequestParam("listArea") String listArea,
                                                                                @RequestParam("startDate") Instant startDate,
                                                                                @RequestParam(value = "type", required = false) StoreNotificationType type,
                                                                                @RequestParam(value = "hidden", required = false) Boolean hidden) {
         log.debug("REST request from user [{}] to list [{}] by store: [{}] - from [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid, startDate);
-        return ResponseEntity.ok(posStoreNotificationService.getListStoreNotification(storeGuid, startDate, type, hidden));
+        return ResponseEntity.ok(posStoreNotificationService.getListStoreNotification(storeGuid, listArea, startDate, type, hidden));
     }
 
     @PutMapping("/update-status")

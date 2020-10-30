@@ -24,6 +24,7 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -99,9 +100,11 @@ public class PosStoreNotificationService {
         posStoreNotificationRepository.saveAll(list);
     }
 
-    public List<StoreNotificationDTO> getListStoreNotification(String storeGuid, Instant startDate, StoreNotificationType type, Boolean hidden) {
+    public List<StoreNotificationDTO> getListStoreNotification(String storeGuid, String listArea, Instant startDate, StoreNotificationType type, Boolean hidden) {
         posStoreSecurity.blockAccessIfNotInStore(UUID.fromString(storeGuid));
         List<StoreNotificationDTO> list = new ArrayList<>();
+        if (listArea == null || listArea.isEmpty()) return list;
+
         if (type == null) {
             list = posStoreNotificationRepository
                     .findByStoreGuidAndStoreNotificationTypeAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(UUID.fromString(storeGuid),
@@ -139,6 +142,8 @@ public class PosStoreNotificationService {
                 list = list.stream().filter(item -> !item.isStoreNotificationHidden()).collect(Collectors.toList());
             }
         }
+
+        list = list.stream().filter(item -> listArea.contains(item.getAreaGuid().toString())).collect(Collectors.toList());
         return list;
     }
 
