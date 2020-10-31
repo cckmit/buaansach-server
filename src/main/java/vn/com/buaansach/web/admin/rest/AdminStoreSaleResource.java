@@ -37,6 +37,12 @@ public class AdminStoreSaleResource {
         return ResponseEntity.ok(adminStoreSaleService.getListStoreSaleBySale(saleGuid));
     }
 
+    @GetMapping("/list-by-store/{storeGuid}")
+    public ResponseEntity<List<AdminStoreSaleDTO>> getListStoreSaleByStore(@PathVariable UUID storeGuid) {
+        log.debug("REST request from user [{}] to list by store [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, storeGuid);
+        return ResponseEntity.ok(adminStoreSaleService.getListStoreSaleByStore(storeGuid));
+    }
+
     @PutMapping("/update")
     public ResponseEntity<Void> updateStoreSale(@RequestBody AdminStoreSaleDTO payload) {
         log.debug("REST request from user [{}] to update [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
