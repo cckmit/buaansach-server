@@ -14,6 +14,7 @@ public class GuestStorePayRequestDTO {
     private int storePayRequestAmount;
     private PaymentMethod storePayRequestMethod;
     private String storePayRequestNote;
+    private boolean keepTheChange;
     private int numberOfExtraSeat;
     private String listExtraSeat;
     private String listExtraOrder;
@@ -25,6 +26,7 @@ public class GuestStorePayRequestDTO {
         this.storePayRequestAmount = payRequest.getStorePayRequestAmount();
         this.storePayRequestMethod = payRequest.getStorePayRequestMethod();
         this.storePayRequestNote = payRequest.getStorePayRequestNote();
+        this.keepTheChange = payRequest.isKeepTheChange();
         this.numberOfExtraSeat = payRequest.getNumberOfExtraSeat();
         this.listExtraSeat = payRequest.getListExtraSeat();
         this.listExtraOrder = payRequest.getListExtraOrder();

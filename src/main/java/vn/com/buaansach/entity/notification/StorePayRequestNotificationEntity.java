@@ -31,6 +31,9 @@ public class StorePayRequestNotificationEntity implements Serializable {
     @Column(name = "store_pay_request_note")
     private String storePayRequestNote;
 
+    @Column(name = "keep_the_change")
+    private boolean keepTheChange;
+
     @Column(name = "number_of_extra_seat")
     private int numberOfExtraSeat;
 

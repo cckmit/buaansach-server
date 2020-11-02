@@ -16,6 +16,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="store_pay_request_note" type="varchar(255)"/>
+            <column name="keep_the_change" type="boolean"/>
             <column name="number_of_extra_seat" type="int"/>
             <column name="list_extra_seat" type="varchar(500)"/>
             <column name="list_extra_order" type="varchar(500)"/>

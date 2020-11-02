@@ -2,11 +2,13 @@ package vn.com.buaansach.web.guest.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import vn.com.buaansach.entity.enumeration.OrderProductStatus;
 import vn.com.buaansach.entity.enumeration.StoreNotificationStatus;
 import vn.com.buaansach.entity.enumeration.StoreNotificationType;
 import vn.com.buaansach.entity.notification.StoreNotificationEntity;
 import vn.com.buaansach.entity.notification.StorePayRequestNotificationEntity;
 import vn.com.buaansach.entity.order.OrderEntity;
+import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.exception.BadRequestException;
@@ -14,6 +16,7 @@ import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.guest.repository.notification.GuestStoreNotificationRepository;
 import vn.com.buaansach.web.guest.repository.notification.GuestStorePayRequestNotificationRepository;
+import vn.com.buaansach.web.guest.repository.order.GuestOrderProductRepository;
 import vn.com.buaansach.web.guest.repository.order.GuestOrderRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestSeatRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestStoreRepository;
@@ -24,6 +27,7 @@ import vn.com.buaansach.web.shared.service.PriceService;
 import vn.com.buaansach.web.shared.service.dto.readwrite.StoreNotificationDTO;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,6 +42,7 @@ public class GuestStorePayRequestNotificationService {
     private final GuestStoreSecurity guestStoreSecurity;
     private final PriceService priceService;
     private final GuestStoreNotificationRepository guestStoreNotificationRepository;
+    private final GuestOrderProductRepository guestOrderProductRepository;
 
     @Transactional
     public GuestStorePayRequestDTO sendRequest(GuestStorePayRequestDTO payload) {
@@ -58,6 +63,14 @@ public class GuestStorePayRequestNotificationService {
         List<StoreNotificationEntity> list = guestStoreNotificationRepository
                 .findByOrderGuidAndStoreNotificationType(orderEntity.getGuid(), StoreNotificationType.PAY_REQUEST);
         if (!list.isEmpty()) throw new BadRequestException(ErrorCode.STORE_PAY_REQUEST_EXIST);
+
+        List<OrderProductStatus> listStatus = new ArrayList<>();
+        listStatus.add(OrderProductStatus.CREATED);
+        listStatus.add(OrderProductStatus.PREPARING);
+        List<OrderProductEntity> listOrderProduct = guestOrderProductRepository.findByOrderGuidAndOrderProductStatusIn(orderEntity.getGuid(), listStatus);
+        if (listOrderProduct.size() != 0) {
+            throw new BadRequestException(ErrorCode.ORDER_UNFINISHED);
+        }
 
         long payAmount = priceService.calculatePayAmount(orderEntity);
         if (payAmount > payload.getStorePayRequestAmount())
@@ -82,6 +95,7 @@ public class GuestStorePayRequestNotificationService {
         payRequestNotification.setStorePayRequestAmount(payload.getStorePayRequestAmount());
         payRequestNotification.setStorePayRequestMethod(payload.getStorePayRequestMethod());
         payRequestNotification.setStorePayRequestNote(payload.getStorePayRequestNote());
+        payRequestNotification.setKeepTheChange(payload.isKeepTheChange());
         payRequestNotification.setNumberOfExtraSeat(payload.getNumberOfExtraSeat());
         payRequestNotification.setListExtraSeat(payload.getListExtraSeat());
         payRequestNotification.setListExtraOrder(payload.getListExtraOrder());
