@@ -1,14 +1,11 @@
 package vn.com.buaansach.exception;
 
 public enum ErrorCode {
-    /* General */
     APP_ERROR,
     BAD_REQUEST,
     FORBIDDEN,
     NOT_FOUND,
     UNAUTHORIZED,
-
-    /* Specific */
     AREA_NOT_FOUND,
     EMAIL_EXIST,
     INVALID_OPERATION,
@@ -84,4 +81,5 @@ public enum ErrorCode {
     POINT_USAGE_MUST_GREATER_THAN_EQUAL_ZERO,
     USER_PHONE_NOT_MATCH_ORDER_PHONE,
     ORDER_POINT_VALUE_NOT_MATCH,
+    STORE_WORK_SHIFT_NOT_FOUND,
 }
