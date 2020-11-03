@@ -30,7 +30,7 @@ public class AdminStoreWorkShiftService {
         List<AdminStoreWorkShiftDTO> result;
         result = listEntity.stream().map(AdminStoreWorkShiftDTO::new).collect(Collectors.toList());
         result.forEach(item -> {
-            item.setListUser(adminStoreWorkShiftUserRepository.findListAdminStoreWorkShiftUserDTO(item.getGuid()));
+            item.setListStoreWorkShiftUser(adminStoreWorkShiftUserRepository.findListAdminStoreWorkShiftUserDTO(item.getGuid()));
         });
         return result;
     }

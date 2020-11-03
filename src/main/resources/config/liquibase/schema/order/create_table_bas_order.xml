@@ -17,13 +17,13 @@
             </column>
             <column name="order_status" type="varchar(30)"/>
             <column name="order_type" type="varchar(30)"/>
+            <column name="order_note" type="varchar(200)"/>
             <column name="order_status_timeline" type="varchar(3000)"/>
             <column name="order_cancel_reason" type="varchar(255)"/>
-            <column name="order_discount" type="int"/>
+            <column name="order_discount" type="int" defaultValue="0"/>
             <column name="order_discount_type" type="varchar(30)"/>
-            <column name="order_point_value" type="int"/>
-            <column name="order_point_cost" type="int"/>
-            <column name="order_total_amount" type="int"/>
+            <column name="order_point_value" type="int" defaultValue="0"/>
+            <column name="order_total_amount" type="int" defaultValue="0"/>
             <column name="order_customer_phone" type="varchar(20)"/>
 
             <column name="order_received_by" type="varchar(50)"/>
@@ -33,12 +33,15 @@
             <column name="order_cancelled_by" type="varchar(50)"/>
             <column name="order_cancelled_date" type="timestamp"/>
 
+            <column name="order_deleted" type="boolean" defaultValue="false"/>
+
             <column name="sale_guid" type="binary(16)"/>
             <column name="voucher_guid" type="binary(16)"/>
             <column name="voucher_code" type="varchar(30)"/>
             <column name="seat_guid" type="binary(16)"/>
             <column name="store_guid" type="binary(16)"/>
             <column name="payment_guid" type="binary(16)"/>
+            <column name="user_guid" type="binary(16)"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

@@ -13,6 +13,7 @@ import vn.com.buaansach.web.admin.service.dto.write.AdminUpdateStoreWorkShiftUse
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,18 +22,18 @@ public class AdminStoreWorkShiftUserService {
     private final AdminStoreWorkShiftRepository adminStoreWorkShiftRepository;
 
     @Transactional
-    public void updateStoreWorkShiftUser(AdminUpdateStoreWorkShiftUserDTO payload){
-        StoreWorkShiftEntity storeWorkShift =adminStoreWorkShiftRepository.findOneByGuid(payload.getStoreWorkShiftGuid())
-                .orElseThrow(()-> new NotFoundException(ErrorCode.STORE_WORK_SHIFT_NOT_FOUND));
+    public void updateStoreWorkShiftUser(AdminUpdateStoreWorkShiftUserDTO payload) {
+        StoreWorkShiftEntity storeWorkShift = adminStoreWorkShiftRepository.findOneByGuid(payload.getStoreWorkShiftGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_WORK_SHIFT_NOT_FOUND));
         adminStoreWorkShiftUserRepository.deleteByStoreWorkShiftGuid(payload.getStoreWorkShiftGuid());
         List<StoreWorkShiftUserEntity> list = new ArrayList<>();
 
         int index = 0;
-        for (String userLogin: payload.getListUser()){
+        for (String userGuid : payload.getListUserGuid()) {
             StoreWorkShiftUserEntity entity = new StoreWorkShiftUserEntity();
             entity.setWorkDay(payload.getListWorkDay().get(index));
             entity.setStoreGuid(storeWorkShift.getStoreGuid());
-            entity.setUserLogin(userLogin);
+            entity.setUserGuid(UUID.fromString(userGuid));
             entity.setStoreWorkShiftGuid(payload.getStoreWorkShiftGuid());
             list.add(entity);
             index++;

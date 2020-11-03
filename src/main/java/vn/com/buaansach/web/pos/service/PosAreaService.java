@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.store.AreaEntity;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.entity.store.StoreUserEntity;
+import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
@@ -12,6 +13,7 @@ import vn.com.buaansach.web.pos.repository.store.PosAreaRepository;
 import vn.com.buaansach.web.pos.repository.store.PosSeatRepository;
 import vn.com.buaansach.web.pos.repository.store.PosStoreRepository;
 import vn.com.buaansach.web.pos.repository.store.PosStoreUserRepository;
+import vn.com.buaansach.web.pos.repository.user.PosUserRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosAreaDTO;
 import vn.com.buaansach.web.pos.service.dto.read.PosSeatDTO;
@@ -30,6 +32,7 @@ public class PosAreaService {
     private final PosSeatRepository posSeatRepository;
     private final PosStoreSecurity posStoreSecurity;
     private final PosStoreUserRepository posStoreUserRepository;
+    private final PosUserRepository posUserRepository;
 
     public List<PosAreaDTO> getListAreaWithSeatByStoreGuid(UUID storeGuid) {
         posStoreSecurity.blockAccessIfNotInStore(storeGuid);
@@ -37,7 +40,10 @@ public class PosAreaService {
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(storeGuid)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
-        StoreUserEntity storeUserEntity = posStoreUserRepository.findOneByUserLoginAndStoreGuid(SecurityUtils.getCurrentUserLogin(), storeGuid)
+        UserEntity currentUser = posUserRepository.findOneByUserLoginIgnoreCase(SecurityUtils.getCurrentUserLogin())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        StoreUserEntity storeUserEntity = posStoreUserRepository.findOneByUserGuidAndStoreGuid(currentUser.getGuid(), storeGuid)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_USER_NOT_FOUND));
 
         List<UUID> listAreaGuid;

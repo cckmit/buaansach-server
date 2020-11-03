@@ -50,7 +50,6 @@ public class StoreUserEntity extends AbstractAuditingEntity implements Serializa
     @Column(name = "store_guid")
     private UUID storeGuid;
 
-    @Size(max = 50)
-    @Column(name = "user_login", length = 50)
-    private String userLogin;
+    @Column(name = "user_guid")
+    private UUID userGuid;
 }

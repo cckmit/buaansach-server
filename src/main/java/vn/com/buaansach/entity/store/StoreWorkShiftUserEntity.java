@@ -34,7 +34,6 @@ public class StoreWorkShiftUserEntity implements Serializable {
     @Column(name = "store_work_shift_guid")
     private UUID storeWorkShiftGuid;
 
-    @Size(max = 50)
-    @Column(name = "user_login", length = 50)
-    private String userLogin;
+    @Column(name = "user_guid")
+    private UUID userGuid;
 }

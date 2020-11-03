@@ -43,6 +43,9 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
     @Column(name = "order_type")
     private OrderType orderType;
 
+    @Column(name = "order_note")
+    private String orderNote;
+
     @Column(name = "order_status_timeline", length = 3000)
     private String orderStatusTimeline;
 
@@ -59,9 +62,6 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
 
     @Column(name = "order_point_value")
     private int orderPointValue;
-
-    @Column(name = "order_point_cost")
-    private int orderPointCost;
 
     @Column(name = "order_total_amount")
     private int orderTotalAmount;
@@ -91,6 +91,10 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
     @Column(name = "order_cancelled_date")
     private Instant orderCancelledDate;
 
+    @JsonIgnore
+    @Column(name = "order_deleted")
+    private boolean orderDeleted;
+
     /**
      * FK
      */
@@ -112,4 +116,7 @@ public class OrderEntity extends AbstractAuditingEntity implements Serializable 
 
     @Column(name = "payment_guid")
     private UUID paymentGuid;
+
+    @Column(name = "user_guid")
+    private UUID userGuid;
 }

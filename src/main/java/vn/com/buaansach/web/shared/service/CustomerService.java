@@ -45,28 +45,26 @@ public class CustomerService {
     public void createdCustomer(UUID userGuid) {
         CustomerEntity customerEntity = new CustomerEntity();
         customerEntity.setUserGuid(userGuid);
-        customerEntity.setCustomerPoint(10);
+        customerEntity.setCustomerPoint(Constants.INITIAL_CUSTOMER_POINT);
         customerRepository.save(customerEntity);
 
         CustomerPointLogEntity pointLogEntity = new CustomerPointLogEntity();
         pointLogEntity.setOrderGuid(null);
         pointLogEntity.setPointLogReason(PointLogReason.INITIAL_ACCOUNT.name());
         pointLogEntity.setUserGuid(userGuid);
-        pointLogEntity.setPointLogValue(10);
+        pointLogEntity.setPointLogValue(Constants.INITIAL_CUSTOMER_POINT);
         pointLogEntity.setPointLogType(PointLogType.ADD);
         customerPointLogRepository.save(pointLogEntity);
     }
 
     @Transactional
     public void earnPoint(OrderEntity orderEntity) {
-        if (orderEntity.getOrderCustomerPhone() == null) return;
-        CustomerEntity customerEntity = customerRepository.findOneByUserPhone(orderEntity.getOrderCustomerPhone())
+        if (orderEntity.getUserGuid() == null) return;
+        CustomerEntity customerEntity = customerRepository.findOneByUserGuid(orderEntity.getUserGuid())
                 .orElse(null);
         if (customerEntity == null) return;
         int payAmount = priceService.calculatePayAmount(orderEntity);
-        int div = payAmount / 1000;
-        int remain = payAmount % 1000;
-        int earnedPoint = remain == 0 ? div : div + 1;
+        int earnedPoint = payAmount / 100 * 5;
 
         if (earnedPoint == 0) return;
 
@@ -105,7 +103,6 @@ public class CustomerService {
             throw new BadRequestException(ErrorCode.CUSTOMER_POINT_NOT_ENOUGH);
 
         orderEntity.setOrderPointValue(orderPointValue);
-        orderEntity.setOrderPointCost(orderPointValue * Constants.VND_PER_POINT);
 
         customerEntity.setCustomerPoint(customerEntity.getCustomerPoint() - orderPointValue);
 
@@ -133,31 +130,26 @@ public class CustomerService {
 
     @Transactional
     public void rollbackPoint(OrderEntity orderEntity) {
-        if (orderEntity.getOrderCustomerPhone() == null) return;
+        if (orderEntity.getUserGuid() == null) return;
         if (orderEntity.getOrderPointValue() == 0) return;
 
-        CustomerEntity customerEntity = customerRepository.findOneByUserPhone(orderEntity.getOrderCustomerPhone())
+        CustomerEntity customerEntity = customerRepository.findOneByUserGuid(orderEntity.getUserGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.CUSTOMER_NOT_FOUND));
 
         customerEntity.setCustomerPoint(customerEntity.getCustomerPoint() + orderEntity.getOrderPointValue());
         orderEntity.setOrderPointValue(0);
-        orderEntity.setOrderPointCost(0);
         orderRepository.save(orderEntity);
         customerRepository.save(customerEntity);
     }
 
     public void addUsePointLog(OrderEntity orderEntity) {
-        if (orderEntity.getOrderCustomerPhone() == null) return;
-
+        if (orderEntity.getUserGuid() == null) return;
         if (orderEntity.getOrderPointValue() == 0) return;
-
-        UserEntity userEntity = userRepository.findOneByUserPhone(orderEntity.getOrderCustomerPhone())
-                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         CustomerPointLogEntity pointLogEntity = new CustomerPointLogEntity();
         pointLogEntity.setOrderGuid(orderEntity.getGuid());
         pointLogEntity.setPointLogReason(PointLogReason.USE_FOR_ORDER.name());
-        pointLogEntity.setUserGuid(userEntity.getGuid());
+        pointLogEntity.setUserGuid(orderEntity.getUserGuid());
         pointLogEntity.setPointLogValue(orderEntity.getOrderPointValue());
         pointLogEntity.setPointLogType(PointLogType.SUBTRACT);
 

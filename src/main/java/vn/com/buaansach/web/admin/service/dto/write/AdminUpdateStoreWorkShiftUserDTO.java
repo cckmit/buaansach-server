@@ -9,6 +9,6 @@ import java.util.UUID;
 @Data
 public class AdminUpdateStoreWorkShiftUserDTO {
     private UUID storeWorkShiftGuid;
-    private List<String> listUser;
+    private List<String> listUserGuid;
     private List<String> listWorkDay;
 }

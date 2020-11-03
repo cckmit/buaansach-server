@@ -16,10 +16,12 @@ public class PosStoreUserDTO {
     private StoreUserStatus storeUserStatus;
     private String storeUserArea;
     private UUID storeGuid;
-    private String userLogin;
+    private UUID userGuid;
 
+    private String userLogin;
     private String userEmail;
     private String userPhone;
+
     private String fullName;
 
     public PosStoreUserDTO() {
@@ -32,7 +34,7 @@ public class PosStoreUserDTO {
         this.storeUserStatus = storeUserEntity.getStoreUserStatus();
         this.storeUserArea = storeUserEntity.getStoreUserArea();
         this.storeGuid = storeUserEntity.getStoreGuid();
-        this.userLogin = storeUserEntity.getUserLogin();
+        this.userGuid = storeUserEntity.getUserGuid();
     }
 
     public PosStoreUserDTO(StoreUserEntity storeUserEntity, UserEntity userEntity, UserProfileEntity profileEntity) {
@@ -41,10 +43,12 @@ public class PosStoreUserDTO {
         this.storeUserStatus = storeUserEntity.getStoreUserStatus();
         this.storeUserArea = storeUserEntity.getStoreUserArea();
         this.storeGuid = storeUserEntity.getStoreGuid();
-        this.userLogin = storeUserEntity.getUserLogin();
+        this.userGuid = storeUserEntity.getUserGuid();
 
+        this.userLogin = userEntity.getUserLogin();
         this.userEmail = userEntity.getUserEmail();
         this.userPhone = userEntity.getUserPhone();
+
         this.fullName = profileEntity.getFullName();
     }
 }

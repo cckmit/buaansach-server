@@ -12,9 +12,10 @@ public class AdminStoreWorkShiftUserDTO {
     private String workDay;
     private UUID storeGuid;
     private UUID storeWorkShiftGuid;
-    private String userLogin;
+    private UUID userGuid;
 
     /* User account */
+    private String userLogin;
     private String userEmail;
     private String userPhone;
 
@@ -29,9 +30,10 @@ public class AdminStoreWorkShiftUserDTO {
     public AdminStoreWorkShiftUserDTO(StoreWorkShiftUserEntity entity, UserEntity user, UserProfileEntity profile) {
         this.workDay = entity.getWorkDay();
         this.storeGuid = entity.getStoreGuid();
-        this.userLogin = entity.getUserLogin();
         this.storeWorkShiftGuid = entity.getStoreWorkShiftGuid();
+        this.userGuid = entity.getUserGuid();
 
+        this.userLogin = user.getUserLogin();
         this.userEmail = user.getUserEmail();
         this.userPhone = user.getUserPhone();
 

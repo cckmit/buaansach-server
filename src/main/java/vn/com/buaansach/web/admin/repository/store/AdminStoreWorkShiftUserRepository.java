@@ -15,7 +15,7 @@ public interface AdminStoreWorkShiftUserRepository extends StoreWorkShiftUserRep
     @Query("SELECT new vn.com.buaansach.web.admin.service.dto.read.AdminStoreWorkShiftUserDTO(shiftUser, user, profile) " +
             "FROM StoreWorkShiftUserEntity shiftUser " +
             "JOIN vn.com.buaansach.entity.user.UserEntity user " +
-            "ON shiftUser.userLogin = user.userLogin " +
+            "ON shiftUser.userGuid = user.guid " +
             "JOIN vn.com.buaansach.entity.user.UserProfileEntity profile " +
             "ON user.guid = profile.userGuid " +
             "WHERE shiftUser.storeWorkShiftGuid = :storeWorkShiftGuid " +

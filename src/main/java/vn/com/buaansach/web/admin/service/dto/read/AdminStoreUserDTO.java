@@ -28,9 +28,10 @@ public class AdminStoreUserDTO extends AuditDTO {
     private String storeUserArea;
     private boolean storeUserActivated;
     private String storeGuid;
-    private String userLogin;
+    private UUID userGuid;
 
     /* User account */
+    private String userLogin;
     private String userEmail;
     private String userPhone;
 
@@ -49,8 +50,9 @@ public class AdminStoreUserDTO extends AuditDTO {
         this.storeUserArea = storeUserEntity.getStoreUserArea();
         this.storeUserActivated = storeUserEntity.isStoreUserActivated();
         this.storeGuid = storeUserEntity.getStoreGuid().toString();
-        this.userLogin = storeUserEntity.getUserLogin();
+        this.userGuid = storeUserEntity.getUserGuid();
 
+        this.userLogin = userEntity.getUserLogin();
         this.userEmail = userEntity.getUserEmail();
         this.userPhone = userEntity.getUserPhone();
 
@@ -74,8 +76,9 @@ public class AdminStoreUserDTO extends AuditDTO {
         this.storeUserArea = storeUserEntity.getStoreUserArea();
         this.storeUserActivated = storeUserEntity.isStoreUserActivated();
         this.storeGuid = storeUserEntity.getStoreGuid().toString();
-        this.userLogin = storeUserEntity.getUserLogin();
+        this.userGuid = storeUserEntity.getUserGuid();
 
+        this.userLogin = adminUserDTO.getUserLogin();
         this.userEmail = adminUserDTO.getUserEmail();
         this.userPhone = adminUserDTO.getUserPhone();
 

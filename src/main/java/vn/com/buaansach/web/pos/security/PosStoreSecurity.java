@@ -6,12 +6,14 @@ import vn.com.buaansach.entity.enumeration.StoreUserRole;
 import vn.com.buaansach.entity.enumeration.StoreUserStatus;
 import vn.com.buaansach.entity.store.StoreEntity;
 import vn.com.buaansach.entity.store.StoreUserEntity;
+import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.ForbiddenException;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.repository.store.PosStoreRepository;
 import vn.com.buaansach.web.pos.repository.store.PosStoreUserRepository;
+import vn.com.buaansach.web.pos.repository.user.PosUserRepository;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,6 +24,7 @@ import java.util.UUID;
 public class PosStoreSecurity {
     private final PosStoreUserRepository posStoreUserRepository;
     private final PosStoreRepository posStoreRepository;
+    private final PosUserRepository posUserRepository;
 
     private Set<StoreUserRole> getOwnerRole() {
         Set<StoreUserRole> checkRoles = new HashSet<>();
@@ -46,14 +49,16 @@ public class PosStoreSecurity {
     }
 
     private boolean checkAccess(Set<StoreUserRole> roles, UUID storeGuid) {
-        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
         /*if allow Admin, uncomment it*/
 //        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) return true;
+
+        UserEntity currentUser = posUserRepository.findOneByUserLoginIgnoreCase(SecurityUtils.getCurrentUserLogin()).orElse(null);
+        if (currentUser == null) return false;
 
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(storeGuid).orElse(null);
         if (storeEntity == null || !storeEntity.isStoreActivated()) return false;
 
-        return posStoreUserRepository.findOneByUserLoginAndStoreGuid(currentUserLogin, storeGuid)
+        return posStoreUserRepository.findOneByUserGuidAndStoreGuid(currentUser.getGuid(), storeGuid)
                 .map(storeUserEntity -> roles.contains(storeUserEntity.getStoreUserRole())
                         /* if user is not working in this store => return false too */
                         && storeUserEntity.isStoreUserActivated()
@@ -88,13 +93,16 @@ public class PosStoreSecurity {
     }
 
     public void blockAccessIfNotInStoreAndArea(UUID storeGuid, UUID areaGuid) {
-        if (!hasPermission(storeGuid))
-            throw new ForbiddenException(ErrorCode.USER_NOT_IN_STORE);
-        StoreUserEntity storeUserEntity = posStoreUserRepository.findOneByUserLoginAndStoreGuid(SecurityUtils.getCurrentUserLogin(), storeGuid)
+        blockAccessIfNotInStore(storeGuid);
+        UserEntity currentUser = posUserRepository.findOneByUserLoginIgnoreCase(SecurityUtils.getCurrentUserLogin())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        StoreUserEntity storeUserEntity = posStoreUserRepository.findOneByUserGuidAndStoreGuid(currentUser.getGuid(), storeGuid)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_USER_NOT_FOUND));
+
         if (areaGuid != null && storeUserEntity.getStoreUserArea() == null || storeUserEntity.getStoreUserArea().isBlank())
-            throw new ForbiddenException(ErrorCode.FORBIDDEN);
+            throw new ForbiddenException(ErrorCode.AREA_RESTRICTED);
         if (areaGuid != null && !storeUserEntity.getStoreUserArea().contains(areaGuid.toString()))
-            throw new ForbiddenException(ErrorCode.FORBIDDEN);
+            throw new ForbiddenException(ErrorCode.AREA_RESTRICTED);
     }
 }

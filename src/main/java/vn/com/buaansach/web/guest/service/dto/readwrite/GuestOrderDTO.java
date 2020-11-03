@@ -24,13 +24,13 @@ public class GuestOrderDTO extends AuditDTO {
     private String orderCode;
     private OrderStatus orderStatus;
     private OrderType orderType;
+    private String orderNote;
     @JsonIgnore
     private String orderStatusTimeline;
     private String orderCancelReason;
     private int orderDiscount;
     private DiscountType orderDiscountType;
     private int orderPointValue;
-    private int orderPointCost;
     private int orderTotalAmount;
     private String orderCustomerPhone;
 
@@ -48,6 +48,7 @@ public class GuestOrderDTO extends AuditDTO {
     private UUID seatGuid;
     private UUID storeGuid;
     private UUID paymentGuid;
+    private UUID userGuid;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<GuestOrderProductDTO> listOrderProduct = new ArrayList<>();
@@ -57,12 +58,12 @@ public class GuestOrderDTO extends AuditDTO {
         this.orderCode = orderEntity.getOrderCode();
         this.orderStatus = orderEntity.getOrderStatus();
         this.orderType = orderEntity.getOrderType();
+        this.orderNote = orderEntity.getOrderNote();
         this.orderStatusTimeline = orderEntity.getOrderStatusTimeline();
         this.orderCancelReason = orderEntity.getOrderCancelReason();
         this.orderDiscount = orderEntity.getOrderDiscount();
         this.orderDiscountType = orderEntity.getOrderDiscountType();
         this.orderPointValue = orderEntity.getOrderPointValue();
-        this.orderPointCost = orderEntity.getOrderPointCost();
         this.orderTotalAmount = orderEntity.getOrderTotalAmount();
         this.orderCustomerPhone = orderEntity.getOrderCustomerPhone();
 
@@ -84,5 +85,6 @@ public class GuestOrderDTO extends AuditDTO {
         this.seatGuid = orderEntity.getSeatGuid();
         this.storeGuid = orderEntity.getStoreGuid();
         this.paymentGuid = orderEntity.getPaymentGuid();
+        this.userGuid = orderEntity.getUserGuid();
     }
 }

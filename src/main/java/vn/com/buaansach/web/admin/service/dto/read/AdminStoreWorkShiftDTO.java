@@ -19,7 +19,7 @@ public class AdminStoreWorkShiftDTO extends AuditDTO {
     private String storeWorkShiftEnd;
     private UUID storeGuid;
 
-    private List<AdminStoreWorkShiftUserDTO> listUser;
+    private List<AdminStoreWorkShiftUserDTO> listStoreWorkShiftUser;
 
     public AdminStoreWorkShiftDTO() {
     }

@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Repository
 public interface StoreUserRepository extends JpaRepository<StoreUserEntity, Long> {
-    Optional<StoreUserEntity> findOneByUserLoginAndStoreGuid(String userLogin, UUID storeGuid);
+    Optional<StoreUserEntity> findOneByUserGuidAndStoreGuid(UUID userGuid, UUID storeGuid);
 
     Optional<StoreUserEntity> findOneByGuid(UUID guid);
 
@@ -25,11 +25,11 @@ public interface StoreUserRepository extends JpaRepository<StoreUserEntity, Long
             "FROM StoreUserEntity storeUser " +
             "JOIN vn.com.buaansach.entity.store.StoreEntity store " +
             "ON storeUser.storeGuid = store.guid " +
-            "WHERE storeUser.userLogin = :userLogin " +
+            "WHERE storeUser.userGuid = :userGuid " +
             "AND store.storeActivated = :storeActivated " +
             "AND storeUser.storeUserStatus = :storeUserStatus " +
             "AND storeUser.storeUserActivated = TRUE")
-    List<StoreUserDTO> findListStoreUserDTOByUser(@Param("userLogin") String userLogin,
+    List<StoreUserDTO> findListStoreUserDTOByUser(@Param("userGuid") UUID userGuid,
                                                   @Param("storeActivated") boolean storeActivated,
                                                   @Param("storeUserStatus") StoreUserStatus storeUserStatus);
 }

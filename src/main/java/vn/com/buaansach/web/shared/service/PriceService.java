@@ -49,9 +49,7 @@ public class PriceService {
             }
         }
 
-        if (orderEntity.getOrderPointCost() > 0){
-            payAmount = payAmount - orderEntity.getOrderPointCost();
-        }
+        payAmount = payAmount - orderEntity.getOrderPointValue();
 
         /* Nếu payAmount < 0 thì vẫn set về 0 */
         payAmount = Math.max(payAmount, 0);

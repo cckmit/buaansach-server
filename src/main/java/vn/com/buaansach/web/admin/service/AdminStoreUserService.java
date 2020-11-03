@@ -8,9 +8,7 @@ import vn.com.buaansach.entity.user.UserEntity;
 import vn.com.buaansach.entity.user.UserProfileEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
-import vn.com.buaansach.exception.ForbiddenException;
 import vn.com.buaansach.exception.NotFoundException;
-import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.admin.repository.store.AdminStoreRepository;
 import vn.com.buaansach.web.admin.repository.store.AdminStoreUserRepository;
 import vn.com.buaansach.web.admin.repository.user.AdminUserProfileRepository;
@@ -49,7 +47,7 @@ public class AdminStoreUserService {
         adminStoreRepository.findOneByGuid(request.getStoreGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
-        if (adminStoreUserRepository.findOneByUserLoginAndStoreGuid(userEntity.getUserLogin(), request.getStoreGuid()).isPresent())
+        if (adminStoreUserRepository.findOneByUserGuidAndStoreGuid(userEntity.getGuid(), request.getStoreGuid()).isPresent())
             throw new BadRequestException(ErrorCode.STORE_USER_EXIST);
 
         StoreUserEntity storeUserEntity = new StoreUserEntity();
@@ -59,7 +57,7 @@ public class AdminStoreUserService {
         storeUserEntity.setStoreUserArea(request.getStoreUserArea());
         storeUserEntity.setStoreUserActivated(true);
         storeUserEntity.setStoreGuid(request.getStoreGuid());
-        storeUserEntity.setUserLogin(userEntity.getUserLogin());
+        storeUserEntity.setUserGuid(userEntity.getGuid());
 
         return new AdminStoreUserDTO(adminStoreUserRepository.save(storeUserEntity), userEntity, userProfileEntity);
     }
@@ -78,10 +76,10 @@ public class AdminStoreUserService {
         storeUserEntity.setGuid(UUID.randomUUID());
         storeUserEntity.setStoreUserRole(request.getStoreUserRole());
         storeUserEntity.setStoreUserStatus(request.getStoreUserStatus());
+        storeUserEntity.setStoreUserArea(request.getStoreUserArea());
         storeUserEntity.setStoreUserActivated(true);
         storeUserEntity.setStoreGuid(request.getStoreGuid());
-        storeUserEntity.setUserLogin(request.getUserLogin().toLowerCase());
-        storeUserEntity.setStoreUserArea(request.getStoreUserArea());
+        storeUserEntity.setUserGuid(dto.getGuid());
 
         return new AdminStoreUserDTO(adminStoreUserRepository.save(storeUserEntity), dto);
     }
@@ -94,8 +92,8 @@ public class AdminStoreUserService {
         storeUserEntity.setStoreUserStatus(request.getStoreUserStatus());
         storeUserEntity.setStoreUserArea(request.getStoreUserArea());
 
-        /* do not use userLogin from request, because it might be modified */
-        UserEntity updateUser = adminUserRepository.findOneByUserLoginIgnoreCase(storeUserEntity.getUserLogin())
+        /* do not use userGuid from request, because it might be modified */
+        UserEntity updateUser = adminUserRepository.findOneByGuid(storeUserEntity.getUserGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         updateUser.setUserEmail(request.getUserEmail());
@@ -122,8 +120,6 @@ public class AdminStoreUserService {
         StoreUserEntity storeUserEntity = adminStoreUserRepository.findOneByGuid(UUID.fromString(storeUserGuid))
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_USER_NOT_FOUND));
 
-        if (SecurityUtils.getCurrentUserLogin().equals(storeUserEntity.getUserLogin()))
-            throw new ForbiddenException(ErrorCode.INVALID_OPERATION);
         storeUserEntity.setStoreUserActivated(!storeUserEntity.isStoreUserActivated());
         adminStoreUserRepository.save(storeUserEntity);
     }

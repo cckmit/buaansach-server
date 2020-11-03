@@ -16,7 +16,7 @@
             <column name="store_work_shift_guid" type="binary(16)">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_login" type="varchar(50)">
+            <column name="user_guid" type="binary(16)">
                 <constraints nullable="false"/>
             </column>
         </createTable>

@@ -15,7 +15,7 @@ public interface PosStoreUserRepository extends StoreUserRepository {
     @Query("SELECT new vn.com.buaansach.web.pos.service.dto.read.PosStoreUserDTO(storeUser, user, profile) " +
             "FROM StoreUserEntity storeUser " +
             "JOIN vn.com.buaansach.entity.user.UserEntity user " +
-            "ON storeUser.userLogin = user.userLogin " +
+            "ON storeUser.userGuid = user.guid " +
             "JOIN vn.com.buaansach.entity.user.UserProfileEntity profile " +
             "ON user.guid = profile.userGuid " +
             "WHERE storeUser.storeGuid = :storeGuid")

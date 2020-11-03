@@ -27,7 +27,7 @@ public class AdminStoreWorkShiftUserResource {
     private final AdminStoreWorkShiftUserService adminStoreWorkShiftUserService;
 
     @PutMapping("/update")
-    public ResponseEntity<Void> updateStoreWorkShift(@Valid @RequestBody AdminUpdateStoreWorkShiftUserDTO payload) {
+    public ResponseEntity<Void> updateStoreWorkShiftUser(@Valid @RequestBody AdminUpdateStoreWorkShiftUserDTO payload) {
         log.debug("REST request from user [{}] to update [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         adminStoreWorkShiftUserService.updateStoreWorkShiftUser(payload);
         return ResponseEntity.noContent().build();

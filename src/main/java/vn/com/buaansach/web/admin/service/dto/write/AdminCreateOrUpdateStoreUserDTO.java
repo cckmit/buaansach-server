@@ -18,11 +18,11 @@ public class AdminCreateOrUpdateStoreUserDTO {
 
     private UUID storeGuid;
 
+    private String storeUserArea;
+
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
     private String userLogin;
-
-    private String storeUserArea;
 
     @Email
     @Size(max = 255)
