@@ -10,6 +10,14 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="work_day" type="varchar(100)"/>
+            <column name="monday" type="varchar(100)"/>
+            <column name="tuesday" type="varchar(100)"/>
+            <column name="wednesday" type="varchar(100)"/>
+            <column name="thursday" type="varchar(100)"/>
+            <column name="friday" type="varchar(100)"/>
+            <column name="saturday" type="varchar(100)"/>
+            <column name="sunday" type="varchar(100)"/>
+
             <column name="store_guid" type="binary(16)">
                 <constraints nullable="false"/>
             </column>
