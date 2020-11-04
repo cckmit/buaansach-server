@@ -111,11 +111,11 @@ public class AdminUserService {
 
 
         // Khong cho doi SDT
-//        adminUserRepository.findOneByUserPhone(dto.getUserPhone()).ifPresent(userEntity -> {
-//            if (!userEntity.getUserLogin().equals(currentUser.getUserLogin()))
-//                throw new BadRequestException(ErrorCode.PHONE_EXIST);
-//        });
-//        currentUser.setUserPhone(dto.getUserPhone());
+        adminUserRepository.findOneByUserPhone(dto.getUserPhone()).ifPresent(userEntity -> {
+            if (!userEntity.getUserLogin().equals(currentUser.getUserLogin()))
+                throw new BadRequestException(ErrorCode.PHONE_EXIST);
+        });
+        currentUser.setUserPhone(dto.getUserPhone());
 
         if (dto.getAuthorities() != null) {
             Set<AuthorityEntity> authorities = dto.getAuthorities().stream()
