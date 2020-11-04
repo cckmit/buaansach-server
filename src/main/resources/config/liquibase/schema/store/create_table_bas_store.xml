@@ -39,6 +39,7 @@
             </column>
             <column name="store_reward_point_activated" type="boolean"/>
             <column name="store_primary_sale_guid" type="binary(16)"/>
+            <column name="store_auto_apply_sale" type="boolean"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

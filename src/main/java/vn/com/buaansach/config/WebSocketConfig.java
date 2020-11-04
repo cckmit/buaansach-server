@@ -17,6 +17,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 import org.springframework.web.socket.server.HandshakeInterceptor;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
+import vn.com.buaansach.util.Constants;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -77,7 +78,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 if (principal == null) {
                     Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
                     authorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.ANONYMOUS));
-                    principal = new AnonymousAuthenticationToken("WebsocketConfiguration", "anonymousUser", authorities);
+                    principal = new AnonymousAuthenticationToken("WebsocketConfiguration", Constants.ANONYMOUS_USER, authorities);
                 }
                 return principal;
             }

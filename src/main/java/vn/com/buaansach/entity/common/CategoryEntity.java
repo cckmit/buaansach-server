@@ -56,4 +56,7 @@ public class CategoryEntity extends AbstractAuditingEntity implements Serializab
 
     @Column(name = "category_hidden")
     private boolean categoryHidden;
+
+    @Column(name = "category_activated")
+    private boolean categoryActivated;
 }
