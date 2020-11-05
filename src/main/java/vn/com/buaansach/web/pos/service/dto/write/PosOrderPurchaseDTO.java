@@ -11,6 +11,7 @@ import java.util.UUID;
 @Data
 public class PosOrderPurchaseDTO {
     private UUID orderGuid;
+    private int orderTotalAmount;
     private int orderPointValue;
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;

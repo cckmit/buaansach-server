@@ -259,12 +259,23 @@ public class PosOrderService {
 
         posStoreSecurity.blockAccessIfNotInStore(storeEntity.getGuid());
 
+        List<OrderProductEntity> listOrderProduct = posOrderProductRepository.findByOrderGuid(payload.getOrderGuid());
+        List<OrderProductEntity> listUnfinished = listOrderProduct.stream()
+                .filter(item -> item.getOrderProductStatus().equals(OrderProductStatus.CREATED) ||
+                        item.getOrderProductStatus().equals(OrderProductStatus.PREPARING)).collect(Collectors.toList());
+
+        if (listUnfinished.size() != 0){
+            throw new BadRequestException(ErrorCode.ORDER_INFO_OUT_OF_DATE);
+        }
+
         if (!orderEntity.getOrderStatus().equals(OrderStatus.RECEIVED))
             throw new BadRequestException(ErrorCode.INVALID_ORDER_STATUS);
 
-        if (payload.getOrderPointValue() != orderEntity.getOrderPointValue())
-            throw new BadRequestException(ErrorCode.ORDER_POINT_VALUE_NOT_MATCH);
+        if (payload.getOrderTotalAmount() != orderEntity.getOrderTotalAmount())
+            throw new BadRequestException(ErrorCode.ORDER_INFO_OUT_OF_DATE);
 
+        if (payload.getOrderPointValue() != orderEntity.getOrderPointValue())
+            throw new BadRequestException(ErrorCode.ORDER_INFO_OUT_OF_DATE);
 
         /* create voucher code usage record if a voucher code has been applied */
         if (orderEntity.getVoucherCode() != null && !orderEntity.getVoucherCode().isBlank()) {
