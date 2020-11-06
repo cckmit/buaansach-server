@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.enumeration.SeatServiceStatus;
+import vn.com.buaansach.entity.enumeration.SeatStatus;
 import vn.com.buaansach.entity.store.SeatEntity;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
@@ -28,6 +29,12 @@ public class GuestSeatService {
     public void makeSeatServiceUnfinished(UUID seatGuid) {
         SeatEntity seatEntity = guestSeatRepository.findOneByGuid(seatGuid)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
+        seatEntity.setSeatServiceStatus(SeatServiceStatus.UNFINISHED);
+        guestSeatRepository.save(seatEntity);
+    }
+
+    public void makeSeatServiceUnfinished(SeatEntity seatEntity) {
+        seatEntity.setSeatStatus(SeatStatus.NON_EMPTY);
         seatEntity.setSeatServiceStatus(SeatServiceStatus.UNFINISHED);
         guestSeatRepository.save(seatEntity);
     }

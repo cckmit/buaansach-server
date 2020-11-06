@@ -55,7 +55,7 @@ public class GuestStorePayRequestNotificationService {
         StoreEntity storeEntity = guestStoreRepository.findOneBySeatGuid(seatEntity.getGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
-        guestStoreSecurity.blockAccessIfStoreIsNotOpenOrDeactivated(storeEntity.getGuid());
+        guestStoreSecurity.blockAccessIfStoreAbnormal(storeEntity.getGuid());
 
         if (seatEntity.isSeatLocked())
             throw new BadRequestException(ErrorCode.SEAT_LOCKED);

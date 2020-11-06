@@ -34,7 +34,7 @@ public class GuestStoreService {
     }
 
     public void callWaiter(GuestCallWaiterDTO payload) {
-        guestStoreSecurity.blockAccessIfStoreIsNotOpenOrDeactivated(payload.getStoreGuid());
+        guestStoreSecurity.blockAccessIfStoreAbnormal(payload.getStoreGuid());
 
         guestStoreRepository.findOneByGuid(payload.getStoreGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
