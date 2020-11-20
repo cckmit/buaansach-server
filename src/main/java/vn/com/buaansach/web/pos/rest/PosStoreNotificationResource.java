@@ -15,6 +15,7 @@ import vn.com.buaansach.web.shared.service.dto.readwrite.StoreNotificationDTO;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 @Secured(AuthoritiesConstants.INTERNAL_USER)
 @RestController
@@ -45,8 +46,16 @@ public class PosStoreNotificationResource {
     @PutMapping("/toggle-visibility")
     public ResponseEntity<Void> toggleVisibility(@RequestBody PosStoreNotificationVisibilityUpdateDTO payload) {
         String currentUser = SecurityUtils.getCurrentUserLogin();
-        log.debug("REST request from user [{}] to toggle [{}] : [{}]", currentUser, ENTITY_NAME, payload);
+        log.debug("REST request from user [{}] to toggle [{}] visibility : [{}]", currentUser, ENTITY_NAME, payload);
         posStoreNotificationService.toggleVisibility(payload, currentUser);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/toggle-pin")
+    public ResponseEntity<Void> togglePin(@RequestBody String payload) {
+        String currentUser = SecurityUtils.getCurrentUserLogin();
+        log.debug("REST request from user [{}] to toggle [{}] pin : [{}]", currentUser, ENTITY_NAME, payload);
+        posStoreNotificationService.toggleStoreNotificationPin(payload);
         return ResponseEntity.ok().build();
     }
 }

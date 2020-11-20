@@ -13,6 +13,7 @@ import vn.com.buaansach.entity.notification.StoreOrderNotificationEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
+import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.pos.repository.notification.PosStoreNotificationRepository;
 import vn.com.buaansach.web.pos.repository.notification.PosStoreOrderNotificationRepository;
 import vn.com.buaansach.web.pos.repository.notification.PosStorePayRequestNotificationRepository;
@@ -24,7 +25,6 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -63,6 +63,7 @@ public class PosStoreNotificationService {
         notificationEntity.setStoreNotificationStatus(StoreNotificationStatus.UNSEEN);
         notificationEntity.setStoreNotificationType(StoreNotificationType.ORDER_UPDATE);
         notificationEntity.setStoreNotificationHidden(false);
+        notificationEntity.setStoreNotificationPin(false);
         notificationEntity.setStoreGuid(storeGuid);
         notificationEntity.setAreaGuid(areaGuid);
         notificationEntity.setSeatGuid(seatGuid);
@@ -90,11 +91,18 @@ public class PosStoreNotificationService {
         });
 
         list = list.stream().peek(item -> {
-            item.setStoreNotificationHidden(payload.isHidden());
-            if (item.getFirstHiddenBy() == null && payload.isHidden()) {
-                item.setFirstHiddenBy(currentUser);
-                item.setFirstHiddenDate(Instant.now());
+            if (payload.isHidden()){
+                if (!item.isStoreNotificationPin()){
+                    item.setStoreNotificationHidden(payload.isHidden());
+                    if (item.getFirstHiddenBy() == null) {
+                        item.setFirstHiddenBy(currentUser);
+                        item.setFirstHiddenDate(Instant.now());
+                    }
+                }
+            } else {
+                item.setStoreNotificationHidden(payload.isHidden());
             }
+
         }).collect(Collectors.toList());
 
         posStoreNotificationRepository.saveAll(list);
@@ -158,5 +166,24 @@ public class PosStoreNotificationService {
         }
         payload.assignProperty(posStoreNotificationRepository.save(entity));
         return payload;
+    }
+
+    public void hideStoreNotificationByListOrderGuid(List<UUID> listOrderGuid){
+        List<StoreNotificationEntity> list = posStoreNotificationRepository.findByOrderGuidInAndStoreNotificationHidden(listOrderGuid, false);
+        list = list.stream().peek(item -> {
+            item.setStoreNotificationHidden(true);
+            if (item.getFirstHiddenBy() == null) {
+                item.setFirstHiddenDate(Instant.now());
+                item.setFirstHiddenBy(Constants.SYSTEM_ACCOUNT);
+            }
+        }).collect(Collectors.toList());
+        posStoreNotificationRepository.saveAll(list);
+    }
+
+    public void toggleStoreNotificationPin(String notificationGuid){
+        StoreNotificationEntity entity = posStoreNotificationRepository.findOneByGuid(UUID.fromString(notificationGuid))
+                .orElseThrow(()-> new NotFoundException(ErrorCode.STORE_NOTIFICATION_NOT_FOUND));
+        entity.setStoreNotificationPin(!entity.isStoreNotificationPin());
+        posStoreNotificationRepository.save(entity);
     }
 }

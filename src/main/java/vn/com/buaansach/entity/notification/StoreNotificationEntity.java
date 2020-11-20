@@ -40,6 +40,9 @@ public class StoreNotificationEntity extends AbstractAuditingEntity implements S
     @Column(name = "store_notification_hidden")
     private boolean storeNotificationHidden;
 
+    @Column(name = "store_notification_pin")
+    private boolean storeNotificationPin;
+
     @Column(name = "first_seen_by")
     private String firstSeenBy;
 

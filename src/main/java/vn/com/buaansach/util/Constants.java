@@ -4,7 +4,7 @@ public final class Constants {
     public static final String DEFAULT_LANGUAGE = "vi";
     public static final String LOGIN_REGEX = "^[^_0-9][_0-9A-Za-z]{3,}$"; // Bắt đầu với 1 kí tự bất kì khác _0-9, tiếp theo tối thiểu 3 kí tự thuộc _0-9A-Za-z
     public static final String PHONE_REGEX = "^(09|03|07|08|05)+([0-9]{8})$";
-    public static final String SYSTEM_ACCOUNT = "system";
+    public static final String SYSTEM_ACCOUNT = "systembas";
     public static final String ANONYMOUS_USER = "anonymousUser";
     public static final String SPRING_PROFILE_DEVELOPMENT = "dev";
     public static final String SPRING_PROFILE_PRODUCTION = "prod";

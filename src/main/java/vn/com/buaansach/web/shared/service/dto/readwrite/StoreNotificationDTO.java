@@ -21,6 +21,7 @@ public class StoreNotificationDTO extends AuditDTO {
     private StoreNotificationStatus storeNotificationStatus;
     private StoreNotificationType storeNotificationType;
     private boolean storeNotificationHidden;
+    private boolean storeNotificationPin;
     private String firstSeenBy;
     private Instant firstSeenDate;
     private String firstHiddenBy;
@@ -52,6 +53,7 @@ public class StoreNotificationDTO extends AuditDTO {
         this.storeNotificationStatus = entity.getStoreNotificationStatus();
         this.storeNotificationType = entity.getStoreNotificationType();
         this.storeNotificationHidden = entity.isStoreNotificationHidden();
+        this.storeNotificationPin = entity.isStoreNotificationPin();
         this.firstSeenBy = entity.getFirstSeenBy();
         this.firstSeenDate = entity.getFirstSeenDate();
         this.firstHiddenBy = entity.getFirstHiddenBy();

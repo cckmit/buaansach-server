@@ -2,6 +2,7 @@ package vn.com.buaansach.web.shared.repository.notification;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import vn.com.buaansach.entity.enumeration.StoreNotificationStatus;
 import vn.com.buaansach.entity.enumeration.StoreNotificationType;
 import vn.com.buaansach.entity.notification.StoreNotificationEntity;
 
@@ -22,6 +23,8 @@ public interface StoreNotificationRepository extends JpaRepository<StoreNotifica
     List<StoreNotificationEntity> findByOrderGuidAndStoreNotificationType(UUID orderGuid, StoreNotificationType type);
 
     List<StoreNotificationEntity> findByOrderGuid(UUID orderGuid);
+
+    List<StoreNotificationEntity> findByOrderGuidInAndStoreNotificationHidden(List<UUID> listOrderGuid, boolean hidden);
 
     List<StoreNotificationEntity> findBySeatGuid(UUID seatGuid);
 

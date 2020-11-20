@@ -18,6 +18,7 @@
             <column name="store_notification_type" type="varchar(30)">
                 <constraints nullable="false"/>
             </column>
+            <column name="store_notification_pin" type="boolean"/>
             <column name="store_notification_hidden" type="boolean"/>
 
             <column name="first_seen_by" type="varchar(50)"/>

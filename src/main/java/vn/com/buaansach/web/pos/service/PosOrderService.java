@@ -39,8 +39,7 @@ import vn.com.buaansach.web.shared.websocket.dto.DataSocketDTO;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -319,6 +318,11 @@ public class PosOrderService {
             customerService.earnPoint(orderEntity);
         }
 
+        /* clear order notification */
+        List<UUID> listOrderGuid = new ArrayList<>();
+        listOrderGuid.add(orderEntity.getGuid());
+        posStoreNotificationService.hideStoreNotificationByListOrderGuid(listOrderGuid);
+
         DataSocketDTO dto = new DataSocketDTO();
         dto.setMessage(WebSocketMessages.POS_PURCHASE_ORDER);
         dto.setPayload(null);
@@ -359,6 +363,11 @@ public class PosOrderService {
         customerService.rollbackPoint(orderEntity);
         posSeatService.resetSeat(orderEntity.getSeatGuid());
         posOrderRepository.save(orderEntity);
+
+        /* clear order notification */
+        List<UUID> listOrderGuid = new ArrayList<>();
+        listOrderGuid.add(orderEntity.getGuid());
+        posStoreNotificationService.hideStoreNotificationByListOrderGuid(listOrderGuid);
 
         /*Gửi thông báo tới khách*/
         posSocketService.sendOrderCancelledNotification(payload.getOrderGuid());
@@ -548,6 +557,9 @@ public class PosOrderService {
 
         posOrderRepository.saveAll(listOrder);
         posSeatService.resetListSeat(listSeat);
+
+        /* clear order notification */
+        posStoreNotificationService.hideStoreNotificationByListOrderGuid(listOrderGuid);
 
         listOrder.forEach(order -> {
             DataSocketDTO dto = new DataSocketDTO();
