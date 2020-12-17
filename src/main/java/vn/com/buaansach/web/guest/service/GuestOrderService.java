@@ -33,6 +33,7 @@ import vn.com.buaansach.web.guest.websocket.GuestSocketService;
 import vn.com.buaansach.web.shared.service.CodeService;
 import vn.com.buaansach.web.shared.service.PriceService;
 import vn.com.buaansach.web.shared.service.SaleService;
+import vn.com.buaansach.web.shared.service.SeatIdentityService;
 import vn.com.buaansach.web.shared.service.dto.readwrite.StoreNotificationDTO;
 
 import javax.transaction.Transactional;
@@ -58,7 +59,7 @@ public class GuestOrderService {
     private final PriceService priceService;
     private final SaleService saleService;
     private final CodeService codeService;
-    private final GuestUserRepository guestUserRepository;
+    private final SeatIdentityService seatIdentityService;
 
     public GuestOrderDTO getOrder(String orderGuid) {
         OrderEntity orderEntity = guestOrderRepository.findOneByGuid(UUID.fromString(orderGuid))
@@ -122,6 +123,7 @@ public class GuestOrderService {
         /* Update seat order & status */
         seatEntity.setOrderGuid(orderGuid);
         guestSeatService.makeSeatServiceUnfinished(seatEntity);
+        seatIdentityService.updateSeatIdentity(payload.getSeatIdentity());
 
         /* Send notification */
         StoreNotificationDTO notificationDTO = guestStoreOrderNotificationService.createStoreOrderUpdateNotification(storeEntity.getGuid(),

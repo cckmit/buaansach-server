@@ -39,7 +39,9 @@ import vn.com.buaansach.web.shared.websocket.dto.DataSocketDTO;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,6 +69,7 @@ public class PosOrderService {
     private final SaleService saleService;
     private final CustomerService customerService;
     private final CodeService codeService;
+    private final SeatIdentityService seatIdentityService;
 
     @Transactional
     public PosOrderDTO createOrder(PosOrderCreateDTO payload, String currentUser) {
@@ -263,7 +266,7 @@ public class PosOrderService {
                 .filter(item -> item.getOrderProductStatus().equals(OrderProductStatus.CREATED) ||
                         item.getOrderProductStatus().equals(OrderProductStatus.PREPARING)).collect(Collectors.toList());
 
-        if (listUnfinished.size() != 0){
+        if (listUnfinished.size() != 0) {
             throw new BadRequestException(ErrorCode.ORDER_INFO_OUT_OF_DATE);
         }
 
@@ -349,7 +352,7 @@ public class PosOrderService {
         orderEntity.setOrderCancelledBy(currentUser);
         orderEntity.setOrderCancelledDate(Instant.now());
 
-        if (orderEntity.getOrderReceivedBy() == null){
+        if (orderEntity.getOrderReceivedBy() == null) {
             orderEntity.setOrderReceivedBy(currentUser);
             orderEntity.setOrderReceivedDate(Instant.now());
         }
@@ -430,6 +433,9 @@ public class PosOrderService {
         newSeat.setSeatServiceStatus(currentSeat.getSeatServiceStatus());
         newSeat.setOrderGuid(orderEntity.getGuid());
         posSeatRepository.save(newSeat);
+
+        /* Đổi vị trí seat identity */
+        seatIdentityService.swapSeatIdentity(currentSeat, newSeat);
 
         /* Giải phóng vị trí hiện tại */
         posSeatService.resetSeat(currentSeat);

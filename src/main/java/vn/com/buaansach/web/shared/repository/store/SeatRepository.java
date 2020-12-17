@@ -22,4 +22,6 @@ public interface SeatRepository extends JpaRepository<SeatEntity, Long> {
     void deleteByAreaGuid(UUID areaGuid);
 
     void deleteByGuid(UUID seatGuid);
+
+    List<SeatEntity> findByGuidNotInOrderByIdAsc(List<UUID> listSeatGuid);
 }

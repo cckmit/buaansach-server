@@ -10,17 +10,21 @@ import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.admin.repository.store.AdminAreaRepository;
 import vn.com.buaansach.web.admin.repository.store.AdminSeatRepository;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateSeatDTO;
+import vn.com.buaansach.web.shared.service.SeatIdentityService;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AdminSeatService {
     private final AdminSeatRepository adminSeatRepository;
     private final AdminAreaRepository adminAreaRepository;
+    private final SeatIdentityService seatIdentityService;
 
+    @Transactional
     public SeatEntity createSeat(AdminCreateSeatDTO request) {
         adminAreaRepository.findOneByGuid(request.getAreaGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.AREA_NOT_FOUND));
@@ -35,6 +39,8 @@ public class AdminSeatService {
         seatEntity.setSeatLocked(false);
         seatEntity.setOrderGuid(null);
         seatEntity.setAreaGuid(request.getAreaGuid());
+
+        seatIdentityService.createSeatIdentity(guid);
         return adminSeatRepository.save(seatEntity);
     }
 
@@ -48,17 +54,21 @@ public class AdminSeatService {
 
     @Transactional
     public void deleteSeat(UUID seatGuid) {
+        seatIdentityService.deleteSeatIdentity(seatGuid);
         adminSeatRepository.deleteByGuid(seatGuid);
     }
 
     @Transactional
     public void deleteByStore(UUID storeGuid) {
         List<SeatEntity> list = adminSeatRepository.findListSeatByStoreGuid(storeGuid);
+        seatIdentityService.deleteSeatIdentity(list.stream().map(SeatEntity::getGuid).collect(Collectors.toList()));
         adminSeatRepository.deleteAll(list);
     }
 
     @Transactional
     public void deleteByArea(UUID areaGuid) {
-        adminSeatRepository.deleteByAreaGuid(areaGuid);
+        List<SeatEntity> list = adminSeatRepository.findByAreaGuid(areaGuid);
+        seatIdentityService.deleteSeatIdentity(list.stream().map(SeatEntity::getGuid).collect(Collectors.toList()));
+        adminSeatRepository.deleteAll(list);
     }
 }

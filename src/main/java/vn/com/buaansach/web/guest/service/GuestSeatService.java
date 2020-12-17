@@ -12,6 +12,7 @@ import vn.com.buaansach.web.guest.repository.order.GuestOrderRepository;
 import vn.com.buaansach.web.guest.repository.store.GuestSeatRepository;
 import vn.com.buaansach.web.guest.service.dto.read.GuestSeatDTO;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestCheckOrderSeatDTO;
+import vn.com.buaansach.web.shared.service.SeatIdentityService;
 
 import java.util.*;
 
@@ -20,6 +21,7 @@ import java.util.*;
 public class GuestSeatService {
     private final GuestSeatRepository guestSeatRepository;
     private final GuestOrderRepository guestOrderRepository;
+    private final SeatIdentityService seatIdentityService;
 
     public GuestSeatDTO getSeat(String seatGuid) {
         return guestSeatRepository.findGuestSeatDTO(UUID.fromString(seatGuid))
@@ -37,18 +39,6 @@ public class GuestSeatService {
         seatEntity.setSeatStatus(SeatStatus.NON_EMPTY);
         seatEntity.setSeatServiceStatus(SeatServiceStatus.UNFINISHED);
         guestSeatRepository.save(seatEntity);
-    }
-
-    public boolean isOrderMatchesSeat(String orderGuid, String seatGuid) {
-        SeatEntity seatEntity = guestSeatRepository.findOneByGuid(UUID.fromString(seatGuid))
-                .orElseThrow(() -> new NotFoundException(ErrorCode.SEAT_NOT_FOUND));
-        if (seatEntity.getOrderGuid() == null && orderGuid == null) return true;
-        if (seatEntity.getOrderGuid() == null && orderGuid != null) return false;
-        if (seatEntity.getOrderGuid() != null && orderGuid == null) return false;
-        if (seatEntity.getOrderGuid() != null && orderGuid != null) {
-            return seatEntity.getOrderGuid().toString().equals(orderGuid);
-        }
-        return false;
     }
 
     public GuestCheckOrderSeatDTO checkOrderSeat(GuestCheckOrderSeatDTO payload) {
@@ -77,7 +67,19 @@ public class GuestSeatService {
                 }
             }
         });
+
+        /* Nếu trên máy không có mã đơn hợp lệ được lưu và chỗ đang có đơn => kiểm tra thông tin máy */
+        if (!payload.isHasValidOrderGuid() && seatEntity.getOrderGuid() != null){
+            /* Nếu thông tin máy hợp lệ thì thêm mã đơn vào danh sách lưu lại trên máy khách */
+            if (seatIdentityService.isSeatIdentityMatched(payload.getSeatIdentity(), payload.getSeatGuid())){
+                listValidOrderGuid.add(seatEntity.getOrderGuid());
+                payload.setHasValidOrderGuid(true);
+                payload.setActiveOrderGuid(seatEntity.getOrderGuid());
+            }
+        }
+
         payload.setListOrderGuid(listValidOrderGuid);
+
         return payload;
     }
 }

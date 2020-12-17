@@ -17,6 +17,7 @@ import vn.com.buaansach.web.admin.repository.store.AdminSeatRepository;
 import vn.com.buaansach.web.admin.repository.store.AdminStoreRepository;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminAreaDTO;
 import vn.com.buaansach.web.admin.service.dto.write.AdminCreateAreaDTO;
+import vn.com.buaansach.web.shared.service.SeatIdentityService;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -31,9 +32,11 @@ public class AdminAreaService {
     private final AdminStoreRepository adminStoreRepository;
     private final AdminSeatRepository adminSeatRepository;
     private final AdminSeatService adminSeatService;
+    private final SeatIdentityService seatIdentityService;
 
     /* used when create area with init seats */
-    private List<SeatEntity> createListSeat(AreaEntity areaEntity, int numberOfSeats, String seatPrefix, String seatPrefixEng) {
+    @Transactional
+    public List<SeatEntity> createListSeat(AreaEntity areaEntity, int numberOfSeats, String seatPrefix, String seatPrefixEng) {
         List<SeatEntity> listSeat = new ArrayList<>();
         for (int i = 1; i <= numberOfSeats; i++) {
             SeatEntity seatEntity = new SeatEntity();
@@ -52,6 +55,7 @@ public class AdminAreaService {
             seatEntity.setAreaGuid(areaEntity.getGuid());
             listSeat.add(seatEntity);
         }
+        seatIdentityService.createSeatIdentity(listSeat.stream().map(SeatEntity::getGuid).collect(Collectors.toList()));
         return adminSeatRepository.saveAll(listSeat);
     }
 

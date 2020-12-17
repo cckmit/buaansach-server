@@ -1,6 +1,7 @@
 package vn.com.buaansach.web.guest.service.dto.write;
 
 import lombok.Data;
+import vn.com.buaansach.entity.store.SeatIdentityEntity;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.guest.service.dto.readwrite.GuestOrderProductDTO;
 
@@ -15,4 +16,5 @@ public class GuestCreateOrderDTO {
     private UUID storeGuid;
     private UUID seatGuid;
     private List<GuestOrderProductDTO> listOrderProduct = new ArrayList<>();
+    private SeatIdentityEntity seatIdentity;
 }

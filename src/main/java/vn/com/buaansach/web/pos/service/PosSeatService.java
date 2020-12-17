@@ -17,8 +17,10 @@ import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosSeatDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosToggleLockListSeatDTO;
 import vn.com.buaansach.web.pos.websocket.PosSocketService;
+import vn.com.buaansach.web.shared.service.SeatIdentityService;
 import vn.com.buaansach.web.shared.websocket.dto.DataSocketDTO;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,6 +32,7 @@ public class PosSeatService {
     private final PosSeatRepository posSeatRepository;
     private final PosStoreSecurity posStoreSecurity;
     private final PosSocketService posSocketService;
+    private final SeatIdentityService seatIdentityService;
 
     public PosSeatDTO getPosSeatDTO(String seatGuid) {
         StoreEntity storeEntity = posStoreRepository.findOneBySeatGuid(UUID.fromString(seatGuid))
@@ -41,14 +44,17 @@ public class PosSeatService {
     }
 
     /* Must have an ID */
+    @Transactional
     public void resetSeat(SeatEntity seatEntity) {
         seatEntity.setSeatLocked(false);
         seatEntity.setSeatStatus(SeatStatus.EMPTY);
         seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
         seatEntity.setOrderGuid(null);
         posSeatRepository.save(seatEntity);
+        seatIdentityService.resetSeatIdentity(seatEntity.getGuid());
     }
 
+    @Transactional
     public void resetListSeat(List<SeatEntity> listSeat) {
         listSeat.forEach(seatEntity -> {
             seatEntity.setSeatLocked(false);
@@ -57,6 +63,9 @@ public class PosSeatService {
             seatEntity.setOrderGuid(null);
         });
         posSeatRepository.saveAll(listSeat);
+        seatIdentityService.resetSeatIdentity(listSeat.stream()
+                .map(SeatEntity::getGuid)
+                .collect(Collectors.toList()));
     }
 
     public void resetSeat(UUID seatGuid) {
@@ -67,6 +76,7 @@ public class PosSeatService {
         seatEntity.setSeatServiceStatus(SeatServiceStatus.FINISHED);
         seatEntity.setOrderGuid(null);
         posSeatRepository.save(seatEntity);
+        seatIdentityService.resetSeatIdentity(seatGuid);
     }
 
     public void makeSeatServiceFinished(UUID seatGuid) {

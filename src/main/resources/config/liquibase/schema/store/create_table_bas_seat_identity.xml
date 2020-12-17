@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="create_table_bas_seat_identity" author="ductv">
+        <createTable tableName="bas_seat_identity">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="seat_guid" type="binary(16)">
+                <constraints unique="true" nullable="false" uniqueConstraintName="ux_seat_identity_guid"/>
+            </column>
+            <column name="user_agent" type="varchar(500)"/>
+            <column name="platform" type="varchar(30)"/>
+            <column name="language" type="varchar(30)"/>
+            <column name="languages" type="varchar(100)"/>
+            <column name="device_memory" type="int"/>
+            <column name="hardware_concurrency" type="int"/>
+            <column name="screen_width" type="int"/>
+            <column name="screen_height" type="int"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
+
