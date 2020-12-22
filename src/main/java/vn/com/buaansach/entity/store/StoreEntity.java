@@ -81,4 +81,7 @@ public class StoreEntity extends AbstractAuditingEntity implements Serializable 
 
     @Column(name = "store_auto_apply_sale")
     private boolean storeAutoApplySale;
+
+    @Column(name = "store_seat_protected")
+    private boolean storeSeatProtected;
 }

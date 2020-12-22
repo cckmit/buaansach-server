@@ -14,6 +14,7 @@ public class PosStoreDTO {
     private StoreStatus storeStatus;
     private String storeAddress;
     private String storeOwnerPhone;
+    private boolean storeSeatProtected;
 
     public PosStoreDTO() {
     }
@@ -25,5 +26,6 @@ public class PosStoreDTO {
         this.storeStatus = storeEntity.getStoreStatus();
         this.storeAddress = storeEntity.getStoreAddress();
         this.storeOwnerPhone = storeEntity.getStoreOwnerPhone();
+        this.storeSeatProtected = storeEntity.isStoreSeatProtected();
     }
 }

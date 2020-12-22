@@ -6,7 +6,7 @@ import vn.com.buaansach.entity.enumeration.StoreStatus;
 import java.util.UUID;
 
 @Data
-public class PosStoreStatusChangeDTO {
+public class PosStoreUpdateDTO {
     private UUID storeGuid;
     private StoreStatus storeStatus;
 }

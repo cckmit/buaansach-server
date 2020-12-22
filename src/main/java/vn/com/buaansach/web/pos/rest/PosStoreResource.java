@@ -11,7 +11,7 @@ import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.PosStoreService;
 import vn.com.buaansach.web.pos.service.dto.read.PosStoreDTO;
-import vn.com.buaansach.web.pos.service.dto.write.PosStoreStatusChangeDTO;
+import vn.com.buaansach.web.pos.service.dto.write.PosStoreUpdateDTO;
 
 import java.util.UUID;
 
@@ -38,9 +38,15 @@ public class PosStoreResource {
     }
 
     @PutMapping("/change-status")
-    public ResponseEntity<Void> changeStoreStatus(@RequestBody PosStoreStatusChangeDTO payload){
+    public ResponseEntity<Void> changeStoreStatus(@RequestBody PosStoreUpdateDTO payload){
         log.debug("REST request from user [{}] to change [{}] status : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         posStoreService.changeStoreStatus(payload);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/toggle-seat-protection")
+    public ResponseEntity<Boolean> toggleSeatProtection(@RequestBody PosStoreUpdateDTO payload){
+        log.debug("REST request from user [{}] to toggle [{}] seat protection : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        return ResponseEntity.ok(posStoreService.toggleSeatProtection(payload));
     }
 }

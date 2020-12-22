@@ -10,7 +10,7 @@ import vn.com.buaansach.util.WebSocketMessages;
 import vn.com.buaansach.web.pos.repository.store.PosStoreRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.read.PosStoreDTO;
-import vn.com.buaansach.web.pos.service.dto.write.PosStoreStatusChangeDTO;
+import vn.com.buaansach.web.pos.service.dto.write.PosStoreUpdateDTO;
 import vn.com.buaansach.web.pos.websocket.PosSocketService;
 import vn.com.buaansach.web.shared.websocket.dto.DataSocketDTO;
 
@@ -30,7 +30,7 @@ public class PosStoreService {
         return new PosStoreDTO(storeEntity);
     }
 
-    public void changeStoreStatus(PosStoreStatusChangeDTO payload) {
+    public void changeStoreStatus(PosStoreUpdateDTO payload) {
         StoreEntity storeEntity = posStoreRepository.findOneByGuid(payload.getStoreGuid())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
         posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
@@ -41,5 +41,14 @@ public class PosStoreService {
         dto.setMessage(WebSocketMessages.POS_UPDATE_STORE_STATUS);
         dto.setPayload(payload);
         posSocketService.sendMessage(WebSocketEndpoints.TOPIC_GUEST_PREFIX + storeEntity.getGuid(), dto);
+    }
+
+    public boolean toggleSeatProtection(PosStoreUpdateDTO payload) {
+        StoreEntity storeEntity = posStoreRepository.findOneByGuid(payload.getStoreGuid())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
+        posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
+        storeEntity.setStoreSeatProtected(!storeEntity.isStoreSeatProtected());
+        posStoreRepository.save(storeEntity);
+        return storeEntity.isStoreSeatProtected();
     }
 }
