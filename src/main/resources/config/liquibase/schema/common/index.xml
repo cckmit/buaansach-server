@@ -9,5 +9,6 @@
     <include file="config/liquibase/schema/common/create_table_bas_product.xml"/>
     <include file="config/liquibase/schema/common/create_table_bas_product_category.xml"/>
     <include file="config/liquibase/schema/common/create_table_bas_sequence.xml"/>
+    <include file="config/liquibase/schema/common/create_table_bas_recipe.xml"/>
 
 </databaseChangeLog>

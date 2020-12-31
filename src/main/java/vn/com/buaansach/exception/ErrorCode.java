@@ -84,5 +84,6 @@ public enum ErrorCode {
     STORE_WORK_SHIFT_NOT_FOUND, // Không tìm thấy ca làm việc
     ORDER_UNFINISHED, // Đơn chưa được phục vụ xong
     AREA_RESTRICTED, // Khu vực bạn vừa thao tác bị giới hạn
-    SEAT_IDENTITY_NOT_FOUND, // Khu vực bạn vừa thao tác bị giới hạn
+    SEAT_IDENTITY_NOT_FOUND, // Không tìm thấy thông tin xác định chỗ ngồi
+    RECIPE_NOT_FOUND, // Không tìm thấy công thức
 }

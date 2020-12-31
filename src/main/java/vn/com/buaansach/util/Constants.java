@@ -14,6 +14,7 @@ public final class Constants {
     public static final String CATEGORY_IMAGE_PATH = "category_images";
     public static final String USER_IMAGE_PATH = "user_images";
     public static final String BANNER_IMAGE_PATH = "banner_images";
+    public static final String RECIPE_IMAGE_PATH = "recipe_images";
     public static final int POSITION_INCREMENT = (int) Math.pow(2, 16);
     public static final String CMS_UI_DOMAIN = "CMS_UI_DOMAIN";
     public static final String CUSTOMER_UI_DOMAIN = "CUSTOMER_UI_DOMAIN";
