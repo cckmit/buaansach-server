@@ -15,4 +15,6 @@ public interface ProductIngredientRepository extends JpaRepository<ProductIngred
     void deleteByIngredientGuid(UUID categoryGuid);
 
     List<ProductIngredientEntity> findByProductGuid(UUID productGuid);
+
+    List<ProductIngredientEntity> findByIngredientGuid(UUID ingredientGuid);
 }

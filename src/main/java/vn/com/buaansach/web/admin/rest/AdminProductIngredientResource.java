@@ -26,11 +26,19 @@ public class AdminProductIngredientResource {
     private final Logger log = LoggerFactory.getLogger(AdminProductIngredientResource.class);
     private final AdminProductIngredientService adminProductIngredientService;
 
-    @PostMapping("/create")
+    @PostMapping("/create-by-product")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> create(@Valid @RequestBody AdminProductIngredientDTO payload) {
+    public ResponseEntity<Void> createByProduct(@Valid @RequestBody AdminProductIngredientDTO payload) {
         log.debug("REST request from user [{}] to create [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
-        adminProductIngredientService.createProductIngredient(payload);
+        adminProductIngredientService.createByProduct(payload);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/create-by-ingredient")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Void> createByIngredient(@Valid @RequestBody AdminProductIngredientDTO payload) {
+        log.debug("REST request from user [{}] to create [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        adminProductIngredientService.createByIngredient(payload);
         return ResponseEntity.noContent().build();
     }
 
@@ -38,6 +46,12 @@ public class AdminProductIngredientResource {
     public ResponseEntity<List<ProductIngredientEntity>> getByProduct(@PathVariable UUID productGuid) {
         log.debug("REST request from user [{}] to list [{}] by product [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, productGuid);
         return ResponseEntity.ok(adminProductIngredientService.getProductIngredientByProductGuid(productGuid));
+    }
+
+    @GetMapping("/list-by-ingredient/{ingredientGuid}")
+    public ResponseEntity<List<ProductIngredientEntity>> getByIngredient(@PathVariable UUID ingredientGuid) {
+        log.debug("REST request from user [{}] to list [{}] by ingredient [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, ingredientGuid);
+        return ResponseEntity.ok(adminProductIngredientService.getProductIngredientByIngredientGuid(ingredientGuid));
     }
 
 }

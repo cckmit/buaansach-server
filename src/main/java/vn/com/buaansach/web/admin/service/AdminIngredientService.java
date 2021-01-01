@@ -7,6 +7,7 @@ import vn.com.buaansach.entity.common.IngredientEntity;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.web.admin.repository.common.AdminIngredientRepository;
+import vn.com.buaansach.web.admin.repository.common.AdminProductIngredientRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @Service
 public class AdminIngredientService {
     private final AdminIngredientRepository adminIngredientRepository;
+    private final AdminProductIngredientRepository adminProductIngredientRepository;
 
     public IngredientEntity createIngredient(IngredientEntity payload, MultipartFile image){
         payload.setGuid(UUID.randomUUID());
@@ -37,5 +39,6 @@ public class AdminIngredientService {
     @Transactional
     public void deleteIngredient(UUID ingredientGuid){
         adminIngredientRepository.deleteByGuid(ingredientGuid);
+        adminProductIngredientRepository.deleteByIngredientGuid(ingredientGuid);
     }
 }

@@ -17,6 +17,7 @@ import vn.com.buaansach.exception.NotFoundException;
 import vn.com.buaansach.util.Constants;
 import vn.com.buaansach.web.admin.repository.common.AdminCategoryRepository;
 import vn.com.buaansach.web.admin.repository.common.AdminProductCategoryRepository;
+import vn.com.buaansach.web.admin.repository.common.AdminProductIngredientRepository;
 import vn.com.buaansach.web.admin.repository.common.AdminProductRepository;
 import vn.com.buaansach.web.admin.repository.store.AdminStoreProductRepository;
 import vn.com.buaansach.web.admin.service.dto.readwrite.AdminProductDTO;
@@ -39,6 +40,7 @@ public class AdminProductService {
     private final AdminProductCategoryRepository adminProductCategoryRepository;
     private final AdminCategoryRepository adminCategoryRepository;
     private final CodeService codeService;
+    private final AdminProductIngredientRepository adminProductIngredientRepository;
 
     private void saveProductCategory(UUID productGuid, List<CategoryEntity> categories) {
         List<ProductCategoryEntity> productCategories = categories.stream().map(categoryEntity -> {
@@ -143,6 +145,8 @@ public class AdminProductService {
         /* delete all store product before delete product */
         List<StoreProductEntity> listStoreProduct = adminStoreProductRepository.findByProductGuid(UUID.fromString(productGuid));
         adminStoreProductRepository.deleteInBatch(listStoreProduct);
+
+        adminProductIngredientRepository.deleteByProductGuid(UUID.fromString(productGuid));
 
         adminProductRepository.delete(productEntity);
     }

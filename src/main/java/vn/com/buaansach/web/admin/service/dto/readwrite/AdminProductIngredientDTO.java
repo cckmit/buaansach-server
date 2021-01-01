@@ -9,5 +9,6 @@ import java.util.UUID;
 @Data
 public class AdminProductIngredientDTO {
     private UUID productGuid;
+    private UUID ingredientGuid;
     private List<ProductIngredientEntity> listProductIngredient;
 }
