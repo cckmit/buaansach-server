@@ -28,12 +28,11 @@ public class AdminIngredientService {
         IngredientEntity entity = adminIngredientRepository.findOneByGuid(payload.getGuid())
                 .orElseThrow(()-> new NotFoundException(ErrorCode.INGREDIENT_NOT_FOUND));
         payload.setId(entity.getId());
-        payload.setGuid(UUID.randomUUID());
         return adminIngredientRepository.save(payload);
     }
 
     public List<IngredientEntity> getIngredients(){
-        return adminIngredientRepository.findAll();
+        return adminIngredientRepository.findAllByOrderByIngredientPosition();
     }
 
     @Transactional

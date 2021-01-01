@@ -14,4 +14,6 @@ public interface IngredientRepository extends JpaRepository<IngredientEntity, Lo
     Optional<IngredientEntity> findOneByGuid(UUID guid);
 
     void deleteByGuid(UUID ingredientGuid);
+
+    List<IngredientEntity> findAllByOrderByIngredientPosition();
 }

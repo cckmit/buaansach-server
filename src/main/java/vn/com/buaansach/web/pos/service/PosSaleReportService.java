@@ -7,6 +7,7 @@ import vn.com.buaansach.entity.enumeration.OrderProductStatus;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.security.util.SecurityUtils;
+import vn.com.buaansach.web.pos.repository.common.PosProductIngredientRepository;
 import vn.com.buaansach.web.pos.repository.order.PosOrderProductRepository;
 import vn.com.buaansach.web.pos.repository.order.PosOrderRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
@@ -24,6 +25,7 @@ public class PosSaleReportService {
     private final PosStoreSecurity posStoreSecurity;
     private final PosOrderProductRepository posOrderProductRepository;
     private final PosProductService posProductService;
+    private final PosProductIngredientRepository posProductIngredientRepository;
 
     public List<PosOrderDTO> getSaleReport(PosSaleReportParams payload) {
         posStoreSecurity.blockAccessIfNotOwnerOrManager(payload.getStoreGuid());
@@ -81,6 +83,7 @@ public class PosSaleReportService {
             element.setNumberSold(listSold.size());
             element.setNumberCancelled(listCancelled.size());
             element.setNumberPending(list.size() - listSold.size() - listCancelled.size());
+            element.setListProductIngredient(posProductIngredientRepository.findByProductGuid(entry.getKey()));
             mapResult.put(entry.getKey(), element);
         }
 
