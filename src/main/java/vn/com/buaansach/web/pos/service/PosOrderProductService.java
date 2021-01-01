@@ -10,18 +10,20 @@ import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.exception.BadRequestException;
 import vn.com.buaansach.exception.ErrorCode;
 import vn.com.buaansach.exception.NotFoundException;
+import vn.com.buaansach.util.TimelineUtil;
 import vn.com.buaansach.web.pos.repository.order.PosOrderProductRepository;
 import vn.com.buaansach.web.pos.repository.order.PosOrderRepository;
-import vn.com.buaansach.web.pos.repository.common.PosProductRepository;
 import vn.com.buaansach.web.pos.security.PosStoreSecurity;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderProductDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderProductServeDTO;
 import vn.com.buaansach.web.pos.service.dto.write.PosOrderProductStatusChangeDTO;
 import vn.com.buaansach.web.pos.service.mapper.PosOrderProductMapper;
-import vn.com.buaansach.util.TimelineUtil;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,17 +32,9 @@ public class PosOrderProductService {
     private final PosOrderProductRepository posOrderProductRepository;
     private final PosOrderProductMapper posOrderProductMapper;
     private final PosStoreSecurity posStoreSecurity;
-    private final PosProductRepository posProductRepository;
     private final PosOrderRepository posOrderRepository;
     private final PosSeatService posSeatService;
-
-    private Map<UUID, ProductEntity> getMapProduct(List<UUID> uuids) {
-        Map<UUID, ProductEntity> mapProduct = new HashMap<>();
-        posProductRepository.findByGuidIn(uuids).forEach(product -> {
-            mapProduct.put(product.getGuid(), product);
-        });
-        return mapProduct;
-    }
+    private final PosProductService posProductService;
 
     /**
      * Lưu các sản phẩm cho đơn hàng
@@ -50,7 +44,7 @@ public class PosOrderProductService {
 
         /* Tạo 1 map product để sau đó lấy thông tin product dựa theo mã guid được nhanh hơn */
         List<UUID> uuids = list.stream().map(OrderProductEntity::getProductGuid).collect(Collectors.toList());
-        Map<UUID, ProductEntity> mapProduct = getMapProduct(uuids);
+        Map<UUID, ProductEntity> mapProduct = posProductService.getMapProduct(uuids);
 
         list = list.stream()
                 .peek(entity -> {
@@ -63,7 +57,8 @@ public class PosOrderProductService {
 
                     if (product == null) throw new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
                     if (!product.isProductActivated()) throw new BadRequestException(ErrorCode.PRODUCT_NOT_ACTIVATED);
-                    if (product.getProductStatus().equals(ProductStatus.STOP_TRADING)) throw new BadRequestException(ErrorCode.PRODUCT_STOP_TRADING);
+                    if (product.getProductStatus().equals(ProductStatus.STOP_TRADING))
+                        throw new BadRequestException(ErrorCode.PRODUCT_STOP_TRADING);
 
                     entity.setOrderProductRootPrice(product.getProductRootPrice());
                     entity.setOrderProductPrice(product.getProductPrice());

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.com.buaansach.security.util.AuthoritiesConstants;
 import vn.com.buaansach.security.util.SecurityUtils;
 import vn.com.buaansach.web.pos.service.PosSaleReportService;
+import vn.com.buaansach.web.pos.service.dto.read.PosOrderProductReportDTO;
 import vn.com.buaansach.web.pos.service.dto.read.PosSaleReportParams;
 import vn.com.buaansach.web.pos.service.dto.readwrite.PosOrderDTO;
 
@@ -36,5 +37,11 @@ public class PosSaleReportResource {
     public ResponseEntity<List<PosOrderDTO>> getReport(@RequestBody PosSaleReportParams payload) {
         log.debug("REST request from user [{}] to get [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
         return ResponseEntity.ok(posSaleReportService.getSaleReport(payload));
+    }
+
+    @PostMapping("/get-order-product-report")
+    public ResponseEntity<List<PosOrderProductReportDTO>> getOrderProductReport(@RequestBody PosSaleReportParams payload) {
+        log.debug("REST request from user [{}] to get [{}] : [{}]", SecurityUtils.getCurrentUserLogin(), ENTITY_NAME, payload);
+        return ResponseEntity.ok(posSaleReportService.getOrderProductReport(payload));
     }
 }
