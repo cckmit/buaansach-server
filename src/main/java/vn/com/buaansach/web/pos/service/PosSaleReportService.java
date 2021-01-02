@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.buaansach.entity.common.ProductEntity;
 import vn.com.buaansach.entity.enumeration.OrderProductStatus;
+import vn.com.buaansach.entity.enumeration.OrderStatus;
 import vn.com.buaansach.entity.order.OrderEntity;
 import vn.com.buaansach.entity.order.OrderProductEntity;
 import vn.com.buaansach.security.util.SecurityUtils;
@@ -46,18 +47,28 @@ public class PosSaleReportService {
     }
 
     public List<PosOrderProductReportDTO> getOrderProductReport(PosSaleReportParams payload) {
-        posStoreSecurity.blockAccessIfNotInStore(payload.getStoreGuid());
-        List<OrderEntity> listOrder = posOrderRepository
-                .findListOrderForReportByUser(SecurityUtils.getCurrentUserLogin(), payload.getStartDate(), payload.getEndDate(), payload.getStoreGuid());
+        posStoreSecurity.blockAccessIfNotOwnerOrManager(payload.getStoreGuid());
 
-        List<UUID> listOrderGuid = listOrder.stream().map(OrderEntity::getGuid).collect(Collectors.toList());
-        List<OrderProductEntity> listOrderProduct = posOrderProductRepository
-                .findByOrderGuidInAndCreatedDateGreaterThanEqualAndCreatedDateLessThanEqual(listOrderGuid, payload.getStartDate(), payload.getEndDate());
+        // Lay ra list order theo user va khoang thoi gian
+        List<OrderEntity> listOrder;
+        if (payload.getUserLogin() != null && !payload.getUserLogin().isBlank()) {
+            listOrder = posOrderRepository.findListOrderForReportByUser(payload.getUserLogin(), payload.getStartDate(), payload.getEndDate(), payload.getStoreGuid());
+        } else {
+            listOrder = posOrderRepository.findListOrderForReport(payload.getStartDate(), payload.getEndDate(), payload.getStoreGuid());
+        }
+        List<UUID> listOrderGuid = listOrder.stream()
+                .filter(item-> item.getOrderStatus().equals(OrderStatus.PURCHASED))
+                .map(OrderEntity::getGuid)
+                .collect(Collectors.toList());
+
+        // Lay ra list order product theo list order ben tren
+        List<OrderProductEntity> listOrderProduct = posOrderProductRepository.findByOrderGuidIn(listOrderGuid);
 
         Map<UUID, ProductEntity> mapProduct = posProductService.getMapProduct(listOrderProduct.stream()
                 .map(OrderProductEntity::getProductGuid)
                 .collect(Collectors.toList()));
 
+        // Phan loai va nhom order product trung lap
         Map<UUID, List<OrderProductEntity>> mapOrderProduct = new HashMap<>();
         listOrderProduct.forEach(item -> {
             List<OrderProductEntity> list = mapOrderProduct.get(item.getProductGuid());
@@ -87,6 +98,15 @@ public class PosSaleReportService {
             mapResult.put(entry.getKey(), element);
         }
 
-        return new ArrayList<>(mapResult.values());
+        List<PosOrderProductReportDTO> result = new ArrayList<>();
+        result = new ArrayList<>(mapResult.values());
+        result.sort((o1, o2) -> {
+            int p1 = o1.getProduct().getProductPosition();
+            int p2 = o2.getProduct().getProductPosition();
+            if (p1 == p2) return 0;
+            return p1 > p2 ? 1 : -1;
+        });
+
+        return result;
     }
 }
