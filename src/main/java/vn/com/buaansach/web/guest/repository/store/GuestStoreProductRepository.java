@@ -27,4 +27,19 @@ public interface GuestStoreProductRepository extends StoreProductRepository {
                                                                                    @Param("categoryGuid") UUID categoryGuid,
                                                                                    @Param("storeProductStatus") StoreProductStatus storeProductStatus);
 
+    @Query("SELECT new vn.com.buaansach.web.guest.service.dto.read.GuestStoreProductDTO(storeProduct, product) " +
+            "FROM StoreProductEntity storeProduct " +
+            "JOIN vn.com.buaansach.entity.common.ProductEntity product " +
+            "ON storeProduct.productGuid = product.guid " +
+            "JOIN vn.com.buaansach.entity.common.ProductCategoryEntity productCategory " +
+            "ON product.guid = productCategory.productGuid " +
+            "WHERE storeProduct.storeGuid = :storeGuid " +
+            "AND productCategory.categoryGuid = :categoryGuid " +
+            "AND storeProduct.storeProductStatus = :storeProductStatus " +
+            "AND product.productActivated = TRUE " +
+            "ORDER BY product.productPosition ASC")
+    List<GuestStoreProductDTO> findGuestStoreProductByStoreAndCategoryAndStatus(@Param("storeGuid") UUID storeGuid,
+                                                                                   @Param("categoryGuid") UUID categoryGuid,
+                                                                                   @Param("storeProductStatus") StoreProductStatus storeProductStatus);
+
 }

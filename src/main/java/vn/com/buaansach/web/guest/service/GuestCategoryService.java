@@ -40,7 +40,7 @@ public class GuestCategoryService {
         categories.forEach(category -> {
             GuestStoreCategoryDTO dto = new GuestStoreCategoryDTO(category);
             List<GuestStoreProductDTO> storeProductDTOS = guestStoreProductRepository
-                    .findGuestStoreProductByStoreAndCategoryExceptStatus(storeEntity.getGuid(), category.getGuid(), StoreProductStatus.STOP_TRADING);
+                    .findGuestStoreProductByStoreAndCategoryAndStatus(storeEntity.getGuid(), category.getGuid(), StoreProductStatus.AVAILABLE);
             dto.setListStoreProduct(storeProductDTOS);
             result.add(dto);
         });
