@@ -88,12 +88,16 @@ public class PosSaleReportService {
                     .filter(item -> item.getOrderProductStatus().equals(OrderProductStatus.CANCELLED))
                     .collect(Collectors.toList());
 
+            int total = list.stream().mapToInt(OrderProductEntity::getOrderProductQuantity).sum();
+            int numberSold = listSold.stream().mapToInt(OrderProductEntity::getOrderProductQuantity).sum();
+            int numberCancelled = listCancelled.stream().mapToInt(OrderProductEntity::getOrderProductQuantity).sum();
+
             PosOrderProductReportDTO element = new PosOrderProductReportDTO();
             element.setProductGuid(entry.getKey());
             element.setProduct(mapProduct.get(entry.getKey()));
-            element.setNumberSold(listSold.size());
-            element.setNumberCancelled(listCancelled.size());
-            element.setNumberPending(list.size() - listSold.size() - listCancelled.size());
+            element.setNumberSold(numberSold);
+            element.setNumberCancelled(numberCancelled);
+            element.setNumberPending(total - numberSold - numberCancelled);
             element.setListProductIngredient(posProductIngredientRepository.findByProductGuid(entry.getKey()));
             mapResult.put(entry.getKey(), element);
         }
